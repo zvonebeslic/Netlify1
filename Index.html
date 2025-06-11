@@ -6,117 +6,63 @@
   <title>Mountain Adventures</title>
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
-    body {
-      margin: 0;
+    body, html {
+      height: 100%;
       font-family: Arial, sans-serif;
-      color: white;
-      scroll-behavior: smooth;
-      background-image: url('images/background.jpg');
-      background-attachment: fixed;
+    }
+
+    .hero {
+      background-image: url('Background.jpg'); /* Ako si sliku stavio u images folder, stavi 'images/Background.jpg' */
+      height: 100vh;
       background-size: cover;
       background-position: center;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      z-index: 1000;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .flags img {
-      width: 30px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-
-    section {
-      min-height: 100vh;
+      background-attachment: fixed; /* efekt parallax */
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 60px 20px;
+      color: white;
+      text-shadow: 2px 2px 6px black;
     }
 
-    h1 {
+    .hero h1 {
       font-size: 3em;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 1rem;
-      border-radius: 10px;
+      text-align: center;
     }
 
-    .kontakt {
-      min-height: 40vh;
-      background-color: rgba(0, 0, 0, 0.6);
+    .content {
+      padding: 40px;
+      background-color: #f4f4f4;
+      text-align: center;
     }
 
-    body::before {
-      content: "";
-      display: block;
-      height: 60px;
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <nav>
-      <a href="#hero">Naslovna</a>
-      <a href="#staze">Staze</a>
-      <a href="#shop">Shop</a>
-      <a href="#blog">Blog</a>
-      <a href="#onama">O nama</a>
-      <a href="#kontakt">Kontakt</a>
-    </nav>
-    <div class="flags">
-      <img src="https://flagcdn.com/w40/hr.png" alt="HR" title="Hrvatski">
-      <img src="https://flagcdn.com/w40/gb.png" alt="EN" title="English">
-    </div>
-  </header>
+  <div class="hero">
+    <h1>Dobrodošli u Mountain Adventures</h1>
+  </div>
 
-  <section id="hero">
-    <h1>Dobrodošli na Mountain Adventures</h1>
-  </section>
+  <div class="content">
+    <h2>Planinarske staze</h2>
+    <p>Istraži najbolje staze na Balkanu – GPS tragovi, savjeti i još mnogo toga!</p>
+  </div>
 
-  <section id="staze">
-    <h1>Istraži planinarske staze</h1>
-  </section>
-
-  <section id="shop">
-    <h1>Web shop s opremom</h1>
-  </section>
-
-  <section id="blog">
-    <h1>Čitaj naš blog</h1>
-  </section>
-
-  <section id="onama">
-    <h1>O nama</h1>
-  </section>
-
-  <section id="kontakt" class="kontakt">
-    <h1>Kontaktiraj nas</h1>
-  </section>
+  <footer>
+    &copy; 2025 Mountain Adventures. Sva prava pridržana.
+  </footer>
 
 </body>
 </html>
