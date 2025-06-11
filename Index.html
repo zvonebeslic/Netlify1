@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mountain Adventures Balkan</title>
+  <title>Mountain Adventures</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,7 +12,12 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      color: white;
       scroll-behavior: smooth;
+      background-image: url('images/background.jpg');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
     }
 
     header {
@@ -45,22 +50,13 @@
     }
 
     section {
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
       text-align: center;
-      background-size: cover;
-      background-position: center;
+      padding: 60px 20px;
     }
-
-    .hero { background-image: url('images/planina1.jpg'); }
-    .staze { background-image: url('images/staze.jpg'); }
-    .shop { background-image: url('images/shop.jpg'); }
-    .blog { background-image: url('images/blog.jpg'); }
-    .onama { background-image: url('images/onama.jpg'); }
-    .kontakt { background-image: url('images/kontakt.jpg'); }
 
     h1 {
       font-size: 3em;
@@ -69,7 +65,11 @@
       border-radius: 10px;
     }
 
-    /* Space below header */
+    .kontakt {
+      min-height: 40vh;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
     body::before {
       content: "";
       display: block;
@@ -94,23 +94,23 @@
     </div>
   </header>
 
-  <section id="hero" class="hero">
+  <section id="hero">
     <h1>Dobrodošli na Mountain Adventures</h1>
   </section>
 
-  <section id="staze" class="staze">
+  <section id="staze">
     <h1>Istraži planinarske staze</h1>
   </section>
 
-  <section id="shop" class="shop">
+  <section id="shop">
     <h1>Web shop s opremom</h1>
   </section>
 
-  <section id="blog" class="blog">
+  <section id="blog">
     <h1>Čitaj naš blog</h1>
   </section>
 
-  <section id="onama" class="onama">
+  <section id="onama">
     <h1>O nama</h1>
   </section>
 
