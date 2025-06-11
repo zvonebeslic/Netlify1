@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mountain Adventures Balkan</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      z-index: 1000;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .flags img {
+      width: 30px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    section {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .hero { background-image: url('images/planina1.jpg'); }
+    .staze { background-image: url('images/staze.jpg'); }
+    .shop { background-image: url('images/shop.jpg'); }
+    .blog { background-image: url('images/blog.jpg'); }
+    .onama { background-image: url('images/onama.jpg'); }
+    .kontakt { background-image: url('images/kontakt.jpg'); }
+
+    h1 {
+      font-size: 3em;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    /* Space below header */
+    body::before {
+      content: "";
+      display: block;
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="#hero">Naslovna</a>
+      <a href="#staze">Staze</a>
+      <a href="#shop">Shop</a>
+      <a href="#blog">Blog</a>
+      <a href="#onama">O nama</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="flags">
+      <img src="https://flagcdn.com/w40/hr.png" alt="HR" title="Hrvatski">
+      <img src="https://flagcdn.com/w40/gb.png" alt="EN" title="English">
+    </div>
+  </header>
+
+  <section id="hero" class="hero">
+    <h1>Dobrodošli na Mountain Adventures</h1>
+  </section>
+
+  <section id="staze" class="staze">
+    <h1>Istraži planinarske staze</h1>
+  </section>
+
+  <section id="shop" class="shop">
+    <h1>Web shop s opremom</h1>
+  </section>
+
+  <section id="blog" class="blog">
+    <h1>Čitaj naš blog</h1>
+  </section>
+
+  <section id="onama" class="onama">
+    <h1>O nama</h1>
+  </section>
+
+  <section id="kontakt" class="kontakt">
+    <h1>Kontaktiraj nas</h1>
+  </section>
+
+</body>
+</html>
