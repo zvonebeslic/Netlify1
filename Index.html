@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hr">
 <head>
@@ -12,53 +13,131 @@
     }
 
     body, html {
-      height: 100%;
       font-family: Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      z-index: 1000;
+    }
+
+    header nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+
+    .language-switch {
+      display: flex;
+      gap: 10px;
+    }
+
+    .language-switch img {
+      width: 24px;
+      height: auto;
+      cursor: pointer;
     }
 
     .hero {
-      background-image: url('Background.jpg'); /* Ako si sliku stavio u images folder, stavi 'images/Background.jpg' */
+      background-image: url('Background.jpg'); /* promijeni u 'images/Background.jpg' ako je u folderu */
       height: 100vh;
       background-size: cover;
       background-position: center;
-      background-attachment: fixed; /* efekt parallax */
+      background-attachment: fixed;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       color: white;
       text-shadow: 2px 2px 6px black;
+      text-align: center;
+      padding-top: 80px;
     }
 
     .hero h1 {
-      font-size: 3em;
-      text-align: center;
+      font-size: 3.5em;
+      max-width: 90%;
     }
 
-    .content {
-      padding: 40px;
-      background-color: #f4f4f4;
+    section {
+      padding: 80px 20px;
       text-align: center;
     }
 
     footer {
-      background-color: #333;
+      background: #222;
       color: white;
       text-align: center;
-      padding: 10px;
+      padding: 20px;
       font-size: 0.9em;
+    }
+
+    @media (max-width: 600px) {
+      header nav a {
+        margin: 0 8px;
+        font-size: 0.9em;
+      }
+
+      .hero h1 {
+        font-size: 2em;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="hero">
+  <header>
+    <nav>
+      <a href="#naslovna">Naslovna</a>
+      <a href="#staze">Planinarske staze</a>
+      <a href="#shop">Web shop</a>
+      <a href="#blog">Blog</a>
+      <a href="#onama">O nama</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="language-switch">
+      <img src="images/hr-flag.png" alt="HR" title="Hrvatski" />
+      <img src="images/en-flag.png" alt="EN" title="English" />
+    </div>
+  </header>
+
+  <div class="hero" id="naslovna">
     <h1>Dobrodošli u Mountain Adventures</h1>
   </div>
 
-  <div class="content">
+  <section id="staze">
     <h2>Planinarske staze</h2>
-    <p>Istraži najbolje staze na Balkanu – GPS tragovi, savjeti i još mnogo toga!</p>
-  </div>
+    <p>Istražite najbolje planinarske rute Balkana – uz GPS tragove i vodiče.</p>
+  </section>
+
+  <section id="shop">
+    <h2>Web Shop</h2>
+    <p>Nabavite planinarsku opremu i suvenire u našoj online trgovini.</p>
+  </section>
+
+  <section id="blog">
+    <h2>Blog</h2>
+    <p>Čitajte iskustva s trailova, savjete i zanimljive priče iz prirode.</p>
+  </section>
+
+  <section id="onama">
+    <h2>O nama</h2>
+    <p>Mi smo tim entuzijasta koji žele podijeliti ljepote Balkana sa svijetom.</p>
+  </section>
+
+  <section id="kontakt">
+    <h2>Kontakt</h2>
+    <p>Imate pitanja? Javite nam se putem kontakt obrasca ili društvenih mreža.</p>
+  </section>
 
   <footer>
     &copy; 2025 Mountain Adventures. Sva prava pridržana.
