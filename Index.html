@@ -5,18 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       overflow-x: hidden;
       scroll-behavior: smooth;
+      background-color: #000;
     }
-
     .section {
       height: 100vh;
       position: relative;
@@ -28,27 +23,24 @@
       color: white;
       font-size: 2em;
       opacity: 0;
-      transform: translateY(50px);
-      transition: all 1s ease-out;
+      transform: translateY(40px);
+      transition: all 1.5s ease;
     }
-
     .section.visible {
       opacity: 1;
       transform: translateY(0);
     }
-
     .fade-out {
-      opacity: 0 !important;
-      transform: translateY(-50px);
+      opacity: 0.15 !important;
+      transform: translateY(-40px);
+      transition: all 1.5s ease;
     }
-
     .overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.4);
       z-index: 1;
     }
-
     .content {
       position: relative;
       z-index: 2;
@@ -61,59 +53,58 @@
 </head>
 <body>
 
-  <!-- Sedam sekcija sa pozadinskim slikama -->
-  <div class="section" style="background-image: url('images/Background.jpg')">
-    <div class="overlay"></div>
-    <div class="content">Naslovna</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background1.jpg')">
-    <div class="overlay"></div>
-    <div class="content">Planinarske staze</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background2.jpg')">
-    <div class="overlay"></div>
-    <div class="content">Web Shop</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background3.jpg')">
-    <div class="overlay"></div>
-    <div class="content">Blog</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background4.jpg')">
-    <div class="overlay"></div>
-    <div class="content">O nama</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background5.jpg')">
-    <div class="overlay"></div>
-    <div class="content">Galerija</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background6.jpg')">
-    <div class="overlay"></div>
-    <div class="content">Kontaktirajte nas</div>
-  </div>
+  <!-- Sekcije sa slikama -->
+  <div class="section" data-img="Background.jpg"><div class="overlay"></div><div class="content">Naslovna</div></div>
+  <div class="section" data-img="Background1.jpg"><div class="overlay"></div><div class="content">Planinarske staze</div></div>
+  <div class="section" data-img="Background2.jpg"><div class="overlay"></div><div class="content">Web Shop</div></div>
+  <div class="section" data-img="Background3.jpg"><div class="overlay"></div><div class="content">Blog</div></div>
+  <div class="section" data-img="Background4.jpg"><div class="overlay"></div><div class="content">O nama</div></div>
+  <div class="section" data-img="Background5.jpg"><div class="overlay"></div><div class="content">Galerija</div></div>
+  <div class="section" data-img="Background6.jpg"><div class="overlay"></div><div class="content">Kontaktirajte nas</div></div>
 
   <script>
-    // ---------------------------------------------
-    // Ako slika nije pronađena u "images/" folderu,
-    // sustav automatski pokušava učitati istu sliku
-    // iz root (glavne) mape web stranice.
-    // ---------------------------------------------
-    document.querySelectorAll(".section").forEach(sec => {
-      const bg = sec.style.backgroundImage;
-      const url = bg.slice(5, -2); // izvlači URL slike iz background-image CSS-a
-      const img = new Image();
-      img.src = url;
+    // 🔄 Dinamičko pronalaženje slike na više mogućih lokacija:
+    // 1. images/
+    // 2. root
+    // 3. vlastiti folder npr. Background1/Background1.jpg
 
-      img.onerror = () => {
-        const fallback = url.replace("images/", "");
-        sec.style.backgroundImage = `url('${fallback}')`;
-        console.log(`Slika nije pronađena: ${url}. Pokušavam iz root: ${fallback}`);
+    document.querySelectorAll(".section").forEach(sec => {
+      const filename = sec.dataset.img;
+      const folderName = filename.replace(".jpg", "");
+      const tryPaths = [
+        `images/${filename}`,
+        `${filename}`,
+        `${folderName}/${filename}`
+      ];
+
+      const img = new Image();
+      let found = false;
+
+      const tryNext = (index) => {
+        if (index >= tryPaths.length) {
+          console.warn(`⚠️ Slika '${filename}' nije pronađena ni na jednoj lokaciji.`);
+          return;
+        }
+
+        img.src = tryPaths[index];
+        img.onload = () => {
+          sec.style.backgroundImage = `url('${tryPaths[index]}')`;
+          found = true;
+        };
+        img.onerror = () => {
+          tryNext(index + 1);
+        };
       };
+
+      tryNext(0);
     });
 
-    // IntersectionObserver za fade-in i fade-out efekat pri skrolanju
+    // ✨ Efekti skrolanja
     const sections = document.querySelectorAll(".section");
     const options = {
-      threshold: 0.3
+      root: null,
+      rootMargin: "0px 0px -35% 0px", // Raniji ulazak u kadar
+      threshold: 0.01
     };
 
     const observer = new IntersectionObserver((entries) => {
