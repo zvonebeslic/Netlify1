@@ -6,9 +6,7 @@
   <title>Mountain Adventures</title>
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
 
     html, body {
@@ -22,7 +20,7 @@
       width: 100%;
       top: 0;
       left: 0;
-      padding: 15px 20px;
+      padding: 10px 20px;
       background: rgba(0, 0, 0, 0.6);
       z-index: 1000;
       display: flex;
@@ -30,10 +28,27 @@
       align-items: center;
     }
 
-    .logo {
-      color: white;
-      font-size: 1.2em;
-      font-weight: bold;
+    .flags {
+      display: flex;
+      gap: 8px;
+    }
+
+    .flags img {
+      width: 28px;
+      height: 20px;
+      cursor: pointer;
+      border: 1px solid white;
+    }
+
+    .search-center {
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .search-center input {
+      width: 50%;
+      padding: 6px 10px;
+      font-size: 1em;
     }
 
     .menu-toggle {
@@ -42,6 +57,7 @@
       background: none;
       border: none;
       cursor: pointer;
+      z-index: 1001;
     }
 
     nav {
@@ -69,29 +85,6 @@
       font-size: 1.2em;
     }
 
-    .language-switch {
-      display: flex;
-      gap: 10px;
-      margin-top: auto;
-    }
-
-    .language-switch img {
-      width: 32px;
-      height: 20px;
-      cursor: pointer;
-      border: 1px solid white;
-    }
-
-    .search-box {
-      margin-bottom: 20px;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 8px;
-      font-size: 1em;
-    }
-
     .section {
       height: 100vh;
       width: 100vw;
@@ -114,62 +107,91 @@
       text-align: center;
       z-index: 10;
     }
+
+    @media (min-width: 768px) {
+      nav { width: 300px; }
+    }
   </style>
 </head>
 <body>
 
   <!-- HEADER -->
   <header>
-    <div class="logo">Mountain Adventures</div>
-    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="flags">
+      <img src="hr.png" alt="HR" onclick="setLang('hr')" />
+      <img src="en.png" alt="EN" onclick="setLang('en')" />
+    </div>
+
+    <div class="search-center">
+      <input type="text" placeholder="Traži..." />
+    </div>
+
+    <button class="menu-toggle" id="menuBtn">☰</button>
   </header>
 
   <!-- MENU -->
   <nav id="sideMenu">
-    <div class="search-box">
-      <input type="text" placeholder="Traži..." />
-    </div>
-    <a href="#">Naslovna</a>
-    <a href="#">Staze</a>
-    <a href="#">Web shop</a>
-    <a href="#">Blog</a>
-    <a href="#">O nama</a>
-    <a href="#">Kontakt</a>
-    <div class="language-switch">
-      <img src="hr.png" alt="HR" onclick="setLang('hr')" />
-      <img src="en.png" alt="EN" onclick="setLang('en')" />
-    </div>
+    <a href="#section1">Naslovna</a>
+    <a href="#section2">Staze</a>
+    <a href="#section3">Web shop</a>
+    <a href="#section4">Blog</a>
+    <a href="#section5">O nama</a>
+    <a href="#section6">Kontakt</a>
   </nav>
 
   <!-- SECTIONS -->
-  <div class="section" style="background-image: url('Background.jpg');">
+  <div class="section" id="section1" style="background-image: url('Background.jpg');">
     <div class="overlay" data-hr="Dobrodošli u planine" data-en="Welcome to the mountains">Dobrodošli u planine</div>
   </div>
-  <div class="section" style="background-image: url('Background1.jpg');">
+  <div class="section" id="section2" style="background-image: url('Background1.jpg');">
     <div class="overlay" data-hr="Staze Balkana" data-en="Balkan Trails">Staze Balkana</div>
   </div>
-  <div class="section" style="background-image: url('Background2.jpg');">
+  <div class="section" id="section3" style="background-image: url('Background2.jpg');">
     <div class="overlay" data-hr="GPS Tragovi i Info" data-en="GPS Tracks & Info">GPS Tragovi i Info</div>
   </div>
-  <div class="section" style="background-image: url('Background3.jpg');">
+  <div class="section" id="section4" style="background-image: url('Background3.jpg');">
     <div class="overlay" data-hr="Web Shop" data-en="Web Shop">Web Shop</div>
   </div>
-  <div class="section" style="background-image: url('Background4.jpg');">
+  <div class="section" id="section5" style="background-image: url('Background4.jpg');">
     <div class="overlay" data-hr="Blog i Savjeti" data-en="Blog & Tips">Blog i Savjeti</div>
   </div>
-  <div class="section" style="background-image: url('Background5.jpg');">
+  <div class="section" id="section6" style="background-image: url('Background5.jpg');">
     <div class="overlay" data-hr="O nama" data-en="About Us">O nama</div>
   </div>
-  <div class="section" style="background-image: url('Background6.jpg');">
+  <div class="section" id="section7" style="background-image: url('Background6.jpg');">
     <div class="overlay" data-hr="Kontaktirajte nas" data-en="Contact Us">Kontaktirajte nas</div>
   </div>
 
+  <!-- SCRIPTS -->
   <script>
+    // Hamburger menu
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('sideMenu');
+
     function toggleMenu() {
-      document.getElementById('sideMenu').classList.toggle('open');
+      menu.classList.toggle('open');
     }
 
-    // Jezik
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Zatvaranje menija klikom izvan
+    document.addEventListener('click', (e) => {
+      if (!menu.contains(e.target) && e.target !== menuBtn) {
+        menu.classList.remove('open');
+      }
+    });
+
+    // Zatvaranje menija klikom na link
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('open');
+      });
+    });
+
+    // Promjena jezika
     function setLang(lang) {
       document.querySelectorAll('.overlay').forEach(el => {
         const text = el.getAttribute(`data-${lang}`);
@@ -177,7 +199,7 @@
       });
     }
 
-    // Parallax uvećanje i prelazak
+    // Scroll efekt (uvećavanje + klizanje)
     const sections = document.querySelectorAll('.section');
 
     window.addEventListener('scroll', () => {
@@ -189,7 +211,7 @@
         const distance = scrollY - offsetTop + windowH;
         const percentage = Math.min(Math.max(distance / windowH, 0), 1);
 
-        const scale = 1 + percentage * 0.05; // lagano uvećanje
+        const scale = 1 + percentage * 0.05;
         section.style.transform = `scale(${scale}) translateY(${(1 - percentage) * 30}px)`;
       });
     });
