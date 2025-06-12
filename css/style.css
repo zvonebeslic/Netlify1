@@ -24,25 +24,27 @@ html, body {
   justify-content: center;
   color: white;
   font-size: 2em;
-  transition: transform 1.2s ease, opacity 1.2s ease;
+  text-align: center;
+  padding: 20px;
+  transition: transform 1.2s ease, opacity 1.2s ease, filter 1.2s ease;
   will-change: transform, opacity;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   z-index: 1;
-  text-align: center;
-  padding: 20px;
 }
 
 .section.active {
   transform: translateY(0) scale(1.05);
   opacity: 1;
   z-index: 2;
+  filter: none;
 }
 
 .section.inactive {
-  transform: translateY(-20%) scale(1);
-  opacity: 0.1;
+  transform: translateY(-10%) scale(1);
+  opacity: 0.3;
   z-index: 0;
+  filter: blur(1px);
 }
 
 .language-switcher {
