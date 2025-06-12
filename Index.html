@@ -1,84 +1,84 @@
-<!DOCTYPE html>
-<html lang="hr">
+<!DOCTYPE html><html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }body {
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: #000;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior-y: none;
+  scroll-padding-top: 60px;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      background-color: #000;
-    }
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  z-index: 1000;
+}
 
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 60px;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      z-index: 1000;
-    }
+.navbar-left img {
+  height: 18px;
+  cursor: pointer;
+}
 
-    .navbar-left img {
-      height: 18px;
-      cursor: pointer;
-    }
+.navbar-center input {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+}
 
-    .navbar-center input {
-      padding: 5px 10px;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-    }
+.hamburger {
+  width: 25px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
-    .hamburger {
-      width: 25px;
-      height: 20px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+.hamburger div {
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+}
 
-    .hamburger div {
-      height: 3px;
-      background: white;
-      border-radius: 2px;
-    }
+.menu {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 200px;
+  background: rgba(0,0,0,0.9);
+  padding: 10px;
+  display: none;
+  flex-direction: column;
+  z-index: 999;
+}
 
-    .menu {
-      position: fixed;
-      top: 60px;
-      right: 0;
-      width: 200px;
-      background: rgba(0,0,0,0.9);
-      padding: 10px;
-      display: none;
-      flex-direction: column;
-      z-index: 999;
-    }
+.menu a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  font-size: 14px;
+}
 
-    .menu a {
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      border-bottom: 1px solid #333;
-      font-size: 14px;
-    }
+.menu a:hover {
+  background: #222;
+}
 
-    .menu a:hover {
-      background: #222;
-    }
-
-    .section {
+.section {
   min-height: 100vh;
   height: 100vh;
   position: relative;
@@ -92,32 +92,40 @@
   background-color: #111;
   scroll-margin-top: 60px;
   z-index: 1;
+  scroll-snap-align: center;
 
-  /* 👇 Glatki dolazak slike */
   transform: translateY(100px) scale(0.98);
   opacity: 0;
   transition: transform 0.8s ease-out, opacity 0.8s ease-out;
 }
 
 .section.scaled {
-  transform: translateY(0px) scale(1.05); /* aktivna sekcija */
+  transform: translateY(0px) scale(1.05);
   opacity: 1;
   z-index: 2;
 }
-      transition: background 0.8s ease;
-    }
 
-    .overlay.dimmed {
-      background: rgba(0, 0, 0, 0.65);
-    }
+.overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  transition: background 0.8s ease;
+}
 
-    .content {
+.overlay.dimmed {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.content {
   position: relative;
   z-index: 2;
   text-align: center;
   padding: 20px;
+
+
   background: rgba(0, 0, 0, 0.4);
-  border-radius: 10px;
+  border-radius: 5px;
   color: white;
   font-size: 2em;
   opacity: 0;
