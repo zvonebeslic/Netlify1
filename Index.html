@@ -90,20 +90,13 @@
       align-items: center;
       justify-content: center;
       background-color: #111;
-      transition: transform 1.2s ease, filter 0.5s ease, background-image 1s ease-in-out;
+      transition: transform 1.5s ease, opacity 0.6s ease-out, background-image 1s ease-in-out;
       scroll-margin-top: 60px;
       z-index: 0;
-      filter: blur(0) brightness(1);
     }
 
-    .section.scaled {
+    .scaled {
       transform: scale(1.05);
-      filter: blur(0px) brightness(1);
-    }
-
-    .section.fading-out {
-      transform: scale(0.98);
-      filter: blur(4px) brightness(0.6);
     }
 
     .overlay {
@@ -128,13 +121,13 @@
       color: white;
       font-size: 2em;
       opacity: 0;
-      transform: translateY(40px) translateX(-30px);
-      transition: opacity 0.5s ease-out, transform 0.6s ease-out;
+      transform: translateY(40px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     }
 
     .content.visible {
       opacity: 1;
-      transform: translateY(0) translateX(0);
+      transform: translateY(0);
     }
 
     @media (max-width: 768px) {
@@ -178,32 +171,26 @@
     <div class="overlay"></div>
     <div class="content" data-key="sec-home">Naslovna</div>
   </div>
-
   <div class="section" id="section1" data-img="Background1.jpg">
     <div class="overlay"></div>
     <div class="content" data-key="sec-trails">Planinarske staze</div>
   </div>
-
   <div class="section" id="section2" data-img="Background2.jpg">
     <div class="overlay"></div>
     <div class="content" data-key="sec-shop">Web Shop</div>
   </div>
-
   <div class="section" id="section3" data-img="Background3.jpg">
     <div class="overlay"></div>
     <div class="content" data-key="sec-blog">Blog</div>
   </div>
-
   <div class="section" id="section4" data-img="Background4.jpg">
     <div class="overlay"></div>
     <div class="content" data-key="sec-about">O nama</div>
   </div>
-
   <div class="section" id="section5" data-img="Background5.jpg">
     <div class="overlay"></div>
     <div class="content" data-key="sec-gallery">Galerija</div>
   </div>
-
   <div class="section" id="section6" data-img="Background6.jpg">
     <div class="overlay"></div>
     <div class="content" data-key="sec-contact">Kontaktirajte nas</div>
@@ -300,7 +287,7 @@
       tryNext(0);
     }
 
-    // Pokreni pozadine
+    // Pokreni sve
     document.querySelectorAll(".section").forEach(sec => {
       const filename = sec.dataset.img;
       loadImage(sec, filename, 'background');
@@ -319,7 +306,6 @@
 
         if (entry.isIntersecting) {
           section.classList.add("scaled");
-          section.classList.remove("fading-out");
           content.classList.add("visible");
           overlay.classList.remove("dimmed");
 
@@ -327,7 +313,6 @@
           section.style.zIndex = 10;
         } else {
           section.classList.remove("scaled");
-          section.classList.add("fading-out");
           content.classList.remove("visible");
           overlay.classList.add("dimmed");
         }
@@ -341,7 +326,7 @@
     sections.forEach(section => observer.observe(section));
 
     window.onload = () => {
-      updateTexts();
+      updateTexts(); // odmah postavi tekstove na hrvatski
     };
   </script>
 
