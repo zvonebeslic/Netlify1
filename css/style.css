@@ -22,17 +22,14 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 2em;
-  text-align: center;
-  padding: 20px;
-  transition: transform 1.2s ease, opacity 1.2s ease, filter 1.2s ease;
-  will-change: transform, opacity;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   z-index: 1;
+  transition: transform 1.2s ease, opacity 1.2s ease, filter 1.2s ease;
+  will-change: transform, opacity;
 }
 
+/* Efekti za aktivne/neaktivne slike */
 .section.active {
   transform: translateY(0) scale(1.05);
   opacity: 1;
@@ -41,12 +38,38 @@ html, body {
 }
 
 .section.inactive {
-  transform: translateY(-4%) scale(1);
-  opacity: 0.8;
+  transform: translateY(-5%) scale(1);
+  opacity: 0.75;
   z-index: 0;
-  filter: brightness(0.8px);
+  filter: brightness(0.9);
 }
 
+/* Klikabilni "folder" u centru slike */
+.section > a {
+  display: block;
+  padding: 30px 40px;
+  color: white;
+  text-decoration: none;
+  font-size: 2em;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid white;
+  border-radius: 8px;
+  position: relative;
+  text-align: center;
+  transition: background 0.3s ease;
+  max-width: 80%;
+  clip-path: polygon(
+    0% 100%, 0% 40%, 10% 20%, 20% 30%, 30% 10%, 40% 25%,
+    50% 0%, 60% 25%, 70% 10%, 80% 30%, 90% 20%, 100% 40%, 100% 100%
+  );
+}
+
+.section > a:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #00ffcc;
+}
+
+/* Zastavice */
 .language-switcher {
   position: fixed;
   top: 10px;
@@ -60,6 +83,7 @@ html, body {
   cursor: pointer;
 }
 
+/* Tražilica s planinskim vrhom */
 .search-bar {
   position: fixed;
   top: 10px;
@@ -87,12 +111,14 @@ html, body {
 }
 
 .search-bar img {
-  width: 20px;
-  height: 20px;
-  margin-left: 8px;
+  width: 28px;
+  height: 28px;
+  margin-left: 12px;
   cursor: pointer;
+  filter: invert(30%);
 }
 
+/* Hamburger meni */
 .menu-toggle {
   position: fixed;
   top: 10px;
@@ -109,6 +135,7 @@ html, body {
   border-radius: 2px;
 }
 
+/* Navigacija */
 .nav-menu {
   position: fixed;
   top: 0;
