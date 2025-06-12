@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -102,24 +102,24 @@
     }
 
     .section {
-      position: relative;
+      position: sticky;
+      top: 0;
       height: 100vh;
       background-size: cover;
       background-position: center center;
-      background-attachment: fixed;
       background-repeat: no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
       transform: scale(0.97);
       opacity: 0;
-      transition: transform 1s ease, opacity 0.8s ease;
       z-index: 1;
+      transition: transform 1s ease, opacity 0.8s ease;
     }
 
     .section.visible {
       opacity: 1;
-      transform: scale(1);
+      transform: scale(1.02);
       z-index: 2;
     }
 
@@ -148,7 +148,7 @@
 
   <header>
     <div class="lang-switch">
-      <img src="./en.png" id="langToggle" alt="Promijeni jezik" />
+      <img src="" id="langToggle" alt="Promijeni jezik" />
     </div>
 
     <div class="search-bar">
@@ -180,18 +180,18 @@
   <div class="section" style="background-image: url('./Background6.jpg')"><div class="content" data-hr="Kontaktirajte nas" data-en="Contact us">Kontaktirajte nas</div></div>
 
   <script>
-    // Sekcije animacija
+    // Efekt prikaza sekcija
     const sections = document.querySelectorAll('.section');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
         else entry.target.classList.remove('visible');
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.3 });
 
     sections.forEach(section => observer.observe(section));
 
-    // Meni
+    // Hamburger meni
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
     const overlay = document.getElementById('overlay');
@@ -205,21 +205,39 @@
       overlay.classList.remove('active');
     };
 
-    // Jezična logika
+    // Jezik i zastave
     const langToggle = document.getElementById('langToggle');
     let currentLang = 'hr';
 
-    langToggle.onclick = () => {
-      const newLang = currentLang === 'hr' ? 'en' : 'hr';
-      const newFlag = newLang === 'hr' ? './en.png' : './hr.png';
-      langToggle.src = newFlag;
+    async function loadFlag(flag) {
+      const localPath = `./${flag}`;
+      const fallback = flag === 'hr.svg'
+        ? 'https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg'
+        : 'https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg';
+
+      try {
+        const res = await fetch(localPath, { method: 'HEAD' });
+        return res.ok ? localPath : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    async function switchLanguage() {
+      currentLang = currentLang === 'hr' ? 'en' : 'hr';
+      const newFlag = currentLang === 'hr' ? 'en.svg' : 'hr.svg';
+      langToggle.src = await loadFlag(newFlag);
 
       document.querySelectorAll('[data-hr]').forEach(el => {
-        el.textContent = el.dataset[newLang];
+        el.textContent = el.dataset[currentLang];
       });
+    }
 
-      currentLang = newLang;
-    };
+    langToggle.addEventListener('click', switchLanguage);
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      langToggle.src = await loadFlag('en.svg');
+    });
   </script>
 </body>
 </html>
