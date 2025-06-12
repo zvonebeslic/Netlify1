@@ -2,140 +2,114 @@
 <html lang="hr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
-    /* Reset */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    body, html {
+    html, body {
       font-family: Arial, sans-serif;
-      height: 100%;
       scroll-behavior: smooth;
     }
 
-    /* Parallax pozadina s fallbackom */
-    .parallax {
-      background-image: url("images/background.jpg"), url("background.jpg");
-      height: 100vh;
-      background-attachment: fixed;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
+    header {
       position: fixed;
       top: 0;
-      left: 0;
       width: 100%;
-      z-index: -1;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      z-index: 1000;
     }
 
-    /* Navigacija */
-    .navbar {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 15px;
+    nav {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 2;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    .navbar h1 {
-      color: #fff;
-      margin-left: 10px;
-    }
-
-    .navbar nav a {
-      color: #fff;
+    nav a {
+      color: white;
       text-decoration: none;
-      margin: 0 10px;
+      margin: 10px 15px;
+      font-weight: bold;
+      transition: color 0.3s;
     }
 
-    .navbar nav a:hover {
-      text-decoration: underline;
+    nav a:hover {
+      color: #ffcc00;
     }
 
-    .lang {
-      font-size: 20px;
+    .parallax {
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 10px black;
     }
 
-    /* Sadržaj */
-    .content {
-      position: relative;
-      z-index: 1;
-      padding: 100px 20px;
+    @media (max-width: 768px) {
+      .parallax {
+        background-attachment: scroll !important;
+      }
     }
 
-    .content section {
-      background-color: rgba(255, 255, 255, 0.8); /* poluprozirna sekcija */
-      margin: 40px auto;
-      padding: 30px;
-      max-width: 800px;
+    .overlay {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2rem 3rem;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    }
-
-    .content h2 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-    }
-
-    .content p {
-      color: #333;
-      line-height: 1.6;
+      margin-top: 60px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="parallax"></div>
 
-  <header class="navbar">
-    <h1>Mountain Adventures</h1>
+  <!-- Navigacija -->
+  <header>
     <nav>
-      <a href="#staze">Staze</a>
-      <a href="#shop">Web shop</a>
-      <a href="#blog">Blog</a>
-      <a href="#onama">O nama</a>
-      <a href="#kontakt">Kontakt</a>
-      <a href="#" class="lang">🇬🇧</a>
+      <a href="#s1">Naslovna</a>
+      <a href="#s2">Planinarske-Staze</a>
+      <a href="#s3">Vrhovi</a>
+      <a href="#s4">Istraži-Više</a>
+      <a href="#s5">Web-Shop</a>
+      <a href="#s6">Blog</a>
+      <a href="#s7">Kontakt</a>
     </nav>
   </header>
 
-  <main class="content">
-    <section id="naslovna">
-      <h2>Dobrodošli!</h2>
-      <p>Istraži najbolje planinarske staze Balkana. Avantura te čeka.</p>
-    </section>
+  <!-- Sekcije sa podacima o slikama -->
+  <div id="s1" class="parallax" data-image="background.jpg"><div class="overlay">Dobrodošli u planine</div></div>
+  <div id="s2" class="parallax" data-image="background2.jpg"><div class="overlay">Istraži staze Balkana</div></div>
+  <div id="s3" class="parallax" data-image="background3.jpg"><div class="overlay">Pronađi svoj vrh</div></div>
+  <div id="s4" class="parallax" data-image="background4.jpg"><div class="overlay">Divlja priroda</div></div>
+  <div id="s5" class="parallax" data-image="background5.jpg"><div class="overlay">Zimski pogledi</div></div>
+  <div id="s6" class="parallax" data-image="background6.jpg"><div class="overlay">Alpske livade</div></div>
+  <div id="s7" class="parallax" data-image="background1.jpg"><div class="overlay">Kontaktiraj nas</div></div>
 
-    <section id="staze">
-      <h2>Planinarske staze</h2>
-      <p>Opis trailova, GPS tragovi, težine, slike i savjeti.</p>
-    </section>
+  <!-- Automatsko postavljanje pozadina iz images/ ili iz root -->
+  <script>
+    document.querySelectorAll('.parallax').forEach(section => {
+      const fileName = section.getAttribute('data-image');
+      const imgPath = 'images/' + fileName;
 
-    <section id="shop">
-      <h2>Web shop</h2>
-      <p>Nabavi pouzdanu opremu za tvoje planinarske pohode.</p>
-    </section>
+      const testImage = new Image();
+      testImage.onload = function () {
+        section.style.backgroundImage = `url('${imgPath}')`;
+      };
+      testImage.onerror = function () {
+        section.style.backgroundImage = `url('${fileName}')`;
+      };
+      testImage.src = imgPath;
+    });
+  </script>
 
-    <section id="blog">
-      <h2>Blog</h2>
-      <p>Pročitaj priče s planina, savjete i iskustva drugih planinara.</p>
-    </section>
-
-    <section id="onama">
-      <h2>O nama</h2>
-      <p>Mi smo entuzijasti planinarenja koji žele dijeliti ljepote Balkana.</p>
-    </section>
-
-    <section id="kontakt">
-      <h2>Kontakt</h2>
-      <p>Javi nam se za suradnju, prijedloge ili podršku.</p>
-    </section>
-  </main>
 </body>
 </html>
