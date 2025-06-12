@@ -1,342 +1,206 @@
-<!DOCTYPE html><html lang="hr">
+<!DOCTYPE html>
+<html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }body {
-  font-family: Arial, sans-serif;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-  background-color: #000;
-  scroll-snap-type: y mandatory;
-  overscroll-behavior-y: none;
-  scroll-padding-top: 60px;
-}
-
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 60px;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-  z-index: 1000;
-}
-
-.navbar-left img {
-  height: 18px;
-  cursor: pointer;
-}
-
-.navbar-center input {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.hamburger {
-  width: 25px;
-  height: 20px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.hamburger div {
-  height: 3px;
-  background: white;
-  border-radius: 2px;
-}
-
-.menu {
-  position: fixed;
-  top: 60px;
-  right: 0;
-  width: 200px;
-  background: rgba(0,0,0,0.9);
-  padding: 10px;
-  display: none;
-  flex-direction: column;
-  z-index: 999;
-}
-
-.menu a {
-  color: white;
-  text-decoration: none;
-  padding: 10px;
-  border-bottom: 1px solid #333;
-  font-size: 14px;
-}
-
-.menu a:hover {
-  background: #222;
-}
-
-.section {
-  min-height: 100vh;
-  height: 100vh;
-  position: relative;
-  background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #111;
-  scroll-margin-top: 60px;
-  z-index: 1;
-  scroll-snap-align: center;
-
-  transform: translateY(100px) scale(0.98);
-  opacity: 0;
-  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
-}
-
-.section.scaled {
-  transform: translateY(0px) scale(1.05);
-  opacity: 1;
-  z-index: 2;
-}
-
-.overlay {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1;
-  transition: background 0.8s ease;
-}
-
-.overlay.dimmed {
-  background: rgba(0, 0, 0, 0.65);
-}
-
-.content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 20px;
-
-
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 5px;
-  color: white;
-  font-size: 2em;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.5s ease-out, transform 0.6s ease-out;
-}
-
-.content.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
     }
 
-    @media (max-width: 768px) {
-      .section {
-        background-attachment: scroll !important;
-      }
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      overflow-x: hidden;
+    }
 
-      .menu {
-        width: 100%;
+    /* HEADER + MENU */
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: white;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .menu-toggle {
+      font-size: 2em;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 70%;
+      height: 100%;
+      background: #111;
+      padding: 60px 20px;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 998;
+    }
+
+    nav.open {
+      right: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2em;
+    }
+
+    .language-switch {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .language-switch img {
+      width: 32px;
+      height: 20px;
+      cursor: pointer;
+      border: 1px solid white;
+    }
+
+    .search-box {
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+    }
+
+    /* SECTIONS */
+    .section {
+      height: 100vh;
+      width: 100vw;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(1.05) translateY(30px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: scale(1.1) translateY(0);
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px 30px;
+      border-radius: 12px;
+      color: white;
+      font-size: 2em;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      nav {
+        width: 300px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- GORNJI NAVIGACIJSKI DIO -->
-  <div class="navbar">
-    <div class="navbar-left">
-      <img id="language-flag" alt="Jezik" onclick="switchLanguage()">
+  <!-- HEADER -->
+  <header>
+    <div class="logo">Mountain Adventures</div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  </header>
+
+  <!-- MENU -->
+  <nav id="sideMenu">
+    <div class="search-box">
+      <input type="text" placeholder="Traži..." />
     </div>
-    <div class="navbar-center">
-      <input type="text" id="search" placeholder="Pretraži..." oninput="searchContent(this.value)">
+    <a href="#">Naslovna</a>
+    <a href="#">Staze</a>
+    <a href="#">Web shop</a>
+    <a href="#">Blog</a>
+    <a href="#">O nama</a>
+    <a href="#">Kontakt</a>
+    <div class="language-switch">
+      <img src="hr.png" alt="HR" onclick="setLang('hr')" />
+      <img src="en.png" alt="EN" onclick="setLang('en')" />
     </div>
-    <div class="hamburger" onclick="toggleMenu()">
-      <div></div><div></div><div></div>
-    </div>
+  </nav>
+
+  <!-- SEKCIJE SA SLIKAMA -->
+  <div class="section" style="background-image: url('Background.jpg');">
+    <div class="overlay" data-hr="Dobrodošli u planine" data-en="Welcome to the mountains">Dobrodošli u planine</div>
+  </div>
+  <div class="section" style="background-image: url('Background1.jpg');">
+    <div class="overlay" data-hr="Staze Balkana" data-en="Balkan Trails">Staze Balkana</div>
+  </div>
+  <div class="section" style="background-image: url('Background2.jpg');">
+    <div class="overlay" data-hr="GPS Tragovi i Info" data-en="GPS Tracks & Info">GPS Tragovi i Info</div>
+  </div>
+  <div class="section" style="background-image: url('Background3.jpg');">
+    <div class="overlay" data-hr="Web Shop" data-en="Web Shop">Web Shop</div>
+  </div>
+  <div class="section" style="background-image: url('Background4.jpg');">
+    <div class="overlay" data-hr="Blog i Savjeti" data-en="Blog & Tips">Blog i Savjeti</div>
+  </div>
+  <div class="section" style="background-image: url('Background5.jpg');">
+    <div class="overlay" data-hr="O nama" data-en="About Us">O nama</div>
+  </div>
+  <div class="section" style="background-image: url('Background6.jpg');">
+    <div class="overlay" data-hr="Kontaktirajte nas" data-en="Contact Us">Kontaktirajte nas</div>
   </div>
 
-  <!-- HAMBURGER MENU -->
-  <div class="menu" id="menu">
-    <a href="#section0" data-key="nav-home">Naslovna</a>
-    <a href="#section1" data-key="nav-trails">Planinarske staze</a>
-    <a href="#section2" data-key="nav-shop">Web Shop</a>
-    <a href="#section3" data-key="nav-blog">Blog</a>
-    <a href="#section4" data-key="nav-about">O nama</a>
-    <a href="#section5" data-key="nav-gallery">Galerija</a>
-    <a href="#section6" data-key="nav-contact">Kontakt</a>
-  </div>
-  <!-- SEKCIJE -->
-  <div class="section" id="section0" data-img="Background.jpg">
-    <div class="overlay"></div>
-    <div class="content" data-key="sec-home">Naslovna</div>
-  </div>
-  <div class="section" id="section1" data-img="Background1.jpg">
-    <div class="overlay"></div>
-    <div class="content" data-key="sec-trails">Planinarske staze</div>
-  </div>
-  <div class="section" id="section2" data-img="Background2.jpg">
-    <div class="overlay"></div>
-    <div class="content" data-key="sec-shop">Web Shop</div>
-  </div>
-  <div class="section" id="section3" data-img="Background3.jpg">
-    <div class="overlay"></div>
-    <div class="content" data-key="sec-blog">Blog</div>
-  </div>
-  <div class="section" id="section4" data-img="Background4.jpg">
-    <div class="overlay"></div>
-    <div class="content" data-key="sec-about">O nama</div>
-  </div>
-  <div class="section" id="section5" data-img="Background5.jpg">
-    <div class="overlay"></div>
-    <div class="content" data-key="sec-gallery">Galerija</div>
-  </div>
-  <div class="section" id="section6" data-img="Background6.jpg">
-    <div class="overlay"></div>
-    <div class="content" data-key="sec-contact">Kontaktirajte nas</div>
-  </div>
+  <!-- SCRIPTS -->
   <script>
-    const translations = {
-      hr: {
-        'nav-home': 'Naslovna',
-        'nav-trails': 'Planinarske staze',
-        'nav-shop': 'Web Shop',
-        'nav-blog': 'Blog',
-        'nav-about': 'O nama',
-        'nav-gallery': 'Galerija',
-        'nav-contact': 'Kontakt',
-        'sec-home': 'Naslovna',
-        'sec-trails': 'Planinarske staze',
-        'sec-shop': 'Web Shop',
-        'sec-blog': 'Blog',
-        'sec-about': 'O nama',
-        'sec-gallery': 'Galerija',
-        'sec-contact': 'Kontaktirajte nas'
-      },
-      en: {
-        'nav-home': 'Home',
-        'nav-trails': 'Hiking Trails',
-        'nav-shop': 'Web Shop',
-        'nav-blog': 'Blog',
-        'nav-about': 'About Us',
-        'nav-gallery': 'Gallery',
-        'nav-contact': 'Contact',
-        'sec-home': 'Home',
-        'sec-trails': 'Hiking Trails',
-        'sec-shop': 'Web Shop',
-        'sec-blog': 'Blog',
-        'sec-about': 'About Us',
-        'sec-gallery': 'Gallery',
-        'sec-contact': 'Contact Us'
-      }
-    };
-
-    let currentLang = 'hr';
-
-    function switchLanguage() {
-      currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      updateTexts();
-      loadImage(
-        document.getElementById("language-flag"),
-        currentLang === 'hr' ? 'flag-uk.svg' : 'flag-hr.svg',
-        'img'
-      );
-    }
-
-    function updateTexts() {
-      document.querySelectorAll('[data-key]').forEach(el => {
-        const key = el.getAttribute('data-key');
-        el.textContent = translations[currentLang][key];
-      });
-    }
-
     function toggleMenu() {
-      const menu = document.getElementById('menu');
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+      document.getElementById('sideMenu').classList.toggle('open');
     }
 
-    function searchContent(value) {
-      const contents = document.querySelectorAll('.content');
-      contents.forEach((c, i) => {
-        if (c.innerText.toLowerCase().includes(value.toLowerCase())) {
-          location.href = `#section${i}`;
-        }
-      });
-    }
-
-    function loadImage(element, filename, type = 'img') {
-      const folderName = filename.replace(/\.(jpg|svg)$/, "");
-      const tryPaths = [
-        `images/${filename}`,
-        `${filename}`,
-        `${folderName}/${filename}`
-      ];
-
-      const tryNext = (index) => {
-        if (index >= tryPaths.length) return;
-        const url = tryPaths[index];
-        const img = new Image();
-        img.src = url;
-        img.onload = () => {
-          if (type === 'img') element.src = url;
-          else element.style.backgroundImage = `url('${url}')`;
-        };
-        img.onerror = () => tryNext(index + 1);
-      };
-
-      tryNext(0);
-    }
-
-    // Pokreni sve
-    document.querySelectorAll(".section").forEach(sec => {
-      const filename = sec.dataset.img;
-      loadImage(sec, filename, 'background');
-      sec.style.zIndex = 0;
-    });
-
-    loadImage(document.getElementById("language-flag"), "flag-uk.svg", "img");
-
-    const sections = document.querySelectorAll(".section");
-
-    const observer = new IntersectionObserver((entries) => {
+    const sections = document.querySelectorAll('.section');
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        const section = entry.target;
-        const content = section.querySelector(".content");
-        const overlay = section.querySelector(".overlay");
-
         if (entry.isIntersecting) {
-          section.classList.add("scaled");
-          content.classList.add("visible");
-          overlay.classList.remove("dimmed");
-
-          sections.forEach(s => s.style.zIndex = 0);
-          section.style.zIndex = 10;
+          entry.target.classList.add('visible');
         } else {
-          section.classList.remove("scaled");
-          content.classList.remove("visible");
-          overlay.classList.add("dimmed");
+          entry.target.classList.remove('visible');
         }
       });
-    }, {
-      root: null,
-      rootMargin: "0px 0px -40% 0px",
-      threshold: 0.4
-    });
+    }, { threshold: 0.2 });
 
     sections.forEach(section => observer.observe(section));
 
-    window.onload = () => {
-      updateTexts(); // odmah postavi tekstove na hrvatski
-    };
+    function setLang(lang) {
+      const overlays = document.querySelectorAll('.overlay');
+      overlays.forEach(el => {
+        const text = el.getAttribute(`data-${lang}`);
+        if (text) el.innerText = text;
+      });
+    }
   </script>
 
 </body>
