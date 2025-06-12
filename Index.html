@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- Zastavica -->
+  <!-- Zastavice -->
   <div class="language-switcher">
     <img id="language-icon" src="images/en.svg" alt="ENG">
   </div>
 
   <!-- Tražilica -->
   <div class="search-bar">
-    <input type="text" 
-           placeholder="Pretraži..." 
-           data-placeholder-hr="Pretraži..." 
+    <input type="text"
+           placeholder="Pretraži..."
+           data-placeholder-hr="Pretraži..."
            data-placeholder-en="Search...">
     <img src="images/search.svg" alt="🔍">
   </div>
 
-  <!-- Meni -->
+  <!-- Hamburger meni -->
   <div class="menu-toggle" id="menu-toggle">
     <div></div><div></div><div></div>
   </div>
 
+  <!-- Navigacija -->
   <nav class="nav-menu" id="nav-menu">
     <a href="#" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</a>
     <a href="#" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</a>
@@ -34,9 +35,9 @@
     <a href="#" data-lang-hr="Blog" data-lang-en="Blog">Blog</a>
     <a href="#" data-lang-hr="O nama" data-lang-en="About Us">O nama</a>
     <a href="#" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</a>
-    <input type="text" 
-           placeholder="Traži..." 
-           data-placeholder-hr="Traži..." 
+    <input type="text"
+           placeholder="Traži..."
+           data-placeholder-hr="Traži..."
            data-placeholder-en="Search...">
   </nav>
 
@@ -50,5 +51,34 @@
   <div class="section" style="background-image: url('images/Background6.jpg');" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</div>
 
   <script src="js/main.js"></script>
+
+  <script>
+    // Ako slika nije u images folderu, pokušaj učitati iz istog foldera kao i index.html
+    document.querySelectorAll('img').forEach(img => {
+      img.onerror = function () {
+        const filename = this.src.split('/').pop();
+        this.src = filename;
+      };
+    });
+
+    // Isto i za background-image kod sekcija
+    document.querySelectorAll('.section').forEach(section => {
+      const style = window.getComputedStyle(section);
+      const bg = style.backgroundImage;
+      if (bg.includes('images/')) {
+        const urlMatch = bg.match(/url["']?(.*?)["']?/);
+        if (urlMatch) {
+          const fullPath = urlMatch[1];
+          const fallback = fullPath.replace('images/', '');
+          const img = new Image();
+          img.src = fullPath;
+          img.onerror = () => {
+            section.style.backgroundImage = `url('${fallback}')`;
+          };
+        }
+      }
+    });
+  </script>
+
 </body>
 </html>
