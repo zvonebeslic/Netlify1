@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hr">
+<html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,51 +14,9 @@
       scroll-behavior: smooth;
     }
 
-    .section {
-      height: 100vh;
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: translateY(60px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-    .section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .section::after {
-      content: "";
-      position: absolute;
-      top: -10vh;
-      left: 0;
-      width: 100%;
-      height: 10vh;
-      background: rgba(0, 0, 0, 0.4);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .content {
-      position: relative;
-      z-index: 3;
-      color: white;
-      font-size: 2em;
-      text-align: center;
-      padding: 20px;
-    }
-
     header {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 60px;
       display: flex;
@@ -69,11 +27,6 @@
       padding: 0 20px;
     }
 
-    .lang-switch {
-      display: flex;
-      gap: 10px;
-    }
-
     .lang-switch img {
       width: 30px;
       height: 20px;
@@ -82,22 +35,17 @@
 
     .search-bar {
       position: relative;
-      flex-grow: 1;
-      max-width: 300px;
-      margin: 0 auto;
+      width: 180px;
     }
 
     .search-bar input {
       width: 100%;
-      padding: 10px 40px 10px 15px;
+      padding: 10px 35px 10px 15px;
       border: none;
-      border-radius: 25px;
       outline: none;
       background: white;
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Mountain_icon_white.png');
-      background-size: 100% 40%;
-      background-repeat: no-repeat;
-      background-position: top center;
+      border-radius: 25px 25px 0 0;
+      clip-path: polygon(0 20%, 10% 0, 20% 10%, 30% 0, 40% 10%, 50% 0, 60% 10%, 70% 0, 80% 10%, 90% 0, 100% 20%, 100% 100%, 0 100%);
     }
 
     .search-bar button {
@@ -107,10 +55,6 @@
       background: none;
       border: none;
       cursor: pointer;
-    }
-
-    .search-bar button::before {
-      content: "🔍";
       font-size: 18px;
     }
 
@@ -146,10 +90,8 @@
 
     .overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       background: transparent;
       z-index: 999;
       display: none;
@@ -158,18 +100,60 @@
     .overlay.active {
       display: block;
     }
+
+    .section {
+      position: relative;
+      height: 100vh;
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.97);
+      opacity: 0;
+      transition: transform 1s ease, opacity 0.8s ease;
+      z-index: 1;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 2;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      top: -5vh;
+      left: 0;
+      width: 100%;
+      height: 15vh;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 3;
+      color: white;
+      font-size: 2em;
+      text-align: center;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <div class="lang-switch">
-      <img src="hr.png" id="langToggle" alt="Promijeni jezik" />
+      <img src="./en.png" id="langToggle" alt="Promijeni jezik" />
     </div>
 
     <div class="search-bar">
-      <input type="text" placeholder="Pretraži..." />
-      <button></button>
+      <input type="text" placeholder="Pretraži..." id="searchInput" />
+      <button>🔍</button>
     </div>
 
     <div class="menu-icon" id="menuToggle">☰</div>
@@ -178,35 +162,36 @@
   <div class="overlay" id="overlay"></div>
 
   <nav id="navMenu">
-    <a href="#">Naslovna</a>
-    <a href="#">Planinarske staze</a>
-    <a href="#">Web shop</a>
-    <a href="#">Blog</a>
-    <a href="#">O nama</a>
-    <a href="#">Kontakt</a>
+    <a href="#" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="#" data-hr="Planinarske staze" data-en="Trails">Planinarske staze</a>
+    <a href="#" data-hr="Web shop" data-en="Shop">Web shop</a>
+    <a href="#" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="#" data-hr="O nama" data-en="About Us">O nama</a>
+    <a href="#" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </nav>
 
   <!-- Sekcije sa slikama -->
-  <div class="section" style="background-image: url('Background.jpg')"><div class="content">Dobrodošli</div></div>
-  <div class="section" style="background-image: url('Background1.jpg')"><div class="content">Planinarske staze</div></div>
-  <div class="section" style="background-image: url('Background2.jpg')"><div class="content">GPS tragovi</div></div>
-  <div class="section" style="background-image: url('Background3.jpg')"><div class="content">Web shop</div></div>
-  <div class="section" style="background-image: url('Background4.jpg')"><div class="content">Blog</div></div>
-  <div class="section" style="background-image: url('Background5.jpg')"><div class="content">O nama</div></div>
-  <div class="section" style="background-image: url('Background6.jpg')"><div class="content">Kontaktirajte nas</div></div>
+  <div class="section" style="background-image: url('./Background.jpg')"><div class="content" data-hr="Dobrodošli" data-en="Welcome">Dobrodošli</div></div>
+  <div class="section" style="background-image: url('./Background1.jpg')"><div class="content" data-hr="Planinarske staze" data-en="Trails">Planinarske staze</div></div>
+  <div class="section" style="background-image: url('./Background2.jpg')"><div class="content" data-hr="GPS tragovi" data-en="GPS Tracks">GPS tragovi</div></div>
+  <div class="section" style="background-image: url('./Background3.jpg')"><div class="content" data-hr="Web shop" data-en="Shop">Web shop</div></div>
+  <div class="section" style="background-image: url('./Background4.jpg')"><div class="content" data-hr="Blog" data-en="Blog">Blog</div></div>
+  <div class="section" style="background-image: url('./Background5.jpg')"><div class="content" data-hr="O nama" data-en="About Us">O nama</div></div>
+  <div class="section" style="background-image: url('./Background6.jpg')"><div class="content" data-hr="Kontaktirajte nas" data-en="Contact us">Kontaktirajte nas</div></div>
 
   <script>
-    // Skrol animacija sekcija
+    // Sekcije animacija
     const sections = document.querySelectorAll('.section');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
+        else entry.target.classList.remove('visible');
       });
-    }, { threshold: 0.3 });
+    }, { threshold: 0.4 });
 
     sections.forEach(section => observer.observe(section));
 
-    // Hamburger meni
+    // Meni
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
     const overlay = document.getElementById('overlay');
@@ -215,26 +200,26 @@
       navMenu.classList.toggle('active');
       overlay.classList.toggle('active');
     };
-
     overlay.onclick = () => {
       navMenu.classList.remove('active');
       overlay.classList.remove('active');
     };
 
-    // Jezična zamjena zastavica
+    // Jezična logika
     const langToggle = document.getElementById('langToggle');
     let currentLang = 'hr';
 
     langToggle.onclick = () => {
-      if (currentLang === 'hr') {
-        langToggle.src = 'en.png';
-        currentLang = 'en';
-      } else {
-        langToggle.src = 'hr.png';
-        currentLang = 'hr';
-      }
+      const newLang = currentLang === 'hr' ? 'en' : 'hr';
+      const newFlag = newLang === 'hr' ? './en.png' : './hr.png';
+      langToggle.src = newFlag;
+
+      document.querySelectorAll('[data-hr]').forEach(el => {
+        el.textContent = el.dataset[newLang];
+      });
+
+      currentLang = newLang;
     };
   </script>
-
 </body>
 </html>
