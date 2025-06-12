@@ -14,7 +14,6 @@
       background-color: #000;
     }
 
-    /* === NAVIGACIJA === */
     .navbar {
       position: fixed;
       top: 0;
@@ -144,10 +143,10 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
+  <!-- GORNJI NAVIGACIJSKI DIO -->
   <div class="navbar">
     <div class="navbar-left">
-      <img id="language-flag" alt="Switch language">
+      <img id="language-flag" alt="Jezik" onclick="switchLanguage()">
     </div>
     <div class="navbar-center">
       <input type="text" id="search" placeholder="Pretraži..." oninput="searchContent(this.value)">
@@ -157,7 +156,7 @@
     </div>
   </div>
 
-  <!-- MENU -->
+  <!-- HAMBURGER MENU -->
   <div class="menu" id="menu">
     <a href="#section0" data-key="nav-home">Naslovna</a>
     <a href="#section1" data-key="nav-trails">Planinarske staze</a>
@@ -167,16 +166,35 @@
     <a href="#section5" data-key="nav-gallery">Galerija</a>
     <a href="#section6" data-key="nav-contact">Kontakt</a>
   </div>
-
   <!-- SEKCIJE -->
-  <div class="section" id="section0" data-img="Background.jpg"><div class="overlay"></div><div class="content" data-key="sec-home">Naslovna</div></div>
-  <div class="section" id="section1" data-img="Background1.jpg"><div class="overlay"></div><div class="content" data-key="sec-trails">Planinarske staze</div></div>
-  <div class="section" id="section2" data-img="Background2.jpg"><div class="overlay"></div><div class="content" data-key="sec-shop">Web Shop</div></div>
-  <div class="section" id="section3" data-img="Background3.jpg"><div class="overlay"></div><div class="content" data-key="sec-blog">Blog</div></div>
-  <div class="section" id="section4" data-img="Background4.jpg"><div class="overlay"></div><div class="content" data-key="sec-about">O nama</div></div>
-  <div class="section" id="section5" data-img="Background5.jpg"><div class="overlay"></div><div class="content" data-key="sec-gallery">Galerija</div></div>
-  <div class="section" id="section6" data-img="Background6.jpg"><div class="overlay"></div><div class="content" data-key="sec-contact">Kontaktirajte nas</div></div>
-
+  <div class="section" id="section0" data-img="Background.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-home">Naslovna</div>
+  </div>
+  <div class="section" id="section1" data-img="Background1.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-trails">Planinarske staze</div>
+  </div>
+  <div class="section" id="section2" data-img="Background2.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-shop">Web Shop</div>
+  </div>
+  <div class="section" id="section3" data-img="Background3.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-blog">Blog</div>
+  </div>
+  <div class="section" id="section4" data-img="Background4.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-about">O nama</div>
+  </div>
+  <div class="section" id="section5" data-img="Background5.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-gallery">Galerija</div>
+  </div>
+  <div class="section" id="section6" data-img="Background6.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-contact">Kontaktirajte nas</div>
+  </div>
   <script>
     const translations = {
       hr: {
@@ -218,7 +236,11 @@
     function switchLanguage() {
       currentLang = currentLang === 'hr' ? 'en' : 'hr';
       updateTexts();
-      loadImage(document.getElementById("language-flag"), currentLang === 'hr' ? 'flag-uk.svg' : 'flag-hr.svg');
+      loadImage(
+        document.getElementById("language-flag"),
+        currentLang === 'hr' ? 'flag-uk.svg' : 'flag-hr.svg',
+        'img'
+      );
     }
 
     function updateTexts() {
@@ -244,3 +266,69 @@
 
     function loadImage(element, filename, type = 'img') {
       const folderName = filename.replace(/\.(jpg|svg)$/, "");
+      const tryPaths = [
+        `images/${filename}`,
+        `${filename}`,
+        `${folderName}/${filename}`
+      ];
+
+      const tryNext = (index) => {
+        if (index >= tryPaths.length) return;
+        const url = tryPaths[index];
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          if (type === 'img') element.src = url;
+          else element.style.backgroundImage = `url('${url}')`;
+        };
+        img.onerror = () => tryNext(index + 1);
+      };
+
+      tryNext(0);
+    }
+
+    // Pokreni sve
+    document.querySelectorAll(".section").forEach(sec => {
+      const filename = sec.dataset.img;
+      loadImage(sec, filename, 'background');
+      sec.style.zIndex = 0;
+    });
+
+    loadImage(document.getElementById("language-flag"), "flag-uk.svg", "img");
+
+    const sections = document.querySelectorAll(".section");
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const section = entry.target;
+        const content = section.querySelector(".content");
+        const overlay = section.querySelector(".overlay");
+
+        if (entry.isIntersecting) {
+          section.classList.add("scaled");
+          content.classList.add("visible");
+          overlay.classList.remove("dimmed");
+
+          sections.forEach(s => s.style.zIndex = 0);
+          section.style.zIndex = 10;
+        } else {
+          section.classList.remove("scaled");
+          content.classList.remove("visible");
+          overlay.classList.add("dimmed");
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: "0px 0px -40% 0px",
+      threshold: 0.4
+    });
+
+    sections.forEach(section => observer.observe(section));
+
+    window.onload = () => {
+      updateTexts(); // odmah postavi tekstove na hrvatski
+    };
+  </script>
+
+</body>
+</html>
