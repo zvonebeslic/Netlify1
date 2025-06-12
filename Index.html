@@ -19,25 +19,16 @@
       position: relative;
       background-size: cover;
       background-position: center center;
-      background-attachment: fixed; /* paralaks */
+      background-attachment: fixed;
       background-repeat: no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 2em;
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      transition: transform 1.5s ease, opacity 0.6s ease-out;
     }
 
-    .section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .fade-out {
-      opacity: 0.05 !important;
-      transform: translateY(-40px);
-      transition: opacity 0.5s ease-in, transform 0.5s ease-in;
+    .scaled {
+      transform: scale(1.05);
     }
 
     .overlay {
@@ -45,87 +36,7 @@
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.4);
       z-index: 1;
+      transition: background 0.8s ease;
     }
 
-    .content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.4);
-      border-radius: 10px;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Sekcije sa slikama -->
-  <div class="section" data-img="Background.jpg"><div class="overlay"></div><div class="content">Naslovna</div></div>
-  <div class="section" data-img="Background1.jpg"><div class="overlay"></div><div class="content">Planinarske staze</div></div>
-  <div class="section" data-img="Background2.jpg"><div class="overlay"></div><div class="content">Web Shop</div></div>
-  <div class="section" data-img="Background3.jpg"><div class="overlay"></div><div class="content">Blog</div></div>
-  <div class="section" data-img="Background4.jpg"><div class="overlay"></div><div class="content">O nama</div></div>
-  <div class="section" data-img="Background5.jpg"><div class="overlay"></div><div class="content">Galerija</div></div>
-  <div class="section" data-img="Background6.jpg"><div class="overlay"></div><div class="content">Kontaktirajte nas</div></div>
-
-  <script>
-    // 🔄 Dinamičko pronalaženje slike na više mogućih lokacija:
-    // 1. images/
-    // 2. root
-    // 3. vlastiti folder npr. Background1/Background1.jpg
-
-    document.querySelectorAll(".section").forEach(sec => {
-      const filename = sec.dataset.img;
-      const folderName = filename.replace(".jpg", "");
-      const tryPaths = [
-        `images/${filename}`,
-        `${filename}`,
-        `${folderName}/${filename}`
-      ];
-
-      const img = new Image();
-      const tryNext = (index) => {
-        if (index >= tryPaths.length) {
-          console.warn(`⚠️ Slika '${filename}' nije pronađena ni na jednoj lokaciji.`);
-          return;
-        }
-
-        img.src = tryPaths[index];
-        img.onload = () => {
-          sec.style.backgroundImage = `url('${tryPaths[index]}')`;
-        };
-        img.onerror = () => {
-          tryNext(index + 1);
-        };
-      };
-
-      tryNext(0);
-    });
-
-    // ✨ Efekti skrolanja
-    const sections = document.querySelectorAll(".section");
-    const options = {
-      root: null,
-      rootMargin: "0px 0px -35% 0px", // Raniji ulazak u kadar
-      threshold: 0.01
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          entry.target.classList.remove('fade-out');
-        } else {
-          entry.target.classList.remove('visible');
-          entry.target.classList.add('fade-out');
-        }
-      });
-    }, options);
-
-    sections.forEach(section => {
-      observer.observe(section);
-    });
-  </script>
-
-</body>
-</html>
+    .overlay.dim
