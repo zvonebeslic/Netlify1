@@ -38,32 +38,38 @@
       object-fit: cover;
       z-index: -1;
       transition: filter 1s ease, transform 1s ease;
+      opacity: 0.9;
     }
 
     .section-content {
       z-index: 2;
       padding: 2rem;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.55);
       border-radius: 1rem;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
       transition: opacity 1s ease, transform 1s ease;
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(60px);
     }
 
     .section.fade-out {
       filter: blur(8px);
-      opacity: 0.3;
-      transform: scale(0.97);
+      opacity: 0.25;
+      transform: scale(0.96);
     }
 
     .section.fade-in .section-content {
       opacity: 1;
       transform: translateY(0);
-      animation: fadeIn 2s ease forwards;
+      animation: fadeIn 1.4s ease forwards;
     }
 
     @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(60px);
+      }
       to {
         opacity: 1;
         transform: translateY(0);
