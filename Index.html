@@ -1,151 +1,16 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mountain Adventures</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html, body {
-      scroll-behavior: smooth;
-      background-color: #000;
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
-      height: 100%;
-      scroll-snap-type: y mandatory;
-    }
-
-    .section {
-      height: 100vh;
-      position: relative;
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 2em;
-      transition: transform 1.2s ease, opacity 1.2s ease;
-      will-change: transform, opacity;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      z-index: 1;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .section.active {
-      transform: translateY(0) scale(1.05);
-      opacity: 1;
-      z-index: 2;
-    }
-
-    .section.inactive {
-      transform: translateY(-20%) scale(1);
-      opacity: 0.1;
-      z-index: 0;
-    }
-
-    .language-switcher {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-    }
-
-    .language-switcher img {
-      width: 30px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    .search-bar {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      background: white;
-      padding: 6px 12px;
-      border-radius: 30px 30px 4px 4px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-      clip-path: polygon(0% 100%, 0% 40%, 10% 10%, 25% 20%, 40% 0%, 60% 20%, 75% 10%, 90% 30%, 100% 40%, 100% 100%);
-    }
-
-    .search-bar input {
-      border: none;
-      outline: none;
-      background: transparent;
-      font-size: 16px;
-      flex: 1;
-    }
-
-    .search-bar img {
-      width: 20px;
-      height: 20px;
-      margin-left: 8px;
-      cursor: pointer;
-    }
-
-    .menu-toggle {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1000;
-      cursor: pointer;
-    }
-
-    .menu-toggle div {
-      width: 30px;
-      height: 4px;
-      background-color: white;
-      margin: 6px 0;
-      border-radius: 2px;
-    }
-
-    .nav-menu {
-      position: fixed;
-      top: 0;
-      right: 0;
-      background: rgba(0,0,0,0.95);
-      height: 100%;
-      width: 250px;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      padding: 60px 20px;
-      z-index: 999;
-    }
-
-    .nav-menu.open {
-      transform: translateX(0);
-    }
-
-    .nav-menu a {
-      color: white;
-      text-decoration: none;
-      margin: 15px 0;
-      font-size: 1.2em;
-    }
-
-    .nav-menu input {
-      margin-top: 20px;
-      padding: 5px;
-      border-radius: 5px;
-      border: none;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Zastavice -->
+  <!-- Zastavica -->
   <div class="language-switcher">
-    <img id="language-icon" src="en.svg" alt="ENG">
+    <img id="language-icon" src="images/en.svg" alt="ENG">
   </div>
 
   <!-- Tražilica -->
@@ -154,15 +19,14 @@
            placeholder="Pretraži..." 
            data-placeholder-hr="Pretraži..." 
            data-placeholder-en="Search...">
-    <img src="search.svg" alt="🔍">
+    <img src="images/search.svg" alt="🔍">
   </div>
 
-  <!-- Hamburger meni -->
+  <!-- Meni -->
   <div class="menu-toggle" id="menu-toggle">
     <div></div><div></div><div></div>
   </div>
 
-  <!-- Navigacija -->
   <nav class="nav-menu" id="nav-menu">
     <a href="#" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</a>
     <a href="#" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</a>
@@ -177,72 +41,14 @@
   </nav>
 
   <!-- Sekcije sa slikama -->
-  <div class="section" style="background-image: url('Background.jpg');" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</div>
-  <div class="section" style="background-image: url('Background1.jpg');" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</div>
-  <div class="section" style="background-image: url('Background2.jpg');" data-lang-hr="Web shop" data-lang-en="Web Shop">Web shop</div>
-  <div class="section" style="background-image: url('Background3.jpg');" data-lang-hr="Blog" data-lang-en="Blog">Blog</div>
-  <div class="section" style="background-image: url('Background4.jpg');" data-lang-hr="O nama" data-lang-en="About Us">O nama</div>
-  <div class="section" style="background-image: url('Background5.jpg');" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</div>
-  <div class="section" style="background-image: url('Background6.jpg');" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</div>
+  <div class="section" style="background-image: url('images/Background.jpg');" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</div>
+  <div class="section" style="background-image: url('images/Background1.jpg');" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</div>
+  <div class="section" style="background-image: url('images/Background2.jpg');" data-lang-hr="Web shop" data-lang-en="Web Shop">Web shop</div>
+  <div class="section" style="background-image: url('images/Background3.jpg');" data-lang-hr="Blog" data-lang-en="Blog">Blog</div>
+  <div class="section" style="background-image: url('images/Background4.jpg');" data-lang-hr="O nama" data-lang-en="About Us">O nama</div>
+  <div class="section" style="background-image: url('images/Background5.jpg');" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</div>
+  <div class="section" style="background-image: url('images/Background6.jpg');" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</div>
 
-  <script>
-    const sections = document.querySelectorAll('.section');
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    const langIcon = document.getElementById('language-icon');
-    const translatables = document.querySelectorAll('[data-lang-hr]');
-    const placeholderInputs = document.querySelectorAll('[data-placeholder-hr]');
-
-    function handleScroll() {
-      let windowMid = window.innerHeight / 2;
-      sections.forEach(section => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top < windowMid && rect.bottom > 0) {
-          section.classList.add('active');
-          section.classList.remove('inactive');
-        } else {
-          section.classList.add('inactive');
-          section.classList.remove('active');
-        }
-      });
-    }
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('load', handleScroll);
-
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('open');
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-        navMenu.classList.remove('open');
-      }
-    });
-
-    let currentLang = 'hr';
-
-    langIcon.addEventListener('click', () => {
-      currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      langIcon.src = currentLang === 'hr' ? 'en.svg' : 'hr.svg';
-
-      translatables.forEach(el => {
-        el.textContent = el.getAttribute(`data-lang-${currentLang}`);
-      });
-
-      placeholderInputs.forEach(input => {
-        input.placeholder = input.getAttribute(`data-placeholder-${currentLang}`);
-      });
-    });
-
-    // Fallback za slike i svg ako nisu u /images/
-    document.querySelectorAll('img').forEach(img => {
-      img.onerror = function () {
-        const filename = this.src.split('/').pop();
-        this.src = filename;
-      };
-    });
-  </script>
-
+  <script src="js/main.js"></script>
 </body>
 </html>
