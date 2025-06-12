@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mountain Adventures</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
 
+  <!-- Zastavice za jezik -->
+  <div class="language-switcher">
+    <img id="language-icon" src="images/flag-uk.svg" alt="UK" />
+  </div>
+
+  <!-- Tražilica s ikonom -->
+  <div class="search-bar">
+    <input type="text"
+           placeholder="Pretraži..."
+           data-placeholder-hr="Pretraži..."
+           data-placeholder-en="Search..." />
+    <img src="images/search.svg" alt="Traži">
+  </div>
+
+  <!-- Hamburger meni -->
+  <div class="menu-toggle" id="menu-toggle">
+    <div></div><div></div><div></div>
+  </div>
+
+  <!-- Navigacijski meni -->
+  <nav class="nav-menu" id="nav-menu">
+    <a href="#" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</a>
+    <a href="#" data-lang-hr="Staze" data-lang-en="Trails">Staze</a>
+    <a href="#" data-lang-hr="Web shop" data-lang-en="Shop">Web shop</a>
+    <a href="#" data-lang-hr="Blog" data-lang-en="Blog">Blog</a>
+    <a href="#" data-lang-hr="O nama" data-lang-en="About">O nama</a>
+    <a href="#" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</a>
+  </nav>
+
+  <!-- Sekcije s pozadinskim slikama -->
+  <div class="section" style="background-image: url('images/Background.jpg');">
+    <a href="#">Naslovna</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background1.jpg');">
+    <a href="#">Planinarske staze</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background2.jpg');">
+    <a href="#">Web shop</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background3.jpg');">
+    <a href="#">Blog</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background4.jpg');">
+    <a href="#">O nama</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background5.jpg');">
+    <a href="#">Kontakt</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background6.jpg');">
+    <a href="#">Vidimo se na stazi!</a>
+  </div>
+
+  <!-- Podnožje s kontakt ikonama -->
+  <footer>
+    <a href="mailto:info@mountainadventures.com" target="_blank">
+      <img src="images/email.svg" alt="Email" />
+    </a>
+    <a href="https://www.instagram.com/mountainadventures" target="_blank">
+      <img src="images/instagram.svg" alt="Instagram" />
+    </a>
+  </footer>
+
+  <!-- JavaScript za funkcije -->
+  <script>
+    const sections = document.querySelectorAll('.section');
+    const langIcon = document.getElementById('language-icon');
+    const translatables = document.querySelectorAll('[data-lang-hr]');
+    const inputs = document.querySelectorAll('[data-placeholder-hr]');
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    function handleScroll() {
+      let winMiddle = window.innerHeight / 2;
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < winMiddle && rect.bottom > 0) {
+          section.classList.add('active');
+          section.classList.remove('inactive');
+        } else {
+          section.classList.remove('active');
+          section.classList.add('inactive');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('load', handleScroll);
+
+    langIcon.addEventListener('click', () => {
+      const lang = langIcon.src.includes('uk') ? 'hr' : 'en';
+      langIcon.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+
+      translatables.forEach(el => {
+        el.textContent = el.getAttribute(`data-lang-${lang}`);
+      });
+
+      inputs.forEach(el => {
+        el.placeholder = el.getAttribute(`data-placeholder-${lang}`);
+      });
+    });
+
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+        navMenu.classList.remove('open');
+      }
+    });
+  </script>
+
+</body>
+</html>
