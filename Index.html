@@ -10,7 +10,7 @@
 
   <!-- Zastavice -->
   <div class="language-switcher">
-    <img id="language-icon" src="images/en.svg" alt="ENG">
+    <img id="language-icon" src="images/flag-uk.svg" alt="UK">
   </div>
 
   <!-- Tražilica -->
@@ -50,7 +50,7 @@
   <div class="section" style="background-image: url('images/Background5.jpg');" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</div>
   <div class="section" style="background-image: url('images/Background6.jpg');" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</div>
 
-  <!-- JS -->
+  <!-- JavaScript -->
   <script>
     const sections = document.querySelectorAll('.section');
     const menuToggle = document.getElementById('menu-toggle');
@@ -90,7 +90,7 @@
 
     langIcon.addEventListener('click', () => {
       currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      langIcon.src = `${currentLang === 'hr' ? 'images/en.svg' : 'images/hr.svg'}`;
+      langIcon.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
 
       translatables.forEach(el => {
         el.textContent = el.getAttribute(`data-lang-${currentLang}`);
@@ -109,7 +109,7 @@
       };
     });
 
-    // Fallback za background-image u sekcijama
+    // Fallback za background slike
     sections.forEach(section => {
       const bg = section.style.backgroundImage;
       if (bg.includes("images/")) {
@@ -122,5 +122,6 @@
       }
     });
   </script>
+
 </body>
 </html>
