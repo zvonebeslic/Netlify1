@@ -50,10 +50,58 @@
   <div class="section" style="background-image: url('images/Background5.jpg');" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</div>
   <div class="section" style="background-image: url('images/Background6.jpg');" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</div>
 
-  <script src="js/main.js"></script>
-
+  <!-- JS -->
   <script>
-    // Ako slika nije u images folderu, pokušaj učitati iz istog foldera kao i index.html
+    const sections = document.querySelectorAll('.section');
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    const langIcon = document.getElementById('language-icon');
+    const translatables = document.querySelectorAll('[data-lang-hr]');
+    const placeholderInputs = document.querySelectorAll('[data-placeholder-hr]');
+
+    function handleScroll() {
+      let windowMid = window.innerHeight / 2;
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < windowMid && rect.bottom > 0) {
+          section.classList.add('active');
+          section.classList.remove('inactive');
+        } else {
+          section.classList.add('inactive');
+          section.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('load', handleScroll);
+
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+        navMenu.classList.remove('open');
+      }
+    });
+
+    let currentLang = 'hr';
+
+    langIcon.addEventListener('click', () => {
+      currentLang = currentLang === 'hr' ? 'en' : 'hr';
+      langIcon.src = `${currentLang === 'hr' ? 'images/en.svg' : 'images/hr.svg'}`;
+
+      translatables.forEach(el => {
+        el.textContent = el.getAttribute(`data-lang-${currentLang}`);
+      });
+
+      placeholderInputs.forEach(input => {
+        input.placeholder = input.getAttribute(`data-placeholder-${currentLang}`);
+      });
+    });
+
+    // Fallback ako slike nisu u images/
     document.querySelectorAll('img').forEach(img => {
       img.onerror = function () {
         const filename = this.src.split('/').pop();
@@ -61,24 +109,18 @@
       };
     });
 
-    // Isto i za background-image kod sekcija
-    document.querySelectorAll('.section').forEach(section => {
-      const style = window.getComputedStyle(section);
-      const bg = style.backgroundImage;
-      if (bg.includes('images/')) {
-        const urlMatch = bg.match(/url["']?(.*?)["']?/);
-        if (urlMatch) {
-          const fullPath = urlMatch[1];
-          const fallback = fullPath.replace('images/', '');
-          const img = new Image();
-          img.src = fullPath;
-          img.onerror = () => {
-            section.style.backgroundImage = `url('${fallback}')`;
-          };
-        }
+    // Fallback za background-image u sekcijama
+    sections.forEach(section => {
+      const bg = section.style.backgroundImage;
+      if (bg.includes("images/")) {
+        const filename = bg.split("images/")[1].replace(/[")']/g, "");
+        const testImage = new Image();
+        testImage.src = "images/" + filename;
+        testImage.onerror = () => {
+          section.style.backgroundImage = `url('${filename}')`;
+        };
       }
     });
   </script>
-
 </body>
 </html>
