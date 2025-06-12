@@ -7,14 +7,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Jezične zastavice -->
+
+  <!-- Zastavice -->
   <div class="language-switcher">
-    <img src="images/flag-en.svg" alt="EN" id="flag" onclick="switchLanguage()" />
+    <img src="images/flag-en.svg" alt="EN" id="flag-toggle" />
   </div>
 
-  <!-- Tražilica s vrhovima planine -->
+  <!-- Tražilica -->
   <div class="search-wrapper">
-    <div class="search-peak-shape">
+    <div class="search-mountain">
       <div class="search-bar">
         <input type="text" placeholder="Pretraži..." />
         <button><span>&#128269;</span></button>
@@ -22,47 +23,36 @@
     </div>
   </div>
 
-  <!-- Parallax sekcije -->
-  <div class="section" style="background-image: url('images/Background.jpg');">
-    <div class="content-box">Dobrodošli u planine!</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background1.jpg');">
-    <div class="content-box">Istražite staze Balkana</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background2.jpg');">
-    <div class="content-box">Web shop za avanturiste</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background3.jpg');">
-    <div class="content-box">Blog i savjeti</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background4.jpg');">
-    <div class="content-box">O nama</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background5.jpg');">
-    <div class="content-box">Kontaktirajte nas</div>
-  </div>
-  <div class="section" style="background-image: url('images/Background6.jpg');">
-    <div class="content-box">Vidimo se na stazi!</div>
-  </div>
+  <!-- Sve sekcije u jednom kontejneru -->
+  <main id="scroll-container">
+    <section class="parallax" style="background-image: url('images/Background.jpg');">
+      <div class="content-box">Dobrodošli u planine!</div>
+    </section>
+    <section class="parallax" style="background-image: url('images/Background1.jpg');">
+      <div class="content-box">Istražite staze Balkana</div>
+    </section>
+    <section class="parallax" style="background-image: url('images/Background2.jpg');">
+      <div class="content-box">Web shop za avanturiste</div>
+    </section>
+    <section class="parallax" style="background-image: url('images/Background3.jpg');">
+      <div class="content-box">Blog i savjeti</div>
+    </section>
+    <section class="parallax" style="background-image: url('images/Background4.jpg');">
+      <div class="content-box">O nama</div>
+    </section>
+    <section class="parallax" style="background-image: url('images/Background5.jpg');">
+      <div class="content-box">Kontakt</div>
+    </section>
+    <section class="parallax" style="background-image: url('images/Background6.jpg');">
+      <div class="content-box">Vidimo se na stazi!</div>
+    </section>
+  </main>
 
   <!-- Podnožje -->
   <footer>
     <p>© 2025 Mountain Adventures</p>
   </footer>
 
-  <!-- Jezični JS -->
-  <script>
-    let currentLang = "hr";
-    function switchLanguage() {
-      const flag = document.getElementById("flag");
-      if (currentLang === "hr") {
-        flag.src = "images/flag-hr.svg";
-        currentLang = "en";
-      } else {
-        flag.src = "images/flag-en.svg";
-        currentLang = "hr";
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
