@@ -2,7 +2,7 @@
 <html lang="hr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mountain Adventures</title>
   <style>
     * {
@@ -11,103 +11,136 @@
       box-sizing: border-box;
     }
 
-    html, body {
-      font-family: Arial, sans-serif;
-      scroll-behavior: smooth;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px 20px;
-      z-index: 1000;
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    nav a {
+    body {
+      font-family: sans-serif;
+      background-color: #000;
       color: white;
-      text-decoration: none;
-      margin: 10px 15px;
-      font-weight: bold;
-      transition: color 0.3s;
+      overflow-x: hidden;
     }
 
-    nav a:hover {
-      color: #ffcc00;
-    }
-
-    .parallax {
-      background-size: cover;
-      background-position: center;
-      min-height: 100vh;
+    .section {
+      position: relative;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 2.5rem;
-      text-shadow: 2px 2px 10px black;
-    }
-
-    @media (max-width: 768px) {
-      .parallax {
-        background-attachment: scroll !important;
-      }
-    }
-
-    .overlay {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 2rem 3rem;
-      border-radius: 15px;
-      margin-top: 60px;
       text-align: center;
+      font-size: 2rem;
+      transition: filter 1s ease, opacity 1s ease, transform 1s ease;
+    }
+
+    .section img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      transition: filter 1s ease, transform 1s ease;
+    }
+
+    .section-content {
+      z-index: 2;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 1rem;
+      backdrop-filter: blur(2px);
+      transition: opacity 1s ease, transform 1s ease;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .section.fade-out {
+      filter: blur(8px);
+      opacity: 0.3;
+      transform: scale(0.97);
+    }
+
+    .section.fade-in .section-content {
+      opacity: 1;
+      transform: translateY(0);
+      animation: fadeIn 2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigacija -->
-  <header>
-    <nav>
-      <a href="#s1">Naslovna</a>
-      <a href="#s2">Planinarske-Staze</a>
-      <a href="#s3">Vrhovi</a>
-      <a href="#s4">Istraži-Više</a>
-      <a href="#s5">Web-Shop</a>
-      <a href="#s6">Blog</a>
-      <a href="#s7">Kontakt</a>
-    </nav>
-  </header>
+  <div class="section">
+    <img src="images/Background.jpg" alt="Background 0">
+    <div class="section-content">
+      <h1>Dobrodošli u planine</h1>
+    </div>
+  </div>
 
-  <!-- Sekcije sa podacima o slikama -->
-  <div id="s1" class="parallax" data-image="background.jpg"><div class="overlay">Dobrodošli u planine</div></div>
-  <div id="s2" class="parallax" data-image="background2.jpg"><div class="overlay">Istraži staze Balkana</div></div>
-  <div id="s3" class="parallax" data-image="background3.jpg"><div class="overlay">Pronađi svoj vrh</div></div>
-  <div id="s4" class="parallax" data-image="background4.jpg"><div class="overlay">Divlja priroda</div></div>
-  <div id="s5" class="parallax" data-image="background5.jpg"><div class="overlay">Zimski pogledi</div></div>
-  <div id="s6" class="parallax" data-image="background6.jpg"><div class="overlay">Alpske livade</div></div>
-  <div id="s7" class="parallax" data-image="background1.jpg"><div class="overlay">Kontaktiraj nas</div></div>
+  <div class="section">
+    <img src="images/Background1.jpg" alt="Background 1">
+    <div class="section-content">
+      <h1>Istraži staze Balkana</h1>
+    </div>
+  </div>
 
-  <!-- Automatsko postavljanje pozadina iz images/ ili iz root -->
+  <div class="section">
+    <img src="images/Background2.jpg" alt="Background 2">
+    <div class="section-content">
+      <h1>Web shop za planinare</h1>
+    </div>
+  </div>
+
+  <div class="section">
+    <img src="images/Background3.jpg" alt="Background 3">
+    <div class="section-content">
+      <h1>Inspirativni blogovi</h1>
+    </div>
+  </div>
+
+  <div class="section">
+    <img src="images/Background4.jpg" alt="Background 4">
+    <div class="section-content">
+      <h1>Naša priča</h1>
+    </div>
+  </div>
+
+  <div class="section">
+    <img src="images/Background5.jpg" alt="Background 5">
+    <div class="section-content">
+      <h1>Kontaktiraj nas</h1>
+    </div>
+  </div>
+
+  <div class="section">
+    <img src="images/Background6.jpg" alt="Background 6">
+    <div class="section-content">
+      <h1>Vidimo se na stazi!</h1>
+    </div>
+  </div>
+
   <script>
-    document.querySelectorAll('.parallax').forEach(section => {
-      const fileName = section.getAttribute('data-image');
-      const imgPath = 'images/' + fileName;
+    const sections = document.querySelectorAll('.section');
 
-      const testImage = new Image();
-      testImage.onload = function () {
-        section.style.backgroundImage = `url('${imgPath}')`;
-      };
-      testImage.onerror = function () {
-        section.style.backgroundImage = `url('${fileName}')`;
-      };
-      testImage.src = imgPath;
+    window.addEventListener('scroll', () => {
+      const triggerBottom = window.innerHeight * 0.75;
+
+      sections.forEach((section, i) => {
+        const rect = section.getBoundingClientRect();
+
+        if (rect.top < triggerBottom) {
+          section.classList.add('fade-in');
+        }
+
+        if (rect.top < 0 && i < sections.length - 1) {
+          section.classList.add('fade-out');
+        } else {
+          section.classList.remove('fade-out');
+        }
+      });
     });
   </script>
 
