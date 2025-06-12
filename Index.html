@@ -5,77 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      background-color: #000;
+      scroll-behavior: smooth;
     }
 
-    html, body {
-      scroll-behavior: smooth;
-      background: #000;
-      overflow-x: hidden;
+    .section {
+      height: 100vh;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section::after {
+      content: "";
+      position: absolute;
+      top: -10vh;
+      left: 0;
+      width: 100%;
+      height: 10vh;
+      background: rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .content {
+      position: relative;
+      z-index: 3;
+      color: white;
+      font-size: 2em;
+      text-align: center;
+      padding: 20px;
     }
 
     header {
       position: fixed;
-      width: 100%;
       top: 0;
       left: 0;
-      padding: 10px 20px;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 1000;
+      width: 100%;
+      height: 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      padding: 0 20px;
     }
 
-    .flags {
+    .lang-switch {
       display: flex;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .flags img {
-      width: 28px;
+    .lang-switch img {
+      width: 30px;
       height: 20px;
       cursor: pointer;
-      border: 1px solid white;
     }
 
-    .search-center {
+    .search-bar {
+      position: relative;
       flex-grow: 1;
-      text-align: center;
+      max-width: 300px;
+      margin: 0 auto;
     }
 
-    .search-center input {
-      width: 50%;
-      padding: 6px 10px;
-      font-size: 1em;
+    .search-bar input {
+      width: 100%;
+      padding: 10px 40px 10px 15px;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      background: white;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Mountain_icon_white.png');
+      background-size: 100% 40%;
+      background-repeat: no-repeat;
+      background-position: top center;
     }
 
-    .menu-toggle {
-      font-size: 2em;
-      color: white;
+    .search-bar button {
+      position: absolute;
+      right: 10px;
+      top: 8px;
       background: none;
       border: none;
       cursor: pointer;
-      z-index: 1001;
+    }
+
+    .search-bar button::before {
+      content: "🔍";
+      font-size: 18px;
+    }
+
+    .menu-icon {
+      cursor: pointer;
+      font-size: 30px;
     }
 
     nav {
       position: fixed;
-      top: 0;
-      right: -100%;
-      width: 70%;
-      height: 100%;
-      background: #111;
-      padding: 60px 20px;
-      transition: right 0.3s ease;
+      top: 60px;
+      right: -250px;
+      width: 200px;
+      background: rgba(0, 0, 0, 0.9);
+      height: 100vh;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      z-index: 999;
+      padding: 30px;
+      transition: right 0.4s ease;
+      z-index: 1000;
     }
 
-    nav.open {
+    nav.active {
       right: 0;
     }
 
@@ -85,136 +144,96 @@
       font-size: 1.2em;
     }
 
-    .section {
-      height: 100vh;
-      width: 100vw;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      will-change: transform;
-    }
-
     .overlay {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 20px 30px;
-      border-radius: 12px;
-      color: white;
-      font-size: 2em;
-      text-align: center;
-      z-index: 10;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: transparent;
+      z-index: 999;
+      display: none;
     }
 
-    @media (min-width: 768px) {
-      nav { width: 300px; }
+    .overlay.active {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header>
-    <div class="flags">
-      <img src="hr.png" alt="HR" onclick="setLang('hr')" />
-      <img src="en.png" alt="EN" onclick="setLang('en')" />
+    <div class="lang-switch">
+      <img src="hr.png" id="langToggle" alt="Promijeni jezik" />
     </div>
 
-    <div class="search-center">
-      <input type="text" placeholder="Traži..." />
+    <div class="search-bar">
+      <input type="text" placeholder="Pretraži..." />
+      <button></button>
     </div>
 
-    <button class="menu-toggle" id="menuBtn">☰</button>
+    <div class="menu-icon" id="menuToggle">☰</div>
   </header>
 
-  <!-- MENU -->
-  <nav id="sideMenu">
-    <a href="#section1">Naslovna</a>
-    <a href="#section2">Staze</a>
-    <a href="#section3">Web shop</a>
-    <a href="#section4">Blog</a>
-    <a href="#section5">O nama</a>
-    <a href="#section6">Kontakt</a>
+  <div class="overlay" id="overlay"></div>
+
+  <nav id="navMenu">
+    <a href="#">Naslovna</a>
+    <a href="#">Planinarske staze</a>
+    <a href="#">Web shop</a>
+    <a href="#">Blog</a>
+    <a href="#">O nama</a>
+    <a href="#">Kontakt</a>
   </nav>
 
-  <!-- SECTIONS -->
-  <div class="section" id="section1" style="background-image: url('Background.jpg');">
-    <div class="overlay" data-hr="Dobrodošli u planine" data-en="Welcome to the mountains">Dobrodošli u planine</div>
-  </div>
-  <div class="section" id="section2" style="background-image: url('Background1.jpg');">
-    <div class="overlay" data-hr="Staze Balkana" data-en="Balkan Trails">Staze Balkana</div>
-  </div>
-  <div class="section" id="section3" style="background-image: url('Background2.jpg');">
-    <div class="overlay" data-hr="GPS Tragovi i Info" data-en="GPS Tracks & Info">GPS Tragovi i Info</div>
-  </div>
-  <div class="section" id="section4" style="background-image: url('Background3.jpg');">
-    <div class="overlay" data-hr="Web Shop" data-en="Web Shop">Web Shop</div>
-  </div>
-  <div class="section" id="section5" style="background-image: url('Background4.jpg');">
-    <div class="overlay" data-hr="Blog i Savjeti" data-en="Blog & Tips">Blog i Savjeti</div>
-  </div>
-  <div class="section" id="section6" style="background-image: url('Background5.jpg');">
-    <div class="overlay" data-hr="O nama" data-en="About Us">O nama</div>
-  </div>
-  <div class="section" id="section7" style="background-image: url('Background6.jpg');">
-    <div class="overlay" data-hr="Kontaktirajte nas" data-en="Contact Us">Kontaktirajte nas</div>
-  </div>
+  <!-- Sekcije sa slikama -->
+  <div class="section" style="background-image: url('Background.jpg')"><div class="content">Dobrodošli</div></div>
+  <div class="section" style="background-image: url('Background1.jpg')"><div class="content">Planinarske staze</div></div>
+  <div class="section" style="background-image: url('Background2.jpg')"><div class="content">GPS tragovi</div></div>
+  <div class="section" style="background-image: url('Background3.jpg')"><div class="content">Web shop</div></div>
+  <div class="section" style="background-image: url('Background4.jpg')"><div class="content">Blog</div></div>
+  <div class="section" style="background-image: url('Background5.jpg')"><div class="content">O nama</div></div>
+  <div class="section" style="background-image: url('Background6.jpg')"><div class="content">Kontaktirajte nas</div></div>
 
-  <!-- SCRIPTS -->
   <script>
-    // Hamburger menu
-    const menuBtn = document.getElementById('menuBtn');
-    const menu = document.getElementById('sideMenu');
-
-    function toggleMenu() {
-      menu.classList.toggle('open');
-    }
-
-    menuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleMenu();
-    });
-
-    // Zatvaranje menija klikom izvan
-    document.addEventListener('click', (e) => {
-      if (!menu.contains(e.target) && e.target !== menuBtn) {
-        menu.classList.remove('open');
-      }
-    });
-
-    // Zatvaranje menija klikom na link
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        menu.classList.remove('open');
-      });
-    });
-
-    // Promjena jezika
-    function setLang(lang) {
-      document.querySelectorAll('.overlay').forEach(el => {
-        const text = el.getAttribute(`data-${lang}`);
-        if (text) el.textContent = text;
-      });
-    }
-
-    // Scroll efekt (uvećavanje + klizanje)
+    // Skrol animacija sekcija
     const sections = document.querySelectorAll('.section');
-
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const windowH = window.innerHeight;
-
-      sections.forEach(section => {
-        const offsetTop = section.offsetTop;
-        const distance = scrollY - offsetTop + windowH;
-        const percentage = Math.min(Math.max(distance / windowH, 0), 1);
-
-        const scale = 1 + percentage * 0.05;
-        section.style.transform = `scale(${scale}) translateY(${(1 - percentage) * 30}px)`;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    });
+    }, { threshold: 0.3 });
+
+    sections.forEach(section => observer.observe(section));
+
+    // Hamburger meni
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const overlay = document.getElementById('overlay');
+
+    menuToggle.onclick = () => {
+      navMenu.classList.toggle('active');
+      overlay.classList.toggle('active');
+    };
+
+    overlay.onclick = () => {
+      navMenu.classList.remove('active');
+      overlay.classList.remove('active');
+    };
+
+    // Jezična zamjena zastavica
+    const langToggle = document.getElementById('langToggle');
+    let currentLang = 'hr';
+
+    langToggle.onclick = () => {
+      if (currentLang === 'hr') {
+        langToggle.src = 'en.png';
+        currentLang = 'en';
+      } else {
+        langToggle.src = 'hr.png';
+        currentLang = 'hr';
+      }
+    };
   </script>
 
 </body>
