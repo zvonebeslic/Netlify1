@@ -14,7 +14,54 @@
       background-color: #000;
     }
 
+    /* === NAVIGACIJA === */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .navbar-left,
+    .navbar-center,
+    .navbar-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left img {
+      height: 26px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .navbar-center input {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .navbar-right a {
+      margin-left: 15px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-right a:hover {
+      color: #ccc;
+    }
+
     .section {
+      min-height: 100vh;
       height: 100vh;
       position: relative;
       background-size: cover;
@@ -24,7 +71,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 1.5s ease, opacity 0.6s ease-out;
+      background-color: #111;
+      transition: transform 1.5s ease, opacity 0.6s ease-out, background-image 1s ease-in-out;
+      scroll-margin-top: 60px;
     }
 
     .scaled {
@@ -39,4 +88,162 @@
       transition: background 0.8s ease;
     }
 
-    .overlay.dim
+    .overlay.dimmed {
+      background: rgba(0, 0, 0, 0.65);
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      color: white;
+      font-size: 2em;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    .content.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .section {
+        background-attachment: scroll !important;
+      }
+      .navbar-center input {
+        width: 100px;
+      }
+      .navbar-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGACIJA -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <img id="flag-uk" alt="EN" onclick="switchLanguage('en')">
+      <img id="flag-hr" alt="HR" onclick="switchLanguage('hr')">
+    </div>
+    <div class="navbar-center">
+      <input type="text" id="search" placeholder="Pretraži..." oninput="searchContent(this.value)">
+    </div>
+    <div class="navbar-right">
+      <a href="#section0">Naslovna</a>
+      <a href="#section1">Staze</a>
+      <a href="#section2">Shop</a>
+      <a href="#section3">Blog</a>
+      <a href="#section4">O nama</a>
+      <a href="#section5">Galerija</a>
+      <a href="#section6">Kontakt</a>
+    </div>
+  </div>
+
+  <!-- SEKCIJE -->
+  <div class="section" id="section0" data-img="Background.jpg"><div class="overlay"></div><div class="content">Naslovna</div></div>
+  <div class="section" id="section1" data-img="Background1.jpg"><div class="overlay"></div><div class="content">Planinarske staze</div></div>
+  <div class="section" id="section2" data-img="Background2.jpg"><div class="overlay"></div><div class="content">Web Shop</div></div>
+  <div class="section" id="section3" data-img="Background3.jpg"><div class="overlay"></div><div class="content">Blog</div></div>
+  <div class="section" id="section4" data-img="Background4.jpg"><div class="overlay"></div><div class="content">O nama</div></div>
+  <div class="section" id="section5" data-img="Background5.jpg"><div class="overlay"></div><div class="content">Galerija</div></div>
+  <div class="section" id="section6" data-img="Background6.jpg"><div class="overlay"></div><div class="content">Kontaktirajte nas</div></div>
+
+  <script>
+    // 📷 Dinamičko postavljanje pozadina i SVG zastavica
+    function loadImage(element, filename, type = 'img') {
+      const folderName = filename.replace(/\.(jpg|svg)$/, "");
+      const tryPaths = [
+        `images/${filename}`,
+        `${filename}`,
+        `${folderName}/${filename}`
+      ];
+
+      const tryNext = (index) => {
+        if (index >= tryPaths.length) {
+          console.warn(`⚠️ Slika '${filename}' nije pronađena.`);
+          return;
+        }
+
+        const url = tryPaths[index];
+
+        if (type === 'background') {
+          const img = new Image();
+          img.src = url;
+          img.onload = () => { element.style.backgroundImage = `url('${url}')`; };
+          img.onerror = () => { tryNext(index + 1); };
+        } else if (type === 'img') {
+          const test = new Image();
+          test.src = url;
+          test.onload = () => { element.src = url; };
+          test.onerror = () => { tryNext(index + 1); };
+        }
+      };
+
+      tryNext(0);
+    }
+
+    // 📦 Pozadine sekcija
+    document.querySelectorAll(".section").forEach(sec => {
+      const filename = sec.dataset.img;
+      loadImage(sec, filename, 'background');
+    });
+
+    // 🇬🇧 i 🇭🇷 zastavice
+    loadImage(document.getElementById("flag-uk"), "flag-uk.svg", "img");
+    loadImage(document.getElementById("flag-hr"), "flag-hr.svg", "img");
+
+    // 🎯 Efekti skrolanja
+    const sections = document.querySelectorAll(".section");
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const section = entry.target;
+        const content = section.querySelector(".content");
+        const overlay = section.querySelector(".overlay");
+
+        if (entry.isIntersecting) {
+          section.classList.add("scaled");
+          content.classList.add("visible");
+          overlay.classList.remove("dimmed");
+        } else {
+          section.classList.remove("scaled");
+          content.classList.remove("visible");
+          overlay.classList.add("dimmed");
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: "0px 0px -30% 0px",
+      threshold: 0.01
+    });
+
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+
+    // 🔍 Pretraga
+    function searchContent(value) {
+      const contents = document.querySelectorAll('.content');
+      contents.forEach((c, i) => {
+        if (c.innerText.toLowerCase().includes(value.toLowerCase())) {
+          location.href = `#section${i}`;
+        }
+      });
+    }
+
+    // 🌐 Jezik
+    function switchLanguage(lang) {
+      alert("Prebacivanje na jezik: " + (lang === 'en' ? 'English' : 'Hrvatski'));
+    }
+  </script>
+
+</body>
+</html>
