@@ -28,15 +28,29 @@
     }
 
     .navbar-left img {
-      height: 18px;
+      height: 14px;
       cursor: pointer;
     }
 
+    .navbar-center {
+      position: relative;
+      background: rgba(255, 255, 255, 0.05);
+      clip-path: polygon(0% 100%, 8% 60%, 15% 100%, 25% 70%, 35% 100%, 45% 60%, 55% 100%, 65% 75%, 75% 100%, 85% 65%, 100% 100%);
+      padding: 0 10px;
+      border-radius: 6px;
+    }
+
     .navbar-center input {
-      padding: 5px 10px;
+      padding: 10px 35px 10px 10px;
       border: none;
       border-radius: 4px;
       font-size: 14px;
+      background-color: rgba(255, 255, 255, 0.15);
+      background-image: url('images/search.svg');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 18px;
+      color: white;
     }
 
     .hamburger {
@@ -90,7 +104,7 @@
       align-items: center;
       justify-content: center;
       background-color: #111;
-      transition: transform 1.5s ease, opacity 0.6s ease-out, background-image 1s ease-in-out;
+      transition: transform 2s ease-in-out, opacity 1s ease-out, background-image 1s ease-in-out;
       scroll-margin-top: 60px;
       z-index: 0;
     }
@@ -102,20 +116,20 @@
     .overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.3);
       z-index: 1;
       transition: background 0.8s ease;
     }
 
     .overlay.dimmed {
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(0, 0, 0, 0.55);
     }
 
     .content {
       position: relative;
       z-index: 2;
       text-align: center;
-      padding: 20px;
+      padding: 30px 20px;
       background: rgba(0, 0, 0, 0.4);
       border-radius: 10px;
       color: white;
@@ -123,6 +137,7 @@
       opacity: 0;
       transform: translateY(40px);
       transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+      min-height: 180px;
     }
 
     .content.visible {
@@ -166,6 +181,7 @@
     <a href="#section5" data-key="nav-gallery">Galerija</a>
     <a href="#section6" data-key="nav-contact">Kontakt</a>
   </div>
+
   <!-- SEKCIJE -->
   <div class="section" id="section0" data-img="Background.jpg">
     <div class="overlay"></div>
@@ -195,6 +211,8 @@
     <div class="overlay"></div>
     <div class="content" data-key="sec-contact">Kontaktirajte nas</div>
   </div>
+
+  <!-- SCRIPT -->
   <script>
     const translations = {
       hr: {
@@ -287,7 +305,7 @@
       tryNext(0);
     }
 
-    // Pokreni sve
+    // Pokreni slike
     document.querySelectorAll(".section").forEach(sec => {
       const filename = sec.dataset.img;
       loadImage(sec, filename, 'background');
@@ -308,7 +326,6 @@
           section.classList.add("scaled");
           content.classList.add("visible");
           overlay.classList.remove("dimmed");
-
           sections.forEach(s => s.style.zIndex = 0);
           section.style.zIndex = 10;
         } else {
@@ -326,7 +343,7 @@
     sections.forEach(section => observer.observe(section));
 
     window.onload = () => {
-      updateTexts(); // odmah postavi tekstove na hrvatski
+      updateTexts();
     };
   </script>
 
