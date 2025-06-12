@@ -6,16 +6,17 @@
   <title>Mountain Adventures</title>
   <style>
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    body {
-      font-family: Arial, sans-serif;
+    html, body {
+      scroll-behavior: smooth;
       background: #000;
       overflow-x: hidden;
     }
 
-    /* HEADER + MENU */
     header {
       position: fixed;
       width: 100%;
@@ -23,7 +24,7 @@
       left: 0;
       padding: 15px 20px;
       background: rgba(0, 0, 0, 0.6);
-      z-index: 999;
+      z-index: 1000;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -55,7 +56,7 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      z-index: 998;
+      z-index: 999;
     }
 
     nav.open {
@@ -91,7 +92,6 @@
       font-size: 1em;
     }
 
-    /* SECTIONS */
     .section {
       height: 100vh;
       width: 100vw;
@@ -101,14 +101,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0;
-      transform: scale(1.05) translateY(30px);
-      transition: opacity 1s ease, transform 1s ease;
-    }
-
-    .section.visible {
-      opacity: 1;
-      transform: scale(1.1) translateY(0);
+      position: relative;
+      will-change: transform;
     }
 
     .overlay {
@@ -118,12 +112,7 @@
       color: white;
       font-size: 2em;
       text-align: center;
-    }
-
-    @media (min-width: 768px) {
-      nav {
-        width: 300px;
-      }
+      z-index: 10;
     }
   </style>
 </head>
@@ -152,7 +141,7 @@
     </div>
   </nav>
 
-  <!-- SEKCIJE SA SLIKAMA -->
+  <!-- SECTIONS -->
   <div class="section" style="background-image: url('Background.jpg');">
     <div class="overlay" data-hr="Dobrodošli u planine" data-en="Welcome to the mountains">Dobrodošli u planine</div>
   </div>
@@ -175,32 +164,35 @@
     <div class="overlay" data-hr="Kontaktirajte nas" data-en="Contact Us">Kontaktirajte nas</div>
   </div>
 
-  <!-- SCRIPTS -->
   <script>
     function toggleMenu() {
       document.getElementById('sideMenu').classList.toggle('open');
     }
 
-    const sections = document.querySelectorAll('.section');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        } else {
-          entry.target.classList.remove('visible');
-        }
-      });
-    }, { threshold: 0.2 });
-
-    sections.forEach(section => observer.observe(section));
-
+    // Jezik
     function setLang(lang) {
-      const overlays = document.querySelectorAll('.overlay');
-      overlays.forEach(el => {
+      document.querySelectorAll('.overlay').forEach(el => {
         const text = el.getAttribute(`data-${lang}`);
-        if (text) el.innerText = text;
+        if (text) el.textContent = text;
       });
     }
+
+    // Parallax uvećanje i prelazak
+    const sections = document.querySelectorAll('.section');
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const windowH = window.innerHeight;
+
+      sections.forEach(section => {
+        const offsetTop = section.offsetTop;
+        const distance = scrollY - offsetTop + windowH;
+        const percentage = Math.min(Math.max(distance / windowH, 0), 1);
+
+        const scale = 1 + percentage * 0.05; // lagano uvećanje
+        section.style.transform = `scale(${scale}) translateY(${(1 - percentage) * 30}px)`;
+      });
+    });
   </script>
 
 </body>
