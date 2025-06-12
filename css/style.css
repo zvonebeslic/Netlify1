@@ -17,34 +17,33 @@ html, body {
   height: 100vh;
   position: relative;
   background-size: cover;
-  background-position: center center;
+  background-position: center;
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  z-index: 1;
-  transition: transform 1.2s ease, opacity 1.2s ease, filter 1.2s ease;
+  transition: transform 1s ease, opacity 1s ease, filter 1s ease;
   will-change: transform, opacity;
+  z-index: 1;
 }
 
-/* Efekti za aktivne/neaktivne slike */
 .section.active {
-  transform: translateY(0) scale(1.05);
+  transform: translateY(0) scale(1.03);
   opacity: 1;
   z-index: 2;
   filter: none;
 }
 
 .section.inactive {
-  transform: translateY(-5%) scale(1);
-  opacity: 0.75;
+  transform: translateY(10%) scale(1);
+  opacity: 0.5;
   z-index: 0;
-  filter: brightness(0.9);
+  filter: brightness(0.8) blur(1px);
 }
 
-/* Klikabilni "folder" u centru slike */
+/* Klikabilni tekstualni folder */
 .section > a {
   display: block;
   padding: 30px 40px;
@@ -83,7 +82,7 @@ html, body {
   cursor: pointer;
 }
 
-/* Tražilica s planinskim vrhom */
+/* Tražilica */
 .search-bar {
   position: fixed;
   top: 10px;
@@ -95,7 +94,7 @@ html, body {
   background: white;
   padding: 6px 12px;
   border-radius: 30px 30px 4px 4px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
   clip-path: polygon(
     0% 100%, 0% 40%, 10% 10%, 25% 20%, 40% 0%, 
     60% 20%, 75% 10%, 90% 30%, 100% 40%, 100% 100%
@@ -140,7 +139,7 @@ html, body {
   position: fixed;
   top: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0,0,0,0.95);
   height: 100%;
   width: 250px;
   transform: translateX(100%);
