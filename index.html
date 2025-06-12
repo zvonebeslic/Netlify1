@@ -12,17 +12,17 @@
     <img src="images/flag-en.svg" alt="EN" id="flag" onclick="switchLanguage()" />
   </div>
 
-  <!-- Tražilica -->
-  <div class="search-container">
-    <div class="search-peak">
-      <div class="search-form">
+  <!-- Tražilica s vrhovima planine -->
+  <div class="search-wrapper">
+    <div class="search-peak-shape">
+      <div class="search-bar">
         <input type="text" placeholder="Pretraži..." />
         <button><span>&#128269;</span></button>
       </div>
     </div>
   </div>
 
-  <!-- Sekcije sa slikama -->
+  <!-- Parallax sekcije -->
   <div class="section" style="background-image: url('images/Background.jpg');">
     <div class="content-box">Dobrodošli u planine!</div>
   </div>
@@ -50,7 +50,7 @@
     <p>© 2025 Mountain Adventures</p>
   </footer>
 
-  <!-- JS za jezik -->
+  <!-- Jezični JS -->
   <script>
     let currentLang = "hr";
     function switchLanguage() {
@@ -62,7 +62,6 @@
         flag.src = "images/flag-en.svg";
         currentLang = "hr";
       }
-      // Ovdje eventualno dodati pravi prevod
     }
   </script>
 </body>
