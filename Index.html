@@ -41,14 +41,28 @@
            data-placeholder-en="Search...">
   </nav>
 
-  <!-- Sekcije sa slikama -->
-  <div class="section" style="background-image: url('images/Background.jpg');" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</div>
-  <div class="section" style="background-image: url('images/Background1.jpg');" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</div>
-  <div class="section" style="background-image: url('images/Background2.jpg');" data-lang-hr="Web shop" data-lang-en="Web Shop">Web shop</div>
-  <div class="section" style="background-image: url('images/Background3.jpg');" data-lang-hr="Blog" data-lang-en="Blog">Blog</div>
-  <div class="section" style="background-image: url('images/Background4.jpg');" data-lang-hr="O nama" data-lang-en="About Us">O nama</div>
-  <div class="section" style="background-image: url('images/Background5.jpg');" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</div>
-  <div class="section" style="background-image: url('images/Background6.jpg');" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</div>
+  <!-- Sekcije sa slikama i folderima -->
+  <div class="section" style="background-image: url('images/Background.jpg');">
+    <a href="#" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background1.jpg');">
+    <a href="#" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background2.jpg');">
+    <a href="#" data-lang-hr="Web shop" data-lang-en="Web Shop">Web shop</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background3.jpg');">
+    <a href="#" data-lang-hr="Blog" data-lang-en="Blog">Blog</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background4.jpg');">
+    <a href="#" data-lang-hr="O nama" data-lang-en="About Us">O nama</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background5.jpg');">
+    <a href="#" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</a>
+  </div>
+  <div class="section" style="background-image: url('images/Background6.jpg');">
+    <a href="#" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</a>
+  </div>
 
   <!-- JavaScript -->
   <script>
@@ -101,7 +115,6 @@
       });
     });
 
-    // Fallback ako slike nisu u images/
     document.querySelectorAll('img').forEach(img => {
       img.onerror = function () {
         const filename = this.src.split('/').pop();
@@ -109,7 +122,6 @@
       };
     });
 
-    // Fallback za background slike
     sections.forEach(section => {
       const bg = section.style.backgroundImage;
       if (bg.includes("images/")) {
