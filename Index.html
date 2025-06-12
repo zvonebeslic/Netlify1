@@ -2,7 +2,7 @@
 <html lang="hr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
     * {
@@ -12,141 +12,124 @@
     }
 
     body {
-      font-family: sans-serif;
-      background-color: #000;
-      color: white;
+      font-family: Arial, sans-serif;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
     .section {
-      position: relative;
       height: 100vh;
+      position: relative;
+      background-size: cover;
+      background-position: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      font-size: 2rem;
-      transition: filter 1s ease, opacity 1s ease, transform 1s ease;
-    }
-
-    .section img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
-      transition: filter 1s ease, transform 1s ease;
-      opacity: 0.9;
-    }
-
-    .section-content {
-      z-index: 2;
-      padding: 2rem;
-      background: rgba(0, 0, 0, 0.55);
-      border-radius: 1rem;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
-      transition: opacity 1s ease, transform 1s ease;
+      color: white;
+      font-size: 2em;
       opacity: 0;
-      transform: translateY(60px);
+      transform: translateY(50px);
+      transition: all 1s ease-out;
     }
 
-    .section.fade-out {
-      filter: blur(8px);
-      opacity: 0.25;
-      transform: scale(0.96);
-    }
-
-    .section.fade-in .section-content {
+    .section.visible {
       opacity: 1;
       transform: translateY(0);
-      animation: fadeIn 1.4s ease forwards;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(60px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .fade-out {
+      opacity: 0 !important;
+      transform: translateY(-50px);
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
-  <div class="section">
-    <img src="images/Background.jpg" alt="Background 0">
-    <div class="section-content">
-      <h1>Dobrodošli u planine</h1>
-    </div>
+  <!-- Sedam sekcija sa pozadinskim slikama -->
+  <div class="section" style="background-image: url('images/Background.jpg')">
+    <div class="overlay"></div>
+    <div class="content">Naslovna</div>
   </div>
-
-  <div class="section">
-    <img src="images/Background1.jpg" alt="Background 1">
-    <div class="section-content">
-      <h1>Istraži staze Balkana</h1>
-    </div>
+  <div class="section" style="background-image: url('images/Background1.jpg')">
+    <div class="overlay"></div>
+    <div class="content">Planinarske staze</div>
   </div>
-
-  <div class="section">
-    <img src="images/Background2.jpg" alt="Background 2">
-    <div class="section-content">
-      <h1>Web shop za planinare</h1>
-    </div>
+  <div class="section" style="background-image: url('images/Background2.jpg')">
+    <div class="overlay"></div>
+    <div class="content">Web Shop</div>
   </div>
-
-  <div class="section">
-    <img src="images/Background3.jpg" alt="Background 3">
-    <div class="section-content">
-      <h1>Inspirativni blogovi</h1>
-    </div>
+  <div class="section" style="background-image: url('images/Background3.jpg')">
+    <div class="overlay"></div>
+    <div class="content">Blog</div>
   </div>
-
-  <div class="section">
-    <img src="images/Background4.jpg" alt="Background 4">
-    <div class="section-content">
-      <h1>Naša priča</h1>
-    </div>
+  <div class="section" style="background-image: url('images/Background4.jpg')">
+    <div class="overlay"></div>
+    <div class="content">O nama</div>
   </div>
-
-  <div class="section">
-    <img src="images/Background5.jpg" alt="Background 5">
-    <div class="section-content">
-      <h1>Kontaktiraj nas</h1>
-    </div>
+  <div class="section" style="background-image: url('images/Background5.jpg')">
+    <div class="overlay"></div>
+    <div class="content">Galerija</div>
   </div>
-
-  <div class="section">
-    <img src="images/Background6.jpg" alt="Background 6">
-    <div class="section-content">
-      <h1>Vidimo se na stazi!</h1>
-    </div>
+  <div class="section" style="background-image: url('images/Background6.jpg')">
+    <div class="overlay"></div>
+    <div class="content">Kontaktirajte nas</div>
   </div>
 
   <script>
-    const sections = document.querySelectorAll('.section');
+    // ---------------------------------------------
+    // Ako slika nije pronađena u "images/" folderu,
+    // sustav automatski pokušava učitati istu sliku
+    // iz root (glavne) mape web stranice.
+    // ---------------------------------------------
+    document.querySelectorAll(".section").forEach(sec => {
+      const bg = sec.style.backgroundImage;
+      const url = bg.slice(5, -2); // izvlači URL slike iz background-image CSS-a
+      const img = new Image();
+      img.src = url;
 
-    window.addEventListener('scroll', () => {
-      const triggerBottom = window.innerHeight * 0.75;
+      img.onerror = () => {
+        const fallback = url.replace("images/", "");
+        sec.style.backgroundImage = `url('${fallback}')`;
+        console.log(`Slika nije pronađena: ${url}. Pokušavam iz root: ${fallback}`);
+      };
+    });
 
-      sections.forEach((section, i) => {
-        const rect = section.getBoundingClientRect();
+    // IntersectionObserver za fade-in i fade-out efekat pri skrolanju
+    const sections = document.querySelectorAll(".section");
+    const options = {
+      threshold: 0.3
+    };
 
-        if (rect.top < triggerBottom) {
-          section.classList.add('fade-in');
-        }
-
-        if (rect.top < 0 && i < sections.length - 1) {
-          section.classList.add('fade-out');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          entry.target.classList.remove('fade-out');
         } else {
-          section.classList.remove('fade-out');
+          entry.target.classList.remove('visible');
+          entry.target.classList.add('fade-out');
         }
       });
+    }, options);
+
+    sections.forEach(section => {
+      observer.observe(section);
     });
   </script>
 
