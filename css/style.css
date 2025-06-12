@@ -37,10 +37,10 @@ html, body {
 }
 
 .section.inactive {
-  transform: translateY(10%) scale(1);
-  opacity: 0.5;
+  transform: translateY(5%) scale(1);
+  opacity: 0.9;
   z-index: 0;
-  filter: brightness(0.8) blur(1px);
+  filter: brightness(0.95) blur(1px);
 }
 
 /* Klikabilni tekstualni folder */
