@@ -8,18 +8,18 @@
 </head>
 <body>
 
-  <!-- Zastavice -->
+  <!-- Zastavice za jezik -->
   <div class="language-switcher">
-    <img id="language-icon" src="images/flag-uk.svg" alt="UK">
+    <img id="language-icon" src="images/flag-uk.svg" alt="UK" />
   </div>
 
-  <!-- Tražilica -->
+  <!-- Tražilica s vrhovima -->
   <div class="search-bar">
     <input type="text"
            placeholder="Pretraži..."
            data-placeholder-hr="Pretraži..."
-           data-placeholder-en="Search...">
-    <img src="images/search.svg" alt="🔍">
+           data-placeholder-en="Search..." />
+    <img src="images/search.svg" alt="Search" />
   </div>
 
   <!-- Hamburger meni -->
@@ -27,78 +27,87 @@
     <div></div><div></div><div></div>
   </div>
 
-  <!-- Navigacija -->
+  <!-- Navigacijski meni -->
   <nav class="nav-menu" id="nav-menu">
     <a href="#" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</a>
-    <a href="#" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</a>
-    <a href="#" data-lang-hr="Web shop" data-lang-en="Web Shop">Web shop</a>
+    <a href="#" data-lang-hr="Staze" data-lang-en="Trails">Staze</a>
+    <a href="#" data-lang-hr="Web shop" data-lang-en="Shop">Web shop</a>
     <a href="#" data-lang-hr="Blog" data-lang-en="Blog">Blog</a>
-    <a href="#" data-lang-hr="O nama" data-lang-en="About Us">O nama</a>
+    <a href="#" data-lang-hr="O nama" data-lang-en="About">O nama</a>
     <a href="#" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</a>
-    <input type="text"
-           placeholder="Traži..."
-           data-placeholder-hr="Traži..."
-           data-placeholder-en="Search...">
   </nav>
 
-  <!-- Sekcije sa slikama i folderima -->
+  <!-- Sekcije sa slikama -->
   <div class="section" style="background-image: url('images/Background.jpg');">
-    <a href="#" data-lang-hr="Naslovna" data-lang-en="Home">Naslovna</a>
+    <a href="#">Naslovna</a>
   </div>
   <div class="section" style="background-image: url('images/Background1.jpg');">
-    <a href="#" data-lang-hr="Planinarske staze" data-lang-en="Hiking Trails">Planinarske staze</a>
+    <a href="#">Planinarske staze</a>
   </div>
   <div class="section" style="background-image: url('images/Background2.jpg');">
-    <a href="#" data-lang-hr="Web shop" data-lang-en="Web Shop">Web shop</a>
+    <a href="#">Web shop</a>
   </div>
   <div class="section" style="background-image: url('images/Background3.jpg');">
-    <a href="#" data-lang-hr="Blog" data-lang-en="Blog">Blog</a>
+    <a href="#">Blog</a>
   </div>
   <div class="section" style="background-image: url('images/Background4.jpg');">
-    <a href="#" data-lang-hr="O nama" data-lang-en="About Us">O nama</a>
+    <a href="#">O nama</a>
   </div>
   <div class="section" style="background-image: url('images/Background5.jpg');">
-    <a href="#" data-lang-hr="Kontakt" data-lang-en="Contact">Kontakt</a>
+    <a href="#">Kontakt</a>
   </div>
   <div class="section" style="background-image: url('images/Background6.jpg');">
-    <a href="#" data-lang-hr="Vidimo se na stazi!" data-lang-en="See you on the trail!">Vidimo se na stazi!</a>
+    <a href="#">Vidimo se na stazi!</a>
   </div>
 
-  <!-- FOOTER ikone za kontakt -->
-  <footer style="text-align: center; padding: 20px; background: #111; color: white;">
-    <a href="mailto:info@mountainadventures.com" target="_blank" style="margin: 0 15px;">
-      <img src="images/email.svg" alt="Email" width="32" height="32">
+  <!-- Podnožje s kontakt ikonama -->
+  <footer>
+    <a href="mailto:info@mountainadventures.com" target="_blank">
+      <img src="images/email.svg" alt="Email" />
     </a>
-    <a href="https://www.instagram.com/mountainadventures" target="_blank" style="margin: 0 15px;">
-      <img src="images/instagram.svg" alt="Instagram" width="32" height="32">
+    <a href="https://www.instagram.com/mountainadventures" target="_blank">
+      <img src="images/instagram.svg" alt="Instagram" />
     </a>
   </footer>
 
-  <!-- JavaScript -->
+  <!-- JavaScript za funkcionalnost -->
   <script>
     const sections = document.querySelectorAll('.section');
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
     const langIcon = document.getElementById('language-icon');
     const translatables = document.querySelectorAll('[data-lang-hr]');
-    const placeholderInputs = document.querySelectorAll('[data-placeholder-hr]');
+    const inputs = document.querySelectorAll('[data-placeholder-hr]');
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
 
     function handleScroll() {
-      let windowMid = window.innerHeight / 2;
+      let winMiddle = window.innerHeight / 2;
       sections.forEach(section => {
         const rect = section.getBoundingClientRect();
-        if (rect.top < windowMid && rect.bottom > 0) {
+        if (rect.top < winMiddle && rect.bottom > 0) {
           section.classList.add('active');
           section.classList.remove('inactive');
         } else {
-          section.classList.add('inactive');
           section.classList.remove('active');
+          section.classList.add('inactive');
         }
       });
     }
 
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('load', handleScroll);
+
+    langIcon.addEventListener('click', () => {
+      const lang = langIcon.src.includes('uk') ? 'hr' : 'en';
+      langIcon.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+
+      translatables.forEach(el => {
+        el.textContent = el.getAttribute(`data-lang-${lang}`);
+      });
+
+      inputs.forEach(el => {
+        el.placeholder = el.getAttribute(`data-placeholder-${lang}`);
+      });
+    });
 
     menuToggle.addEventListener('click', () => {
       navMenu.classList.toggle('open');
@@ -107,40 +116,6 @@
     document.addEventListener('click', (e) => {
       if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
         navMenu.classList.remove('open');
-      }
-    });
-
-    let currentLang = 'hr';
-
-    langIcon.addEventListener('click', () => {
-      currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      langIcon.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-
-      translatables.forEach(el => {
-        el.textContent = el.getAttribute(`data-lang-${currentLang}`);
-      });
-
-      placeholderInputs.forEach(input => {
-        input.placeholder = input.getAttribute(`data-placeholder-${currentLang}`);
-      });
-    });
-
-    document.querySelectorAll('img').forEach(img => {
-      img.onerror = function () {
-        const filename = this.src.split('/').pop();
-        this.src = filename;
-      };
-    });
-
-    sections.forEach(section => {
-      const bg = section.style.backgroundImage;
-      if (bg.includes("images/")) {
-        const filename = bg.split("images/")[1].replace(/[")']/g, "");
-        const testImage = new Image();
-        testImage.src = "images/" + filename;
-        testImage.onerror = () => {
-          section.style.backgroundImage = `url('${filename}')`;
-        };
       }
     });
   </script>
