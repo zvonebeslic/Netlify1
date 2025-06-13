@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="hr">
+<!DOCTYPE html><html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -81,6 +80,10 @@
       background: rgba(255, 255, 255, 0.05);
       transition: background 0.3s, transform 0.2s;
     }
+    .navbar-right:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
     .burger-line {
       width: 26px;
       height: 3px;
@@ -100,7 +103,9 @@
       align-items: flex-start;
       z-index: 9999;
     }
-    .menu-overlay.open { display: flex; }
+    .menu-overlay.open {
+      display: flex;
+    }
     .menu-overlay a {
       margin: 10px 0;
       text-decoration: none;
@@ -109,6 +114,7 @@
     }
     .section {
       height: 100vh;
+      position: relative;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -127,17 +133,78 @@
       transform: scale(1);
     }
     .content-box {
+      position: relative;
       background: rgba(255, 255, 255, 0.8);
       border-radius: 0 0 20px 20px;
+      overflow: hidden;
       max-width: 70%;
       padding: 30px;
       text-align: center;
       font-size: 1.5em;
+      cursor: pointer;
     }
     .box-top {
       height: 25px;
       background: white;
       clip-path: polygon(0% 100%, 10% 60%, 20% 85%, 30% 50%, 40% 90%, 50% 40%, 60% 80%, 70% 55%, 80% 85%, 90% 60%, 100% 100%);
+    }
+    @media (min-width: 1024px) {
+      .content-box {
+        font-size: 3em;
+        padding: 50px;
+      }
+    }
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      outline: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #backToTop:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(-50%) scale(1.1);
+    }
+    #backToTop svg {
+      width: 24px;
+      height: 24px;
+    }
+    footer {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 14px;
+      position: relative;
+    }
+    .footer-icons {
+      margin: 10px 0;
+    }
+    .footer-icons img {
+      width: 32px;
+      height: 32px;
+      margin: 0 10px;
+      vertical-align: middle;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+      border-radius: 50%;
+      background-color: transparent;
+    }
+    .footer-icons img:hover {
+      opacity: 1;
     }
   </style>
 </head>
@@ -167,8 +234,7 @@
     <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
-
-  <!-- SECTIONS -->
+  <!-- Sekcije sa slikama i prijevodima -->
   <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
     <div class="content-box">
       <div class="box-top"></div>
@@ -216,7 +282,6 @@
       <polyline points="18 15 12 9 6 15"></polyline>
     </svg>
   </button>
-
   <footer id="footer">
     <div class="footer-icons">
       <a href="https://instagram.com" target="_blank"><img src="images/instagram.svg" alt="Instagram"></a>
@@ -224,7 +289,6 @@
     </div>
     © Mountain Adventures. All rights reserved.
   </footer>
-
   <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -232,68 +296,67 @@
     const menu = document.getElementById('menu');
     const backToTopBtn = document.getElementById('backToTop');
     const footer = document.getElementById('footer');
-    let currentLang = 'hr';
+    let currentLang = 'hr';langToggle.addEventListener('click', () => {
+  currentLang = currentLang === 'hr' ? 'en' : 'hr';
+  langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+  searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+  document.querySelectorAll('[data-hr]').forEach(el => {
+    el.textContent = el.getAttribute(`data-${currentLang}`);
+  });
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    link.textContent = link.getAttribute(`data-${currentLang}`);
+  });
+});
 
-    langToggle.addEventListener('click', () => {
-      currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-      searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
-      document.querySelectorAll('[data-hr]').forEach(el => {
-        el.textContent = el.getAttribute(`data-${currentLang}`);
-      });
-      document.querySelectorAll('.menu-overlay a').forEach(link => {
-        link.textContent = link.getAttribute(`data-${currentLang}`);
-      });
-    });
+menuToggle.addEventListener('click', () => {
+  menu.classList.toggle('open');
+});
 
-    menuToggle.addEventListener('click', () => {
-      menu.classList.toggle('open');
-    });
+window.addEventListener('click', e => {
+  if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
 
-    window.addEventListener('click', e => {
-      if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
-        menu.classList.remove('open');
-      }
-    });
+document.querySelectorAll('.menu-overlay a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('open');
+  });
+});
 
-    document.querySelectorAll('.menu-overlay a').forEach(link => {
-      link.addEventListener('click', () => {
-        menu.classList.remove('open');
-      });
-    });
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    entry.isIntersecting
+      ? entry.target.classList.add('visible')
+      : entry.target.classList.remove('visible');
+  });
+}, { threshold: 0.5 });
 
-    const sections = document.querySelectorAll('.section');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        entry.isIntersecting
-          ? entry.target.classList.add('visible')
-          : entry.target.classList.remove('visible');
-      });
-    }, { threshold: 0.5 });
+sections.forEach(section => observer.observe(section));
 
-    sections.forEach(section => observer.observe(section));
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+  const windowHeight = window.innerHeight;
 
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-      const windowHeight = window.innerHeight;
+  if (scrollY > 300) {
+    backToTopBtn.style.display = 'flex';
+  } else {
+    backToTopBtn.style.display = 'none';
+  }
 
-      if (scrollY > 300) {
-        backToTopBtn.style.display = 'flex';
-      } else {
-        backToTopBtn.style.display = 'none';
-      }
+  if (scrollY + windowHeight > footerTop) {
+    backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
+  } else {
+    backToTopBtn.style.bottom = '30px';
+  }
+});
 
-      if (scrollY + windowHeight > footerTop) {
-        backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
-      } else {
-        backToTopBtn.style.bottom = '60px';
-      }
-    });
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
   </script>
 </body>
 </html>
