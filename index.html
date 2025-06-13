@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="hr">
+<!DOCTYPE html><html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,6 +28,19 @@
       width: 24px;
       cursor: pointer;
       position: relative;
+    }
+    .navbar-left img:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #fff;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      top: 30px;
+      left: 0;
+      white-space: nowrap;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
     }
     .navbar-center {
       flex: 1;
@@ -68,14 +80,41 @@
       background: rgba(255, 255, 255, 0.05);
       transition: background 0.3s, transform 0.2s;
     }
+    .navbar-right:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
     .burger-line {
       width: 26px;
       height: 3px;
       background-color: white;
       border-radius: 2px;
     }
+    .menu-overlay {
+      position: fixed;
+      top: 70px;
+      right: 0;
+      width: 100%;
+      background-color: rgba(17, 17, 17, 0.95);
+      color: white;
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      z-index: 9999;
+    }
+    .menu-overlay.open {
+      display: flex;
+    }
+    .menu-overlay a {
+      margin: 10px 0;
+      text-decoration: none;
+      color: white;
+      font-size: 1.1em;
+    }
     .section {
       height: 100vh;
+      position: relative;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -94,12 +133,15 @@
       transform: scale(1);
     }
     .content-box {
-      background: rgba(255,255,255,0.8);
+      position: relative;
+      background: rgba(255, 255, 255, 0.8);
       border-radius: 0 0 20px 20px;
+      overflow: hidden;
       max-width: 70%;
       padding: 30px;
       text-align: center;
       font-size: 1.5em;
+      cursor: pointer;
     }
     .box-top {
       height: 25px;
@@ -120,7 +162,9 @@
       z-index: 9999;
       background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(12px);
+      color: white;
       border: 1px solid rgba(255, 255, 255, 0.3);
+      outline: none;
       width: 48px;
       height: 48px;
       border-radius: 50%;
@@ -128,6 +172,7 @@
       display: none;
       align-items: center;
       justify-content: center;
+      transition: background 0.3s ease, transform 0.3s ease;
     }
     #backToTop:hover {
       background-color: rgba(255, 255, 255, 0.3);
@@ -141,54 +186,109 @@
       background: #111;
       color: #ccc;
       text-align: center;
-      padding: 40px 10px 50px;
+      padding: 20px 10px;
       font-size: 14px;
+      position: relative;
     }
     .footer-icons {
-      margin: 15px 0;
+      margin: 10px 0;
     }
     .footer-icons img {
-      width: 28px;
-      height: 28px;
-      margin: 0 8px;
+      width: 32px;
+      height: 32px;
+      margin: 0 10px;
       vertical-align: middle;
-      opacity: 0.85;
-      transition: opacity 0.3s, transform 0.3s;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+      border-radius: 50%;
+      background-color: transparent;
     }
     .footer-icons img:hover {
       opacity: 1;
-      transform: scale(1.1);
     }
   </style>
 </head>
 <body>
-<div class="section" style="background-image: url('images/Background.jpg');">
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="images/flag-uk.svg" alt="language" id="language-toggle" data-tooltip="Promijeni jezik">
+    </div>
+    <div class="navbar-center">
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Pretraži...">
+        <img src="images/search.svg" alt="search icon">
+      </div>
+    </div>
+    <div class="navbar-right" id="menu-toggle">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
+  </div>
+  <div class="menu-overlay" id="menu">
+    <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="#webshop" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
+    <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
+  <!-- Sekcije sa slikama i prijevodima -->
+  <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
     <div class="content-box">
       <div class="box-top"></div>
       <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
     </div>
   </div>
-
-  <!-- Dodaj ostale sekcije sa svojim slikama kao što je dogovoreno -->
-  
+  <div id="section2" class="section" style="background-image: url('images/Background1.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
+    </div>
+  </div>
+  <div id="section5" class="section" style="background-image: url('images/Background2.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
+    </div>
+  </div>
+  <div id="webshop" class="section" style="background-image: url('images/Background3.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Istražite naš web shop" data-en="Browse our web shop">Istražite naš web shop</div>
+    </div>
+  </div>
+  <div id="blog" class="section" style="background-image: url('images/Background4.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">Najnovije iz svijeta planinarenja</div>
+    </div>
+  </div>
+  <div id="about" class="section" style="background-image: url('images/Background5.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Saznajte više o nama" data-en="Learn more about us">Saznajte više o nama</div>
+    </div>
+  </div>
+  <div id="section7" class="section" style="background-image: url('images/Background6.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
+    </div>
+  </div>
   <button id="backToTop" title="Na vrh" aria-label="Na vrh">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="18 15 12 9 6 15"></polyline>
     </svg>
   </button>
-
   <footer id="footer">
     <div class="footer-icons">
-      <a href="https://instagram.com" target="_blank">
-        <img src="images/instagram.svg" alt="Instagram">
-      </a>
-      <a href="mailto:info@mountainadventures.com">
-        <img src="images/email.svg" alt="Email">
-      </a>
+      <a href="https://instagram.com" target="_blank"><img src="images/instagram.svg" alt="Instagram"></a>
+      <a href="mailto:info@mountainadventures.com"><img src="images/email.svg" alt="Email"></a>
     </div>
     © Mountain Adventures. All rights reserved.
   </footer>
-
   <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -196,68 +296,67 @@
     const menu = document.getElementById('menu');
     const backToTopBtn = document.getElementById('backToTop');
     const footer = document.getElementById('footer');
-    let currentLang = 'hr';
+    let currentLang = 'hr';langToggle.addEventListener('click', () => {
+  currentLang = currentLang === 'hr' ? 'en' : 'hr';
+  langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+  searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+  document.querySelectorAll('[data-hr]').forEach(el => {
+    el.textContent = el.getAttribute(`data-${currentLang}`);
+  });
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    link.textContent = link.getAttribute(`data-${currentLang}`);
+  });
+});
 
-    langToggle?.addEventListener('click', () => {
-      currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-      searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
-      document.querySelectorAll('[data-hr]').forEach(el => {
-        el.textContent = el.getAttribute(`data-${currentLang}`);
-      });
-      document.querySelectorAll('.menu-overlay a').forEach(link => {
-        link.textContent = link.getAttribute(`data-${currentLang}`);
-      });
-    });
+menuToggle.addEventListener('click', () => {
+  menu.classList.toggle('open');
+});
 
-    menuToggle?.addEventListener('click', () => {
-      menu.classList.toggle('open');
-    });
+window.addEventListener('click', e => {
+  if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
 
-    window.addEventListener('click', e => {
-      if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
-        menu.classList.remove('open');
-      }
-    });
+document.querySelectorAll('.menu-overlay a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('open');
+  });
+});
 
-    document.querySelectorAll('.menu-overlay a').forEach(link => {
-      link.addEventListener('click', () => {
-        menu.classList.remove('open');
-      });
-    });
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    entry.isIntersecting
+      ? entry.target.classList.add('visible')
+      : entry.target.classList.remove('visible');
+  });
+}, { threshold: 0.5 });
 
-    const sections = document.querySelectorAll('.section');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        entry.isIntersecting
-          ? entry.target.classList.add('visible')
-          : entry.target.classList.remove('visible');
-      });
-    }, { threshold: 0.5 });
+sections.forEach(section => observer.observe(section));
 
-    sections.forEach(section => observer.observe(section));
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+  const windowHeight = window.innerHeight;
 
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-      const windowHeight = window.innerHeight;
+  if (scrollY > 300) {
+    backToTopBtn.style.display = 'flex';
+  } else {
+    backToTopBtn.style.display = 'none';
+  }
 
-      if (scrollY > 300) {
-        backToTopBtn.style.display = 'flex';
-      } else {
-        backToTopBtn.style.display = 'none';
-      }
+  if (scrollY + windowHeight > footerTop) {
+    backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
+  } else {
+    backToTopBtn.style.bottom = '30px';
+  }
+});
 
-      if (scrollY + windowHeight > footerTop) {
-        backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
-      } else {
-        backToTopBtn.style.bottom = '30px';
-      }
-    });
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
-    backToTopBtn?.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
   </script>
 </body>
 </html>
