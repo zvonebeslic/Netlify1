@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: Arial, sans-serif;
@@ -18,7 +22,7 @@
       position: fixed;
       top: 0;
       width: 100%;
-      height: 60px;
+      height: 70px;
       background: rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
@@ -28,20 +32,48 @@
     }
 
     .navbar-left img {
-      height: 18px;
+      height: 24px;
       cursor: pointer;
     }
 
-    .navbar-center input {
-      padding: 6px 12px;
+    .navbar-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    .search-container input {
+      padding: 10px 40px 10px 15px;
       border: none;
-      border-radius: 20px;
+      border-radius: 25px;
       outline: none;
       font-size: 16px;
+      background-color: #fff;
+    }
+
+    .search-container img {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+    }
+
+    .search-top {
+      position: relative;
+      height: 25px;
+      background: white;
+      clip-path: polygon(0% 100%, 10% 60%, 20% 85%, 30% 50%, 40% 90%, 50% 40%, 60% 80%, 70% 55%, 80% 85%, 90% 60%, 100% 100%);
     }
 
     .navbar-right img {
-      height: 20px;
+      height: 22px;
       cursor: pointer;
     }
 
@@ -49,13 +81,12 @@
       height: 100vh;
       position: relative;
       background-size: cover;
-      background-position: center center;
+      background-position: center;
       background-repeat: no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: transform 1s ease, opacity 1s ease;
-      z-index: 1;
     }
 
     .section.visible {
@@ -69,68 +100,121 @@
       transform: scale(1);
     }
 
-    .content {
-      background: rgba(255, 255, 255, 0.7);
-      padding: 30px;
-      border-radius: 20px;
-      text-align: center;
+    .content-box {
+      position: relative;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 0 0 20px 20px;
+      overflow: hidden;
       max-width: 70%;
+      padding: 30px;
+      text-align: center;
       font-size: 1.5em;
+      cursor: pointer;
+    }
+
+    .box-top {
+      height: 25px;
+      background: white;
+      clip-path: polygon(0% 100%, 10% 60%, 20% 85%, 30% 50%, 40% 90%, 50% 40%, 60% 80%, 70% 55%, 80% 85%, 90% 60%, 100% 100%);
     }
   </style>
 </head>
 <body>
   <div class="navbar">
     <div class="navbar-left">
-      <img src="images/hr.svg" alt="HR" id="lang-switch">
+      <img src="images/flag-uk.svg" alt="language" id="language-toggle">
     </div>
     <div class="navbar-center">
-      <input type="text" placeholder="Pretraži..." />
+      <div class="search-container">
+        <div class="search-top"></div>
+        <input type="text" id="search" placeholder="Pretraži..." />
+        <img src="images/search.svg" alt="search icon" />
+      </div>
     </div>
     <div class="navbar-right">
       <img src="images/menu.svg" alt="Menu">
     </div>
   </div>
 
+  <!-- SECTIONS -->
+
   <div class="section" style="background-image: url('images/Background.jpg');">
-    <div class="content">Dobrodošli u Mountain Adventures</div>
+    <div class="content-box" onclick="alert('Dobrodošli!')">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
+    </div>
   </div>
+
   <div class="section" style="background-image: url('images/Background1.jpg');">
-    <div class="content">Istražite Balkanske staze</div>
+    <div class="content-box" onclick="alert('Staze')">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
+    </div>
   </div>
+
   <div class="section" style="background-image: url('images/Background2.jpg');">
-    <div class="content">Planinarski izazovi za sve uzraste</div>
+    <div class="content-box" onclick="alert('Izazovi')">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Planinarski izazovi za sve uzraste" data-en="Hiking Challenges for All Ages">Planinarski izazovi za sve uzraste</div>
+    </div>
   </div>
+
   <div class="section" style="background-image: url('images/Background3.jpg');">
-    <div class="content">Priroda bez granica</div>
+    <div class="content-box" onclick="alert('Priroda')">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Priroda bez granica" data-en="Nature Without Borders">Priroda bez granica</div>
+    </div>
   </div>
+
   <div class="section" style="background-image: url('images/Background4.jpg');">
-    <div class="content">Sigurno i opušteno</div>
+    <div class="content-box" onclick="alert('Sigurnost')">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Sigurno i opušteno" data-en="Safe and Relaxed">Sigurno i opušteno</div>
+    </div>
   </div>
+
   <div class="section" style="background-image: url('images/Background5.jpg');">
-    <div class="content">Spremni za avanturu?</div>
+    <div class="content-box" onclick="alert('Avantura')">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
+    </div>
   </div>
+
   <div class="section" style="background-image: url('images/Background6.jpg');">
-    <div class="content">Kontaktirajte nas i krenite!</div>
+    <div class="content-box" onclick="alert('Kontakt')">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
+    </div>
   </div>
 
+  <!-- SCRIPT -->
   <script>
+    // Intersection Observer
     const sections = document.querySelectorAll('.section');
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          } else {
-            entry.target.classList.remove('visible');
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.isIntersecting
+          ? entry.target.classList.add('visible')
+          : entry.target.classList.remove('visible');
+      });
+    }, { threshold: 0.5 });
 
-    sections.forEach(section => {
-      observer.observe(section);
+    sections.forEach(section => observer.observe(section));
+
+    // Jezična logika
+    const toggle = document.getElementById('language-toggle');
+    const texts = document.querySelectorAll('.box-text');
+    let currentLang = 'hr';
+
+    toggle.addEventListener('click', () => {
+      currentLang = currentLang === 'hr' ? 'en' : 'hr';
+      toggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+
+      texts.forEach(el => {
+        el.textContent = el.getAttribute(`data-${currentLang}`);
+      });
+
+      document.getElementById('search').placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
     });
   </script>
 </body>
