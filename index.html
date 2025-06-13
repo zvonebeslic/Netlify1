@@ -22,29 +22,7 @@
   padding: 0 15px;
   z-index: 1000;
 }
-.navbar-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0,05);
-  transition: background 0,3s, transform 0,2s;
-}
-.navbar-right:hover {
-  background: rgba(255, 255, 255, 0,1);
-  transform: scale(1,05);
-}
-.burger-line {
-  width: 26px;
-  height: 3px;
-  background-color: white;
-  border-radius: 2px;
-  transition: background-color 0,3s;
-}
+
 .navbar-left img {
   height: 16px;
   width: 24px;
@@ -96,40 +74,46 @@
   pointer-events: none;
 }
 
-.navbar-right img {
-  height: 20px;
-  width: 26px;
+.navbar-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
   cursor: pointer;
-  background-color: transparent;
-  border: 1px solid rgba(200, 200, 200, 0.4);
-  padding: 4px;
-  border-radius: 6px;
-  filter: brightness(0) invert(1);
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.navbar-right:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.burger-line {
+  width: 26px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: background-color 0.3s;
 }
 
 .menu-overlay {
   position: fixed;
   top: 0;
-  right: -200px; /* skriveno */
-  width: 1800px;  /* manja širina */
+  right: -200px;
+  width: 180px;
   height: 100%;
-  background-color: linear-gradient(to-bottom, #111, #222);
+  background: linear-gradient(to bottom, #111, #222);
   color: white;
   padding: 70px 15px;
   transition: right 0.4s ease-in-out;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0,5);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.5);
   z-index: 9999;
-  <div class="menu-overlay" id="menu">
-  <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
-  <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
-  <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
-  <a href="#webshop" data-hr="Web shop" data-en="Web Shop">Web shop</a>
-  <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
-  <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
-  <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
-</div>
 }
-    
+
 .menu-overlay.open {
   right: 0;
 }
@@ -141,12 +125,12 @@
   color: white;
   font-size: 1em;
   font-weight: 300;
-  transition: color 0.2s, transform: 0,2;
+  transition: color 0.2s, transform 0.2s;
 }
 
 .menu-overlay a:hover {
   color: #ddd;
-  transform: translateX (3px);
+  transform: translateX(3px);
 }
 
 .section {
@@ -204,16 +188,19 @@
       </div>
     </div>
     <div class="navbar-right" id="menu-toggle">
-  <div class="burger-line"></div>
-  <div class="burger-line"></div>
-  <div class="burger-line"></div>
-</div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
   </div>  <div class="menu-overlay" id="menu">
     <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
     <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
     <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="#webshop" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
-  </div>  <!-- SECTIONS -->  <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
+  </div>  <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
     <div class="content-box">
       <div class="box-top"></div>
       <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
@@ -223,46 +210,31 @@
       <div class="box-top"></div>
       <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
     </div>
-  </div>  <div class="section" style="background-image: url('images/Background2.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Planinarski izazovi za sve uzraste" data-en="Hiking Challenges for All Ages">Planinarski izazovi za sve uzraste</div>
-    </div>
-  </div>  <div class="section" style="background-image: url('images/Background3.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Priroda bez granica" data-en="Nature Without Borders">Priroda bez granica</div>
-    </div>
-  </div>  <div id="section5" class="section" style="background-image: url('images/Background5.jpg');">
+  </div>  <div id="section5" class="section" style="background-image: url('images/Background2.jpg');">
     <div class="content-box">
       <div class="box-top"></div>
       <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
+    </div>
+  </div>  <div id="webshop" class="section" style="background-image: url('images/Background3.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Istražite naš web shop" data-en="Browse our web shop">Istražite naš web shop</div>
+    </div>
+  </div>  <div id="blog" class="section" style="background-image: url('images/Background4.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">Najnovije iz svijeta planinarenja</div>
+    </div>
+  </div>  <div id="about" class="section" style="background-image: url('images/Background5.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Saznajte više o nama" data-en="Learn more about us">Saznajte više o nama</div>
     </div>
   </div>  <div id="section7" class="section" style="background-image: url('images/Background6.jpg');">
     <div class="content-box">
       <div class="box-top"></div>
       <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
     </div>
-    <div id="webshop" class="section" style="background-image: url('images/Background4.jpg');">
-  <div class="content-box">
-    <div class="box-top"></div>
-    <div class="box-text" data-hr="Istražite naš web shop" data-en="Browse our web shop">Istražite naš web shop</div>
-  </div>
-</div>
-
-<div id="blog" class="section" style="background-image: url('images/Background5.jpg');">
-  <div class="content-box">
-    <div class="box-top"></div>
-    <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">Najnovije iz svijeta planinarenja</div>
-  </div>
-</div>
-
-<div id="about" class="section" style="background-image: url('images/Background6.jpg');">
-  <div class="content-box">
-    <div class="box-top"></div>
-    <div class="box-text" data-hr="Saznajte više o nama" data-en="Learn more about us">Saznajte više o nama</div>
-  </div>
-</div>
   </div>  <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -277,6 +249,9 @@
       document.querySelectorAll('[data-hr]').forEach(el => {
         el.textContent = el.getAttribute(`data-${currentLang}`);
       });
+      document.querySelectorAll('.menu-overlay a').forEach(link => {
+        link.textContent = link.getAttribute(`data-${currentLang}`);
+      });
     });
 
     menuToggle.addEventListener('click', () => {
@@ -287,6 +262,12 @@
       if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
         menu.classList.remove('open');
       }
+    });
+
+    document.querySelectorAll('.menu-overlay a').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('open');
+      });
     });
 
     const sections = document.querySelectorAll('.section');
