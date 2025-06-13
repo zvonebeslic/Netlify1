@@ -115,6 +115,47 @@
   color: #aaa;
 }
 
+.section {
+  height: 100vh;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s ease, opacity 1s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.section:not(.visible) {
+  opacity: 0.4;
+  transform: scale(1);
+}
+
+.content-box {
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+  max-width: 70%;
+  padding: 30px;
+  text-align: center;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.box-top {
+  height: 25px;
+  background: white;
+  clip-path: polygon(0% 100%, 10% 60%, 20% 85%, 30% 50%, 40% 90%, 50% 40%, 60% 80%, 70% 55%, 80% 85%, 90% 60%, 100% 100%);
+}
+
   </style>
 </head>
 <body>
@@ -132,10 +173,40 @@
       <img src="images/menu.svg" alt="Menu" id="menu-toggle">
     </div>
   </div>  <div class="menu-overlay" id="menu">
-    <a href="#" data-hr="Naslovna" data-en="Home">Naslovna</a>
-    <a href="#" data-hr="Staze" data-en="Trails">Staze</a>
-    <a href="#" data-hr="Avantura" data-en="Adventure">Avantura</a>
-    <a href="#" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+    <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>  <!-- SECTIONS -->  <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
+    </div>
+  </div>  <div id="section2" class="section" style="background-image: url('images/Background1.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
+    </div>
+  </div>  <div class="section" style="background-image: url('images/Background2.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Planinarski izazovi za sve uzraste" data-en="Hiking Challenges for All Ages">Planinarski izazovi za sve uzraste</div>
+    </div>
+  </div>  <div class="section" style="background-image: url('images/Background3.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Priroda bez granica" data-en="Nature Without Borders">Priroda bez granica</div>
+    </div>
+  </div>  <div id="section5" class="section" style="background-image: url('images/Background5.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
+    </div>
+  </div>  <div id="section7" class="section" style="background-image: url('images/Background6.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
+    </div>
   </div>  <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -147,7 +218,6 @@
       currentLang = currentLang === 'hr' ? 'en' : 'hr';
       langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
       searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
-
       document.querySelectorAll('[data-hr]').forEach(el => {
         el.textContent = el.getAttribute(`data-${currentLang}`);
       });
@@ -157,11 +227,21 @@
       menu.classList.toggle('open');
     });
 
-    // Close menu when clicking outside
     window.addEventListener('click', e => {
       if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
         menu.classList.remove('open');
       }
     });
+
+    const sections = document.querySelectorAll('.section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.isIntersecting
+          ? entry.target.classList.add('visible')
+          : entry.target.classList.remove('visible');
+      });
+    }, { threshold: 0.5 });
+
+    sections.forEach(section => observer.observe(section));
   </script></body>
 </html>
