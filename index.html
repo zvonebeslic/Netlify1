@@ -26,19 +26,24 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4px;
-  padding: 6px;
-  border: 1px solid rgba(200, 200, 200, 0.4);
-  border-radius: 6px;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
   cursor: pointer;
-  background: transparent;
+  background: rgba(255, 255, 255, 0,05);
+  transition: background 0,3s, transform 0,2s;
 }
-
+.navbar-right:hover {
+  background: rgba(255, 255, 255, 0,1);
+  transform: scale(1,05);
+}
 .burger-line {
-  width: 22px;
-  height: 2px;
+  width: 26px;
+  height: 3px;
   background-color: white;
-  border-radius: 1px;
+  border-radius: 2px;
+  transition: background-color 0,3s;
 }
 .navbar-left img {
   height: 16px;
@@ -105,13 +110,13 @@
 .menu-overlay {
   position: fixed;
   top: 0;
-  right: -250px;
+  right: -270px;
   width: 250px;
   height: 100%;
-  background-color: #111;
+  background-color: linear-gradient(to-bottom, #111, #222);
   color: white;
-  padding: 60px 20px;
-  transition: right 0.3s ease-in-out;
+  padding: 80px 25px;
+  transition: right 0.4s ease-in-out;
   z-index: 9999;
 }
 
@@ -121,15 +126,17 @@
 
 .menu-overlay a {
   display: block;
-  margin: 15px 0;
+  margin: 20px 0;
   text-decoration: none;
   color: white;
-  font-size: 1.2em;
-  transition: color 0.2s;
+  font-size: 1.3em;
+  font-weight: 300;
+  transition: color 0.2s, transform: 0,2;
 }
 
 .menu-overlay a:hover {
-  color: #aaa;
+  color: #ddd;
+  transform: translateX (5px);
 }
 
 .section {
