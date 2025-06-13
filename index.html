@@ -174,27 +174,29 @@
       }
     }
 
-    /* Back to top button */
+    /* Moderni centrirani gumb za povratak na vrh */
     #backToTop {
       position: fixed;
       bottom: 30px;
-      right: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 9999;
-      background-color: rgba(255, 255, 255, 0.7);
-      color: black;
-      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
       outline: none;
-      padding: 12px 16px;
-      border-radius: 50%;
-      font-size: 22px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 20px;
       cursor: pointer;
       display: none;
-      transition: background 0.3s, transform 0.3s;
+      transition: background 0.3s ease, transform 0.3s ease;
     }
 
     #backToTop:hover {
-      background-color: white;
-      transform: scale(1.1);
+      background-color: rgba(255, 255, 255, 0.25);
+      transform: translateX(-50%) scale(1.08);
     }
   </style>
 </head>
@@ -226,7 +228,6 @@
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
 
-  <!-- SECTIONS with background images -->
   <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
     <div class="content-box">
       <div class="box-top"></div>
@@ -276,7 +277,7 @@
     </div>
   </div>
 
-  <!-- Back to Top Button -->
+  <!-- Gumb za povratak na vrh -->
   <button id="backToTop" title="Na vrh">&#8679;</button>
 
   <script>
@@ -325,7 +326,6 @@
 
     sections.forEach(section => observer.observe(section));
 
-    // Back to Top button logic
     const backToTopBtn = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
       if (window.scrollY > 300) {
