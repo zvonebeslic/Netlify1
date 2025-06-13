@@ -32,7 +32,8 @@
     }
 
     .navbar-left img {
-      height: 24px;
+      height: 16px;
+      width: 24px;
       cursor: pointer;
       position: relative;
     }
@@ -89,7 +90,13 @@
 
     .navbar-right img {
       height: 22px;
+      width: 30px;
       cursor: pointer;
+      background-color: transparent;
+      border: 1px solid rgba(200, 200, 200, 0.4);
+      padding: 4px;
+      border-radius: 6px;
+      filter: brightness(0) invert(1);
     }
 
     .section {
@@ -220,7 +227,6 @@
   <button id="scrollToTop" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">↑</button>
 
   <script>
-    // Intersection Observer
     const sections = document.querySelectorAll('.section');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -232,7 +238,6 @@
 
     sections.forEach(section => observer.observe(section));
 
-    // Jezik
     const toggle = document.getElementById('language-toggle');
     const texts = document.querySelectorAll('.box-text');
     let currentLang = 'hr';
@@ -246,7 +251,6 @@
       document.getElementById('search').placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
     });
 
-    // Detekcija jezika iz URL-a
     const urlParams = new URLSearchParams(window.location.search);
     const langFromUrl = urlParams.get("lang");
     if (langFromUrl === "en" || langFromUrl === "hr") {
@@ -258,7 +262,6 @@
       document.getElementById('search').placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
     }
 
-    // Scroll to top dugme
     const scrollBtn = document.getElementById("scrollToTop");
     window.addEventListener("scroll", () => {
       scrollBtn.style.display = window.scrollY > 200 ? "block" : "none";
