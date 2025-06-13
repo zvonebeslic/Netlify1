@@ -173,6 +173,29 @@
         padding: 50px;
       }
     }
+
+    /* Back to top button */
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 20px;
+      z-index: 9999;
+      background-color: rgba(255, 255, 255, 0.7);
+      color: black;
+      border: none;
+      outline: none;
+      padding: 12px 16px;
+      border-radius: 50%;
+      font-size: 22px;
+      cursor: pointer;
+      display: none;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    #backToTop:hover {
+      background-color: white;
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -253,6 +276,9 @@
     </div>
   </div>
 
+  <!-- Back to Top Button -->
+  <button id="backToTop" title="Na vrh">&#8679;</button>
+
   <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -298,6 +324,20 @@
     }, { threshold: 0.5 });
 
     sections.forEach(section => observer.observe(section));
+
+    // Back to Top button logic
+    const backToTopBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.style.display = 'block';
+      } else {
+        backToTopBtn.style.display = 'none';
+      }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>
