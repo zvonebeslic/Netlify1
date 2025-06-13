@@ -174,7 +174,7 @@
       }
     }
 
-    /* Moderni, okrugli, centrirani gumb sa SVG ikonom */
+    /* Moderni prozirni gumb sa SVG ikonom */
     #backToTop {
       position: fixed;
       bottom: 30px;
@@ -204,6 +204,32 @@
     #backToTop svg {
       width: 24px;
       height: 24px;
+    }
+
+    /* Footer */
+    footer {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 14px;
+    }
+
+    .footer-icons {
+      margin: 10px 0;
+    }
+
+    .footer-icons img {
+      width: 24px;
+      height: 24px;
+      margin: 0 10px;
+      vertical-align: middle;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+
+    .footer-icons img:hover {
+      opacity: 1;
     }
   </style>
 </head>
@@ -284,12 +310,21 @@
     </div>
   </div>
 
-  <!-- Gumb za povratak na vrh sa SVG ikonom -->
+  <!-- Gumb za povratak na vrh -->
   <button id="backToTop" title="Na vrh" aria-label="Na vrh">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="18 15 12 9 6 15"></polyline>
     </svg>
   </button>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-icons">
+      <a href="https://instagram.com" target="_blank"><img src="images/instagram.svg" alt="Instagram"></a>
+      <a href="mailto:info@mountainadventures.com"><img src="images/email.svg" alt="Email"></a>
+    </div>
+    © Mountain Adventures. All rights reserved.
+  </footer>
 
   <script>
     const langToggle = document.getElementById('language-toggle');
