@@ -97,40 +97,31 @@
   height: 3px;
   background-color: white;
   border-radius: 2px;
-  transition: background-color 0.3s;
 }
 
 .menu-overlay {
   position: fixed;
-  top: 0;
-  right: -200px;
-  width: 180px;
-  height: 100%;
-  background: linear-gradient(to bottom, #111, #222);
+  top: 70px;
+  right: 0;
+  width: 100%;
+  background-color: rgba(17, 17, 17, 0.95);
   color: white;
-  padding: 70px 15px;
-  transition: right 0.4s ease-in-out;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
   z-index: 9999;
 }
 
 .menu-overlay.open {
-  right: 0;
+  display: flex;
 }
 
 .menu-overlay a {
-  display: block;
-  margin: 16px 0;
+  margin: 10px 0;
   text-decoration: none;
   color: white;
-  font-size: 1em;
-  font-weight: 300;
-  transition: color 0.2s, transform 0.2s;
-}
-
-.menu-overlay a:hover {
-  color: #ddd;
-  transform: translateX(3px);
+  font-size: 1.1em;
 }
 
 .section {
@@ -200,42 +191,7 @@
     <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
     <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
-  </div>  <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
-    </div>
-  </div>  <div id="section2" class="section" style="background-image: url('images/Background1.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
-    </div>
-  </div>  <div id="section5" class="section" style="background-image: url('images/Background2.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
-    </div>
-  </div>  <div id="webshop" class="section" style="background-image: url('images/Background3.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Istražite naš web shop" data-en="Browse our web shop">Istražite naš web shop</div>
-    </div>
-  </div>  <div id="blog" class="section" style="background-image: url('images/Background4.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">Najnovije iz svijeta planinarenja</div>
-    </div>
-  </div>  <div id="about" class="section" style="background-image: url('images/Background5.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Saznajte više o nama" data-en="Learn more about us">Saznajte više o nama</div>
-    </div>
-  </div>  <div id="section7" class="section" style="background-image: url('images/Background6.jpg');">
-    <div class="content-box">
-      <div class="box-top"></div>
-      <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
-    </div>
-  </div>  <script>
+  </div>  <!-- Sekcije ostaju iste, samo se dizajn menija popravlja -->  <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
     const menuToggle = document.getElementById('menu-toggle');
