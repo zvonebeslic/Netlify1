@@ -33,9 +33,9 @@
     } 
 
     .navbar-center input {
-      padding: 6px 12px;
+      padding: 5px 10px;
       border: none;
-      border-radius: 20px;
+      border-radius: 4px;
       font-size: 14px;
     } 
 
@@ -101,8 +101,7 @@
 
     .overlay {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.4);
       z-index: 1;
       transition: background 0.8s ease;
@@ -124,7 +123,6 @@
       opacity: 0;
       transform: translateY(40px);
       transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-      max-width: 80%;
     } 
 
     .content.visible {
@@ -132,51 +130,20 @@
       transform: translateY(0);
     } 
 
-    .responsive-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      max-width: 800px;
-      margin: 10px auto;
-      border-radius: 10px;
-    } 
-
-    /* RESPONSIVE DIZAJN */
     @media (max-width: 768px) {
       .section {
         background-attachment: scroll !important;
-      }
+      } 
+
       .menu {
         width: 100%;
-      }
-      .content {
-        font-size: 1.4em;
-        max-width: 90%;
-      }
-      .navbar-center input {
-        font-size: 12px;
-        padding: 5px 10px;
-      }
-    } 
-
-    @media (min-width: 769px) and (max-width: 1200px) {
-      .content {
-        font-size: 1.8em;
-        max-width: 85%;
-      }
-    } 
-
-    @media (min-width: 1201px) {
-      .content {
-        font-size: 2.2em;
-        max-width: 70%;
       }
     }
   </style>
 </head>
 <body> 
 
-  <!-- GORNJI NAV -->
+  <!-- GORNJI NAVIGACIJSKI DIO -->
   <div class="navbar">
     <div class="navbar-left">
       <img id="language-flag" alt="Jezik" onclick="switchLanguage()">
@@ -198,62 +165,96 @@
     <a href="#section4" data-key="nav-about">O nama</a>
     <a href="#section5" data-key="nav-gallery">Galerija</a>
     <a href="#section6" data-key="nav-contact">Kontakt</a>
-  </div> 
-
+  </div>
   <!-- SEKCIJE -->
-  <div class="section" id="section0" data-img="Background.jpg"><div class="overlay"></div><div class="content" data-key="sec-home">Naslovna</div></div>
-  <div class="section" id="section1" data-img="Background1.jpg"><div class="overlay"></div><div class="content" data-key="sec-trails">Planinarske staze</div></div>
-  <div class="section" id="section2" data-img="Background2.jpg"><div class="overlay"></div><div class="content" data-key="sec-shop">Web Shop</div></div>
-  <div class="section" id="section3" data-img="Background3.jpg"><div class="overlay"></div><div class="content" data-key="sec-blog">Blog</div></div>
-  <div class="section" id="section4" data-img="Background4.jpg"><div class="overlay"></div><div class="content" data-key="sec-about">O nama</div></div> 
-
-  <!-- GALERIJA sa RESPONSIVE SLIKAMA -->
+  <div class="section" id="section0" data-img="Background.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-home">Naslovna</div>
+  </div>
+  <div class="section" id="section1" data-img="Background1.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-trails">Planinarske staze</div>
+  </div>
+  <div class="section" id="section2" data-img="Background2.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-shop">Web Shop</div>
+  </div>
+  <div class="section" id="section3" data-img="Background3.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-blog">Blog</div>
+  </div>
+  <div class="section" id="section4" data-img="Background4.jpg">
+    <div class="overlay"></div>
+    <div class="content" data-key="sec-about">O nama</div>
+  </div>
   <div class="section" id="section5" data-img="Background5.jpg">
     <div class="overlay"></div>
-    <div class="content" data-key="sec-gallery">
-      Galerija<br />
-      <img src="images/photo1.jpg" alt="Planina 1" class="responsive-img" />
-      <img src="images/photo2.jpg" alt="Planina 2" class="responsive-img" />
-    </div>
-  </div> 
-
+    <div class="content" data-key="sec-gallery">Galerija</div>
+  </div>
   <div class="section" id="section6" data-img="Background6.jpg">
     <div class="overlay"></div>
     <div class="content" data-key="sec-contact">Kontaktirajte nas</div>
-  </div> 
-
-  <!-- SCRIPT -->
+  </div>
   <script>
     const translations = {
       hr: {
-        'nav-home': 'Naslovna', 'nav-trails': 'Planinarske staze', 'nav-shop': 'Web Shop',
-        'nav-blog': 'Blog', 'nav-about': 'O nama', 'nav-gallery': 'Galerija', 'nav-contact': 'Kontakt',
-        'sec-home': 'Naslovna', 'sec-trails': 'Planinarske staze', 'sec-shop': 'Web Shop',
-        'sec-blog': 'Blog', 'sec-about': 'O nama', 'sec-gallery': 'Galerija', 'sec-contact': 'Kontaktirajte nas'
+        'nav-home': 'Naslovna',
+        'nav-trails': 'Planinarske staze',
+        'nav-shop': 'Web Shop',
+        'nav-blog': 'Blog',
+        'nav-about': 'O nama',
+        'nav-gallery': 'Galerija',
+        'nav-contact': 'Kontakt',
+        'sec-home': 'Naslovna',
+        'sec-trails': 'Planinarske staze',
+        'sec-shop': 'Web Shop',
+        'sec-blog': 'Blog',
+        'sec-about': 'O nama',
+        'sec-gallery': 'Galerija',
+        'sec-contact': 'Kontaktirajte nas'
       },
       en: {
-        'nav-home': 'Home', 'nav-trails': 'Hiking Trails', 'nav-shop': 'Web Shop',
-        'nav-blog': 'Blog', 'nav-about': 'About Us', 'nav-gallery': 'Gallery', 'nav-contact': 'Contact',
-        'sec-home': 'Home', 'sec-trails': 'Hiking Trails', 'sec-shop': 'Web Shop',
-        'sec-blog': 'Blog', 'sec-about': 'About Us', 'sec-gallery': 'Gallery', 'sec-contact': 'Contact Us'
+        'nav-home': 'Home',
+        'nav-trails': 'Hiking Trails',
+        'nav-shop': 'Web Shop',
+        'nav-blog': 'Blog',
+        'nav-about': 'About Us',
+        'nav-gallery': 'Gallery',
+        'nav-contact': 'Contact',
+        'sec-home': 'Home',
+        'sec-trails': 'Hiking Trails',
+        'sec-shop': 'Web Shop',
+        'sec-blog': 'Blog',
+        'sec-about': 'About Us',
+        'sec-gallery': 'Gallery',
+        'sec-contact': 'Contact Us'
       }
-    };
-    let currentLang = 'hr';
+    }; 
+
+    let currentLang = 'hr'; 
+
     function switchLanguage() {
       currentLang = currentLang === 'hr' ? 'en' : 'hr';
       updateTexts();
-      loadImage(document.getElementById("language-flag"), currentLang === 'hr' ? 'flag-uk.svg' : 'flag-hr.svg', 'img');
-    }
+      loadImage(
+        document.getElementById("language-flag"),
+        currentLang === 'hr' ? 'flag-uk.svg' : 'flag-hr.svg',
+        'img'
+      );
+    } 
+
     function updateTexts() {
       document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
         el.textContent = translations[currentLang][key];
       });
-    }
+    } 
+
     function toggleMenu() {
       const menu = document.getElementById('menu');
       menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    }
+    } 
+
     function searchContent(value) {
       const contents = document.querySelectorAll('.content');
       contents.forEach((c, i) => {
@@ -261,10 +262,16 @@
           location.href = `#section${i}`;
         }
       });
-    }
+    } 
+
     function loadImage(element, filename, type = 'img') {
       const folderName = filename.replace(/\.(jpg|svg)$/, "");
-      const tryPaths = [`images/${filename}`, `${filename}`, `${folderName}/${filename}`];
+      const tryPaths = [
+        `images/${filename}`,
+        `${filename}`,
+        `${folderName}/${filename}`
+      ]; 
+
       const tryNext = (index) => {
         if (index >= tryPaths.length) return;
         const url = tryPaths[index];
@@ -275,29 +282,33 @@
           else element.style.backgroundImage = `url('${url}')`;
         };
         img.onerror = () => tryNext(index + 1);
-      };
+      }; 
+
       tryNext(0);
     } 
 
-    // Učitaj slike
+    // Pokreni sve
     document.querySelectorAll(".section").forEach(sec => {
       const filename = sec.dataset.img;
       loadImage(sec, filename, 'background');
       sec.style.zIndex = 0;
-    });
+    }); 
+
     loadImage(document.getElementById("language-flag"), "flag-uk.svg", "img"); 
 
-    // Parallax efekti
-    const sections = document.querySelectorAll(".section");
+    const sections = document.querySelectorAll(".section"); 
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const section = entry.target;
         const content = section.querySelector(".content");
-        const overlay = section.querySelector(".overlay");
+        const overlay = section.querySelector(".overlay"); 
+
         if (entry.isIntersecting) {
           section.classList.add("scaled");
           content.classList.add("visible");
-          overlay.classList.remove("dimmed");
+          overlay.classList.remove("dimmed"); 
+
           sections.forEach(s => s.style.zIndex = 0);
           section.style.zIndex = 10;
         } else {
@@ -306,22 +317,18 @@
           overlay.classList.add("dimmed");
         }
       });
-    }, { root: null, rootMargin: "0px 0px -40% 0px", threshold: 0.4 });
+    }, {
+      root: null,
+      rootMargin: "0px 0px -40% 0px",
+      threshold: 0.4
+    }); 
+
     sections.forEach(section => observer.observe(section)); 
 
-    // Prva postavka jezika
     window.onload = () => {
-      updateTexts();
-    }; 
+      updateTexts(); // odmah postavi tekstove na hrvatski
+    };
+  </script> 
 
-    // Zatvaranje menija klikom izvan njega
-    document.addEventListener('click', function(event) {
-      const menu = document.getElementById('menu');
-      const hamburger = document.querySelector('.hamburger');
-      if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-        menu.style.display = 'none';
-      }
-    });
-  </script>
 </body>
 </html>
