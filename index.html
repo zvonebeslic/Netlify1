@@ -174,29 +174,36 @@
       }
     }
 
-    /* Moderni centrirani gumb za povratak na vrh */
+    /* Moderni, okrugli, centrirani gumb sa SVG ikonom */
     #backToTop {
       position: fixed;
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 9999;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
       color: white;
       border: 1px solid rgba(255, 255, 255, 0.3);
       outline: none;
-      padding: 14px 18px;
-      border-radius: 12px;
-      font-size: 20px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
       cursor: pointer;
       display: none;
+      align-items: center;
+      justify-content: center;
       transition: background 0.3s ease, transform 0.3s ease;
     }
 
     #backToTop:hover {
-      background-color: rgba(255, 255, 255, 0.25);
-      transform: translateX(-50%) scale(1.08);
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    #backToTop svg {
+      width: 24px;
+      height: 24px;
     }
   </style>
 </head>
@@ -277,8 +284,12 @@
     </div>
   </div>
 
-  <!-- Gumb za povratak na vrh -->
-  <button id="backToTop" title="Na vrh">&#8679;</button>
+  <!-- Gumb za povratak na vrh sa SVG ikonom -->
+  <button id="backToTop" title="Na vrh" aria-label="Na vrh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
 
   <script>
     const langToggle = document.getElementById('language-toggle');
@@ -329,7 +340,7 @@
     const backToTopBtn = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
       if (window.scrollY > 300) {
-        backToTopBtn.style.display = 'block';
+        backToTopBtn.style.display = 'flex';
       } else {
         backToTopBtn.style.display = 'none';
       }
