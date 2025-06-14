@@ -193,18 +193,17 @@
     .footer-icons {
       margin: 10px 0;
     }
-    .footer-icons img {
+    .footer-icons svg {
       width: 32px;
       height: 32px;
       margin: 0 10px;
       vertical-align: middle;
       opacity: 0.8;
-      transition: opacity 0.3s;
-      border-radius: 50%;
-      background-color: transparent;
+      transition: opacity 0.3s, transform 0.3s;
     }
-    .footer-icons img:hover {
+    .footer-icons svg:hover {
       opacity: 1;
+      transform: scale(1.1);
     }
   </style>
 </head>
@@ -234,7 +233,6 @@
     <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
-  <!-- Sekcije sa slikama i prijevodima -->
   <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
     <div class="content-box">
       <div class="box-top"></div>
@@ -284,8 +282,19 @@
   </button>
   <footer id="footer">
     <div class="footer-icons">
-      <a href="https://instagram.com" target="_blank"><img src="images/instagram.svg" alt="Instagram"></a>
-      <a href="mailto:info@mountainadventures.com"><img src="images/email.svg" alt="Email"></a>
+      <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
+        </svg>
+      </a>
+      <a href="mailto:info@mountainadventures.com" aria-label="Email">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </a>
     </div>
     © Mountain Adventures. All rights reserved.
   </footer>
@@ -296,67 +305,67 @@
     const menu = document.getElementById('menu');
     const backToTopBtn = document.getElementById('backToTop');
     const footer = document.getElementById('footer');
-    let currentLang = 'hr';langToggle.addEventListener('click', () => {
-  currentLang = currentLang === 'hr' ? 'en' : 'hr';
-  langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-  searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
-  document.querySelectorAll('[data-hr]').forEach(el => {
-    el.textContent = el.getAttribute(`data-${currentLang}`);
-  });
-  document.querySelectorAll('.menu-overlay a').forEach(link => {
-    link.textContent = link.getAttribute(`data-${currentLang}`);
-  });
-});
+    let currentLang = 'hr';
+    langToggle.addEventListener('click', () => {
+      currentLang = currentLang === 'hr' ? 'en' : 'hr';
+      langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+      searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+      document.querySelectorAll('[data-hr]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${currentLang}`);
+      });
+      document.querySelectorAll('.menu-overlay a').forEach(link => {
+        link.textContent = link.getAttribute(`data-${currentLang}`);
+      });
+    });
 
-menuToggle.addEventListener('click', () => {
-  menu.classList.toggle('open');
-});
+    menuToggle.addEventListener('click', () => {
+      menu.classList.toggle('open');
+    });
 
-window.addEventListener('click', e => {
-  if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
-    menu.classList.remove('open');
-  }
-});
+    window.addEventListener('click', e => {
+      if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
 
-document.querySelectorAll('.menu-overlay a').forEach(link => {
-  link.addEventListener('click', () => {
-    menu.classList.remove('open');
-  });
-});
+    document.querySelectorAll('.menu-overlay a').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('open');
+      });
+    });
 
-const sections = document.querySelectorAll('.section');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    entry.isIntersecting
-      ? entry.target.classList.add('visible')
-      : entry.target.classList.remove('visible');
-  });
-}, { threshold: 0.5 });
+    const sections = document.querySelectorAll('.section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.isIntersecting
+          ? entry.target.classList.add('visible')
+          : entry.target.classList.remove('visible');
+      });
+    }, { threshold: 0.5 });
 
-sections.forEach(section => observer.observe(section));
+    sections.forEach(section => observer.observe(section));
 
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-  const windowHeight = window.innerHeight;
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      const windowHeight = window.innerHeight;
 
-  if (scrollY > 300) {
-    backToTopBtn.style.display = 'flex';
-  } else {
-    backToTopBtn.style.display = 'none';
-  }
+      if (scrollY > 300) {
+        backToTopBtn.style.display = 'flex';
+      } else {
+        backToTopBtn.style.display = 'none';
+      }
 
-  if (scrollY + windowHeight > footerTop) {
-    backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
-  } else {
-    backToTopBtn.style.bottom = '30px';
-  }
-});
+      if (scrollY + windowHeight > footerTop) {
+        backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
+      } else {
+        backToTopBtn.style.bottom = '30px';
+      }
+    });
 
-backToTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>
