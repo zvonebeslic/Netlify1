@@ -47,16 +47,22 @@
       display: flex;
       justify-content: center;
     }
+    .search-container {
+      width: 250px;
+      position: relative;
+    }
     .search-wrapper {
       position: relative;
-      width: 250px;
-      height: 80px;
+      width: 100%;
+      height: 60px;
       background: #fff;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      padding: 0 15px;
       display: flex;
       align-items: flex-end;
-      padding: 10px 15px;
+      justify-content: center;
       overflow: visible;
+      border-radius: 0 0 20px 20px;
     }
     .search-mountain {
       position: absolute;
@@ -73,7 +79,7 @@
     }
     .mountain-search {
       width: 100%;
-      padding: 14px 8px 8px;
+      padding: 14px 40px 8px 12px;
       font-size: 14px;
       border: none;
       background: transparent;
@@ -82,7 +88,7 @@
     }
     .search-wrapper img {
       position: absolute;
-      right: 10px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
       width: 18px;
@@ -236,14 +242,16 @@
       <img src="images/flag-uk.svg" alt="language" id="language-toggle" data-tooltip="Promijeni jezik">
     </div>
     <div class="navbar-center">
-      <div class="search-wrapper">
-        <div class="search-mountain">
-          <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="search-mountain-top">
-            <path d="M0,20 L20,5 L35,15 L50,2 L65,13 L80,6 L100,20 Z" fill="#fff" />
-          </svg>
+      <div class="search-container">
+        <div class="search-wrapper">
+          <div class="search-mountain">
+            <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="search-mountain-top">
+              <path d="M0,20 L20,5 L35,15 L50,2 L65,13 L80,6 L100,20 Z" fill="#fff" />
+            </svg>
+          </div>
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
+          <img src="images/search.svg" alt="search icon">
         </div>
-        <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
-        <img src="images/search.svg" alt="search icon">
       </div>
     </div>
     <div class="navbar-right" id="menu-toggle">
