@@ -49,21 +49,26 @@
     }
     .search-container {
       position: relative;
+      width: 250px;
+      height: 80px;
+      clip-path: polygon(0% 30%, 10% -20%, 20% -15%, 30% 40%, 40% 10%, 50% 35%, 60% 5%, 70% 25%, 80% 10%, 90% 30%, 100% 15%, 100% 100%, 0% 100%);
+      -webkit-clip-path: polygon(0% 30%, 10% -20%, 20% -15%, 30% 40%, 40% 10%, 50% 35%, 60% 5%, 70% 25%, 80% 10%, 90% 30%, 100% 15%, 100% 100%, 0% 100%);
+      background-color: #fff;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      overflow: visible;
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      z-index: 10;
     }
     .mountain-search {
-      width: 250px;
-      padding: 10px 36px 12px 12px;
+      width: 100%;
+      padding: 8px;
       font-size: 14px;
       border: none;
-      outline: none;
-      border-radius: 20px;
-      outline: none;
-      font-size: 14px;
-      background-color: #fff;
-      clip-path: polygon(30% 10%, 4% 7%, 8% -15%, 30% 40%, 40% 10%, 50% 35%, 60% 5%, 70% 25%, 80% 10%, 90% 30%, 100% 15%, 100% 100%, 0% 100%);
--webkit-clip-path: polygon(30% 10%, 4% -7%, 8% -15%, 30% 40%, 40% 10%, 50% 35%, 60% 5%, 70% 25%, 80% 10%, 90% 30%, 100% 15%, 100% 100%, 0% 100%);
-box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      background: transparent;
       color: #333;
+      outline: none;
     }
     .search-container img {
       position: absolute;
