@@ -1,19 +1,16 @@
-<!DOCTYPE html>
-<html lang="hr">
+<!DOCTYPE html><html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
+    body {
       font-family: Arial, sans-serif;
       overflow-x: hidden;
       scroll-behavior: smooth;
       background-color: #000;
-      color: white;
     }
-
     .navbar {
       position: fixed;
       top: 0;
@@ -23,303 +20,343 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 0 15px;
       z-index: 1000;
     }
-
     .navbar-left img {
+      height: 16px;
       width: 24px;
-      height: auto;
       cursor: pointer;
+      position: relative;
     }
-
-    .navbar-center input {
-      padding: 6px 12px;
+    .navbar-left img:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #fff;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      top: 30px;
+      left: 0;
+      white-space: nowrap;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    }
+    .navbar-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+    .search-container {
+      position: relative;
+    }
+    .search-container input {
+      padding: 6px 36px 6px 12px;
       border: none;
       border-radius: 20px;
       outline: none;
-      background-color: #222;
-      color: white;
-      background-image: url('images/search.svg');
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-size: 18px;
+      font-size: 14px;
+      background-color: #fff;
+      height: 32px;
     }
-
-    .hamburger {
-      display: none;
+    .search-container img {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+    .navbar-right {
+      display: flex;
       flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 8px;
       cursor: pointer;
-      gap: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: background 0.3s, transform 0.2s;
     }
-
-    .hamburger div {
-      width: 25px;
+    .navbar-right:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+    .burger-line {
+      width: 26px;
       height: 3px;
       background-color: white;
       border-radius: 2px;
     }
-
-    .menu {
+    .menu-overlay {
       position: fixed;
       top: 70px;
-      right: -250px;
-      width: 200px;
-      background: rgba(0, 0, 0, 0.9);
-      transition: right 0.3s;
-      padding: 20px;
-      z-index: 999;
-    }
-
-    .menu a {
-      display: block;
-      margin: 10px 0;
-      color: white;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    .menu.show {
       right: 0;
+      width: 100%;
+      background-color: rgba(17, 17, 17, 0.95);
+      color: white;
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      z-index: 9999;
     }
-
+    .menu-overlay.open {
+      display: flex;
+    }
+    .menu-overlay a {
+      margin: 10px 0;
+      text-decoration: none;
+      color: white;
+      font-size: 1.1em;
+    }
     .section {
+      height: 100vh;
       position: relative;
-      min-height: 100vh;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 20px;
       transition: transform 1s ease, opacity 1s ease;
     }
-
-    .section h2 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      background: rgba(0,0,0,0.5);
-      padding: 15px 25px;
-      border-radius: 20px;
-    }
-
-    .section:not(:first-child) {
-      margin-top: -100px;
-    }
-
     .section.visible {
-      transform: scale(1.03);
       opacity: 1;
+      transform: scale(1.05);
+      z-index: 2;
     }
-
     .section:not(.visible) {
-      opacity: 0.2;
+      opacity: 0.4;
       transform: scale(1);
     }
-
-    .content-section {
-      background: #111;
-      padding: 80px 20px;
+    .content-box {
+      position: relative;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 0 0 20px 20px;
+      overflow: hidden;
+      max-width: 70%;
+      padding: 30px;
       text-align: center;
+      font-size: 1.5em;
+      cursor: pointer;
     }
-
-    .content-section h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
+    .box-top {
+      height: 25px;
+      background: white;
+      clip-path: polygon(0% 100%, 10% 60%, 20% 85%, 30% 50%, 40% 90%, 50% 40%, 60% 80%, 70% 55%, 80% 85%, 90% 60%, 100% 100%);
     }
-
-    .content-section p {
-      max-width: 800px;
-      margin: 0 auto;
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #ccc;
+    @media (min-width: 1024px) {
+      .content-box {
+        font-size: 3em;
+        padding: 50px;
+      }
     }
-
     #backToTop {
       position: fixed;
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid white;
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      outline: none;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
+      cursor: pointer;
+      display: none;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      z-index: 999;
-      transition: background 0.3s;
+      transition: background 0.3s ease, transform 0.3s ease;
     }
-
     #backToTop:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(-50%) scale(1.1);
     }
-
-    .footer {
-      background-color: #111;
+    #backToTop svg {
+      width: 24px;
+      height: 24px;
+    }
+    footer {
+      background: #111;
+      color: #ccc;
       text-align: center;
-      padding: 40px 10px 20px;
-      margin-top: 100px;
-    }
-
-    .footer-icons {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-bottom: 10px;
-    }
-
-    .footer-icons img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: white;
-      padding: 5px;
-      transition: transform 0.3s;
-    }
-
-    .footer-icons img:hover {
-      transform: scale(1.1);
-    }
-
-    .footer p {
-      color: #aaa;
+      padding: 20px 10px;
       font-size: 14px;
+      position: relative;
     }
-
-    @media (max-width: 768px) {
-      .navbar-center input {
-        width: 130px;
-      }
-      .hamburger {
-        display: flex;
-      }
+    .footer-icons {
+      margin: 10px 0;
+    }
+    .footer-icons img {
+      width: 32px;
+      height: 32px;
+      margin: 0 10px;
+      vertical-align: middle;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+      border-radius: 50%;
+      background-color: transparent;
+    }
+    .footer-icons img:hover {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
-
   <div class="navbar">
     <div class="navbar-left">
-      <img src="images/hr.svg" id="langToggle" alt="Promijeni jezik" />
+      <img src="images/flag-uk.svg" alt="language" id="language-toggle" data-tooltip="Promijeni jezik">
     </div>
     <div class="navbar-center">
-      <input type="text" placeholder="Pretraži..." />
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Pretraži...">
+        <img src="images/search.svg" alt="search icon">
+      </div>
     </div>
-    <div class="hamburger" onclick="toggleMenu()">
-      <div></div><div></div><div></div>
+    <div class="navbar-right" id="menu-toggle">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
     </div>
   </div>
-
-  <div id="menu" class="menu">
-    <a href="#naslovna" data-lang="hr">Naslovna</a>
-    <a href="#staze" data-lang="hr">Staze</a>
-    <a href="#shop" data-lang="hr">Web shop</a>
-    <a href="#blog" data-lang="hr">Blog</a>
-    <a href="#onama" data-lang="hr">O nama</a>
-    <a href="#kontakt" data-lang="hr">Kontakt</a>
-
-    <a href="#naslovna" data-lang="en" style="display:none">Home</a>
-    <a href="#staze" data-lang="en" style="display:none">Trails</a>
-    <a href="#shop" data-lang="en" style="display:none">Shop</a>
-    <a href="#blog" data-lang="en" style="display:none">Blog</a>
-    <a href="#onama" data-lang="en" style="display:none">About us</a>
-    <a href="#kontakt" data-lang="en" style="display:none">Contact</a>
+  <div class="menu-overlay" id="menu">
+    <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="#webshop" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
+    <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
-
-  <div id="naslovna" class="section" style="background-image: url('images/background.jpg');">
-    <h2 data-lang="hr">Dobrodošli u prirodu</h2>
-    <h2 data-lang="en" style="display:none">Welcome to nature</h2>
+  <!-- Sekcije sa slikama i prijevodima -->
+  <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
+    </div>
   </div>
-
-  <div id="staze" class="section" style="background-image: url('images/background2.jpg');">
-    <h2 data-lang="hr">Planinarske staze Balkana</h2>
-    <h2 data-lang="en" style="display:none">Hiking Trails of the Balkans</h2>
+  <div id="section2" class="section" style="background-image: url('images/Background1.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
+    </div>
   </div>
-
-  <div id="shop" class="section" style="background-image: url('images/background3.jpg');">
-    <h2 data-lang="hr">Istraži netaknutu divljinu</h2>
-    <h2 data-lang="en" style="display:none">Explore the Untouched Wilderness</h2>
+  <div id="section5" class="section" style="background-image: url('images/Background2.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
+    </div>
   </div>
-
-  <div id="blog" class="content-section">
-    <h2 data-lang="hr">Blog</h2>
-    <h2 data-lang="en" style="display:none">Blog</h2>
-    <p data-lang="hr">Pročitajte najnovije članke o planinarenju, savjete i iskustva drugih planinara.</p>
-    <p data-lang="en" style="display:none">Read the latest articles about hiking, tips, and fellow adventurers' stories.</p>
+  <div id="webshop" class="section" style="background-image: url('images/Background3.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Istražite naš web shop" data-en="Browse our web shop">Istražite naš web shop</div>
+    </div>
   </div>
-
-  <div id="onama" class="content-section">
-    <h2 data-lang="hr">O nama</h2>
-    <h2 data-lang="en" style="display:none">About Us</h2>
-    <p data-lang="hr">Mountain Adventures okuplja entuzijaste prirode i istraživače koji žele podijeliti ljepote Balkana.</p>
-    <p data-lang="en" style="display:none">Mountain Adventures brings together nature lovers and explorers sharing the beauty of the Balkans.</p>
+  <div id="blog" class="section" style="background-image: url('images/Background4.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">Najnovije iz svijeta planinarenja</div>
+    </div>
   </div>
-
-  <div id="kontakt" class="content-section">
-    <h2 data-lang="hr">Kontakt</h2>
-    <h2 data-lang="en" style="display:none">Contact</h2>
-    <p data-lang="hr">Javite nam se putem e-pošte ili nas zapratite na društvenim mrežama.</p>
-    <p data-lang="en" style="display:none">Reach out to us by email or follow us on social media.</p>
+  <div id="about" class="section" style="background-image: url('images/Background5.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Saznajte više o nama" data-en="Learn more about us">Saznajte više o nama</div>
+    </div>
   </div>
-
-  <div id="backToTop" onclick="scrollToTop()" title="Povratak na vrh">↑</div>
-
-  <div class="footer">
+  <div id="section7" class="section" style="background-image: url('images/Background6.jpg');">
+    <div class="content-box">
+      <div class="box-top"></div>
+      <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
+    </div>
+  </div>
+  <button id="backToTop" title="Na vrh" aria-label="Na vrh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+  <footer id="footer">
     <div class="footer-icons">
-      <a href="https://instagram.com" target="_blank">
-        <img src="images/instagram.svg" alt="Instagram" />
-      </a>
-      <a href="mailto:info@mountainadventures.com">
-        <img src="images/email.svg" alt="Email" />
-      </a>
+      <a href="https://instagram.com" target="_blank"><img src="images/instagram.svg" alt="Instagram"></a>
+      <a href="mailto:info@mountainadventures.com"><img src="images/email.svg" alt="Email"></a>
     </div>
-    <p>© 2025 Mountain Adventures. All rights reserved.</p>
-  </div>
-
+    © Mountain Adventures. All rights reserved.
+  </footer>
   <script>
-    const sections = document.querySelectorAll('.section');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        entry.isIntersecting
-          ? entry.target.classList.add('visible')
-          : entry.target.classList.remove('visible');
-      });
-    }, { threshold: 0.3 });
-    sections.forEach(section => observer.observe(section));
-
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    const langToggle = document.getElementById('langToggle');
-    let currentLang = localStorage.getItem('lang') || 'hr';
-    function updateLanguage() {
-      document.querySelectorAll('[data-lang]').forEach(el => {
-        el.style.display = el.dataset.lang === currentLang ? 'block' : 'none';
-      });
-      langToggle.src = currentLang === 'hr' ? 'images/en.svg' : 'images/hr.svg';
-    }
-    langToggle.addEventListener('click', () => {
-      currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      localStorage.setItem('lang', currentLang);
-      updateLanguage();
-    });
-    updateLanguage();
-
+    const langToggle = document.getElementById('language-toggle');
+    const searchInput = document.getElementById('search');
+    const menuToggle = document.getElementById('menu-toggle');
     const menu = document.getElementById('menu');
-    function toggleMenu() {
-      menu.classList.toggle('show');
-    }
-    document.addEventListener('click', function(e) {
-      if (!menu.contains(e.target) && !e.target.closest('.hamburger')) {
-        menu.classList.remove('show');
-      }
-    });
+    const backToTopBtn = document.getElementById('backToTop');
+    const footer = document.getElementById('footer');
+    let currentLang = 'hr';langToggle.addEventListener('click', () => {
+  currentLang = currentLang === 'hr' ? 'en' : 'hr';
+  langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+  searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+  document.querySelectorAll('[data-hr]').forEach(el => {
+    el.textContent = el.getAttribute(`data-${currentLang}`);
+  });
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    link.textContent = link.getAttribute(`data-${currentLang}`);
+  });
+});
+
+menuToggle.addEventListener('click', () => {
+  menu.classList.toggle('open');
+});
+
+window.addEventListener('click', e => {
+  if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+document.querySelectorAll('.menu-overlay a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('open');
+  });
+});
+
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    entry.isIntersecting
+      ? entry.target.classList.add('visible')
+      : entry.target.classList.remove('visible');
+  });
+}, { threshold: 0.5 });
+
+sections.forEach(section => observer.observe(section));
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+  const windowHeight = window.innerHeight;
+
+  if (scrollY > 300) {
+    backToTopBtn.style.display = 'flex';
+  } else {
+    backToTopBtn.style.display = 'none';
+  }
+
+  if (scrollY + windowHeight > footerTop) {
+    backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
+  } else {
+    backToTopBtn.style.bottom = '30px';
+  }
+});
+
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
   </script>
 </body>
 </html>
