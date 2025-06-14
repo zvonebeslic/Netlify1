@@ -50,14 +50,20 @@
     .search-container {
       position: relative;
     }
-    .search-container input {
-      padding: 6px 36px 6px 12px;
+    .mountain-search {
+      width: 250px;
+      padding: 10px 36px 10px 12px;
+      font-size: 14px;
       border: none;
+      outline: none;
       border-radius: 20px;
       outline: none;
       font-size: 14px;
       background-color: #fff;
-      height: 32px;
+      clip-path: polygon(0% 100%, 0% 40%, 10% 60%, 20% 35%, 30% 55%, 40% 30%, 50% 50%, 60% 20%, 70% 45%, 80% 32%, 90% 50%, 100% 35%, 100% 100%);
+      -webkit-clip-path: polygon(0% 100%, 0% 40%, 10% 60%, 20% 35%, 30% 55%, 40% 30%, 50% 50%, 60% 20%, 70% 45%, 80% 32%, 90% 50%, 100% 35%, 100% 100%);
+      box-shadow: 0 3px 8px rgba(0,0,0,3);
+      color: #333;
     }
     .search-container img {
       position: absolute;
