@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="hr">
+      <!DOCTYPE html><html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -47,32 +47,29 @@
       display: flex;
       justify-content: center;
     }
-    .search-container {
+    .search-wrapper {
       position: relative;
       width: 250px;
-      height: 50px;
-      clip-path: polygon(
-  0% 20%, 3% 12%, 6% 18%, 9% 10%, 12% 23%, 15% 14%, 18% 26%, 21% 19%,
-  24% 22%, 27% 21%, 30% 20%, 33% 21%, 36% 20%, 39% 21%, 42% 19%, 45% 20%,
-  48% 19%, 51% 20%, 54% 21%, 57% 19%, 60% 22%, 63% 20%, 66% 18%,
-  69% 15%, 72% 10%, 75% 5%, 78% 7%, 81% 6%, 84% 8%, 87% 10%, 90% 12%, 93% 13%, 96% 14%, 100% 15%,
-  100% 100%, 0% 100%
-);
-
--webkit-clip-path: polygon(
-  0% 20%, 3% 12%, 6% 18%, 9% 10%, 12% 23%, 15% 14%, 18% 26%, 21% 19%,
-  24% 22%, 27% 21%, 30% 20%, 33% 21%, 36% 20%, 39% 21%, 42% 19%, 45% 20%,
-  48% 19%, 51% 20%, 54% 21%, 57% 19%, 60% 22%, 63% 20%, 66% 18%,
-  69% 15%, 72% 10%, 75% 5%, 78% 7%, 81% 6%, 84% 8%, 87% 10%, 90% 12%, 93% 13%, 96% 14%, 100% 15%,
-  100% 100%, 0% 100%
-);
-      background-color: #fff;
+      height: 80px;
+      background: #fff;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-      overflow: visible;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       padding: 10px 15px;
-      z-index: 10;
+      overflow: visible;
+    }
+    .search-mountain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      overflow: hidden;
+    }
+    .search-mountain-top {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     .mountain-search {
       width: 100%;
@@ -83,7 +80,7 @@
       color: #333;
       outline: none;
     }
-    .search-container img {
+    .search-wrapper img {
       position: absolute;
       right: 10px;
       top: 50%;
@@ -239,8 +236,13 @@
       <img src="images/flag-uk.svg" alt="language" id="language-toggle" data-tooltip="Promijeni jezik">
     </div>
     <div class="navbar-center">
-      <div class="search-container">
-        <input type="text" id="search" class="mountain-search" placeholder="Pretraži...">
+      <div class="search-wrapper">
+        <div class="search-mountain">
+          <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="search-mountain-top">
+            <path d="M0,20 L20,5 L35,15 L50,2 L65,13 L80,6 L100,20 Z" fill="#fff" />
+          </svg>
+        </div>
+        <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
         <img src="images/search.svg" alt="search icon">
       </div>
     </div>
