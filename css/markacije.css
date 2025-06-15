@@ -2,9 +2,10 @@
   position: absolute;
   bottom: 30px;
   right: 30px;
-  width: 94.5px;
+  width: 94.5px; /* ≈25mm */
   height: 94.5px;
   z-index: 5;
+  pointer-events: none;
 }
 .markacija circle {
   stroke-dasharray: 300;
@@ -19,6 +20,7 @@
     stroke-dashoffset: 0;
   }
 }
+
 .blog-bubble {
   position: absolute;
   bottom: 30px;
@@ -34,11 +36,14 @@
   z-index: 4;
   font-size: 0.95rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
 }
+
 .blog-bubble.show {
   opacity: 1;
   transform: translateX(0);
 }
+
 .blog-text {
   opacity: 0;
   transition: opacity 0.8s ease;
@@ -46,6 +51,7 @@
 .blog-text.show {
   opacity: 1;
 }
+
 .markacija-btn {
   position: absolute;
   bottom: 45px;
@@ -62,10 +68,17 @@
   transition: opacity 0.6s ease;
   z-index: 6;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  min-width: 100px;
+  min-height: 36px;
+  touch-action: manipulation;
 }
+
 .markacija-btn.show {
   opacity: 1;
 }
+
+/* MOBILNA VERZIJA */
 @media (max-width: 600px) {
   .markacija {
     width: 70px;
