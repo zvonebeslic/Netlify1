@@ -563,8 +563,9 @@
           const tekst = document.createElement("div");
           tekst.classList.add("blog-text");
 
-          const title = target.dataset.title || "Naslov bloga";
-          const text = target.dataset.text || "Opis bloga...";
+          const lang = document.documentElement.lang || "hr"; // uzme "hr" ili "en"
+const title = target.dataset[`title${lang.toUpperCase()}`] || "Naslov";
+const text = target.dataset[`text${lang.toUpperCase()}`] || "Opis";
           const link = target.dataset.link || "#blog";
 
           tekst.innerHTML = `
@@ -575,11 +576,14 @@
           target.appendChild(bubble);
 
           // GUMB
-          const gumb = document.createElement("button");
-          gumb.classList.add("markacija-btn");
-          gumb.textContent = "Pročitaj više ovdje";
-          gumb.onclick = () => window.location.href = link;
-          target.appendChild(gumb);
+          const lang = document.documentElement.lang || "hr";
+const btnText = target.dataset[`btn${lang.toUpperCase()}`] || "Pročitaj više ovdje";
+
+const gumb = document.createElement("button");
+gumb.classList.add("markacija-btn");
+gumb.textContent = btnText;
+gumb.onclick = () => window.location.href = link;
+target.appendChild(gumb);
 
           // TAJMING
           setTimeout(() => bubble.classList.add('show'), 1600);
