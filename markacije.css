@@ -2,19 +2,22 @@
   position: absolute;
   bottom: 30px;
   right: 30px;
-  width: 94.5px; /* ≈25mm */
+  width: 94.5px;
   height: 94.5px;
   z-index: 5;
   pointer-events: none;
 }
+
 .markacija circle {
   stroke-dasharray: 300;
   stroke-dashoffset: 300;
   animation: nacrtaj 1s ease-out forwards;
 }
+
 .markacija .crveni {
   animation-delay: 0.7s;
 }
+
 @keyframes nacrtaj {
   to {
     stroke-dashoffset: 0;
@@ -48,6 +51,7 @@
   opacity: 0;
   transition: opacity 0.8s ease;
 }
+
 .blog-text.show {
   opacity: 1;
 }
