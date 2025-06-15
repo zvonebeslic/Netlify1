@@ -1,1 +1,406 @@
+      <!DOCTYPE html><html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mountain Adventures</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      background-color: #000;
+    }
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      z-index: 1000;
+    }
+    .navbar-left img {
+      height: 16px;
+      width: 24px;
+      cursor: pointer;
+      position: relative;
+    }
+    .navbar-left img:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #fff;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      top: 30px;
+      left: 0;
+      white-space: nowrap;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    }
+    .navbar-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      transform: translateY(12px);
+    }
+    .search-container {
+      width: 250px;
+      position: relative;
+      padding-top: 10px;
+    }
+    .search-wrapper {
+  position: relative;
+  width: 100%;
+  height: 30px; /* ili 55px ako dodaješ prostor za sliku */
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  padding: 0 15px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  border-radius: 20px;
+}
+.search-top-decoration {
+     position: absolute;
+     top: -212.7px;
+     left: 108px;
+     width: 1600%;
+     height: 30px;
+     object-fit: cover;
+      display: block;
+     z-index: 5;
+      transform: scale(19);
+      transform-origin: top center;
+}
+    .search-mountain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      overflow: hidden;
+    }
+    .search-mountain-top {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .mountain-search {
+      width: 100%;
+      padding: 14px 40px 8px 12px;
+      font-size: 14px;
+      border: none;
+      background: transparent;
+      color: #333;
+      outline: none;
+    }
+    .search-wrapper img {
+      position: absolute;
+      right: 12px;
+      bottom: 8px;
+      width: 19px;
+      height: 19px;
+      pointer-events: none;
+    }
+    .navbar-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 8px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.05);
+      transition: background 0.3s, transform 0.2s;
+    }
+    .navbar-right:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+    .burger-line {
+      width: 26px;
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+    }
+    .menu-overlay {
+      position: fixed;
+      top: 70px;
+      right: 0;
+      width: 100%;
+      background-color: rgba(17, 17, 17, 0.95);
+      color: white;
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      z-index: 9999;
+    }
+    .menu-overlay.open {
+      display: flex;
+    }
+    .menu-overlay a {
+      margin: 10px 0;
+      text-decoration: none;
+      color: white;
+      font-size: 1.1em;
+    }
+    .section {
+      min-height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 1s ease, opacity 1s ease;
+    }
+    .section.visible {
+      opacity: 1;
+      transform: scale(1.05);
+      z-index: 2;
+    }
+    .section:not(.visible) {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    .content-box {
+      position: relative;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      overflow: hidden;
+      max-width: 70%;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+    @media (min-width: 1024px) {
+      .content-box {
+        font-size: 3em;
+        padding: 50px;
+      }
+    }
+    #backToTop {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      outline: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #backToTop:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(-50%) scale(1.1);
+    }
+    #backToTop svg {
+      width: 24px;
+      height: 24px;
+    }
+    footer {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 14px;
+      position: relative;
+      margin-top: 60px;
+    }
+    .footer-icons {
+      margin: 10px 0;
+    }
+    .footer-icons svg {
+      width: 32px;
+      height: 32px;
+      margin: 0 10px;
+      vertical-align: middle;
+      opacity: 0.8;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .footer-icons svg:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="images/flag-uk.svg" alt="language" id="language-toggle" data-tooltip="Promijeni jezik">
+    </div>
+    <div class="navbar-center">
+      <div class="search-container">
+        <div class="search-wrapper">
+              <img src="images/planine-za-trazilicu.png"
+                    alt="planinski-vrhovi" class="search-top-decoration"/>
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
+          <img src="images/search.svg" alt="search icon">
+        </div>
+      </div>
+    </div>
+    <div class="navbar-right" id="menu-toggle">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
+  </div>
+  <div class="menu-overlay" id="menu">
+    <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="#webshop" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
+    <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
+  <div id="section1" class="section" style="background-image: url('images/Background.jpg');">
+    <div class="content-box">
+      <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
+    </div>
+  </div>
+  <div id="section2" class="section" style="background-image: url('images/Background1.jpg');">
+    <div class="content-box">
+      <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
+    </div>
+  </div>
+  <div id="section5" class="section" style="background-image: url('images/Background2.jpg');">
+    <div class="content-box">
+      <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
+    </div>
+  </div>
+  <div id="webshop" class="section" style="background-image: url('images/Background3.jpg');">
+    <div class="content-box">
+      <div class="box-text" data-hr="Istražite naš web shop" data-en="Browse our web shop">Istražite naš web shop</div>
+    </div>
+  </div>
+  <div id="blog" class="section" style="background-image: url('images/Background4.jpg');">
+    <div class="content-box">
+      <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">Najnovije iz svijeta planinarenja</div>
+    </div>
+  </div>
+  <div id="about" class="section" style="background-image: url('images/Background5.jpg');">
+    <div class="content-box">
+      <div class="box-text" data-hr="Saznajte više o nama" data-en="Learn more about us">Saznajte više o nama</div>
+    </div>
+  </div>
+  <div id="section7" class="section" style="background-image: url('images/Background6.jpg');">
+    <div class="content-box">
+      <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
+    </div>
+  </div>
+  <button id="backToTop" title="Na vrh" aria-label="Na vrh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+  <footer id="footer">
+    <div class="footer-icons">
+      <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
+        </svg>
+      </a>
+      <a href="mailto:info@mountainadventures.com" aria-label="Email">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </a>
+    </div>
+    © Mountain Adventures. All rights reserved.
+  </footer>
+  <script>
+    const langToggle = document.getElementById('language-toggle');
+    const searchInput = document.getElementById('search');
+    const menuToggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('menu');
+    const backToTopBtn = document.getElementById('backToTop');
+    const footer = document.getElementById('footer');
+    let currentLang = 'hr';
+    langToggle.addEventListener('click', () => {
+      currentLang = currentLang === 'hr' ? 'en' : 'hr';
+      langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+      searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+      document.querySelectorAll('[data-hr]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${currentLang}`);
+      });
+      document.querySelectorAll('.menu-overlay a').forEach(link => {
+        link.textContent = link.getAttribute(`data-${currentLang}`);
+      });
+    });
 
+    menuToggle.addEventListener('click', () => {
+      menu.classList.toggle('open');
+    });
+
+    window.addEventListener('click', e => {
+      if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
+
+    document.querySelectorAll('.menu-overlay a').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('open');
+      });
+    });
+
+    const sections = document.querySelectorAll('.section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.isIntersecting
+          ? entry.target.classList.add('visible')
+          : entry.target.classList.remove('visible');
+      });
+    }, { threshold: 0.5 });
+
+    sections.forEach(section => observer.observe(section));
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      const windowHeight = window.innerHeight;
+
+      if (scrollY > 300) {
+        backToTopBtn.style.display = 'flex';
+      } else {
+        backToTopBtn.style.display = 'none';
+      }
+
+      if (scrollY + windowHeight > footerTop) {
+        backToTopBtn.style.bottom = `${(scrollY + windowHeight - footerTop) + 60}px`;
+      } else {
+        backToTopBtn.style.bottom = '30px';
+      }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
