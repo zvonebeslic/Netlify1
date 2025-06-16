@@ -503,6 +503,7 @@
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
+          refreshCurrentMarkacija();
           // Ukloni postojeće markacije i ponovno ih aktiviraj
 document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno'); // makni da bi se ponovno aktivirala
@@ -655,6 +656,69 @@ target.appendChild(gumb);
     observer.observe(section);
   });
 });
+       function refreshCurrentMarkacija() {
+  const current = document.querySelector('.section.aktivno');
+  if (!current) return;
+
+  // Ukloni stare elemente
+  current.querySelectorAll('.markacija, .blog-bubble, .markacija-btn').forEach(el => el.remove());
+
+  // Ponovno dodaj markaciju
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "markacija");
+  svg.setAttribute("viewBox", "0 0 100 100");
+
+  const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  bijeli.setAttribute("cx", "50");
+  bijeli.setAttribute("cy", "50");
+  bijeli.setAttribute("r", "34");
+  bijeli.setAttribute("fill", "#fff");
+
+  const crveni = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  crveni.setAttribute("cx", "50");
+  crveni.setAttribute("cy", "50");
+  crveni.setAttribute("r", "49");
+  crveni.setAttribute("fill", "none");
+  crveni.setAttribute("stroke", "red");
+  crveni.setAttribute("stroke-width", "12");
+  crveni.classList.add("crveni");
+
+  svg.appendChild(bijeli);
+  svg.appendChild(crveni);
+  current.appendChild(svg);
+
+  // BLOG BUBBLE
+  const bubble = document.createElement("div");
+  bubble.classList.add("blog-bubble");
+
+  const tekst = document.createElement("div");
+  tekst.classList.add("blog-text");
+
+  const lang = document.documentElement.lang || "hr";
+  const titleKey = "title" + lang.charAt(0).toUpperCase() + lang.slice(1);
+  const textKey = "text" + lang.charAt(0).toUpperCase() + lang.slice(1);
+  const btnKey = "btn" + lang.charAt(0).toUpperCase() + lang.slice(1);
+
+  const title = current.dataset[titleKey] || "Naslov";
+  const text = current.dataset[textKey] || "Opis";
+  const btnText = current.dataset[btnKey] || "Pročitaj više ovdje";
+  const link = current.dataset.link || "#blog";
+
+  tekst.innerHTML = `<h4>${title}</h4><p>${text}</p>`;
+  bubble.appendChild(tekst);
+  current.appendChild(bubble);
+
+  const gumb = document.createElement("button");
+  gumb.classList.add("markacija-btn");
+  gumb.textContent = btnText;
+  gumb.onclick = () => window.location.href = link;
+  current.appendChild(gumb);
+
+  // Tajming
+  setTimeout(() => bubble.classList.add('show'), 1600);
+  setTimeout(() => tekst.classList.add('show'), 2000);
+  setTimeout(() => gumb.classList.add('show'), 2600);
+} 
 </script>
 </body>
 </html>
