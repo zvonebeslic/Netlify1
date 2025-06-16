@@ -503,19 +503,19 @@
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
-          refreshCurrentMarkacija();
-          // Ukloni postojeće markacije i ponovno ih aktiviraj
+          // 1. Ukloni .aktivno
 document.querySelectorAll('.section.aktivno').forEach(section => {
-  section.classList.remove('aktivno'); // makni da bi se ponovno aktivirala
+  section.classList.remove('aktivno');
 });
 
-// Kratka pauza da observer primijeti promjenu, pa ponovno triggera animaciju
+// 2. Ponovno detektiraj koja sekcija je u viewportu i osvježi
 setTimeout(() => {
   document.querySelectorAll('.section').forEach(section => {
     const bounding = section.getBoundingClientRect();
     const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
     if (inView) {
       section.classList.add('aktivno');
+      refreshCurrentMarkacija();
     }
   });
 }, 50);
