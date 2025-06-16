@@ -1,4 +1,4 @@
-      <!DOCTYPE html><html lang="hr">
+<!DOCTYPE html><html lang="hr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -54,42 +54,29 @@
       padding-top: 10px;
     }
     .search-wrapper {
-  position: relative;
-  width: 100%;
-  height: 30px; /* ili 55px ako dodaješ prostor za sliku */
-  background: #fff;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  padding: 0 15px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: visible;
-  border-radius: 20px;
-}
-.search-top-decoration {
-     position: absolute;
-     top: -212.7px;
-     left: 108px;
-     width: 1600%;
-     height: 30px;
-     object-fit: cover;
+      position: relative;
+      width: 100%;
+      height: 30px;
+      background: #fff;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      padding: 0 15px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: visible;
+      border-radius: 20px;
+    }
+    .search-top-decoration {
+      position: absolute;
+      top: -212.7px;
+      left: 108px;
+      width: 1600%;
+      height: 30px;
+      object-fit: cover;
       display: block;
-     z-index: 5;
+      z-index: 5;
       transform: scale(19);
       transform-origin: top center;
-}
-    .search-mountain {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 20px;
-      overflow: hidden;
-    }
-    .search-mountain-top {
-      width: 100%;
-      height: 100%;
-      display: block;
     }
     .mountain-search {
       width: 100%;
@@ -108,51 +95,7 @@
       height: 19px;
       pointer-events: none;
     }
-    .navbar-right {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 8px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.05);
-      transition: background 0.3s, transform 0.2s;
-    }
-    .navbar-right:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: scale(1.05);
-    }
-    .burger-line {
-      width: 26px;
-      height: 3px;
-      background-color: white;
-      border-radius: 2px;
-    }
-    .menu-overlay {
-      position: fixed;
-      top: 70px;
-      right: 0;
-      width: 100%;
-      background-color: rgba(17, 17, 17, 0.95);
-      color: white;
-      padding: 20px;
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      z-index: 9999;
-    }
-    .menu-overlay.open {
-      display: flex;
-    }
-    .menu-overlay a {
-      margin: 10px 0;
-      text-decoration: none;
-      color: white;
-      font-size: 1.1em;
-    }
-    .section {
+        .section {
       min-height: 100vh;
       height: 100dvh;
       overflow: hidden;
@@ -191,171 +134,107 @@
         padding: 50px;
       }
     }
-    #backToTop {
-      position: fixed;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(12px);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      outline: none;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
+    .markacija {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      width: 94.5px;
+      height: 94.5px;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .markacija circle {
+      stroke-dasharray: 300;
+      stroke-dashoffset: 300;
+      animation: nacrtaj 1s ease-out forwards;
+    }
+    .markacija .crveni {
+      animation-delay: 0.7s;
+    }
+    @keyframes nacrtaj {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .blog-bubble {
+      position: absolute;
+      bottom: 30px;
+      right: 110px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #000;
+      padding: 15px 20px;
+      border-radius: 10px;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.8s ease;
+      max-width: 70vw;
+      z-index: 4;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s ease, transform 0.3s ease;
     }
-    #backToTop:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-      transform: translateX(-50%) scale(1.1);
-    }
-    #backToTop svg {
-      width: 24px;
-      height: 24px;
-    }
-    footer {
-      background: #111;
-      color: #ccc;
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 14px;
-      position: relative;
-      margin-top: 60px;
-    }
-    .footer-icons {
-      margin: 10px 0;
-    }
-    .footer-icons svg {
-      width: 32px;
-      height: 32px;
-      margin: 0 10px;
-      vertical-align: middle;
-      opacity: 0.8;
-      transition: opacity 0.3s, transform 0.3s;
-    }
-    .footer-icons svg:hover {
+    .blog-bubble.show {
       opacity: 1;
-      transform: scale(1.1);
+      transform: translateX(0);
     }
-        .markacija {
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
-  width: 94.5px;
-  height: 94.5px;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.markacija circle {
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  animation: nacrtaj 1s ease-out forwards;
-}
-
-.markacija .crveni {
-  animation-delay: 0.7s;
-}
-
-@keyframes nacrtaj {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.blog-bubble {
-  position: absolute;
-  bottom: 30px;
-  right: 110px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #000;
-  padding: 15px 20px;
-  border-radius: 10px;
-  opacity: 0;
-  transform: translateX(20px);
-  transition: all 0.8s ease;
-  max-width: 70vw;
-  z-index: 4;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  cursor: pointer;
-}
-
-.blog-bubble.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.blog-text {
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-.blog-text.show {
-  opacity: 1;
-}
-
-.markacija-btn {
-  position: absolute;
-  bottom: 45px;
-  right: 45px;
-  transform: translate(50%, 50%);
-  background: #fff;
-  color: #000;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  z-index: 6;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  min-width: 100px;
-  min-height: 36px;
-  touch-action: manipulation;
-}
-
-.markacija-btn.show {
-  opacity: 1;
-}
-
-/* MOBILNA VERZIJA */
-@media (max-width: 600px) {
-  .markacija {
-    width: 70px;
-    height: 70px;
-    right: 20px;
-  }
-  .blog-bubble {
-    right: 85px;
-    max-width: 80vw;
-    font-size: 0.85rem;
-  }
-  .markacija-btn {
-    bottom: 35px;
-    right: 35px;
-  }
-}
+    .blog-text {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .blog-text.show {
+      opacity: 1;
+    }
+    .markacija-btn {
+      position: absolute;
+      bottom: 45px;
+      right: 45px;
+      transform: translate(50%, 50%);
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      z-index: 6;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      min-width: 100px;
+      min-height: 36px;
+      touch-action: manipulation;
+    }
+    .markacija-btn.show {
+      opacity: 1;
+    }
+    @media (max-width: 600px) {
+      .markacija {
+        width: 70px;
+        height: 70px;
+        right: 20px;
+      }
+      .blog-bubble {
+        right: 85px;
+        max-width: 80vw;
+        font-size: 0.85rem;
+      }
+      .markacija-btn {
+        bottom: 35px;
+        right: 35px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="navbar">
+   <div class="navbar">
     <div class="navbar-left">
       <img src="images/flag-uk.svg" alt="language" id="language-toggle" data-tooltip="Promijeni jezik">
     </div>
     <div class="navbar-center">
       <div class="search-container">
         <div class="search-wrapper">
-              <img src="images/planine-za-trazilicu.png"
-                    alt="planinski-vrhovi" class="search-top-decoration"/>
+          <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration"/>
           <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
           <img src="images/search.svg" alt="search icon">
         </div>
@@ -367,6 +246,7 @@
       <div class="burger-line"></div>
     </div>
   </div>
+
   <div class="menu-overlay" id="menu">
     <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
     <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
@@ -376,96 +256,110 @@
     <a href="#about" data-hr="O nama" data-en="About Us">O nama</a>
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
+
   <div id="section1" class="section image-section"
-     style="background-image: url('images/Background.jpg'); background-size: cover; background-position: center; height: 100vh;"
-     data-titleHR="Tko smo mi?"
-     data-textHR="Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
-     data-titleEN="Who are we?"
-     data-textEN="Meet the team and the values behind Mountain Adventures."
-     data-link="About"
-     data-btnHR="Pročitaj više ovdje"
-     data-btnEN="Read more here">
+    style="background-image: url('images/Background.jpg');"
+    data-titleHR="Dobrodošli!"
+    data-textHR="Započnite svoju planinarsku avanturu s nama."
+    data-titleEN="Welcome!"
+    data-textEN="Start your hiking adventure with us."
+    data-link="#about"
+    data-btnHR="Pročitaj više ovdje"
+    data-btnEN="Read more here">
     <div class="content-box">
       <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>
     </div>
   </div>
-  <div id="section2" class="section image-section" style="background-image: url('images/Background1.jpg'); background-size: cover; background-position: center; height: 100vh;"
-        data-titleHR="Tko smo mi?"
-     data-textHR="Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
-     data-titleEN="Who are we?"
-     data-textEN="Meet the team and the values behind Mountain Adventures."
-     data-link="About"
-     data-btnHR="Pročitaj više ovdje"
-     data-btnEN="Read more here">
-        <div class="content-box">
+
+  <div id="section2" class="section image-section"
+    style="background-image: url('images/Background1.jpg');"
+    data-titleHR="Planinarske staze"
+    data-textHR="Otkrijte najbolje rute Balkana, pripremljene za vas."
+    data-titleEN="Hiking trails"
+    data-textEN="Discover the best Balkan routes prepared for you."
+    data-link="#staze"
+    data-btnHR="Pogledaj staze"
+    data-btnEN="See trails">
+    <div class="content-box">
       <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
     </div>
   </div>
-  <div id="section5" class="section image-section" style="background-image: url('images/Background2.jpg'); background-size: cover; background-position: center; height: 100vh;"
-        data-titleHR="Tko smo mi?"
-     data-textHR="Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
-     data-titleEN="Who are we?"
-     data-textEN="Meet the team and the values behind Mountain Adventures."
-     data-link="About"
-     data-btnHR="Pročitaj više ovdje"
-     data-btnEN="Read more here">
-        <div class="content-box">
+
+  <div id="section5" class="section image-section"
+    style="background-image: url('images/Background2.jpg');"
+    data-titleHR="Avantura čeka!"
+    data-textHR="Uzmi ruksak i kreni u nepoznato."
+    data-titleEN="Adventure awaits!"
+    data-textEN="Grab your backpack and head into the wild."
+    data-link="#avantura"
+    data-btnHR="Kreni sada"
+    data-btnEN="Start now">
+    <div class="content-box">
       <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">Spremni za avanturu?</div>
     </div>
   </div>
-  <div id="webshop" class="section image-section" style="background-image: url('images/Background3.jpg'); background-size: cover; background-position: center; height: 100vh;"
-        data-titleHR="Tko smo mi?"
-     data-textHR="Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
-     data-titleEN="Who are we?"
-     data-textEN="Meet the team and the values behind Mountain Adventures."
-     data-link="About"
-     data-btnHR="Pročitaj više ovdje"
-     data-btnEN="Read more here">
-        <div class="content-box">
+
+  <div id="webshop" class="section image-section"
+    style="background-image: url('images/Background3.jpg');"
+    data-titleHR="Web trgovina"
+    data-textHR="Oprema za planinarenje na jednom mjestu."
+    data-titleEN="Web Shop"
+    data-textEN="Hiking gear in one place."
+    data-link="#webshop"
+    data-btnHR="Posjeti trgovinu"
+    data-btnEN="Visit shop">
+    <div class="content-box">
       <div class="box-text" data-hr="Istražite naš web shop" data-en="Browse our web shop">Istražite naš web shop</div>
     </div>
   </div>
-  <div id="blog" class="section image-section" style="background-image: url('images/Background4.jpg'); background-size: cover; background-position: center; height: 100vh;"
-        data-titleHR="Tko smo mi?"
-     data-textHR="Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
-     data-titleEN="Who are we?"
-     data-textEN="Meet the team and the values behind Mountain Adventures."
-     data-link="About"
-     data-btnHR="Pročitaj više ovdje"
-     data-btnEN="Read more here">
-        <div class="content-box">
+
+  <div id="blog" class="section image-section"
+    style="background-image: url('images/Background4.jpg');"
+    data-titleHR="Planinarski blog"
+    data-textHR="Savjeti, priče i inspiracija s terena."
+    data-titleEN="Hiking blog"
+    data-textEN="Tips, stories and inspiration from the trails."
+    data-link="#blog"
+    data-btnHR="Čitaj blog"
+    data-btnEN="Read blog">
+    <div class="content-box">
       <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">Najnovije iz svijeta planinarenja</div>
     </div>
   </div>
-  <div id="about" class="section image-section" style="background-image: url('images/Background5.jpg'); background-size: cover; background-position: center; height: 100vh;"
-        data-titleHR="Tko smo mi?"
-     data-textHR="Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
-     data-titleEN="Who are we?"
-     data-textEN="Meet the team and the values behind Mountain Adventures."
-     data-link="About"
-     data-btnHR="Pročitaj više ovdje"
-     data-btnEN="Read more here">
-        <div class="content-box">
+
+  <div id="about" class="section image-section"
+    style="background-image: url('images/Background5.jpg');"
+    data-titleHR="O nama"
+    data-textHR="Upoznajte naš tim i našu priču."
+    data-titleEN="About us"
+    data-textEN="Meet our team and our story."
+    data-link="#about"
+    data-btnHR="Saznaj više"
+    data-btnEN="Learn more">
+    <div class="content-box">
       <div class="box-text" data-hr="Saznajte više o nama" data-en="Learn more about us">Saznajte više o nama</div>
     </div>
   </div>
-  <div id="section7" class="section image-section" style="background-image: url('images/Background6.jpg'); background-size: cover; background-position: center; height: 100vh;"
-        data-titleHR="Tko smo mi?"
-     data-textHR="Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
-     data-titleEN="Who are we?"
-     data-textEN="Meet the team and the values behind Mountain Adventures."
-     data-link="About"
-     data-btnHR="Pročitaj više ovdje"
-     data-btnEN="Read more here">
-        <div class="content-box">
+
+  <div id="section7" class="section image-section"
+    style="background-image: url('images/Background6.jpg');"
+    data-titleHR="Kontaktirajte nas"
+    data-textHR="Pošaljite nam poruku ili nam se pridružite na stazi."
+    data-titleEN="Contact us"
+    data-textEN="Send us a message or join us on a trail."
+    data-link="#kontakt"
+    data-btnHR="Javi se"
+    data-btnEN="Get in touch">
+    <div class="content-box">
       <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
     </div>
-  </div>
-  <button id="backToTop" title="Na vrh" aria-label="Na vrh">
+  </div>   
+      <button id="backToTop" title="Na vrh" aria-label="Na vrh">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="18 15 12 9 6 15"></polyline>
     </svg>
   </button>
+
   <footer id="footer">
     <div class="footer-icons">
       <a href="https://instagram.com" target="_blank" aria-label="Instagram">
@@ -484,6 +378,7 @@
     </div>
     © Mountain Adventures. All rights reserved.
   </footer>
+
   <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -492,18 +387,38 @@
     const backToTopBtn = document.getElementById('backToTop');
     const footer = document.getElementById('footer');
     let currentLang = 'hr';
+
     langToggle.addEventListener('click', () => {
       currentLang = currentLang === 'hr' ? 'en' : 'hr';
-          document.documentElement.lang = currentLang;
+      document.documentElement.lang = currentLang;
       langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
       searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+
       document.querySelectorAll('[data-hr]').forEach(el => {
         el.textContent = el.getAttribute(`data-${currentLang}`);
       });
+
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
+
+      osvjeziMarkacijeNaJeziku(); // 🔁 Osvježi prikaz markacija
     });
+
+    function osvjeziMarkacijeNaJeziku() {
+      document.querySelectorAll('.image-section').forEach(section => {
+        section.classList.remove('aktivno');
+        const svg = section.querySelector('.markacija');
+        const bubble = section.querySelector('.blog-bubble');
+        const gumb = section.querySelector('.markacija-btn');
+        if (svg) svg.remove();
+        if (bubble) bubble.remove();
+        if (gumb) gumb.remove();
+      });
+
+      observer.disconnect();
+      document.querySelectorAll('.image-section').forEach(section => observer.observe(section));
+    }
 
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
@@ -524,11 +439,75 @@
     const sections = document.querySelectorAll('.section');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        entry.isIntersecting
-          ? entry.target.classList.add('visible')
-          : entry.target.classList.remove('visible');
+        const target = entry.target;
+
+        if (entry.isIntersecting) {
+          if (!target.classList.contains('aktivno')) {
+            target.classList.add('aktivno');
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("class", "markacija");
+            svg.setAttribute("viewBox", "0 0 100 100");
+
+            const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            bijeli.setAttribute("cx", "50");
+            bijeli.setAttribute("cy", "50");
+            bijeli.setAttribute("r", "34");
+            bijeli.setAttribute("fill", "#fff");
+
+            const crveni = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            crveni.setAttribute("cx", "50");
+            crveni.setAttribute("cy", "50");
+            crveni.setAttribute("r", "49");
+            crveni.setAttribute("fill", "none");
+            crveni.setAttribute("stroke", "red");
+            crveni.setAttribute("stroke-width", "12");
+            crveni.classList.add("crveni");
+
+            svg.appendChild(bijeli);
+            svg.appendChild(crveni);
+            target.appendChild(svg);
+
+            const bubble = document.createElement("div");
+            bubble.classList.add("blog-bubble");
+
+            const tekst = document.createElement("div");
+            tekst.classList.add("blog-text");
+
+            const lang = document.documentElement.lang || "hr";
+            const title = target.dataset[`title${lang.toUpperCase()}`] || "Naslov";
+            const text = target.dataset[`text${lang.toUpperCase()}`] || "Opis";
+            const link = target.dataset.link || "#blog";
+
+            tekst.innerHTML = `
+              <h4>${title}</h4>
+              <p>${text}</p>
+            `;
+            bubble.appendChild(tekst);
+            target.appendChild(bubble);
+
+            const btnText = target.dataset[`btn${lang.toUpperCase()}`] || "Pročitaj više ovdje";
+            const gumb = document.createElement("button");
+            gumb.classList.add("markacija-btn");
+            gumb.textContent = btnText;
+            gumb.onclick = () => window.location.href = link;
+            target.appendChild(gumb);
+
+            setTimeout(() => bubble.classList.add('show'), 1600);
+            setTimeout(() => tekst.classList.add('show'), 2000);
+            setTimeout(() => gumb.classList.add('show'), 2600);
+          }
+        } else {
+          target.classList.remove('aktivno');
+          const svg = target.querySelector('.markacija');
+          const bubble = target.querySelector('.blog-bubble');
+          const gumb = target.querySelector('.markacija-btn');
+          if (svg) svg.remove();
+          if (bubble) bubble.remove();
+          if (gumb) gumb.remove();
+        }
       });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.6 });
 
     sections.forEach(section => observer.observe(section));
 
@@ -553,88 +532,6 @@
     backToTopBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-      document.addEventListener("DOMContentLoaded", function () {
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const target = entry.target;
-
-      if (entry.isIntersecting) {
-        if (!target.classList.contains('aktivno')) {
-          target.classList.add('aktivno');
-
-          // SVG MARKACIJA
-          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          svg.setAttribute("class", "markacija");
-          svg.setAttribute("viewBox", "0 0 100 100");
-
-          const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-          bijeli.setAttribute("cx", "50");
-          bijeli.setAttribute("cy", "50");
-          bijeli.setAttribute("r", "34");
-          bijeli.setAttribute("fill", "#fff");
-
-          const crveni = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-          crveni.setAttribute("cx", "50");
-          crveni.setAttribute("cy", "50");
-          crveni.setAttribute("r", "49");
-          crveni.setAttribute("fill", "none");
-          crveni.setAttribute("stroke", "red");
-          crveni.setAttribute("stroke-width", "12");
-          crveni.classList.add("crveni");
-
-          svg.appendChild(bijeli);
-          svg.appendChild(crveni);
-          target.appendChild(svg);
-
-          // BLOG BUBBLE
-          const bubble = document.createElement("div");
-          bubble.classList.add("blog-bubble");
-
-          const tekst = document.createElement("div");
-          tekst.classList.add("blog-text");
-
-          const lang = document.documentElement.lang || "hr"; // uzme "hr" ili "en"
-const title = target.dataset[`title${lang.toUpperCase()}`] || "Naslov";
-const text = target.dataset[`text${lang.toUpperCase()}`] || "Opis";
-          const link = target.dataset.link || "#blog";
-
-          tekst.innerHTML = `
-            <h4>${title}</h4>
-            <p>${text}</p>
-          `;
-          bubble.appendChild(tekst);
-          target.appendChild(bubble);
-
-          // GUMB
-const btnText = target.dataset[`btn${lang.toUpperCase()}`] || "Pročitaj više ovdje";
-
-const gumb = document.createElement("button");
-gumb.classList.add("markacija-btn");
-gumb.textContent = btnText;
-gumb.onclick = () => window.location.href = link;
-target.appendChild(gumb);
-
-          // TAJMING
-          setTimeout(() => bubble.classList.add('show'), 1600);
-          setTimeout(() => tekst.classList.add('show'), 2000);
-          setTimeout(() => gumb.classList.add('show'), 2600);
-        }
-      } else {
-        target.classList.remove('aktivno');
-        const svg = target.querySelector('.markacija');
-        const bubble = target.querySelector('.blog-bubble');
-        const gumb = target.querySelector('.markacija-btn');
-        if (svg) svg.remove();
-        if (bubble) bubble.remove();
-        if (gumb) gumb.remove();
-      }
-    });
-  }, { threshold: 0.6 });
-
-  document.querySelectorAll('.image-section').forEach(section => {
-    observer.observe(section);
-  });
-});
-</script>
+  </script>
 </body>
 </html>
