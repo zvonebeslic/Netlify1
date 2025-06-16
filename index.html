@@ -503,27 +503,21 @@
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
-          // Osvježi tekstove i gumbe unutar trenutno aktivnih markacija
+          // Ukloni postojeće markacije i ponovno ih aktiviraj
+document.querySelectorAll('.section.aktivno').forEach(section => {
+  section.classList.remove('aktivno'); // makni da bi se ponovno aktivirala
+});
+
+// Kratka pauza da observer primijeti promjenu, pa ponovno triggera animaciju
+setTimeout(() => {
   document.querySelectorAll('.section').forEach(section => {
-  if (section.classList.contains('aktivno')) {
-    const lang = currentLang;
-    const title = section.dataset[`title${lang.toUpperCase()}`] || "";
-    const text = section.dataset[`text${lang.toUpperCase()}`] || "";
-    const btnText = section.dataset[`btn${lang.toUpperCase()}`] || "";
-
-    const tekstDiv = section.querySelector('.blog-text');
-    if (tekstDiv && title && text) {
-      tekstDiv.innerHTML = `<h4>${title}</h4><p>${text}</p>`;
+    const bounding = section.getBoundingClientRect();
+    const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
+    if (inView) {
+      section.classList.add('aktivno'); // ručno dodaj da se animacija ponovno pokrene
     }
-
-    const gumb = section.querySelector('.markacija-btn');
-    if (gumb && btnText) {
-      gumb.textContent = btnText;
-    }
-  }
   });
-  });
-
+}, 50);
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
     });
