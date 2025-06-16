@@ -503,7 +503,24 @@
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
-    });
+          // Osvježi tekstove i gumbe unutar trenutno aktivnih markacija
+  document.querySelectorAll('.section.aktivno').forEach(section => {
+    const lang = currentLang;
+    const title = section.dataset[`title${lang.toUpperCase()}`] || "";
+    const text = section.dataset[`text${lang.toUpperCase()}`] || "";
+    const btnText = section.dataset[`btn${lang.toUpperCase()}`] || "";
+
+    const tekstDiv = section.querySelector('.blog-text');
+    if (tekstDiv) {
+      tekstDiv.innerHTML = `<h4>${title}</h4><p>${text}</p>`;
+    }
+
+    const gumb = section.querySelector('.markacija-btn');
+    if (gumb) {
+      gumb.textContent = btnText;
+    }
+  });
+  });
 
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
