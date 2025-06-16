@@ -592,10 +592,12 @@ setTimeout(() => {
           const crveni = document.createElementNS("http://www.w3.org/2000/svg", "circle");
           crveni.setAttribute("cx", "50");
           crveni.setAttribute("cy", "50");
-          crveni.setAttribute("r", "46");
+          crveni.setAttribute("r", "47");
           crveni.setAttribute("fill", "none");
           crveni.setAttribute("stroke", "red");
-          crveni.setAttribute("stroke-width", "24");
+          crveni.setAttribute("stroke-width", "26");
+          crveni.setAttribute("shape-rendering", "geometricPrecision");
+          crveni.setAttribute("vector-effect", "non-scaling-stroke");
           crveni.classList.add("crveni");
 
           svg.appendChild(bijeli);
