@@ -494,6 +494,7 @@
     let currentLang = 'hr';
     langToggle.addEventListener('click', () => {
       currentLang = currentLang === 'hr' ? 'en' : 'hr';
+          document.documentElement.lang = currentLang;
       langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
       searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
       document.querySelectorAll('[data-hr]').forEach(el => {
