@@ -602,27 +602,32 @@ setTimeout(() => {
           target.appendChild(svg);
 
           // BLOG BUBBLE
-          const bubble = document.createElement("div");
-          bubble.classList.add("blog-bubble");
+const bubble = document.createElement("div");
+bubble.classList.add("blog-bubble");
 
-          const tekst = document.createElement("div");
-          tekst.classList.add("blog-text");
+const tekst = document.createElement("div");
+tekst.classList.add("blog-text");
 
-          const lang = document.documentElement.lang || "hr"; // uzme "hr" ili "en"
-const title = target.dataset[`title${lang.toUpperCase()}`] || "Naslov";
-const text = target.dataset[`text${lang.toUpperCase()}`] || "Opis";
-          const link = target.dataset.link || "#blog";
+const lang = document.documentElement.lang || "hr";
 
-          tekst.innerHTML = `
-            <h4>${title}</h4>
-            <p>${text}</p>
-          `;
-          bubble.appendChild(tekst);
-          target.appendChild(bubble);
+// Pravilno izračunaj ime atributa
+const titleKey = "title" + lang.charAt(0).toUpperCase() + lang.slice(1);
+const textKey = "text" + lang.charAt(0).toUpperCase() + lang.slice(1);
+const btnKey = "btn" + lang.charAt(0).toUpperCase() + lang.slice(1);
 
-          // GUMB
-const btnText = target.dataset[`btn${lang.toUpperCase()}`] || "Pročitaj više ovdje";
+const title = target.dataset[titleKey] || "Naslov";
+const text = target.dataset[textKey] || "Opis";
+const link = target.dataset.link || "#blog";
 
+tekst.innerHTML = `
+  <h4>${title}</h4>
+  <p>${text}</p>
+`;
+bubble.appendChild(tekst);
+target.appendChild(bubble);
+
+// GUMB
+const btnText = target.dataset[btnKey] || "Pročitaj više ovdje";
 const gumb = document.createElement("button");
 gumb.classList.add("markacija-btn");
 gumb.textContent = btnText;
