@@ -504,21 +504,23 @@
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
           // Osvježi tekstove i gumbe unutar trenutno aktivnih markacija
-  document.querySelectorAll('.section.aktivno').forEach(section => {
+  document.querySelectorAll('.section').forEach(section => {
+  if (section.classList.contains('aktivno')) {
     const lang = currentLang;
     const title = section.dataset[`title${lang.toUpperCase()}`] || "";
     const text = section.dataset[`text${lang.toUpperCase()}`] || "";
     const btnText = section.dataset[`btn${lang.toUpperCase()}`] || "";
 
     const tekstDiv = section.querySelector('.blog-text');
-    if (tekstDiv) {
+    if (tekstDiv && title && text) {
       tekstDiv.innerHTML = `<h4>${title}</h4><p>${text}</p>`;
     }
 
     const gumb = section.querySelector('.markacija-btn');
-    if (gumb) {
+    if (gumb && btnText) {
       gumb.textContent = btnText;
     }
+  }
   });
   });
 
