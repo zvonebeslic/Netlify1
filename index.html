@@ -544,7 +544,7 @@ setTimeout(() => {
           ? entry.target.classList.add('visible')
           : entry.target.classList.remove('visible');
       });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.5});
 
     sections.forEach(section => observer.observe(section));
 
@@ -650,7 +650,7 @@ target.appendChild(gumb);
         if (gumb) gumb.remove();
       }
     });
-  }, { threshold: 0.6 });
+  }, { threshold: 0.1 });
 
   document.querySelectorAll('.image-section').forEach(section => {
     observer.observe(section);
