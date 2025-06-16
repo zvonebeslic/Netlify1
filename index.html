@@ -514,10 +514,12 @@ setTimeout(() => {
     const bounding = section.getBoundingClientRect();
     const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
     if (inView) {
-      section.classList.add('aktivno'); // ručno dodaj da se animacija ponovno pokrene
+      section.classList.add('aktivno');
     }
   });
 }, 50);
+}); // ← ZATVARA langToggle event listener
+          
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
     });
