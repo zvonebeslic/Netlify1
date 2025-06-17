@@ -124,6 +124,30 @@
       background: rgba(255, 255, 255, 0.1);
       transform: scale(1.05);
     }
+.parallax-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.parallax-section {
+  height: 100vh;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 1s ease, opacity 1s ease;
+  will-change: transform;
+}
     .burger-line {
       width: 26px;
       height: 3px;
@@ -369,6 +393,7 @@
       <div class="burger-line"></div>
     </div>
   </div>
+  <div class="parallax-container">
   <div class="menu-overlay" id="menu">
     <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
     <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
@@ -463,6 +488,7 @@
       <div class="box-text" data-hr="Kontaktirajte nas i krenite!" data-en="Contact us and get started!">Kontaktirajte nas i krenite!</div>
     </div>
   </div>
+</div>
   <button id="backToTop" title="Na vrh" aria-label="Na vrh">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="18 15 12 9 6 15"></polyline>
