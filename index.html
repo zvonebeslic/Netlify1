@@ -506,8 +506,7 @@
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
           
-          let timeout;
-window.addEventListener('scroll', () => {
+          let timeout = window.addEventListener('scroll', () => {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
     let aktivna = null;
