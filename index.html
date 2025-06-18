@@ -505,7 +505,24 @@
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
-          refreshCurrentMarkacija();
+          
+          // 1. Ukloni .aktivno sa svih sekcija
+document.querySelectorAll('.section.aktivno').forEach(section => {
+  section.classList.remove('aktivno');
+});
+
+// 2. Detektiraj novu "aktivnu" sekciju po vidljivosti i osvježi markaciju
+setTimeout(() => {
+  document.querySelectorAll('.section').forEach(section => {
+    const bounding = section.getBoundingClientRect();
+    const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
+    if (inView) {
+      section.classList.add('aktivno');
+      refreshCurrentMarkacija();
+    }
+  });
+}, 50);
+          
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
     });
