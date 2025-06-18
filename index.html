@@ -512,19 +512,17 @@ document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno');
 });
 
-// 2. Ponovno detektiraj koja sekcija je u viewportu i osvježi markaciju
+// 2. Detektiraj novu "aktivnu" sekciju po vidljivosti i osvježi markaciju
 setTimeout(() => {
   document.querySelectorAll('.section').forEach(section => {
     const bounding = section.getBoundingClientRect();
     const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
-
     if (inView) {
       section.classList.add('aktivno');
       refreshCurrentMarkacija();
     }
   });
 }, 50);
-          
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
     });
