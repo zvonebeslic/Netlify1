@@ -510,26 +510,18 @@
 document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno');
 });
-// 2. Detektiraj koja sekcija je NAJVIDLJIVIJA i samo nju aktiviraj
+
+// 2. Ponovno detektiraj koja sekcija je u viewportu i osvježi markaciju
 setTimeout(() => {
-  let maxRatio = 0;
-  let bestSection = null;
-
   document.querySelectorAll('.section').forEach(section => {
-    const rect = section.getBoundingClientRect();
-    const visHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
-    const ratio = visHeight / rect.height;
+    const bounding = section.getBoundingClientRect();
+    const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
 
-    if (ratio > maxRatio) {
-      maxRatio = ratio;
-      bestSection = section;
+    if (inView) {
+      section.classList.add('aktivno');
+      refreshCurrentMarkacija();
     }
   });
-
-  if (bestSection && maxRatio > 0.4) {
-    bestSection.classList.add('aktivno');
-    refreshCurrentMarkacija();
-  }
 }, 50);
           
     menuToggle.addEventListener('click', () => {
