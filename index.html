@@ -510,23 +510,28 @@
 document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno');
 });
-
-// 2. Detektiraj novu "aktivnu" sekciju po vidljivosti i osvježi markaciju
+// 2. Detektiraj koja sekcija je NAJVIDLJIVIJA i samo nju aktiviraj
 setTimeout(() => {
+  let maxRatio = 0;
+  let bestSection = null;
+
   document.querySelectorAll('.section').forEach(section => {
     const rect = section.getBoundingClientRect();
-const visHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
-const ratio = visHeight / rect.height;
+    const visHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+    const ratio = visHeight / rect.height;
 
-if (ratio > 0.6) {
-  section.classList.add('aktivno');
-  refreshCurrentMarkacija();
-} else if (ratio < 0.4) {
-  section.classList.remove('aktivno');
-}
+    if (ratio > maxRatio) {
+      maxRatio = ratio;
+      bestSection = section;
+    }
   });
-  }, 50);
-  });
+
+  if (bestSection && maxRatio > 0.4) {
+    bestSection.classList.add('aktivno');
+    refreshCurrentMarkacija();
+  }
+}, 50);
+          
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
     });
