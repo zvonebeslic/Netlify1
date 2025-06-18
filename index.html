@@ -505,33 +505,31 @@
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
-          // 1. Ukloni .aktivno
-document.querySelectorAll('.section.aktivno').forEach(section => {
+          document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno');
 });
 
-// 2. Nađi sekciju najbližu centru i aktiviraj je
-setTimeout(() => {
-  let aktivnaSekcija = null;
-  let najmanjaUdaljenost = Infinity;
+let aktivnaSekcija = null;
+let najmanjaUdaljenost = Infinity;
 
-  document.querySelectorAll('.section').forEach(section => {
-    const rect = section.getBoundingClientRect();
-    const centarSekcije = rect.top + rect.height / 2;
-    const centarEkrana = window.innerHeight / 2;
-    const udaljenost = Math.abs(centarSekcije - centarEkrana);
+document.querySelectorAll('.section').forEach(section => {
+  const rect = section.getBoundingClientRect();
+  const centarSekcije = rect.top + rect.height / 2;
+  const centarEkrana = window.innerHeight / 2;
+  const udaljenost = Math.abs(centarSekcije - centarEkrana);
 
-    if (udaljenost < najmanjaUdaljenost) {
-      najmanjaUdaljenost = udaljenost;
-      aktivnaSekcija = section;
-    }
-  });
-
-  if (aktivnaSekcija) {
-    aktivnaSekcija.classList.add('aktivno');
-    refreshCurrentMarkacija();
+  if (udaljenost < najmanjaUdaljenost) {
+    najmanjaUdaljenost = udaljenost;
+    aktivnaSekcija = section;
   }
-}, 50);
+});
+
+if (aktivnaSekcija) {
+  aktivnaSekcija.classList.add('aktivno');
+}
+
+// 🟢 VAŽNO: obavezno osvježi i markaciju odmah (izvan timeouta)
+refreshCurrentMarkacija();
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
     });
