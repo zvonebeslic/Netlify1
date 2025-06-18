@@ -506,23 +506,28 @@
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
           
-          // 1. Ukloni .aktivno sa svih sekcija
-document.querySelectorAll('.section.aktivno').forEach(section => {
-  section.classList.remove('aktivno');
-});
-
-// 2. Detektiraj novu "aktivnu" sekciju po vidljivosti i osvježi markaciju
-setTimeout(() => {
-  document.querySelectorAll('.section').forEach(section => {
-    const bounding = section.getBoundingClientRect();
-    const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
-    if (inView) {
-      section.classList.add('aktivno');
+          let timeout;
+window.addEventListener('scroll', () => {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    let aktivna = null;
+    let minUdaljenost = Infinity;
+    document.querySelectorAll('.section').forEach(sec => {
+      const r = sec.getBoundingClientRect();
+      const centar = r.top + r.height / 2;
+      const diff = Math.abs(centar - window.innerHeight * 0.6);
+      if (diff < minUdaljenost) {
+        minUdaljenost = diff;
+        aktivna = sec;
+      }
+    });
+    document.querySelectorAll('.section.aktivno').forEach(s => s.classList.remove('aktivno'));
+    if (aktivna) {
+      aktivna.classList.add('aktivno');
       refreshCurrentMarkacija();
     }
-  });
   }, 50);
-  });         
+});
         
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
