@@ -514,12 +514,16 @@ document.querySelectorAll('.section.aktivno').forEach(section => {
 // 2. Detektiraj novu "aktivnu" sekciju po vidljivosti i osvježi markaciju
 setTimeout(() => {
   document.querySelectorAll('.section').forEach(section => {
-    const bounding = section.getBoundingClientRect();
-    const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
-    if (inView) {
-      section.classList.add('aktivno');
-      refreshCurrentMarkacija();
-    }
+    const rect = section.getBoundingClientRect();
+const visHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+const ratio = visHeight / rect.height;
+
+if (ratio > 0.6) {
+  section.classList.add('aktivno');
+  refreshCurrentMarkacija();
+} else if (ratio < 0.4) {
+  section.classList.remove('aktivno');
+}
   });
   }, 50);
   });
