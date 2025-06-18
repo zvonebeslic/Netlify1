@@ -510,19 +510,28 @@ document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno');
 });
 
-// 2. Ponovno detektiraj koja sekcija je u viewportu i osvježi
+// 2. Nađi sekciju najbližu centru i aktiviraj je
 setTimeout(() => {
+  let aktivnaSekcija = null;
+  let najmanjaUdaljenost = Infinity;
+
   document.querySelectorAll('.section').forEach(section => {
-    const bounding = section.getBoundingClientRect();
-    const inView = bounding.top < window.innerHeight && bounding.bottom > 0;
-    if (inView) {
-      section.classList.add('aktivno');
-      refreshCurrentMarkacija();
+    const rect = section.getBoundingClientRect();
+    const centarSekcije = rect.top + rect.height / 2;
+    const centarEkrana = window.innerHeight / 2;
+    const udaljenost = Math.abs(centarSekcije - centarEkrana);
+
+    if (udaljenost < najmanjaUdaljenost) {
+      najmanjaUdaljenost = udaljenost;
+      aktivnaSekcija = section;
     }
   });
+
+  if (aktivnaSekcija) {
+    aktivnaSekcija.classList.add('aktivno');
+    refreshCurrentMarkacija();
+  }
 }, 50);
-}); // ← ZATVARA langToggle event listener
-          
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('open');
     });
