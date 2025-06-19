@@ -347,12 +347,13 @@
 /* --- IKONE I POZICIJA --- */
 .season-button-wrapper {
   position: absolute;
-  top: 110px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 95px;
+  left: 0%;
+  transform: none;
   z-index: 1000;
   text-align: center;
-  width: 50px; /* širina ikone toggle */
+  width: auto;
+  padding-left: 10px;
   user-select: none;
 }
 
@@ -361,6 +362,7 @@
   height: auto;
   cursor: pointer;
   transition: transform 0.3s ease;
+  opacity: 0.6;
   display: block;
   margin: 0 auto;
   position: relative;
@@ -379,14 +381,14 @@
   gap: 6px;
   max-height: 0;
   overflow: hidden;
-  opacity: 0;
+  opacity: 0.6;
   transition: opacity 0.3s ease, max-height 0.4s ease;
   pointer-events: none; /* sprječava klik dok su skriveni */
 }
 
 #season-icons:not(.hidden) {
   max-height: 500px; /* dovoljno da sve ikone stanu */
-  opacity: 1;
+  opacity: 0.6;
   pointer-events: auto;
 }
 
