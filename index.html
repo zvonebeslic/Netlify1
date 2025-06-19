@@ -594,8 +594,8 @@
     </div>
     © Mountain Adventures. All rights reserved.
   </footer>
-      // Aktivacija sezonskih uvjeta
-  id="season-control" style="position: relative; z-index: 1000;">
+      <!-- Aktivacija sezonskih uvjeta -->
+<div id="season-control" style="position: relative; z-index: 1000;">
   <div class="season-button-wrapper">
     <img src="images/seasonchange.svg" id="season-toggle" alt="Godišnja doba">
     <div id="season-icons" class="hidden">
@@ -606,8 +606,13 @@
     </div>
   </div>
 </div>
-      <div id="season-loader"></div>
-      <button id="stop-season">Zaustavi animaciju</button>
+
+<!-- Loader sloj za prijelaz -->
+<div id="season-loader"></div>
+
+<!-- Gumb za zaustavljanje animacije -->
+<button id="stop-season">Zaustavi animaciju</button>
+      
   <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -844,51 +849,31 @@ target.appendChild(gumb);
   setTimeout(() => gumb.classList.add('show'), 2600);
 } 
  // SeasonChange
-let activeSeason = null;
-
-function stopSeasonEffects() {
-  activeSeason = null;
-
-  // Ukloni sve animirane efekte
-  document.querySelectorAll('.season-effect').forEach(e => e.remove());
-
-  // Sakrij "Stop" gumb
-  hideStopButton();
-
-  // Sakrij ikone godišnjih doba ispod SVG ikone
-  document.getElementById('season-icons').classList.add('hidden');
-}
-
-function showStopButton() {
-  document.getElementById('stop-season').style.display = 'block';
-}
-
-function hideStopButton() {
-  document.getElementById('stop-season').style.display = 'none';
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  // Klik na glavnu sezonu SVG ikonu
-  document.getElementById('season-toggle').addEventListener('click', () => {
-    const icons = document.getElementById('season-icons');
+  let activeSeason = null;
 
+  const seasonToggle = document.getElementById('season-toggle');
+  const seasonIcons = document.getElementById('season-icons');
+  const stopButton = document.getElementById('stop-season');
+  const loader = document.getElementById('season-loader');
+
+  // Klik na glavni SVG gumb
+  seasonToggle.addEventListener('click', () => {
     if (activeSeason !== null) {
-      stopSeasonEffects(); // ako je aktivna neka sezona, prekini
+      stopSeasonEffects();
     } else {
-      icons.classList.toggle('hidden'); // otvori/skrivaj meni
+      seasonIcons.classList.toggle('hidden');
     }
   });
 
-  // Klik na neku od 4 sezone
+  // Klik na neku od sezonskih ikona
   document.querySelectorAll(".season-icon").forEach(icon => {
     icon.addEventListener("click", () => {
       const season = icon.dataset.season;
-
       if (activeSeason === season) {
         stopSeasonEffects();
         return;
       }
-
       stopSeasonEffects();
       activeSeason = season;
       applySeasonTheme(season);
@@ -896,34 +881,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Klik na stop dugme
-  document.getElementById('stop-season').addEventListener('click', stopSeasonEffects);
-});
-      
-  // Stop dugme
-  document.getElementById('stop-season').addEventListener('click', stopSeasonEffects);
+  // Klik na "Zaustavi animaciju" gumb
+  stopButton.addEventListener('click', stopSeasonEffects);
 
+  // Prikaži gumb
+  function showStopButton() {
+    stopButton.style.display = 'block';
+  }
+
+  // Sakrij gumb
+  function hideStopButton() {
+    stopButton.style.display = 'none';
+  }
+
+  // Zaustavljanje animacija
   function stopSeasonEffects() {
     activeSeason = null;
     document.querySelectorAll('.season-effect').forEach(e => e.remove());
     hideStopButton();
+    seasonIcons.classList.add('hidden');
+    loader.classList.remove('active');
   }
 
-  function showStopButton() {
-    document.getElementById('stop-season').style.display = 'block';
-  }
-
-  function hideStopButton() {
-    document.getElementById('stop-season').style.display = 'none';
-  }
-
+  // Glavna funkcija za primjenu efekta
   function applySeasonTheme(season) {
-    switch (season) {
-      case "winter": createSnowEffect(); break;
-      case "spring": createPetalEffect(); break;
-      case "summer": createSunEffect(); break;
-      case "autumn": createLeavesEffect(); break;
-    }
+    loader.classList.add('active');
+
+    setTimeout(() => {
+      document.querySelectorAll('.season-effect').forEach(e => e.remove());
+
+      switch (season) {
+        case "winter": createSnowEffect(); break;
+        case "spring": createPetalEffect(); break;
+        case "summer": createSunEffect(); break;
+        case "autumn": createLeavesEffect(); break;
+      }
+
+      loader.classList.remove('active');
+    }, 500);
   }
 
   function createSnowEffect() {
@@ -972,6 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const el = document.createElement("div");
     el.classList.add(className);
     el.innerText = emoji;
+    el.style.position = "absolute";
     el.style.left = left || Math.random() * 100 + "vw";
     el.style.top = top || "-5%";
     el.style.animationDelay = Math.random() * 5 + "s";
