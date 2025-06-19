@@ -843,10 +843,31 @@ target.appendChild(gumb);
   setTimeout(() => tekst.classList.add('show'), 2000);
   setTimeout(() => gumb.classList.add('show'), 2600);
 } 
+ // SeasonChange
+let activeSeason = null;
+
+function stopSeasonEffects() {
+  activeSeason = null;
+
+  // Ukloni sve animirane efekte
+  document.querySelectorAll('.season-effect').forEach(e => e.remove());
+
+  // Sakrij "Stop" gumb
+  hideStopButton();
+
+  // Sakrij ikone godišnjih doba ispod SVG ikone
+  document.getElementById('season-icons').classList.add('hidden');
+}
+
+function showStopButton() {
+  document.getElementById('stop-season').style.display = 'block';
+}
+
+function hideStopButton() {
+  document.getElementById('stop-season').style.display = 'none';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-  let activeSeason = null;
-
   // Klik na glavnu sezonu SVG ikonu
   document.getElementById('season-toggle').addEventListener('click', () => {
     const icons = document.getElementById('season-icons');
@@ -854,7 +875,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeSeason !== null) {
       stopSeasonEffects(); // ako je aktivna neka sezona, prekini
     } else {
-      icons.classList.toggle('hidden'); // samo otvori/skrivaj meni
+      icons.classList.toggle('hidden'); // otvori/skrivaj meni
     }
   });
 
@@ -874,19 +895,11 @@ document.addEventListener('DOMContentLoaded', () => {
       showStopButton();
     });
   });
-      function stopSeasonEffects() {
-    activeSeason = null;
 
-    // Ukloni sve animirane efekte
-    document.querySelectorAll('.season-effect').forEach(e => e.remove());
-
-    // Sakrij "Stop" gumb
-    hideStopButton();
-
-    // Sakrij ikone godišnjih doba ispod SVG ikone
-    document.getElementById('season-icons').classList.add('hidden');
-  }
+  // Klik na stop dugme
+  document.getElementById('stop-season').addEventListener('click', stopSeasonEffects);
 });
+      
   // Stop dugme
   document.getElementById('stop-season').addEventListener('click', stopSeasonEffects);
 
