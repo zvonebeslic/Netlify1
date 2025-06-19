@@ -495,6 +495,20 @@
      data-link="About"  
      data-btn-hr="Pročitaj više ovdje"  
      data-btn-en="Read more here">  
+        //Start SeasonChange
+  <div id="season-control" style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+    <div class="season-button-wrapper">
+      <img src="images/seasonchange.svg" id="season-toggle" alt="Godišnja doba">
+      <div id="season-icons" class="hidden">
+        <span class="season-icon" data-season="winter">❄️</span>
+        <span class="season-icon" data-season="summer">☀️</span>
+        <span class="season-icon" data-season="autumn">🍂</span>
+        <span class="season-icon" data-season="spring">🌸</span>
+      </div>
+    </div>
+         <div id="season-loader"></div>
+         <button id="stop-season">Zaustavi animaciju</button>
+        //Stop SeasonChange
         <div class="content-box">  
       <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>  
     </div>  
@@ -594,22 +608,6 @@
     </div>
     © Mountain Adventures. All rights reserved.
   </footer>
-      <!-- Aktivacija sezonskih uvjeta -->
-<div id="season-control" style="position: relative; z-index: 1000;">
-  <div class="season-button-wrapper">
-    <img src="images/seasonchange.svg" id="season-toggle" alt="Godišnja doba">
-    <div id="season-icons" class="hidden">
-      <span class="season-icon" data-season="winter">❄️</span>
-      <span class="season-icon" data-season="summer">☀️</span>
-      <span class="season-icon" data-season="autumn">🍂</span>
-      <span class="season-icon" data-season="spring">🌸</span>
-    </div>
-  </div>
-</div>
-
-<!-- Loader sloj i stop gumb -->
-<div id="season-loader"></div>
-<button id="stop-season">Zaustavi animaciju</button>
       
   <script>
     const langToggle = document.getElementById('language-toggle');
