@@ -818,86 +818,85 @@ target.appendChild(gumb);
   setTimeout(() => tekst.classList.add('show'), 2000);
   setTimeout(() => gumb.classList.add('show'), 2600);
 } 
-    document.addEventListener('DOMContentLoaded', () => { 
-   document.getElementById('season-toggle').addEventListener('click', () => {
-  document.getElementById('season-icons').classList.toggle('hidden');
-    });
-    });
-
-// Odabir sezone
-document.querySelectorAll(".season-icon").forEach(icon => {
-  icon.addEventListener("click", () => {
-    const season = icon.dataset.season;
-    applySeasonTheme(season);
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('season-toggle').addEventListener('click', () => {
+    document.getElementById('season-icons').classList.toggle('hidden');
   });
+
+  document.querySelectorAll(".season-icon").forEach(icon => {
+    icon.addEventListener("click", () => {
+      const season = icon.dataset.season;
+      applySeasonTheme(season);
+    });
+  });
+
+  function applySeasonTheme(season) {
+    document.querySelectorAll('.season-effect').forEach(e => e.remove());
+
+    switch (season) {
+      case "winter": createSnowEffect(); break;
+      case "spring": createPetalEffect(); break;
+      case "summer": createSunEffect(); break;
+      case "autumn": createLeavesEffect(); break;
+    }
+  }
+
+  function createSnowEffect() {
+    const container = createEffectContainer();
+    for (let i = 0; i < 30; i++) {
+      const flake = createEffectElement("snowflake", "❄️");
+      container.appendChild(flake);
+    }
+  }
+
+  function createPetalEffect() {
+    const container = createEffectContainer();
+    for (let i = 0; i < 25; i++) {
+      const petal = createEffectElement("petal", "🌸");
+      container.appendChild(petal);
+    }
+    const bee = createEffectElement("petal", "🐝", "45vw", "10vh", "18px", "12s");
+    container.appendChild(bee);
+  }
+
+  function createSunEffect() {
+    const container = createEffectContainer();
+    for (let i = 0; i < 10; i++) {
+      const ray = createEffectElement("sunray", "☀️", null, null, (Math.random() * 20 + 20) + "px");
+      container.appendChild(ray);
+    }
+  }
+
+  function createLeavesEffect() {
+    const container = createEffectContainer();
+    const leafTypes = ["🍁", "🍂", "🍃"];
+    for (let i = 0; i < 35; i++) {
+      const leaf = createEffectElement("leaf", leafTypes[Math.floor(Math.random() * leafTypes.length)]);
+      container.appendChild(leaf);
+    }
+  }
+
+  function createEffectContainer() {
+    const container = document.createElement("div");
+    container.classList.add("season-effect");
+    document.body.appendChild(container);
+    return container;
+  }
+
+  function createEffectElement(className, emoji, left, top, fontSize, duration) {
+    const el = document.createElement("div");
+    el.classList.add(className);
+    el.innerText = emoji;
+    el.style.left = left || Math.random() * 100 + "vw";
+    el.style.top = top || "-5%";
+    el.style.animationDelay = Math.random() * 5 + "s";
+    el.style.fontSize = fontSize || (Math.random() * 12 + 10) + "px";
+    el.style.animationDuration = duration || "10s";
+    return el;
+  }
 });
-
-function applySeasonTheme(season) {
-  // Ukloni prethodne efekte
-  document.querySelectorAll('.season-effect').forEach(e => e.remove());
-
-  switch (season) {
-    case "winter": createSnowEffect(); break;
-    case "spring": createPetalEffect(); break;
-    case "summer": createSunEffect(); break;
-    case "autumn": createLeavesEffect(); break;
-  }
-}
-
-function createSnowEffect() {
-  const container = createEffectContainer();
-  for (let i = 0; i < 30; i++) {
-    const flake = createEffectElement("snowflake", "❄️");
-    container.appendChild(flake);
-  }
-}
-
-function createPetalEffect() {
-  const container = createEffectContainer();
-  for (let i = 0; i < 25; i++) {
-    const petal = createEffectElement("petal", "🌸");
-    container.appendChild(petal);
-  }
-  const bee = createEffectElement("petal", "🐝", "45vw", "10vh", "18px", "12s");
-  container.appendChild(bee);
-}
-
-function createSunEffect() {
-  const container = createEffectContainer();
-  for (let i = 0; i < 10; i++) {
-    const ray = createEffectElement("sunray", "☀️", null, null, (Math.random() * 20 + 20) + "px");
-    container.appendChild(ray);
-  }
-}
-
-function createLeavesEffect() {
-  const container = createEffectContainer();
-  const leafTypes = ["🍁", "🍂", "🍃"];
-  for (let i = 0; i < 35; i++) {
-    const leaf = createEffectElement("leaf", leafTypes[Math.floor(Math.random() * leafTypes.length)]);
-    container.appendChild(leaf);
-  }
-}
-
-// Pomoćne funkcije za jednostavnost koda
-function createEffectContainer() {
-  const container = document.createElement("div");
-  container.classList.add("season-effect");
-  document.body.appendChild(container);
-  return container;
-}
-
-function createEffectElement(className, emoji, left, top, fontSize, duration) {
-  const el = document.createElement("div");
-  el.classList.add(className);
-  el.innerText = emoji;
-  el.style.left = left || Math.random() * 100 + "vw";
-  el.style.top = top || "-5%";
-  el.style.animationDelay = Math.random() * 5 + "s";
-  el.style.fontSize = fontSize || (Math.random() * 12 + 10) + "px";
-  el.style.animationDuration = duration || "10s";
-  return el;
-} 
+</script>
 </script>
 </body>
 </html>
