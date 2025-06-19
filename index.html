@@ -344,14 +344,16 @@
     right: 21px;
   }
 }
-   /* --- IKONE I POZICIJA --- */
+/* --- IKONE I POZICIJA --- */
 .season-button-wrapper {
   position: absolute;
-  top: 130px;
+  top: 110px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   text-align: center;
+  width: 50px; /* širina ikone toggle */
+  user-select: none;
 }
 
 #season-toggle {
@@ -359,6 +361,10 @@
   height: auto;
   cursor: pointer;
   transition: transform 0.3s ease;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1010;
 }
 
 #season-toggle:hover {
@@ -366,12 +372,22 @@
 }
 
 #season-icons {
-  margin-top: 10px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  transition: opacity 0.4s ease;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, max-height 0.4s ease;
+  pointer-events: none; /* sprječava klik dok su skriveni */
+}
+
+#season-icons:not(.hidden) {
+  max-height: 500px; /* dovoljno da sve ikone stanu */
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .season-icon {
@@ -382,14 +398,16 @@
   font-size: 20px;
   cursor: pointer;
   transition: transform 0.3s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
 
 .season-icon:hover {
   transform: scale(1.3);
-}
-
-.hidden {
-  display: none;
 }
 
 /* --- EFEKTI --- */
