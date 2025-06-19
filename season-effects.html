@@ -12,7 +12,7 @@
 /* --- IKONE I POZICIJA --- */
 .season-button-wrapper {
   position: absolute;
-  top: 80px;
+  top: 130px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -87,6 +87,11 @@
 }
 </style><script>
 // Toggle prikaza ikona
+  
+  document.getElementById('season-toggle').addEventListener('click', () => {
+  document.getElementById('season-icons').classList.toggle('hidden');
+});
+  
 const seasonToggle = document.getElementById("season-toggle");
 const seasonIcons = document.getElementById("season-icons");
 
