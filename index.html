@@ -484,6 +484,8 @@
     </div>
     © Mountain Adventures. All rights reserved.
   </footer>
+      // Aktivacija sezonskih uvjeta
+      <div id="season-loader"></div>
   <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -719,6 +721,11 @@ target.appendChild(gumb);
   setTimeout(() => tekst.classList.add('show'), 2000);
   setTimeout(() => gumb.classList.add('show'), 2600);
 } 
+  fetch('season-effects.html')
+    .then(res => res.text())
+    .then(html => {
+     document.getElementById('season-loader').innerHTML = html;
+    });
 </script>
 </body>
 </html>
