@@ -411,7 +411,21 @@
 .season-icon:hover {
   transform: scale(1.3);
 }
-
+        
+#stop-season {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #999;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 1001;
+}
+      
 /* --- EFEKTI --- */
 .season-effect {
   position: fixed;
@@ -593,6 +607,7 @@
   </div>
 </div>
       <div id="season-loader"></div>
+      <button id="stop-season">Zaustavi animaciju</button>
   <script>
     const langToggle = document.getElementById('language-toggle');
     const searchInput = document.getElementById('search');
@@ -830,20 +845,54 @@ target.appendChild(gumb);
 } 
 
 document.addEventListener('DOMContentLoaded', () => {
+  let activeSeason = null;
+
+  // Klik na glavnu sezonu SVG ikonu
   document.getElementById('season-toggle').addEventListener('click', () => {
-    document.getElementById('season-icons').classList.toggle('hidden');
+    const icons = document.getElementById('season-icons');
+
+    if (activeSeason !== null) {
+      stopSeasonEffects(); // ako je aktivna neka sezona, prekini
+    } else {
+      icons.classList.toggle('hidden'); // samo otvori/skrivaj meni
+    }
   });
 
+  // Klik na neku od 4 sezone
   document.querySelectorAll(".season-icon").forEach(icon => {
     icon.addEventListener("click", () => {
       const season = icon.dataset.season;
+
+      if (activeSeason === season) {
+        stopSeasonEffects();
+        return;
+      }
+
+      stopSeasonEffects();
+      activeSeason = season;
       applySeasonTheme(season);
+      showStopButton();
     });
   });
 
-  function applySeasonTheme(season) {
-    document.querySelectorAll('.season-effect').forEach(e => e.remove());
+  // Stop dugme
+  document.getElementById('stop-season').addEventListener('click', stopSeasonEffects);
 
+  function stopSeasonEffects() {
+    activeSeason = null;
+    document.querySelectorAll('.season-effect').forEach(e => e.remove());
+    hideStopButton();
+  }
+
+  function showStopButton() {
+    document.getElementById('stop-season').style.display = 'block';
+  }
+
+  function hideStopButton() {
+    document.getElementById('stop-season').style.display = 'none';
+  }
+
+  function applySeasonTheme(season) {
     switch (season) {
       case "winter": createSnowEffect(); break;
       case "spring": createPetalEffect(); break;
