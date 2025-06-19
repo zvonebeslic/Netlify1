@@ -874,7 +874,19 @@ document.addEventListener('DOMContentLoaded', () => {
       showStopButton();
     });
   });
+      function stopSeasonEffects() {
+    activeSeason = null;
 
+    // Ukloni sve animirane efekte
+    document.querySelectorAll('.season-effect').forEach(e => e.remove());
+
+    // Sakrij "Stop" gumb
+    hideStopButton();
+
+    // Sakrij ikone godišnjih doba ispod SVG ikone
+    document.getElementById('season-icons').classList.add('hidden');
+  }
+});
   // Stop dugme
   document.getElementById('stop-season').addEventListener('click', stopSeasonEffects);
 
