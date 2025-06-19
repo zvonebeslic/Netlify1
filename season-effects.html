@@ -8,7 +8,9 @@
       <span class="season-icon" data-season="spring">🌸</span>
     </div>
   </div>
-</div><style>
+</div>
+
+<style>
 /* --- IKONE I POZICIJA --- */
 .season-button-wrapper {
   position: absolute;
@@ -85,8 +87,9 @@
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-</style><script>
+</style>
 
+<script>
  document.getElementById('season-toggle').addEventListener('click', () => {
   document.getElementById('season-icons').classList.toggle('hidden');
 });
@@ -165,3 +168,4 @@ function createEffectElement(className, emoji, left, top, fontSize, duration) {
   el.style.animationDuration = duration || "10s";
   return el;
 } 
+</script>
