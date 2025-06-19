@@ -495,7 +495,8 @@
      data-link="About"  
      data-btn-hr="Pročitaj više ovdje"  
      data-btn-en="Read more here">  
-        //Start SeasonChange
+
+  <!-- Start SeasonChange -->
   <div id="season-control" style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); z-index: 1000;">
     <div class="season-button-wrapper">
       <img src="images/seasonchange.svg" id="season-toggle" alt="Godišnja doba">
@@ -506,13 +507,18 @@
         <span class="season-icon" data-season="spring">🌸</span>
       </div>
     </div>
-         <div id="season-loader"></div>
-         <button id="stop-season">Zaustavi animaciju</button>
-        //Stop SeasonChange
-        <div class="content-box">  
-      <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">Dobrodošli u Mountain Adventures</div>  
+    <div id="season-loader"></div>
+    <button id="stop-season">Zaustavi animaciju</button>
+  </div>
+  <!-- Stop SeasonChange -->
+
+  <div class="content-box">  
+    <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">
+      Dobrodošli u Mountain Adventures
     </div>  
+  </div>  
 </div>
+</section>
   <div id="section2" class="section image-section" style="background-image: url('images/Background1.jpg'); background-size: cover; background-position: center; height: 100vh;"
      data-title-hr="1Tko smo mi?"
      data-text-hr="1Upoznajte Tim i vrijednosti koje stoje iza Mountain Adventures."
@@ -853,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const stopButton = document.getElementById('stop-season');
   const loader = document.getElementById('season-loader');
 
-  // Klik na glavni SVG gumb
+  // Klik na glavnu SVG ikonu
   seasonToggle.addEventListener('click', () => {
     if (activeSeason !== null) {
       stopSeasonEffects();
@@ -862,14 +868,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Klik na neku od sezonskih ikona
+  // Klik na sezonu
   document.querySelectorAll(".season-icon").forEach(icon => {
     icon.addEventListener("click", () => {
       const season = icon.dataset.season;
+
       if (activeSeason === season) {
         stopSeasonEffects();
         return;
       }
+
       stopSeasonEffects();
       activeSeason = season;
       applySeasonTheme(season);
@@ -877,20 +885,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Klik na "Zaustavi animaciju" gumb
+  // Klik na stop gumb
   stopButton.addEventListener('click', stopSeasonEffects);
 
-  // Prikaži gumb
-  function showStopButton() {
-    stopButton.style.display = 'block';
-  }
-
-  // Sakrij gumb
-  function hideStopButton() {
-    stopButton.style.display = 'none';
-  }
-
-  // Zaustavljanje animacija
   function stopSeasonEffects() {
     activeSeason = null;
     document.querySelectorAll('.season-effect').forEach(e => e.remove());
@@ -899,10 +896,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loader.classList.remove('active');
   }
 
-  // Glavna funkcija za primjenu efekta
+  function showStopButton() {
+    stopButton.style.display = 'block';
+  }
+
+  function hideStopButton() {
+    stopButton.style.display = 'none';
+  }
+
   function applySeasonTheme(season) {
     loader.classList.add('active');
-
     setTimeout(() => {
       document.querySelectorAll('.season-effect').forEach(e => e.remove());
 
@@ -914,7 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       loader.classList.remove('active');
-    }, 500);
+    }, 300);
   }
 
   function createSnowEffect() {
