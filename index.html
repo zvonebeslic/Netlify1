@@ -177,11 +177,11 @@
   a.content-box-link {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: block;
   max-width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+  width: fit-content;
   padding: 30px;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 20px;
@@ -189,7 +189,8 @@
   font-size: 1.5em;
   text-decoration: none;
   color: inherit;
-  cursor: pointer;
+  white-space: normal;
+  line-height: 1.4;
 }
     .content-box {
   position: absolute;
