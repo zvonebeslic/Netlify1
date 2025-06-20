@@ -475,21 +475,42 @@ a.content-box-link {
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-   a, button {
+  /* Uklanjanje tap/click efekata */
+a, button {
   -webkit-tap-highlight-color: transparent;
 }
-
-a:active {
+a:active,
+a.content-box-link:active,
+button:active,
+.markacija-btn:active {
   background-color: transparent !important;
   color: inherit !important;
   outline: none !important;
   box-shadow: none !important;
 }
 
-a.content-box-link:active {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  color: inherit !important;
-  box-shadow: none !important;
+/* Hover efekt za gumb "Pročitaj više ovdje" */
+a.content-box-link:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* Scale efekt pri kliku na gumb, zastavicu i markaciju */
+a.content-box-link,
+.lang-flag,
+.markacija-btn {
+  transition: transform 0.2s ease;
+}
+a.content-box-link:active,
+.lang-flag:active,
+.markacija-btn:active {
+  transform: scale(1.05);
+}
+
+/* Onemogućen klik na bubble */
+.blog-bubble {
+  pointer-events: none;
 }
   </style>
 </head>
