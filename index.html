@@ -829,6 +829,12 @@ setTimeout(() => {
     }, 150);
   });
 });
+  // Reset svih .pressed elemenata kad se korisnik vrati na stranicu (Back button itd.)
+window.addEventListener('pageshow', () => {
+  document.querySelectorAll('.pressed').forEach(el => {
+    el.classList.remove('pressed');
+  });
+});       
           // SVG MARKACIJA
           const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
           svg.setAttribute("class", "markacija");
