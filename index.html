@@ -475,36 +475,52 @@ a.content-box-link {
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-/* Uklanjanje plavog efekta na dodir (mobiteli) */
+   /* Uklanjanje plavog efekta na dodir (mobiteli) */
 a, button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Vanjski okvir ostaje stabilan */
-.content-box {
-  overflow: hidden;
-  position: absolute;
-}
-
-/* Unutarnji sloj */
-.content-inner {
-  transition: transform 0.12s ease, filter 0.2s ease;
+/* Glavni klikabilni okvir (sada je <a>) */
+.content-box-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
   transform-origin: center center;
 }
 
-/* Hover efekt na content-inner */
-.content-box:hover .content-inner {
-  filter: brightness(1.05);
-}
-
-/* Efekt pritiska koji dodaje JS (.pressed) */
+/* Efekt pritiska (.pressed) */
 .pressed {
   transform: scale(0.97);
   transition: transform 0.15s ease;
 }
 
-/* Interaktivni elementi: gumbi, zastavice, markacije, season ikonice */
-a.content-box-link,
+/* Hover efekt na cijeli okvir */
+.content-box-link:hover {
+  filter: brightness(1.1);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Unutarnji sloj i tekst */
+.content-box {
+  overflow: hidden;
+  position: relative; /* ili absolute ako već pozicioniraš sekcije */
+}
+
+/* Ako i dalje koristiš inner za pozicioniranje, može ostati */
+.content-inner {
+  transition: transform 0.12s ease, filter 0.2s ease;
+  transform-origin: center center;
+}
+
+/* Onemogućen klik na bubble */
+.blog-bubble {
+  pointer-events: none;
+}
+
+/* Dodatno (ako koristiš .lang-flag, markacije, sezonske ikonice) */
 .lang-flag,
 .markacija-btn,
 #season-toggle,
@@ -514,8 +530,6 @@ a.content-box-link,
   transform-origin: center center;
 }
 
-/* Hover efekti za sve interaktivne elemente */
-a.content-box-link:hover,
 .lang-flag:hover,
 .markacija-btn:hover,
 #season-toggle:hover,
@@ -523,12 +537,7 @@ a.content-box-link:hover,
   filter: brightness(1.1);
   background-color: rgba(255, 255, 255, 0.15);
   color: #fff;
-}
-
-/* Onemogućen klik na bubble */
-.blog-bubble {
-  pointer-events: none;
-}
+}     
   </style>
 </head>
 <body>
@@ -601,15 +610,14 @@ a.content-box-link:hover,
      data-link="1About"
      data-btn-hr="1Pročitaj više ovdje"
      data-btn-en="1Read more here">
-            <div class="content-box">
-            <div class="content-inner">
-            <a href="staze.html"
-         class="content-box-link">
-      <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
-        </a>
+  <a href="staze.html" class="content-box-link">
+    <div class="content-box">
+      <div class="content-inner">
+        <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
       </div>
-    </div>                 
-  </div>
+    </div>
+  </a>
+</div>
     
   <div id="section5" class="section image-section" style="background-image: url('images/Background2.jpg'); background-size: cover; background-position: center; height: 100vh;"
      data-title-hr="2Tko smo mi?"
@@ -791,24 +799,24 @@ setTimeout(() => {
         if (!target.classList.contains('aktivno')) {
           target.classList.add('aktivno');
 
-  // Efekt pritiska na klik za sve gumbove (i linkove)
-  document.querySelectorAll('.content-box-link, .lang-flag, .markacija-btn, #season-toggle, .season-icon').forEach(el => {
-    el.addEventListener('click', e => {
-      // Samo ako ima href (inače ne sprečavamo ništa)
-      const href = el.getAttribute('href');
-      if (href) {
-        e.preventDefault(); // spriječi odmah skok
-        el.classList.add('pressed'); // dodaj animaciju
+  // Efekt pritiska + animacija + odgođena navigacija
+  document.querySelectorAll('.content-box-link, .lang-flag, .markacija-btn, #season-toggle, .season-icon')
+    .forEach(el => {
+      el.addEventListener('click', e => {
+        const href = el.getAttribute('href');
+        if (href) {
+          e.preventDefault(); // Zaustavi trenutnu navigaciju
+          el.classList.add('pressed'); // Pokreni scale animaciju
 
-        setTimeout(() => {
-          el.classList.remove('pressed'); // makni animaciju
-          window.location.href = href; // sad idi na link
-        }, 150); // trajanje animacije
-      }
+          setTimeout(() => {
+            el.classList.remove('pressed'); // Očisti klasu (nije obavezno ali je uredno)
+            window.location.href = href;    // Navigiraj nakon animacije
+          }, 150); // Trajanje animacije mora odgovarati CSS-u
+        }
+      });
     });
-  });
 
-  // Dodatno: očisti sve "pressed" kad se vratiš na stranicu
+  // Kad se korisnik vrati na stranicu (back/forward) – očisti sve .pressed
   window.addEventListener('pageshow', () => {
     document.querySelectorAll('.pressed').forEach(el => {
       el.classList.remove('pressed');
