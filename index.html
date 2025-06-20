@@ -475,7 +475,7 @@ a.content-box-link {
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-  /* Uklanjanje plavog tap/click efekta na mobitelima */
+/* Uklanjanje plavog tap/click efekta na mobitelima */
 a, button {
   -webkit-tap-highlight-color: transparent;
 }
@@ -484,46 +484,61 @@ a, button {
 a:active,
 a.content-box-link:active,
 button:active,
-.markacija-btn:active {
+.markacija-btn:active,
+#season-toggle:active,
+.season-icon:active {
   background-color: transparent !important;
   color: inherit !important;
   outline: none !important;
   box-shadow: none !important;
 }
+
+/* Cijeli okvir (content-box) */
 .content-box {
-  transition: filter 0.3s ease, transform 0.2s ease;
+  transition: transform 0.1s ease, filter 0.2s ease;
 }
 
 /* Hover efekt na cijeli okvir – lagano posvijetli */
 .content-box:hover {
   filter: brightness(1.05);
-  transform: scale(1.01);
 }
-/* Gumbi: "Pročitaj više ovdje", zastavice i markacija – animacije */
+
+/* Klik na content-box – blago pritisni */
+.content-box:active {
+  transform: scale(0.99);
+}
+
+/* Gumbi: "Pročitaj više", zastavice, markacije, season toggle i ikone */
 a.content-box-link,
 .lang-flag,
-.markacija-btn {
-  transition: transform 0.2s ease, background-color 0.2s ease, filter 0.2s ease;
+.markacija-btn,
+#season-toggle,
+.season-icon {
+  transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
   cursor: pointer;
 }
 
-/* Hover efekt – lagano posvijetli */
+/* Hover efekt za sve interaktivne elemente */
 a.content-box-link:hover,
 .lang-flag:hover,
-.markacija-btn:hover {
+.markacija-btn:hover,
+#season-toggle:hover,
+.season-icon:hover {
   filter: brightness(1.1);
 }
 
-/* Klik (active) efekt – blago smanji i ostane vidljiv */
+/* Klik efekt – blagi scale bez pomaka */
 a.content-box-link:active,
 .lang-flag:active,
-.markacija-btn:active {
+.markacija-btn:active,
+#season-toggle:active,
+.season-icon:active {
   transform: scale(0.97);
   background-color: rgba(255, 255, 255, 0.15);
   color: inherit;
 }
 
-/* Dodatni hover za "Pročitaj više ovdje" */
+/* Hover specifično za gumb "Pročitaj više ovdje" */
 a.content-box-link:hover {
   background-color: rgba(255, 255, 255, 0.15);
   color: #fff;
