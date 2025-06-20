@@ -801,28 +801,30 @@ setTimeout(() => {
           target.classList.add('aktivno');
 
   // Efekt pritiska + animacija + odgođena navigacija
-  document.querySelectorAll('.content-box-link, .lang-flag, .markacija-btn, #season-toggle, .season-icon')
-    .forEach(el => {
-      el.addEventListener('click', e => {
-        const href = el.getAttribute('href');
-        if (href) {
-          e.preventDefault(); // Zaustavi trenutnu navigaciju
-          el.classList.add('pressed'); // Pokreni scale animaciju
+document.querySelectorAll('.content-box, .lang-flag, .markacija-btn, #season-toggle, .season-icon')
+  .forEach(el => {
+    el.addEventListener('click', e => {
+      const link = el.querySelector('a');
+      const href = link ? link.getAttribute('href') : null;
 
-          setTimeout(() => {
-            el.classList.remove('pressed'); // Očisti klasu (nije obavezno ali je uredno)
-            window.location.href = href;    // Navigiraj nakon animacije
-          }, 150); // Trajanje animacije mora odgovarati CSS-u
-        }
-      });
-    });
+      if (href) {
+        e.preventDefault();
+        el.classList.add('pressed');
 
-  // Kad se korisnik vrati na stranicu (back/forward) – očisti sve .pressed
-  window.addEventListener('pageshow', () => {
-    document.querySelectorAll('.pressed').forEach(el => {
-      el.classList.remove('pressed');
+        setTimeout(() => {
+          el.classList.remove('pressed');
+          window.location.href = href;
+        }, 150);
+      }
     });
   });
+
+// Kad se korisnik vrati na stranicu – očisti .pressed klasu
+window.addEventListener('pageshow', () => {
+  document.querySelectorAll('.pressed').forEach(el => {
+    el.classList.remove('pressed');
+  });
+});
 
           // SVG MARKACIJA
           const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
