@@ -475,17 +475,22 @@ a.content-box-link {
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-   a {
+   a, button {
   -webkit-tap-highlight-color: transparent;
-  text-decoration: none;
-  color: inherit;
 }
-a:focus,
+
 a:active {
-  outline: none;
-  background-color: transparent;
-  color: inherit;
-}     
+  background-color: transparent !important;
+  color: inherit !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+a.content-box-link:active {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
   </style>
 </head>
 <body>
