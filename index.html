@@ -475,23 +475,6 @@ a.content-box-link {
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-/* Uklanjanje plavog efekta na dodir */
-a, button {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Neutralizacija neželjenih efekata pri kliku */
-a:active,
-a.content-box-link:active,
-button:active,
-.markacija-btn:active,
-#season-toggle:active,
-.season-icon:active {
-  background-color: transparent !important;
-  color: inherit !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
 /* Uklanjanje plavog efekta na dodir (mobiteli) */
 a, button {
   -webkit-tap-highlight-color: transparent;
@@ -503,20 +486,21 @@ a, button {
   position: absolute;
 }
 
-/* Unutarnji sloj koji se animira */
+/* Unutarnji sloj */
 .content-inner {
   transition: transform 0.12s ease, filter 0.2s ease;
   transform-origin: center center;
 }
 
-/* Efekt pritiska koji se dodaje preko JS klase */
-.content-inner.pressed {
-  transform: scale(0.985);
-}
-
 /* Hover efekt na content-inner */
 .content-box:hover .content-inner {
   filter: brightness(1.05);
+}
+
+/* Efekt pritiska koji dodaje JS (.pressed) */
+.pressed {
+  transform: scale(0.97);
+  transition: transform 0.15s ease;
 }
 
 /* Interaktivni elementi: gumbi, zastavice, markacije, season ikonice */
@@ -541,22 +525,10 @@ a.content-box-link:hover,
   color: #fff;
 }
 
-/* Klik (active) efekt – blagi pritisak */
-a.content-box-link:active,
-.lang-flag:active,
-.markacija-btn:active,
-#season-toggle:active,
-.season-icon:active {
-  transform: scale(0.97);
-  background-color: rgba(255, 255, 255, 0.15);
-  color: inherit;
-}
-
 /* Onemogućen klik na bubble */
 .blog-bubble {
   pointer-events: none;
 }
-
   </style>
 </head>
 <body>
@@ -819,22 +791,30 @@ setTimeout(() => {
         if (!target.classList.contains('aktivno')) {
           target.classList.add('aktivno');
 
-  // Automatski efekt pritiska za .content-inner
-      document.querySelectorAll('.content-inner').forEach(el => {
-  el.addEventListener('pointerdown', () => {
-    el.classList.add('pressed');
+  // Efekt pritiska na klik za sve gumbove (i linkove)
+  document.querySelectorAll('.content-box-link, .lang-flag, .markacija-btn, #season-toggle, .season-icon').forEach(el => {
+    el.addEventListener('click', e => {
+      // Samo ako ima href (inače ne sprečavamo ništa)
+      const href = el.getAttribute('href');
+      if (href) {
+        e.preventDefault(); // spriječi odmah skok
+        el.classList.add('pressed'); // dodaj animaciju
 
-    setTimeout(() => {
+        setTimeout(() => {
+          el.classList.remove('pressed'); // makni animaciju
+          window.location.href = href; // sad idi na link
+        }, 150); // trajanje animacije
+      }
+    });
+  });
+
+  // Dodatno: očisti sve "pressed" kad se vratiš na stranicu
+  window.addEventListener('pageshow', () => {
+    document.querySelectorAll('.pressed').forEach(el => {
       el.classList.remove('pressed');
-    }, 150);
+    });
   });
-});
-  // Reset svih .pressed elemenata kad se korisnik vrati na stranicu (Back button itd.)
-window.addEventListener('pageshow', () => {
-  document.querySelectorAll('.pressed').forEach(el => {
-    el.classList.remove('pressed');
-  });
-});       
+
           // SVG MARKACIJA
           const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
           svg.setAttribute("class", "markacija");
