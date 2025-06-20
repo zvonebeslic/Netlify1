@@ -824,14 +824,15 @@ setTimeout(() => {
           target.classList.add('aktivno');
 
   // Automatski efekt pritiska za .content-inner
-  document.querySelectorAll('.content-inner').forEach(el => {
-    el.addEventListener('click', () => {
-      el.classList.add('pressed');
-      setTimeout(() => {
-        el.classList.remove('pressed');
-      }, 150); // koliko dugo traje animacija
-    });
-  });      
+      document.querySelectorAll('.content-inner').forEach(el => {
+  el.addEventListener('pointerdown', () => {
+    el.classList.add('pressed');
+
+    setTimeout(() => {
+      el.classList.remove('pressed');
+    }, 150);
+  });
+});
           // SVG MARKACIJA
           const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
           svg.setAttribute("class", "markacija");
