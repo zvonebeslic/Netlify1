@@ -492,6 +492,10 @@ button:active,
   outline: none !important;
   box-shadow: none !important;
 }
+/* Uklanjanje plavog efekta na dodir (mobiteli) */
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* Vanjski okvir ostaje stabilan */
 .content-box {
@@ -499,18 +503,23 @@ button:active,
   position: absolute;
 }
 
-/* Unutarnji sloj koji se animira – NIŠTA SE NE POMIČE */
+/* Unutarnji sloj koji se animira */
 .content-inner {
   transition: transform 0.12s ease, filter 0.2s ease;
   transform-origin: center center;
+}
+
+/* Efekt pritiska koji se dodaje preko JS klase */
+.content-inner.pressed {
+  transform: scale(0.985);
 }
 
 /* Hover efekt na content-inner */
 .content-box:hover .content-inner {
   filter: brightness(1.05);
 }
-        
-/* Interaktivni elementi: gumb, zastavice, markacije, season ikonice */
+
+/* Interaktivni elementi: gumbi, zastavice, markacije, season ikonice */
 a.content-box-link,
 .lang-flag,
 .markacija-btn,
@@ -521,16 +530,18 @@ a.content-box-link,
   transform-origin: center center;
 }
 
-/* Hover efekti za interaktivne elemente */
+/* Hover efekti za sve interaktivne elemente */
 a.content-box-link:hover,
 .lang-flag:hover,
 .markacija-btn:hover,
 #season-toggle:hover,
 .season-icon:hover {
   filter: brightness(1.1);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
-/* Klik (active) efekt – lagani scale pritisak */
+/* Klik (active) efekt – blagi pritisak */
 a.content-box-link:active,
 .lang-flag:active,
 .markacija-btn:active,
@@ -541,21 +552,11 @@ a.content-box-link:active,
   color: inherit;
 }
 
-/* Specifično za gumb "Pročitaj više ovdje" */
-a.content-box-link:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-
 /* Onemogućen klik na bubble */
 .blog-bubble {
   pointer-events: none;
 }
-  /* Animacija za sve gubme */
-   .content-inner.pressed {
-  transform: scale(0.985);
-  transition: transform 0.12s ease;
-}     
+
   </style>
 </head>
 <body>
