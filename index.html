@@ -183,6 +183,8 @@
     }
     .content-box {
   position: absolute;
+  top: 50%;
+  left: 50%;
   max-width: 80%;
   transform: translate(-50%, -50%);
   margin-left: auto;
@@ -195,7 +197,7 @@
   cursor: pointer;
 }
         .content-box:hover {
-  transform: scale(1.03);
+  transform: translate(-50% ,-50%) scale(1.03);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
