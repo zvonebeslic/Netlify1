@@ -496,6 +496,7 @@ button:active,
 /* Cijeli okvir (content-box) */
 .content-box {
   transition: transform 0.1s ease, filter 0.2s ease;
+  transform-origin: center center; /* ✔️ VAŽNO: bez skakanja */
 }
 
 /* Hover efekt na cijeli okvir – lagano posvijetli */
@@ -503,7 +504,7 @@ button:active,
   filter: brightness(1.05);
 }
 
-/* Klik na content-box – blago pritisni */
+/* Klik na content-box – blago pritisni bez pomaka */
 .content-box:active {
   transform: scale(0.99);
 }
@@ -516,6 +517,7 @@ a.content-box-link,
 .season-icon {
   transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
   cursor: pointer;
+  transform-origin: center center; /* ✔️ VAŽNO: drži ih na mjestu */
 }
 
 /* Hover efekt za sve interaktivne elemente */
