@@ -175,15 +175,18 @@
       opacity: 0.4;
       transform: scale(1);
     }
-  a.content-box-link {
-  position: absolute;   
-  top: 50%;
-  transform: translateY(-50%);
-  display: inline-block;
+a.content-box-link {
+  display: block;
+  padding: 30px;
+  max-width: 80%;
+  margin: 0 auto; /* centriranje po širini */
   text-decoration: none;
   color: inherit;
-  width: fit-content;          
-  z-index: 10;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  font-size: 1.3em;
+  white-space: normal;
+  box-sizing: border-box;
 }
     .content-box {
   position: absolute;
