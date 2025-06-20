@@ -475,7 +475,7 @@ a.content-box-link {
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-/* Uklanjanje plavog tap/click efekta na mobitelima */
+/* Uklanjanje plavog efekta na dodir */
 a, button {
   -webkit-tap-highlight-color: transparent;
 }
@@ -493,23 +493,29 @@ button:active,
   box-shadow: none !important;
 }
 
-/* Cijeli okvir (content-box) */
+/* Vanjski okvir ostaje stabilan */
 .content-box {
-  transition: transform 0.1s ease, filter 0.2s ease;
-  transform-origin: center center; /* ✔️ VAŽNO: bez skakanja */
+  overflow: hidden;
+  position: absolute;
 }
 
-/* Hover efekt na cijeli okvir – lagano posvijetli */
-.content-box:hover {
+/* Unutarnji sloj koji se animira – NIŠTA SE NE POMIČE */
+.content-inner {
+  transition: transform 0.12s ease, filter 0.2s ease;
+  transform-origin: center center;
+}
+
+/* Hover efekt na content-inner */
+.content-box:hover .content-inner {
   filter: brightness(1.05);
 }
 
-/* Klik na content-box – blago pritisni bez pomaka */
-.content-box:active {
-  transform: scale(0.99);
+/* Klik na content-inner – efekt pritiska */
+.content-box:active .content-inner {
+  transform: scale(0.985);
 }
 
-/* Gumbi: "Pročitaj više", zastavice, markacije, season toggle i ikone */
+/* Interaktivni elementi: gumb, zastavice, markacije, season ikonice */
 a.content-box-link,
 .lang-flag,
 .markacija-btn,
@@ -517,10 +523,10 @@ a.content-box-link,
 .season-icon {
   transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
   cursor: pointer;
-  transform-origin: center center; /* ✔️ VAŽNO: drži ih na mjestu */
+  transform-origin: center center;
 }
 
-/* Hover efekt za sve interaktivne elemente */
+/* Hover efekti za interaktivne elemente */
 a.content-box-link:hover,
 .lang-flag:hover,
 .markacija-btn:hover,
@@ -529,7 +535,7 @@ a.content-box-link:hover,
   filter: brightness(1.1);
 }
 
-/* Klik efekt – blagi scale bez pomaka */
+/* Klik (active) efekt – lagani scale pritisak */
 a.content-box-link:active,
 .lang-flag:active,
 .markacija-btn:active,
@@ -540,7 +546,7 @@ a.content-box-link:active,
   color: inherit;
 }
 
-/* Hover specifično za gumb "Pročitaj više ovdje" */
+/* Specifično za gumb "Pročitaj više ovdje" */
 a.content-box-link:hover {
   background-color: rgba(255, 255, 255, 0.15);
   color: #fff;
@@ -623,10 +629,12 @@ a.content-box-link:hover {
      data-btn-hr="1Pročitaj više ovdje"
      data-btn-en="1Read more here">
             <div class="content-box">
+            <div class="content-inner">
             <a href="staze.html"
          class="content-box-link">
       <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
-       </a>
+        </a>
+      </div>
     </div>                 
   </div>
     
