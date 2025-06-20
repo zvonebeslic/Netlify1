@@ -475,10 +475,12 @@ a.content-box-link {
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-  /* Uklanjanje tap/click efekata */
+  /* Uklanjanje plavog tap/click efekta na mobitelima */
 a, button {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Neutralizacija neželjenih efekata pri kliku */
 a:active,
 a.content-box-link:active,
 button:active,
@@ -488,24 +490,43 @@ button:active,
   outline: none !important;
   box-shadow: none !important;
 }
-
-/* Hover efekt za gumb "Pročitaj više ovdje" */
-a.content-box-link:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  transition: background-color 0.3s ease;
+.content-box {
+  transition: filter 0.3s ease, transform 0.2s ease;
 }
 
-/* Scale efekt pri kliku na gumb, zastavicu i markaciju */
+/* Hover efekt na cijeli okvir – lagano posvijetli */
+.content-box:hover {
+  filter: brightness(1.05);
+  transform: scale(1.01);
+}
+/* Gumbi: "Pročitaj više ovdje", zastavice i markacija – animacije */
 a.content-box-link,
 .lang-flag,
 .markacija-btn {
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease, filter 0.2s ease;
+  cursor: pointer;
 }
+
+/* Hover efekt – lagano posvijetli */
+a.content-box-link:hover,
+.lang-flag:hover,
+.markacija-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* Klik (active) efekt – blago smanji i ostane vidljiv */
 a.content-box-link:active,
 .lang-flag:active,
 .markacija-btn:active {
-  transform: scale(1.05);
+  transform: scale(0.97);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: inherit;
+}
+
+/* Dodatni hover za "Pročitaj više ovdje" */
+a.content-box-link:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 /* Onemogućen klik na bubble */
