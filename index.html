@@ -485,39 +485,16 @@ a, button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Glavni klikabilni okvir (sada je <a>) */
-.content-box-link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
-  transform-origin: center center;
-}
-
 /* Efekt pritiska (.pressed) */
 .pressed {
   transform: scale(0.97);
   transition: transform 0.15s ease;
 }
 
-/* Hover efekt na cijeli okvir */
-.content-box-link:hover {
-  filter: brightness(1.1);
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-
 /* Unutarnji sloj i tekst */
 .content-box {
   overflow: hidden;
   position: relative; /* ili absolute ako već pozicioniraš sekcije */
-}
-
-/* Ako i dalje koristiš inner za pozicioniranje, može ostati */
-.content-inner {
-  transition: transform 0.12s ease, filter 0.2s ease;
-  transform-origin: center center;
 }
 
 /* Onemogućen klik na bubble */
