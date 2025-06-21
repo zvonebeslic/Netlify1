@@ -798,19 +798,38 @@ a, button {
 <script>
 // === 1. OSNOVNE FUNKCIJE: jezik, meni, skrolanje, observer ===
 
-const langToggle = document.getElementById('language-toggle'); const searchInput = document.getElementById('search'); const menuToggle = document.getElementById('menu-toggle'); const menu = document.getElementById('menu'); const backToTopBtn = document.getElementById('backToTop'); const footer = document.getElementById('footer'); let currentLang = 'hr';
+const langToggle = document.getElementById('language-toggle');
+const searchInput = document.getElementById('search');
+const menuToggle = document.getElementById('menu-toggle');
+const menu = document.getElementById('menu');
+const backToTopBtn = document.getElementById('backToTop');
+const footer = document.getElementById('footer');
+let currentLang = 'hr';
 
-langToggle.addEventListener('click', () => { currentLang = currentLang === 'hr' ? 'en' : 'hr'; document.documentElement.lang = currentLang; langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg'; searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+langToggle.addEventListener('click', () => {
+  currentLang = currentLang === 'hr' ? 'en' : 'hr';
+  document.documentElement.lang = currentLang;
+  langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+  searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
 
-document.querySelectorAll('[data-hr]').forEach(el => { el.textContent = el.getAttribute(data-${currentLang}); });
+  document.querySelectorAll('[data-hr]').forEach(el => {
+    el.textContent = el.getAttribute(`data-${currentLang}`);
+  });
 
-document.querySelectorAll('.menu-overlay a').forEach(link => { link.textContent = link.getAttribute(data-${currentLang}); });
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    link.textContent = link.getAttribute(`data-${currentLang}`);
+  });
 
-refreshCurrentMarkacija(); });
+  refreshCurrentMarkacija();
+});
 
 menuToggle.addEventListener('click', () => menu.classList.toggle('open'));
 
-window.addEventListener('click', e => { if (!menu.contains(e.target) && !menuToggle.contains(e.target)) menu.classList.remove('open'); });
+window.addEventListener('click', e => {
+  if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
 
 // Zatvaranje menija na klik linka const menuLinks = document.querySelectorAll('.menu-overlay a'); menuLinks.forEach(link => { link.addEventListener('click', () => menu.classList.remove('open')); });
 
