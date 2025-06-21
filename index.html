@@ -617,7 +617,7 @@ a, button {
      data-btn-en="1Read more here">
   
     <div class="content-box"
-      data-href="staze.html">
+      onclick="window.location.href='staze.html'">
         <div class="box-text" data-hr="Istražite Balkanske staze" data-en="Explore the Balkan Trails">Istražite Balkanske staze</div>
       </div>
     </div>
@@ -729,17 +729,12 @@ a, button {
       });
 
           // kod koji vodi na podstranice
-     document.querySelectorAll('.content-box[data-link]').forEach(box => {
-  box.addEventListener('click', () => {
-    const href = box.getAttribute('data-link');
-    if (href) {
+  document.querySelectorAll('.content-box').forEach(box => {
+    box.addEventListener('click', () => {
       box.classList.add('pressed');
-      setTimeout(() => {
-        window.location.href = href;
-      }, 150); // animacija traje 150ms
-    }
+      setTimeout(() => box.classList.remove('pressed'), 150);
+    });
   });
-});
         
           // 1. Ukloni .aktivno sa svih sekcija
 document.querySelectorAll('.section.aktivno').forEach(section => {
