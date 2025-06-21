@@ -727,7 +727,20 @@ a, button {
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
-          
+
+          // kod koji vodi na podstranice
+     document.querySelectorAll('.content-box[data-link]').forEach(box => {
+  box.addEventListener('click', () => {
+    const href = box.getAttribute('data-link');
+    if (href) {
+      box.classList.add('pressed');
+      setTimeout(() => {
+        window.location.href = href;
+      }, 150); // animacija traje 150ms
+    }
+  });
+});
+        
           // 1. Ukloni .aktivno sa svih sekcija
 document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno');
