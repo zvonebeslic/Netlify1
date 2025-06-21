@@ -729,24 +729,7 @@ a, button {
     });
   });
           
-          // GUMB (BLOG MARKACIJA)
-const lang = document.documentElement.lang || "hr";
-const btnKey = "btn" + lang.charAt(0).toUpperCase() + lang.slice(1); // "btnHr" ili "btnEn"
-const btnText = target.dataset[btnKey] || "Pročitaj više ovdje";
-const link = target.dataset.link || "#";
-
-const gumb = document.createElement("button");
-gumb.classList.add("markacija-btn");
-gumb.textContent = btnText;
-gumb.onclick = () => {
-  gumb.classList.add("pressed");
-  setTimeout(() => {
-    gumb.classList.remove("pressed");
-    window.location.href = link;
-  }, 150);
-};
-
-target.appendChild(gumb);
+          
 
  // Dodaj prikaz gumba s malim odgađanjem (nakon bubble teksta)
 setTimeout(() => gumb.classList.add('show'), 2600);
