@@ -329,7 +329,7 @@
 .blog-text.show {
   opacity: 1;
 }
-
+        
 .markacija-btn {
   position: absolute;
   bottom: 10px;
@@ -342,10 +342,10 @@
   font-size: 0.75rem;
   font-weight: bold;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.6s ease, transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   z-index: 6;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   min-width: 100px;
   min-height: 36px;
   touch-action: manipulation;
@@ -353,6 +353,24 @@
 
 .markacija-btn.show {
   opacity: 1;
+}
+
+/* Animacija na hover */
+.markacija-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Animacija na klik */
+.markacija-btn:active {
+  transform: scale(0.97);
+  filter: brightness(0.95);
+}
+
+/* Ako dodaješ .pressed iz JavaScripta */
+.markacija-btn.pressed {
+  transform: scale(0.97);
+  filter: brightness(0.95);
 }
 
 /* MOBILNA VERZIJA */
@@ -708,14 +726,31 @@ a, button {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
 
-          // kod koji vodi na podstranice
+          // kod koji vodi na podstranice content box
   document.querySelectorAll('.content-box').forEach(box => {
     box.addEventListener('click', () => {
       box.classList.add('pressed');
       setTimeout(() => box.classList.remove('pressed'), 150);
     });
   });
-        
+          // blogg gumb
+         const btn = document.createElement("button");
+btn.classList.add("markacija-btn", "show");
+btn.textContent = lang === "hr" ? target.dataset.btnHr : target.dataset.btnEn;
+
+const link = target.dataset.link || "#";
+btn.onclick = () => {
+  window.location.href = link;
+};
+
+target.appendChild(btn); 
+          
+    const btn = document.querySelector('.markacija-btn');
+btn.classList.add('pressed');
+setTimeout(() => {
+  btn.classList.remove('pressed');
+}, 150); // kratka animacija pritiska  
+          
           // 1. Ukloni .aktivno sa svih sekcija
 document.querySelectorAll('.section.aktivno').forEach(section => {
   section.classList.remove('aktivno');
