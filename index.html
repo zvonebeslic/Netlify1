@@ -4,56 +4,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      background-color: #000;
-    }
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 70px;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      z-index: 1000;
-    }
-    .navbar-left img {
-      height: 16px;
-      width: 24px;
-      cursor: pointer;
-      position: relative;
-    }
-    .navbar-left img:hover::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      background: #fff;
-      color: #000;
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 12px;
-      top: 30px;
-      left: 0;
-      white-space: nowrap;
-      box-shadow: 0 0 6px rgba(0,0,0,0.2);
-    }
-    .navbar-center {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      transform: translateY(12px);
-    }
-    .search-container {
-      width: 250px;
-      position: relative;
-      padding-top: 10px;
-    }
-    .search-wrapper {
+    /* === OSNOVNI RESET I GLOBALNA PRAVILA === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: #000;
+}
+
+/* === NAVIGACIJA / GORNJI IZBORNIK === */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  z-index: 1000;
+}
+
+/* === ZASTAVICA (tooltip na hover) === */
+.navbar-left img {
+  height: 16px;
+  width: 24px;
+  cursor: pointer;
+  position: relative;
+}
+
+.navbar-left img:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: #fff;
+  color: #000;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  top: 30px;
+  left: 0;
+  white-space: nowrap;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+
+/* === TRAŽILICA (CENTAR) === */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  transform: translateY(12px);
+}
+
+.search-container {
+  width: 250px;
+  position: relative;
+  padding-top: 10px;
+}
+
+.search-wrapper {
   position: relative;
   width: 100%;
   height: 30px; /* ili 55px ako dodaješ prostor za sliku */
@@ -66,111 +81,135 @@
   overflow: visible;
   border-radius: 20px;
 }
+
+/* === UKRASNA PLANINA IZNAD TRAŽILICE === */
 .search-top-decoration {
-     position: absolute;
-     top: -212.7px;
-     left: 108px;
-     width: 1600%;
-     height: 30px;
-     object-fit: cover;
-      display: block;
-     z-index: 5;
-      transform: scale(19);
-      transform-origin: top center;
+  position: absolute;
+  top: -212.7px;
+  left: 108px;
+  width: 1600%;
+  height: 30px;
+  object-fit: cover;
+  display: block;
+  z-index: 5;
+  transform: scale(19);
+  transform-origin: top center;
 }
-    .search-mountain {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 20px;
-      overflow: hidden;
-    }
-    .search-mountain-top {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .mountain-search {
-      width: 100%;
-      padding: 14px 40px 8px 12px;
-      font-size: 14px;
-      border: none;
-      background: transparent;
-      color: #333;
-      outline: none;
-    }
-    .search-wrapper img {
-      position: absolute;
-      right: 12px;
-      bottom: 8px;
-      width: 19px;
-      height: 19px;
-      pointer-events: none;
-    }
-    .navbar-right {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 8px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.05);
-      transition: background 0.3s, transform 0.2s;
-    }
-    .navbar-right:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: scale(1.05);
-    }
-    .burger-line {
-      width: 26px;
-      height: 3px;
-      background-color: white;
-      border-radius: 2px;
-    }
-    .menu-overlay {
-      position: fixed;
-      top: 70px;
-      right: 0;
-      width: 35vw;
-      background-color: rgba(17, 17, 17, 0.95);
-      color: white;
-      padding: 20px;
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      z-index: 9999;
-    }
-    .menu-overlay.open {
-      display: flex;
-    }
-    .menu-overlay a {
-      margin: 10px 0;
-      text-decoration: none;
-      color: white;
-      font-size: 1.1em;
-    }
-    .section {
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      transition: transform 1s ease, opacity 1s ease;
-    }
-    .section.visible {
-      opacity: 1;
-      transform: scale(1.05);
-      z-index: 2;
-    }
-    .section:not(.visible) {
-      opacity: 0.4;
-      transform: scale(1);
-    }
-  .content-box {
+
+/* === GORNJI OBLIK PLANINE === */
+.search-mountain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  overflow: hidden;
+}
+
+.search-mountain-top {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* === UNUTARNJI INPUT POLJE === */
+.mountain-search {
+  width: 100%;
+  padding: 14px 40px 8px 12px;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: #333;
+  outline: none;
+}
+
+/* === IKONA UNUTAR TRAŽILICE === */
+.search-wrapper img {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  width: 19px;
+  height: 19px;
+  pointer-events: none;
+}
+
+/* === DESNA STRANA (HAMBURGER IKONA) === */
+.navbar-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.navbar-right:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.burger-line {
+  width: 26px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+/* === MENI KOJI SE OTVARA === */
+.menu-overlay {
+  position: fixed;
+  top: 70px;
+  right: 0;
+  width: 35vw;
+  background-color: rgba(17, 17, 17, 0.95);
+  color: white;
+  padding: 20px;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 9999;
+}
+
+.menu-overlay.open {
+  display: flex;
+}
+
+.menu-overlay a {
+  margin: 10px 0;
+  text-decoration: none;
+  color: white;
+  font-size: 1.1em;
+}
+ /* === PARALLAX SEKCIJE – GLAVNE SEKCIJE SA POZADINSKIM SLIKAMA === */
+.section {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 1s ease, opacity 1s ease;
+}
+
+/* === SEKCIJA KOJA JE VIDLJIVA U VIEWPORTU === */
+.section.visible {
+  opacity: 1;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+/* === SEKCIJE KOJE NISU U FOKUSU === */
+.section:not(.visible) {
+  opacity: 0.4;
+  transform: scale(1);
+}
+
+/* === CONTENT BOX UNUTAR SEKCIJA (S BIJELOM POZADINOM) === */
+.content-box {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -188,22 +227,25 @@
   transform-origin: center center;
 }
 
+/* === HOVER EFEKT ZA CONTENT BOX === */
 .content-box:hover {
   transform: translateY(-50%) scale(1.02);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* === KLIK / PRITISAK NA CONTENT BOX === */
 .content-box:active {
   transform: translateY(-50%) scale(0.97);
   filter: brightness(0.95);
 }
 
-/* Ako negdje ručno dodaješ .pressed klasom */
+/* === DODATNA KONTROLA ZA KLASU .pressed === */
 .content-box.pressed {
   transform: translateY(-50%) scale(0.97);
   filter: brightness(0.95);
 }
 
+/* === UNUTARNJI TEKST UNUTAR CONTENT BOXA === */
 .box-text {
   display: block;
   width: 100%;
@@ -213,66 +255,76 @@
   color: #000;
 }
 
-/* Desktop */
+/* === DESKTOP VERZIJA – VEĆI FONT I PADDDING === */
 @media (min-width: 1024px) {
   .content-box {
     font-size: 3em;
     padding: 50px;
   }
+}  
+ /* === GUMB "NA VRH STRANICE" (BACK TO TOP) === */
+#backToTop {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  outline: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
-    #backToTop {
-      position: fixed;
-      bottom: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(12px);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      outline: none;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
-    #backToTop:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-      transform: translateX(-50%) scale(1.1);
-    }
-    #backToTop svg {
-      width: 24px;
-      height: 24px;
-    }
-    footer {
-      background: #111;
-      color: #ccc;
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 14px;
-      position: relative;
-      margin-top: 60px;
-    }
-    .footer-icons {
-      margin: 10px 0;
-    }
-    .footer-icons svg {
-      width: 32px;
-      height: 32px;
-      margin: 0 10px;
-      vertical-align: middle;
-      opacity: 0.8;
-      transition: opacity 0.3s, transform 0.3s;
-    }
-    .footer-icons svg:hover {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-        .markacija {
+
+#backToTop:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%) scale(1.1);
+}
+
+#backToTop svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* === FOOTER === */
+footer {
+  background: #111;
+  color: #ccc;
+  text-align: center;
+  padding: 20px 10px;
+  font-size: 14px;
+  position: relative;
+  margin-top: 60px;
+}
+
+.footer-icons {
+  margin: 10px 0;
+}
+
+.footer-icons svg {
+  width: 32px;
+  height: 32px;
+  margin: 0 10px;
+  vertical-align: middle;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.footer-icons svg:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* === SVG PLANINARSKA MARKACIJA === */
+.markacija {
   position: absolute;
   bottom: 30px;
   right: 30px;
@@ -298,6 +350,7 @@
   }
 }
 
+/* === BUBBLE TEKST (BLOG SAŽETAK) === */
 .blog-bubble {
   position: absolute;
   bottom: 30px;
@@ -329,7 +382,8 @@
 .blog-text.show {
   opacity: 1;
 }
-        
+
+/* === GUMB UNUTAR MARKACIJE === */
 .markacija-btn {
   position: absolute;
   bottom: 10px;
@@ -368,25 +422,27 @@
   filter: brightness(1);
 }
 
-/* MOBILNA VERZIJA */
+/* === MOBILNA VERZIJA (DO 600px) === */
 @media (max-width: 600px) {
   .markacija {
     width: 70px;
     height: 70px;
     right: 20px;
   }
+
   .blog-bubble {
     right: 85px;
     max-width: 73vw;
     font-size: 0.85rem;
     white-space: normal;
   }
+
   .markacija-btn {
     bottom: 6px;
     right: 21px;
   }
-}
-/* --- IKONE I POZICIJA ZA SEASONCHANGE--- */
+}   
+/* === SEASONCHANGE IKONA I PADAJUĆE IKONE GODIŠNJIH DOBA === */
 .season-button-wrapper {
   position: absolute;
   top: 95px;
@@ -415,6 +471,7 @@
   transform: scale(1.1);
 }
 
+/* === KONTEJNER IKONA ZA GODIŠNJA DOBA === */
 #season-icons {
   margin-top: 8px;
   display: flex;
@@ -428,12 +485,14 @@
   pointer-events: none; /* sprječava klik dok su skriveni */
 }
 
+/* === PRIKAZ IKONA KAD NISU SKRIVENE === */
 #season-icons:not(.hidden) {
   max-height: 500px; /* dovoljno da sve ikone stanu */
   opacity: 0.6;
   pointer-events: auto;
 }
 
+/* === POJEDINAČNA IKONA GODIŠNJEG DOBA === */
 .season-icon {
   background: rgba(255, 255, 255, 0.15);
   color: white;
@@ -453,7 +512,8 @@
 .season-icon:hover {
   transform: scale(1.3);
 }
-        
+
+/* === GUMB ZA GAŠENJE SEZONSKIH EFEKATA === */
 #stop-season {
   display: none;
   position: fixed;
@@ -467,8 +527,8 @@
   cursor: pointer;
   z-index: 1001;
 }
-      
-/* --- EFEKTI --- */
+
+/* === EFEKTI: KONTEJNER ZA SNJEG, LIŠĆE, LATICE, ZRAKE === */
 .season-effect {
   position: fixed;
   top: 0;
@@ -480,6 +540,7 @@
   overflow: hidden;
 }
 
+/* === POJEDINAČNI ELEMENTI KOJI PADAJU ILI SE KREĆU === */
 .snowflake, .leaf, .petal, .sunray {
   position: absolute;
   top: -5%;
@@ -488,6 +549,7 @@
   animation: fall 10s linear infinite;
 }
 
+/* === ANIMACIJA PADA (univerzalna) === */
 @keyframes fall {
   0% {
     transform: translateY(0) translateX(0) rotate(0);
@@ -496,29 +558,30 @@
     transform: translateY(110vh) translateX(30px) rotate(360deg);
   }
 }
-   /* Uklanjanje plavog efekta na dodir (mobiteli) */
+
+/* === UKLANJANJE PLAVOG EFEKTA NA DODIR (MOBITELI) === */
 a, button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Efekt pritiska (.pressed) */
+/* === OPĆI EFEKT PRITISKA (UNIVERZALNA KLASA .pressed) === */
 .pressed {
   transform: scale(0.97);
   transition: transform 0.15s ease;
 }
 
-/* Unutarnji sloj i tekst */
+/* === UNUTARNJI SLOJ I TEKST (KUTIJA SADRŽAJA) === */
 .content-box {
   overflow: hidden;
   position: relative; /* ili absolute ako već pozicioniraš sekcije */
 }
 
-/* Onemogućen klik na bubble */
+/* === ONEMOGUĆEN KLIK NA BUBBLE (da ne ometa korisnika) === */
 .blog-bubble {
   pointer-events: none;
 }
 
-/* Dodatno (ako koristiš .lang-flag, markacije, sezonske ikonice) */
+/* === DODATNI INTERAKTIVNI ELEMENTI: ZASTAVICE, IKONE, GUMBI === */
 .lang-flag,
 .markacija-btn,
 #season-toggle,
@@ -528,6 +591,7 @@ a, button {
   transform-origin: center center;
 }
 
+/* === HOVER EFEKT ZA GORENJE ELEMENTE === */
 .lang-flag:hover,
 .markacija-btn:hover,
 #season-toggle:hover,
@@ -535,7 +599,7 @@ a, button {
   filter: brightness(1.1);
   background-color: rgba(255, 255, 255, 0.15);
   color: #fff;
-}     
+}
   </style>
 </head>
 <body>
