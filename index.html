@@ -793,33 +793,48 @@ a, button {
   </footer>
 
   <!-- === GUMB ZA GAŠENJE SEZONSKE ANIMACIJE === -->
-  <button id="stop-season">Zaustavi animaciju</button>
-</body> 
+  <button id="stop-season">Zaustavi animaciju</button> 
   
 <script>
- // === OSNOVNE FUNKCIJE: Jezik, Meni, Scroll, Vidljivost Sekcija === const langToggle = document.getElementById('language-toggle'); const searchInput = document.getElementById('search'); const menuToggle = document.getElementById('menu-toggle'); const menu = document.getElementById('menu'); const backToTopBtn = document.getElementById('backToTop'); const footer = document.getElementById('footer'); let currentLang = 'hr';
+// === 1. OSNOVNE FUNKCIJE: jezik, meni, skrolanje, observer ===
 
-langToggle.addEventListener('click', () => { currentLang = currentLang === 'hr' ? 'en' : 'hr'; document.documentElement.lang = currentLang; langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg'; searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...'; document.querySelectorAll('[data-hr]').forEach(el => { el.textContent = el.getAttribute(data-${currentLang}); }); document.querySelectorAll('.menu-overlay a').forEach(link => { link.textContent = link.getAttribute(data-${currentLang}); }); refreshCurrentMarkacija(); });
+const langToggle = document.getElementById('language-toggle'); const searchInput = document.getElementById('search'); const menuToggle = document.getElementById('menu-toggle'); const menu = document.getElementById('menu'); const backToTopBtn = document.getElementById('backToTop'); const footer = document.getElementById('footer'); let currentLang = 'hr';
 
-menuToggle.addEventListener('click', () => { menu.classList.toggle('open'); });
+langToggle.addEventListener('click', () => { currentLang = currentLang === 'hr' ? 'en' : 'hr'; document.documentElement.lang = currentLang; langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg'; searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
 
-window.addEventListener('click', e => { if (!menu.contains(e.target) && !menuToggle.contains(e.target)) { menu.classList.remove('open'); } });
+document.querySelectorAll('[data-hr]').forEach(el => { el.textContent = el.getAttribute(data-${currentLang}); });
 
-document.querySelectorAll('.menu-overlay a').forEach(link => { link.addEventListener('click', () => { menu.classList.remove('open'); }); });
+document.querySelectorAll('.menu-overlay a').forEach(link => { link.textContent = link.getAttribute(data-${currentLang}); });
 
-const sections = document.querySelectorAll('.section'); const observer = new IntersectionObserver(entries => { entries.forEach(entry => { entry.isIntersecting ? entry.target.classList.add('visible') : entry.target.classList.remove('visible'); }); }, { threshold: 0.5 });
+refreshCurrentMarkacija(); });
+
+menuToggle.addEventListener('click', () => menu.classList.toggle('open'));
+
+window.addEventListener('click', e => { if (!menu.contains(e.target) && !menuToggle.contains(e.target)) menu.classList.remove('open'); });
+
+// Zatvaranje menija na klik linka const menuLinks = document.querySelectorAll('.menu-overlay a'); menuLinks.forEach(link => { link.addEventListener('click', () => menu.classList.remove('open')); });
+
+// IntersectionObserver za .section (parallax animacija) const sections = document.querySelectorAll('.section'); const observer = new IntersectionObserver(entries => { entries.forEach(entry => { entry.isIntersecting ? entry.target.classList.add('visible') : entry.target.classList.remove('visible'); }); }, { threshold: 0.5 });
 
 sections.forEach(section => observer.observe(section));
 
-window.addEventListener('scroll', () => { const scrollY = window.scrollY; const footerTop = footer.getBoundingClientRect().top + window.scrollY; const windowHeight = window.innerHeight;
+// Scroll to top + pomicanje gumba iznad footera window.addEventListener('scroll', () => { const scrollY = window.scrollY; const footerTop = footer.getBoundingClientRect().top + window.scrollY; const windowHeight = window.innerHeight;
 
-backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none'; backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop) ? ${(scrollY + windowHeight - footerTop) + 60}px : '30px'; });
+backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none'; backToTopBtn.style.bottom = scrollY + windowHeight > footerTop ? ${(scrollY + windowHeight - footerTop) + 60}px : '30px'; });
 
 backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-// === MARKACIJA I BUBBLE === document.addEventListener("DOMContentLoaded", function () { const observer = new IntersectionObserver(entries => { entries.forEach(entry => { const target = entry.target; if (entry.isIntersecting) { if (!target.classList.contains('aktivno')) { target.classList.add('aktivno'); // MARKACIJA const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "markacija"); svg.setAttribute("viewBox", "0 0 100 100");
+// === 2. MARKACIJA I BLOG BUBBLE === document.addEventListener("DOMContentLoaded", function () { const observer = new IntersectionObserver(entries => { entries.forEach(entry => { const target = entry.target;
 
-const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+if (entry.isIntersecting) {
+    if (!target.classList.contains('aktivno')) {
+      target.classList.add('aktivno');
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "markacija");
+      svg.setAttribute("viewBox", "0 0 100 100");
+
+      const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       bijeli.setAttribute("cx", "50");
       bijeli.setAttribute("cy", "50");
       bijeli.setAttribute("r", "34");
@@ -838,7 +853,6 @@ const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       svg.appendChild(crveni);
       target.appendChild(svg);
 
-      // BUBBLE
       const bubble = document.createElement("div");
       bubble.classList.add("blog-bubble");
       const tekst = document.createElement("div");
@@ -851,13 +865,13 @@ const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 
       const title = target.dataset[titleKey] || "Naslov";
       const text = target.dataset[textKey] || "Opis";
-      const btnText = target.dataset[btnKey] || "Pročitaj više ovdje";
       const link = target.dataset.link || "#blog";
 
       tekst.innerHTML = `<h4>${title}</h4><p>${text}</p>`;
       bubble.appendChild(tekst);
       target.appendChild(bubble);
 
+      const btnText = target.dataset[btnKey] || "Pročitaj više ovdje";
       const gumb = document.createElement("button");
       gumb.classList.add("markacija-btn");
       gumb.textContent = btnText;
@@ -870,12 +884,7 @@ const bijeli = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     }
   } else {
     target.classList.remove('aktivno');
-    const svg = target.querySelector('.markacija');
-    const bubble = target.querySelector('.blog-bubble');
-    const gumb = target.querySelector('.markacija-btn');
-    if (svg) svg.remove();
-    if (bubble) bubble.remove();
-    if (gumb) gumb.remove();
+    target.querySelectorAll('.markacija, .blog-bubble, .markacija-btn').forEach(el => el.remove());
   }
 });
 
@@ -907,36 +916,37 @@ const gumb = document.createElement("button"); gumb.classList.add("markacija-btn
 
 setTimeout(() => bubble.classList.add('show'), 1600); setTimeout(() => tekst.classList.add('show'), 2000); setTimeout(() => gumb.classList.add('show'), 2600); }
 
-// === SEZONSKE ANIMACIJE === document.addEventListener('DOMContentLoaded', () => { let activeSeason = null;
-
-const seasonToggle = document.getElementById('season-toggle'); const seasonIcons = document.getElementById('season-icons'); const stopButton = document.getElementById('stop-season'); const loader = document.getElementById('season-loader');
+// === 3. SEZONSKE ANIMACIJE === document.addEventListener('DOMContentLoaded', () => { let activeSeason = null; const seasonToggle = document.getElementById('season-toggle'); const seasonIcons = document.getElementById('season-icons'); const stopButton = document.getElementById('stop-season'); const loader = document.getElementById('season-loader');
 
 seasonToggle.addEventListener('click', () => { if (activeSeason !== null) { stopSeasonEffects(); } else { seasonIcons.classList.toggle('hidden'); } });
 
-document.querySelectorAll(".season-icon").forEach(icon => { icon.addEventListener("click", () => { const season = icon.dataset.season; if (activeSeason === season) { stopSeasonEffects(); return; } stopSeasonEffects(); activeSeason = season; applySeasonTheme(season); showStopButton(); }); });
+document.querySelectorAll(".season-icon").forEach(icon => { icon.addEventListener("click", () => { const season = icon.dataset.season; if (activeSeason === season) return stopSeasonEffects(); stopSeasonEffects(); activeSeason = season; applySeasonTheme(season); showStopButton(); }); });
 
 stopButton.addEventListener('click', stopSeasonEffects);
 
-function stopSeasonEffects() { activeSeason = null; document.querySelectorAll('.season-effect').forEach(e => e.remove()); hideStopButton(); seasonIcons.classList.add('hidden'); loader.classList.remove('active'); }
+function stopSeasonEffects() { activeSeason = null; document.querySelectorAll('.season-effect').forEach(e => e.remove()); seasonIcons.classList.add('hidden'); loader.classList.remove('active'); hideStopButton(); }
 
-function showStopButton() { stopButton.style.display = 'block'; }
+function applySeasonTheme(season) { loader.classList.add('active'); setTimeout(() => { document.querySelectorAll('.season-effect').forEach(e => e.remove()); switch (season) { case "winter": createEffect("snowflake", "❄️", 30); break; case "spring": createEffect("petal", "🌸", 25); createEffect("petal", "🐝", 1, "45vw", "10vh", "18px", "12s"); break; case "summer": createEffect("sunray", "☀️", 10); break; case "autumn": createEffect("leaf", randomLeaf(), 35); break; } loader.classList.remove('active'); }, 300); }
 
-function hideStopButton() { stopButton.style.display = 'none'; }
+function showStopButton() { stopButton.style.display = 'block'; } function hideStopButton() { stopButton.style.display = 'none'; }
 
-function applySeasonTheme(season) { loader.classList.add('active'); setTimeout(() => { document.querySelectorAll('.season-effect').forEach(e => e.remove()); switch (season) { case "winter": createSnowEffect(); break; case "spring": createPetalEffect(); break; case "summer": createSunEffect(); break; case "autumn": createLeavesEffect(); break; } loader.classList.remove('active'); }, 300); }
+function createEffect(className, emoji, count, left, top, fontSize, duration) { const container = document.createElement("div"); container.classList.add("season-effect"); document.body.appendChild(container);
 
-function createSnowEffect() { const container = createEffectContainer(); for (let i = 0; i < 30; i++) { const flake = createEffectElement("snowflake", "❄️"); container.appendChild(flake); } }
+for (let i = 0; i < count; i++) {
+  const el = document.createElement("div");
+  el.classList.add(className);
+  el.innerText = emoji;
+  el.style.position = "absolute";
+  el.style.left = left || Math.random() * 100 + "vw";
+  el.style.top = top || "-5%";
+  el.style.animationDelay = Math.random() * 5 + "s";
+  el.style.fontSize = fontSize || (Math.random() * 12 + 10) + "px";
+  el.style.animationDuration = duration || "10s";
+  container.appendChild(el);
+}
+}
 
-function createPetalEffect() { const container = createEffectContainer(); for (let i = 0; i < 25; i++) { const petal = createEffectElement("petal", "🌸"); container.appendChild(petal); } const bee = createEffectElement("petal", "🐝", "45vw", "10vh", "18px", "12s"); container.appendChild(bee); }
-
-function createSunEffect() { const container = createEffectContainer(); for (let i = 0; i < 10; i++) { const ray = createEffectElement("sunray", "☀️", null, null, (Math.random() * 20 + 20) + "px"); container.appendChild(ray); } }
-
-function createLeavesEffect() { const container = createEffectContainer(); const leafTypes = ["🍁", "🍂", "🍃"]; for (let i = 0; i < 35; i++) { const leaf = createEffectElement("leaf", leafTypes[Math.floor(Math.random() * leafTypes.length)]); container.appendChild(leaf); } }
-
-function createEffectContainer() { const container = document.createElement("div"); container.classList.add("season-effect"); document.body.appendChild(container); return container; }
-
-function createEffectElement(className, emoji, left, top, fontSize, duration) { const el = document.createElement("div"); el.classList.add(className); el.innerText = emoji; el.style.position = "absolute"; el.style.left = left || Math.random() * 100 + "vw"; el.style.top = top || "-5%"; el.style.animationDelay = Math.random() * 5 + "s"; el.style.fontSize = fontSize || (Math.random() * 12 + 10) + "px"; el.style.animationDuration = duration || "10s"; return el; } });
-   
+function randomLeaf() { const types = ["🍁", "🍂", "🍃"]; return types[Math.floor(Math.random() * types.length)]; } });
 </script>
 </body>
 </html>
