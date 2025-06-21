@@ -153,8 +153,7 @@
       font-size: 1.1em;
     }
     .section {
-      min-height: 100vh;
-      height: 100dvh;
+      height: 100vh;
       overflow: hidden;
       position: relative;
       background-size: cover;
@@ -178,6 +177,9 @@
   position: absolute;   
   top: 50%;
   transform: translateY(-50%);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   max-width: 80%;
   padding: 30px;
   background: rgba(255, 255, 255, 0.8);
@@ -191,15 +193,24 @@
 
 .content-box:hover {
   transform: translateY(-50%) scale(1.02);
+      left: 0;
+      right: 0;
+      margin: 0 auto;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
    .content-box:active {
   transform: translateY(-50%) scale(0.97);
+         left: 0;
+         right: 0;
+         maegin: 0 auto;
 }     
 
 /* Klik efekt (dodaje se klasom) */
 .content-box.pressed {
   transform: translateY(-50%) scale(0.97);
+      left: 0;
+      right 0;
+      margin: 0 auto;
 }
 
 /* Unutarnji tekst */
