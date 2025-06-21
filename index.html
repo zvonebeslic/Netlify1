@@ -747,16 +747,22 @@ gumb.onclick = () => {
 
 target.appendChild(gumb);
 
-// Prikaz s animacijom (odgođeno)
+ // Dodaj prikaz gumba s malim odgađanjem (nakon bubble teksta)
 setTimeout(() => gumb.classList.add('show'), 2600);
 
-      gumb.onclick = () => {
+// Efekt pritiska i preusmjeravanje
+gumb.onclick = () => {
   gumb.classList.add("pressed");
   setTimeout(() => {
     gumb.classList.remove("pressed");
     window.location.href = link;
   }, 150);
-};    
+};
+
+// Automatski reset pritiska ako se korisnik vrati na stranicu (back button)
+window.addEventListener('pageshow', () => {
+  gumb.classList.remove('pressed');
+});
           
           // 1. Ukloni .aktivno sa svih sekcija
 document.querySelectorAll('.section.aktivno').forEach(section => {
