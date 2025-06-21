@@ -174,7 +174,7 @@
       transform: scale(1);
     }
   .content-box {
-  position: absolute;   
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
   left: 0;
@@ -193,27 +193,20 @@
 
 .content-box:hover {
   transform: translateY(-50%) scale(1.02);
-      left: 0;
-      right: 0;
-      margin: 0 auto;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
-   .content-box:active {
-  transform: translateY(-50%) scale(0.97);
-         left: 0;
-         right: 0;
-         maegin: 0 auto;
-}     
 
-/* Klik efekt (dodaje se klasom) */
-.content-box.pressed {
+.content-box:active {
   transform: translateY(-50%) scale(0.97);
-      left: 0;
-      right 0;
-      margin: 0 auto;
+  filter: brightness(0.95);
 }
 
-/* Unutarnji tekst */
+/* Ako negdje ručno dodaješ .pressed klasom */
+.content-box.pressed {
+  transform: translateY(-50%) scale(0.97);
+  filter: brightness(0.95);
+}
+
 .box-text {
   display: block;
   width: 100%;
