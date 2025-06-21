@@ -709,6 +709,7 @@ a, button {
     const backToTopBtn = document.getElementById('backToTop');
     const footer = document.getElementById('footer');
     let currentLang = 'hr';
+        
     langToggle.addEventListener('click', () => {
       currentLang = currentLang === 'hr' ? 'en' : 'hr';
           document.documentElement.lang = currentLang;
@@ -720,6 +721,8 @@ a, button {
       document.querySelectorAll('.menu-overlay a').forEach(link => {
         link.textContent = link.getAttribute(`data-${currentLang}`);
       });
+        refreshCurrentMarkacija();
+    });
 
           // kod koji vodi na podstranice content box
   document.querySelectorAll('.content-box').forEach(box => {
