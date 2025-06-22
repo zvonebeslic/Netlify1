@@ -860,7 +860,11 @@ menuToggle.addEventListener('click', () => {
 });
 
 window.addEventListener('click', e => {
-  if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+  if (
+    !menu.contains(e.target) &&
+    !menuToggle.contains(e.target) &&
+    e.target.id !== 'language-toggle'
+  ) {
     menu.classList.remove('open');
   }
 });
