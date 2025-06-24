@@ -274,6 +274,36 @@ body {
     padding: 50px;
   }
 }  
+/* === LOGO I TEKSTOVI NA NASLOVNOJ STRANICI === */
+   .logo-plus-intro {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.intro-logo {
+  max-width: 120px;
+  margin-bottom: 20px;
+}
+
+.web-intro {
+  font-size: 2em;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 3px #000;
+}
+
+.web-subintro {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.1em;
+  color: white;
+  text-shadow: 1px 1px 2px #000;
+}   
  /* === GUMB "NA VRH STRANICE" (BACK TO TOP) === */
 #backToTop {
   position: fixed;
@@ -673,10 +703,20 @@ a, button {
        data-link="About"
        data-btn-hr="Pročitaj više ovdje"
        data-btn-en="Read more here">
-    <div class="content-box">
-      <div class="box-text" data-hr="Dobrodošli u Mountain Adventures" data-en="Welcome to Mountain Adventures">
-        Dobrodošli u Mountain Adventures
-      </div>
+      <div class="logo-plus-intro">
+     <img src="images/logo.png" alt="Mountain Adventures logo" class="intro-logo">
+
+     <h1 class="web-intro" 
+       data-hr="Inspiriramo te da planinariš." 
+       data-en="Inspiring you to hike.">
+       Inspiriramo te da planinariš.
+     </h1>
+
+     <p class="web-subintro" 
+       data-hr="Detaljno opisane planinarske staze, GPS tragovi, planinarska oprema, inspirativne i poučne priče te mnoštvo drugih sadržaja. Tvoj planinarski svijet na jednom mjestu." 
+       data-en="Detailed hiking trail descriptions, GPS tracks, hiking gear, inspiring and educational stories, and much more. Your mountain world in one place.">
+       Detaljno opisane planinarske staze, GPS tragovi, planinarska oprema, inspirativne i poučne priče te mnoštvo drugih sadržaja. Tvoj planinarski svijet na jednom mjestu.
+      </p>
     </div>
   </div>
 
