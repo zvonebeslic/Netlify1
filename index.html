@@ -275,34 +275,63 @@ body {
   }
 }  
 /* === LOGO I TEKSTOVI NA NASLOVNOJ STRANICI === */
-.intro-logo {
-  max-width: 160px;
-  opacity: 0.5;
-  top: 50px;
-  left: 150px;
-  transition: all 0.5s ease;
+  .intro-logo {
+  position: absolute;
+  top: 110px; /* cca 3 cm ispod navbara koji je ~70px */
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 180px;
+  opacity: 0.4;
   z-index: 1000;
 }
 
 .web-intro {
-  max-width: 120px;
-  font-size: 1.4em;
-  font-weight: bold;
-  color: white;
-  top: 35px;
+  position: absolute;
+  top: 38%;
   left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.2em;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  opacity: 0.9;
+  font-family: 'Segoe UI', sans-serif;
   text-shadow: 1px 1px 3px #000;
+  line-height: 1.4;
 }
 
 .web-subintro {
-  max-width: 80px;
-  top: 50px; 
+  position: absolute;
+  bottom: 160px; /* otprilike 2 cm iznad blog bubblea */
   left: 50%;
-  transform: translateY(50%)
-  font-size: 0.7em;
-  word-break: break-word;
+  transform: translateX(-50%);
+  font-size: 1em;
+  font-weight: 400;
   color: white;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
   text-shadow: 1px 1px 2px #000;
+  max-width: calc(100% - 4cm); /* 2cm s lijeve i desne strane */
+  padding: 0 2cm;
+  opacity: 1;
+}
+@media (max-width: 600px) {
+.intro-logo {
+  top: 90px;
+  max-width: 130px;
+  }
+
+.web-intro {
+  font-size: 1.6em;
+  top: 35%;
+  }
+
+.web-subintro {
+  font-size: 0.9em;
+  bottom: 140px;
+  padding: 0 1.5cm;
+  max-width: calc(100% - 3cm);
+  }
 }   
  /* === GUMB "NA VRH STRANICE" (BACK TO TOP) === */
 #backToTop {
