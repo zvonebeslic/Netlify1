@@ -347,7 +347,16 @@ body {
   font-size: 1.2em;
   font-weight: 700;
 }
-
+.sub-line {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.4); /* ili promijeni u rgba(255, 255, 255, 0.25) za svijetlu varijantu */
+  padding: 6px 14px;
+  border-radius: 6px;
+  margin: 6px 0;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 90vw;
+}
 @media (max-width: 600px) {
   .intro-logo {
     top: 90px;
@@ -778,7 +787,10 @@ a, button {
        data-hr="Detaljno opisane planinarske staze, GPS tragovi, planinarska oprema, inspirativne i poučne priče te mnoštvo drugih sadržaja. Tvoj planinarski svijet na jednom mjestu." 
        data-en="Detailed hiking trail descriptions, GPS tracks, hiking gear, inspiring and educational stories, and much more. Your mountain world in one place.">
        Detaljno opisane planinarske staze, GPS tragovi, planinarska oprema, inspirativne i poučne priče te mnoštvo drugih sadržaja. Tvoj planinarski svijet na jednom mjestu.
-      </p>
+       <span class="sub-line">Detaljno opisane planinarske staze, GPS tragovi, planinarska oprema</span><br>
+       <span class="sub-line">inspirativne i poučne priče te mnoštvo drugih sadržaja</span><br>
+       <span class="sub-line">Tvoj planinarski svijet na jednom mjestu</span>
+     </p>
     </div>
   </div>
 
