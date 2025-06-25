@@ -3,11 +3,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
-     <!-- SEO opisi na Hrv i Engl -->
+  
+  <!-- SEO opisi na Hrv i Engl -->
   <meta name="description" lang="hr" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne priče. Planinarski svijet na jednom mjestu. Planinarske staze Velebita. Planinarske staze Nacionalni park Paklenica. Planinarske staze Nacionalni park Triglav. Planinarske staze Nacionalni park Sutjeska. Planinarske staze Nacionalni park Prokletije. Planinarske staze Nacionalni park Durmitor. Planinarske staze Nacionalni park Biogradska gora. Planinarske staze Nacionalni park Plitvička jezera. Planinarske staze Nacionalni park Sjeverni Velebit. Planinarske staze Nacionalni park Risnjak. Planinarske staze Nacionalni park Tara. Planinarske staze Nacionalni park Kopaonik. Planinarske staze Nacionalni park Đerdap. Planinarske staze Nacionalni park Mavrovo. Planinarske staze Nacionalni park Galicica. Planinarske staze Nacionalni park Pelister. Planinarske staze Julijske Alpe. Planinarske staze Nacionalni park Logarska dolina. Planinarske staze Park prirode Blidinje. Planinarske staze Prenj. Planinarske staze Park prirode Biokovo. Planinarske staze Komovi. Planinarske staze Rila. Planinarske staze Čvrsnica. Planinarske staze Hrvatske,Planinarske staze Bosne i Hercegovine,Planinarske staze Albanije,Planinarske staze Slovenije,Planinarske staze Makedonije,Planonarske staze Crne Gore i Planinarske staze Srbije.">
   <meta name="description" lang="en" content="Explore the hiking trails of the Balkans. Detailed descriptions of hiking trails. Hiking gear. GPS tracks for hiking. Inspiring and educational stories. Your mountain world in one place. Hiking trails on Velebit. Hiking trails in Paklenica National Park. Hiking trails in Triglav National Park. Hiking trails in Sutjeska National Park. Hiking trails on Prokletije. Hiking trails in Durmitor National Park. Hiking trails in Biogradska Gora National Park. Hiking trails in Plitvice Lakes National Park. Hiking trails in Northern Velebit National Park. Hiking trails in Risnjak National Park. Hiking trails in Tara National Park. Hiking trails in Kopaonik National Park. Hiking trails in Đerdap National Park. Hiking trails in Mavrovo National Park. Hiking trails in Galicica National Park. Hiking trails in Pelister National Park. Hiking trails in the Julian Alps. Hiking trails in Logarska Dolina National Park. Hiking trails in Blidinje Nature Park. Hiking trails on Prenj. Hiking trails in Biokovo Nature Park. Hiking trails on Komovi. Hiking trails on Rila. Hiking trails on Čvrsnica. Hiking trails in Croatia. Hiking trails in Bosnia and Herzegovina. Hiking trails in Albania. Hiking trails in Slovenia. Hiking trails in Macedonia. Hiking trails in Montenegro. Hiking trails in Serbia.">    
   <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/" />
   <link rel="alternate" hreflang="en" href="https://tvojadomena.com/" />
+  
   <!-- === OPEN GRAPH (HR + EN) === -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tvojadomena.com/">
@@ -28,7 +30,11 @@
 
   <meta name="twitter:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails">
   <meta name="twitter:description" lang="en" content="Hiking trails, GPS tracks, gear and inspiring stories. Explore Velebit, Durmitor, Prokletije and other Balkan mountains.">
+      
+  <!-- === Link za fontove u naslovnoj slici === -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
+            
 <style>
     /* === OSNOVNI RESET I GLOBALNA PRAVILA === */
 * {
@@ -284,7 +290,7 @@ body {
   opacity: 0.4;
   z-index: 1000;
 }
-
+      
 .web-intro {
   position: absolute;
   top: 38%;
@@ -295,7 +301,7 @@ body {
   color: white;
   text-align: center;
   opacity: 0.9;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   text-shadow: 1px 1px 3px #000;
   line-height: 1.4;
 }
@@ -309,30 +315,51 @@ body {
   font-weight: 400;
   color: white;
   text-align: center;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   text-shadow: 1px 1px 2px #000;
   max-width: calc(100% - 4cm); /* 2cm s lijeve i desne strane */
   padding: 0 2cm;
   opacity: 1;
+  white-space: pre-wrap;
 }
+
+.rukopis {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.2em; /* možeš povećati po potrebi */
+}
+
+.normalni {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1em;
+  font-weight: 400;
+}
+
+.masno {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2em;
+  font-weight: 700;
+}
+
 @media (max-width: 600px) {
-.intro-logo {
-  top: 90px;
-  max-width: 130px;
+  .intro-logo {
+    top: 90px;
+    max-width: 130px;
   }
 
-.web-intro {
-  font-size: 1.6em;
-  top: 35%;
+  .web-intro {
+    font-size: 1.6em;
+    top: 35%;
   }
 
-.web-subintro {
-  font-size: 0.9em;
-  bottom: 140px;
-  padding: 0 1.5cm;
-  max-width: calc(100% - 3cm);
+  .web-subintro {
+    white-space: pre-wrap;
+    font-size: 0.9em;
+    bottom: 140px;
+    padding: 0 1.5cm;
+    max-width: calc(100% - 3cm);
   }
-}   
+}
+
  /* === GUMB "NA VRH STRANICE" (BACK TO TOP) === */
 #backToTop {
   position: fixed;
@@ -734,13 +761,11 @@ a, button {
        data-btn-en="Read more here">
       <div class="logo-plus-intro">
      <img src="images/logo.png" alt="Mountain Adventures logo" class="intro-logo">
-
-     <h1 class="web-intro" 
-       data-hr="Inspiriramo te da planinariš." 
-       data-en="Inspiring you to hike.">
-       Inspiriramo te da planinariš.
-     </h1>
-
+       <div class="web-intro">
+       <span class="rukopis" data-hr="Nadahnjujemo" data-en="We inspire">Nadahnjujemo</span>
+       <span class="normalni" data-hr=" te da" data-en=" you to"> te da</span><br>
+       <span class="masno" data-hr="Planinariš" data-en="hike">Planinariš</span>
+     </div>
      <p class="web-subintro" 
        data-hr="Detaljno opisane planinarske staze, GPS tragovi, planinarska oprema, inspirativne i poučne priče te mnoštvo drugih sadržaja. Tvoj planinarski svijet na jednom mjestu." 
        data-en="Detailed hiking trail descriptions, GPS tracks, hiking gear, inspiring and educational stories, and much more. Your mountain world in one place.">
