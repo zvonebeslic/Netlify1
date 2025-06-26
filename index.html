@@ -334,6 +334,7 @@ body {
 
 .red-drugi {
   font-size: 0.8em;
+  font-weight: 480;
 }
 
 .red-treci {
@@ -417,9 +418,9 @@ footer {
 .markacija {
   position: absolute;
   bottom: 30px;
-  right: 30px;
-  width: 94.5px;
-  height: 94.5px;
+  right: 20px;
+  width: 70px;
+  height: 70px;
   z-index: 5;
   pointer-events: none;
 }
@@ -444,7 +445,7 @@ to {
 .blog-bubble {
   position: absolute;
   bottom: 30px;
-  right: 110px;
+  right: 85px;
   background: rgba(255, 255, 255, 0.95);
   color: #000;
   padding: 15px 20px;
@@ -452,10 +453,11 @@ to {
   opacity: 0;
   transform: translateX(20px);
   transition: all 0.8s ease;
-  max-width: 70vw;
+  max-width: 73vw;
   z-index: 4;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  white-space: normal;
   cursor: pointer;
 }
 
@@ -476,8 +478,8 @@ to {
 /* === GUMB UNUTAR MARKACIJE === */
 .markacija-btn {
   position: absolute;
-  bottom: 10px;
-  right: 30px;
+  bottom: 6px;
+  right: 21px;
   background: #fff;
   color: #000;
   border: none;
@@ -512,26 +514,6 @@ to {
   filter: brightness(1);
 }
 
-/* === MOBILNA VERZIJA (DO 600px) === */
-@media (max-width: 600px) {
-.markacija {
-    width: 70px;
-    height: 70px;
-    right: 20px;
-  }
-
-.blog-bubble {
-    right: 85px;
-    max-width: 73vw;
-    font-size: 0.85rem;
-    white-space: normal;
-  }
-
-.markacija-btn {
-    bottom: 6px;
-    right: 21px;
-  }
-}   
 /* === SEASONCHANGE IKONA I PADAJUĆE IKONE GODIŠNJIH DOBA === */
 .season-button-wrapper {
   position: absolute;
