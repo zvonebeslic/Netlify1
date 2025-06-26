@@ -947,7 +947,12 @@ langToggle.addEventListener('click', () => {
     : 'Search...';
 
   document.querySelectorAll('[data-hr]').forEach(el => {
-    el.textContent = el.getAttribute(`data-${currentLang}`);
+  const htmlContent = el.getAttribute(`data-${currentLang}`);
+  if (htmlContent.includes('<')) {
+    el.innerHTML = htmlContent;
+  } else {
+    el.textContent = htmlContent;
+    }
   });
 
   document.querySelectorAll('.menu-overlay a').forEach(link => {
