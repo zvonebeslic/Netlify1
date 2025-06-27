@@ -3,15 +3,16 @@
   position: fixed;
   top: 70px;       /* ispod navbara */
   left: 15px;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   z-index: 1100;
 }
 
 /* Glavna ikona */
 #season-toggle {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
+  transition: transform 0.3s ease;
   cursor: pointer;
 }
 
@@ -35,19 +36,19 @@
 
 /* Stil za pojedine emoji */
 .season-icon {
-  font-size: 20px;
+  font-size: 16px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
 
-.season-icon:hover {
+.season-toggle:hover {
   transform: scale(1.3);
 }
 
 #season-icons .season-icon {
   transform: scale(0);
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 #season-icons.show .season-icon {
