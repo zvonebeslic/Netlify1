@@ -16,10 +16,15 @@
 
 /* Emoji ikone ispod glavne */
 #season-icons {
-  margin-top: 8px;
+  position: absolute;
+  top: 50px; /* ili koliko već treba ispod glavne ikone */
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  align-items: center;
+  z-index: 999;
 }
 
 /* Sakrij emoji ikone kad nisu aktivne */
@@ -44,8 +49,8 @@
   bottom: 20px;
   right: 20px;
   z-index: 9999;
-  padding: 10px 15px;
-  font-size: 14px;
+  padding: 13px 35px;
+  font-size: 13px;
   opacity: 0.8;
   border-radius: 12px;
   background-color: #ffffff;
