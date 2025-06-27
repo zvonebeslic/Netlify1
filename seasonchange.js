@@ -9,6 +9,7 @@ function initSeasonChange() {
       stopSeasonEffects();
     } else {
       seasonIcons.classList.toggle('hidden');
+      seasonIcons.classList.toggle('show'); // 🎯 dodano: animacija skaliranja ikona
     }
   });
 
@@ -34,6 +35,7 @@ function initSeasonChange() {
     }
     stopButton.classList.add('hidden');
     seasonIcons.classList.add('hidden');
+    seasonIcons.classList.remove('show'); // 🎯 dodano: ukloni animaciju kad isključiš
   }
 
   stopButton.addEventListener('click', () => {
