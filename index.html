@@ -36,6 +36,10 @@
       
   <!-- === Link za fontove u naslovnoj slici === -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- === LINK ZA seasonchange.html === -->
+  <link rel="stylesheet" href="seasonchange.css">
+
 </head>
             
 <style>
@@ -571,6 +575,10 @@ a, button {
 </head>
             
 <body>
+
+  <!-- === LINK ZA seasonchange.html === -->
+  <div id="season-placeholder"></div>
+      
   <!-- === NAVIGACIJA (gore) === -->
   <div class="navbar">
     <div class="navbar-left">
@@ -1078,5 +1086,17 @@ function refreshCurrentMarkacija() {
   setTimeout(() => gumb.classList.add('show'), 2600);
 }
 </script>
+
+ // LINK ZA seasonchange.js
+<script>
+  fetch('seasonchange.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('season-placeholder').innerHTML = html;
+      initSeasonChange(); // poziva funkciju iz .js fajla
+    });
+</script>
+<script src="seasonchange.js"></script>
+      
 </body>
 </html>
