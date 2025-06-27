@@ -517,129 +517,8 @@ to {
 }
 
 /* === SEASONCHANGE IKONA I PADAJUĆE IKONE GODIŠNJIH DOBA === */
-.season-button-wrapper {
-  position: absolute;
-  top: 80px;
-  left: 6px;
-  transform: none;
-  z-index: 1000;
-  text-align: center;
-  width: auto;
-  user-select: none;
-}
 
-#season-toggle {
-  width: 40px;
-  height: auto;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  opacity: 0.6;
-  display: block;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1010;
-}
-
-#season-toggle:hover {
-  transform: scale(1.1);
-}
-
-/* === KONTEJNER IKONA ZA GODIŠNJA DOBA === */
-#season-icons {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0.6;
-  transition: opacity 0.3s ease, max-height 0.4s ease;
-  pointer-events: none; /* sprječava klik dok su skriveni */
-}
-
-/* === PRIKAZ IKONA KAD NISU SKRIVENE === */
-#season-icons:not(.hidden) {
-  max-height: 500px; /* dovoljno da sve ikone stanu */
-  opacity: 0.6;
-  pointer-events: auto;
-}
-
-/* === POJEDINAČNA IKONA GODIŠNJEG DOBA === */
-.season-icon {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  padding: 6px;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-}
-
-.season-icon:hover {
-  transform: scale(1.3);
-}
-
-/* === GUMB ZA GAŠENJE SEZONSKIH EFEKATA === */
-#stop-season {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 10px 15px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid #999;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  z-index: 1001;
-}
-
-/* === POJEDINAČNI ELEMENTI KOJI PADAJU ILI SE KREĆU === */
-/* === ZIMA === */
- #snow-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 999;
-}
-
-.snow-layer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 40px;
-  background: linear-gradient(to top, rgba(255,255,255,0.8), rgba(255,255,255,0));
-  z-index: 998;
-  pointer-events: none;
-}
-
-.snow-slide {
-  position: absolute;
-  width: 100vw;
-  height: 10px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 20px;
-  opacity: 1;
-  animation: slideDown 1.5s ease-out forwards;
-}
-
-@keyframes slideDown {
-  to {
-    transform: translateY(60px);
-    opacity: 0;
-  }
-}     
+     
 
 /* === UKLANJANJE PLAVOG EFEKTA NA DODIR (MOBITELI) === */
 a, button {
@@ -725,19 +604,7 @@ a, button {
   </div>
 
   <!-- === SEASONCHANGE GUMB + IKONE GODIŠNJIH DOBA === -->
-  <div id="season-control" style="position: fixed; top: 8px; left: 2px; z-index: 1000;">
-    <div class="season-button-wrapper">
-      <img src="images/seasonchange.svg" id="season-toggle" alt="Godišnja doba">
-      <div id="season-icons" class="hidden">
-        <span class="season-icon" data-season="winter">❄️</span>
-        <span class="season-icon" data-season="summer">☀️</span>
-        <span class="season-icon" data-season="autumn">🍂</span>
-        <span class="season-icon" data-season="spring">🌸</span>
-      </div>
-    </div>
-  </div>
 
-  <div id="season-loader"></div>
 
   <!-- === SEKCIJE (parallax) === -->
   <div id="section1" class="section image-section"
@@ -918,10 +785,10 @@ a, button {
   </footer>
 
   <!-- === ZIMSKI UVJETI === -->  
-  <canvas id="snow-canvas"></canvas>   
+
       
   <!-- === GUMB ZA GAŠENJE SEZONSKE ANIMACIJE === -->
-  <button id="stop-season">Zaustavi animaciju</button> 
+
   
 <script>
 // === 1. DEFINICIJE ELEMENTA ===
@@ -1148,126 +1015,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // SEZONSKE ANIMACIJE
-  const toggle = document.getElementById('season-toggle');
-  const iconList = document.getElementById('season-icons');
-  let activeSeason = null;
-  const snowflakes = [];
-  const elements = ['.web-intro', '.web-subintro', '.content-box', '.markacija-wrapper', '.blog-bubble'];
-
-  // Toggle prikaz ikona
-  toggle.addEventListener('click', () => {
-    iconList.classList.toggle('hidden');
-  });
-
-  // Odabir sezone
-  document.querySelectorAll('.season-icon').forEach(icon => {
-    icon.addEventListener('click', () => {
-      const season = icon.dataset.season;
-
-      if (activeSeason === season) {
-        stopSeasonEffects();
-        activeSeason = null;
-        return;
-      }
-
-      stopSeasonEffects(); // briše staro
-      activeSeason = season;
-
-      if (season === 'winter') startSnowing();
-      // Ostale sezone ide kasnije: if (season === 'summer') startSummer() itd.
-    });
-  });
-
-  function stopSeasonEffects() {
-    document.getElementById('snow-canvas')?.remove();
-    document.querySelector('.snow-layer')?.remove();
-    document.querySelectorAll('.snow-slide').forEach(el => el.remove());
-    snowflakes.length = 0; // očisti array
-  }
       
-  // ZIMA
-  function startSnowing() {
-    // Dodaj canvas ako ne postoji
-    let canvas = document.getElementById('snow-canvas');
-    if (!canvas) {
-      canvas = document.createElement('canvas');
-      canvas.id = 'snow-canvas';
-      document.body.appendChild(canvas);
-    }
-
-    const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-
-    function createFlake() {
-      return {
-        x: Math.random() * width,
-        y: Math.random() * -height,
-        radius: Math.random() * 2.5 + 1,
-        speedY: Math.random() * 1 + 0.5,
-        speedX: Math.random() * 1 - 0.5,
-        opacity: Math.random() * 0.6 + 0.3,
-        angle: 0,
-        angleSpeed: Math.random() * 0.02,
-        landed: false
-      };
-    }
-
-    function drawFlake(flake) {
-      ctx.beginPath();
-      ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${flake.opacity})`;
-      ctx.fill();
-    }
-
-    function animateSnow() {
-      ctx.clearRect(0, 0, width, height);
-      snowflakes.forEach((flake, i) => {
-        flake.angle += flake.angleSpeed;
-        flake.x += Math.sin(flake.angle) * 0.5 + flake.speedX;
-        flake.y += flake.speedY;
-
-        drawFlake(flake);
-
-        if (flake.y > height) {
-          snowflakes[i] = createFlake();
-        }
-
-        const target = elements.map(sel => document.querySelector(sel)).find(el => {
-          if (!el) return false;
-          const rect = el.getBoundingClientRect();
-          return flake.y > rect.top && flake.y < rect.bottom &&
-                 flake.x > rect.left && flake.x < rect.right;
-        });
-
-        if (target && !flake.landed) {
-          flake.landed = true;
-          const slide = document.createElement('div');
-          slide.className = 'snow-slide';
-          slide.style.left = `${flake.x - 10}px`;
-          slide.style.top = `${target.getBoundingClientRect().top + window.scrollY}px`;
-          document.body.appendChild(slide);
-          setTimeout(() => slide.remove(), 1500);
-        }
-      });
-
-      requestAnimationFrame(animateSnow);
-    }
-
-    for (let i = 0; i < 100; i++) snowflakes.push(createFlake());
-    animateSnow();
-
-    // sloj na dnu
-    const bottomSnow = document.createElement('div');
-    bottomSnow.className = 'snow-layer';
-    document.body.appendChild(bottomSnow);
-  }
-});
 
 // === 8. REFRESH MARKACIJA MANUALNO ===
 function refreshCurrentMarkacija() {
