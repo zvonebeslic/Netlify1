@@ -1,5 +1,5 @@
 #season-toggle-wrapper {
-  position: absolute;
+  position: fixed;
   width: 40px;
   height: 40px;
   top: 75px;
@@ -12,7 +12,7 @@
   cursor: pointer;
 }
 #season-icons {
-  position: absolute;
+  position: fixed;
   width: 32px;
   height: auto;
   top: 115px;
@@ -42,6 +42,7 @@
   font-size: 14px;
   opacity: 0.8;
   border-radius: 12px;
+  cursor: pointer;
 }
 #stop-season.hidden {
   display: none;
