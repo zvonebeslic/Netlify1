@@ -3,14 +3,15 @@
   position: fixed;
   top: 70px;       /* ispod navbara */
   left: 15px;
-  width: 40px;
+  width: 38px;
+  height: 38px;
   z-index: 1100;
 }
 
 /* Glavna ikona */
 #season-toggle {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   cursor: pointer;
 }
 
@@ -34,7 +35,7 @@
 
 /* Stil za pojedine emoji */
 .season-icon {
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
