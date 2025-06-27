@@ -1,1 +1,127 @@
+<!-- === seasonchange.html === --><div id="seasonchange-wrapper">
+  <!-- Glavna ikona -->
+  <img src="images/seasonchange.svg" id="season-toggle" alt="Godišnja doba">  <!-- Emoji ikone godišnjih doba -->  <div id="season-icons" class="hidden">
+    <span class="season-icon" data-season="winter">❄️</span>
+    <span class="season-icon" data-season="summer">☀️</span>
+    <span class="season-icon" data-season="autumn">🍂</span>
+    <span class="season-icon" data-season="spring">🌸</span>
+  </div>
+</div><!-- Gumb za zaustavljanje sezone --><button id="stop-season" onclick="stopSeasonEffects()">Zaustavi animaciju</button>
 
+<style>
+  #seasonchange-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+  }
+
+  #season-toggle {
+    width: 40px;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: transform 0.3s ease;
+  }
+
+  #season-icons {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.3s ease;
+  }
+
+  #season-icons.hidden {
+    transform: scaleY(0);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .season-icon {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 6px;
+    border-radius: 50%;
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+  }
+
+  .season-icon:hover {
+    transform: scale(1.2);
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  #stop-season {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #999;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 1001;
+  }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    let activeSeason = null;
+    const toggle = document.getElementById('season-toggle');
+    const icons = document.getElementById('season-icons');
+    const stopBtn = document.getElementById('stop-season');
+
+    toggle.addEventListener('click', () => {
+      icons.classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('.season-icon').forEach(icon => {
+      icon.addEventListener('click', () => {
+        const season = icon.dataset.season;
+
+        if (activeSeason === season) {
+          stopSeasonEffects();
+          return;
+        }
+
+        stopSeasonEffects(); // očisti prijašnje
+        activeSeason = season;
+        stopBtn.style.display = 'block';
+
+        if (season === 'winter') startSnowing();
+        if (season === 'summer') startSummer();
+        if (season === 'autumn') startAutumn();
+        if (season === 'spring') startSpring();
+      });
+    });
+
+    function stopSeasonEffects() {
+      stopBtn.style.display = 'none';
+      activeSeason = null;
+      // Ovdje obriši sve efekte (npr. canvas, divove...)
+      console.log('Season effects stopped');
+    }
+
+    function startSnowing() {
+      console.log('Snijeg aktiviran');
+    }
+
+    function startSummer() {
+      console.log('Ljeto aktivirano');
+    }
+
+    function startAutumn() {
+      console.log('Jesen aktivirana');
+    }
+
+    function startSpring() {
+      console.log('Proljeće aktivirano');
+    }
+  });
+</script>
