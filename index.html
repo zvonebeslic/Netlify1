@@ -1154,6 +1154,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // SEZONSKE ANIMACIJE
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('season-toggle');
+    const iconList = document.getElementById('season-icons');
+
+    toggle.addEventListener('click', () => {
+      iconList.classList.toggle('hidden');
+    });
+  });
+      
   // ZIMA
 const canvas = document.getElementById('snow-canvas');
 const ctx = canvas.getContext('2d');
