@@ -14,33 +14,43 @@ function initSeasonChange() {
   });
 
   document.querySelectorAll('.season-icon').forEach(icon => {
-    icon.addEventListener('click', () => {
-      const season = icon.dataset.season;
-      if (activeSeason === season) {
-        stopSeasonEffects();
-        return;
-      }
-
+  icon.addEventListener('click', () => {
+    const season = icon.dataset.season;
+    if (activeSeason === season) {
       stopSeasonEffects();
-      activeSeason = season;
-      document.body.classList.add(`season-${season}`);
-      stopButton.classList.remove('hidden');
-    });
-  });
-
-  function stopSeasonEffects() {
-    if (activeSeason) {
-      document.body.classList.remove(`season-${activeSeason}`);
-      activeSeason = null;
+      return;
     }
-    stopButton.classList.add('hidden');
-    seasonIcons.classList.add('hidden');
-    seasonIcons.classList.remove('show'); // 🎯 dodano: ukloni animaciju kad isključiš
+
+    stopSeasonEffects();
+    activeSeason = season;
+    document.body.classList.add(`season-${season}`);
+    stopButton.classList.remove('hidden');
+
+    if (season === 'winter') {
+      startWinterEffect();
+    }
+  });
+});
+
+function stopSeasonEffects() {
+  if (activeSeason) {
+    document.body.classList.remove(`season-${activeSeason}`);
+    activeSeason = null;
   }
 
-  stopButton.addEventListener('click', () => {
-    stopSeasonEffects();
-  });
+  // ✅ Dodano: zaustavi snijeg
+  if (typeof stopWinterEffect === 'function') {
+    stopWinterEffect();
+  }
+
+  stopButton.classList.add('hidden');
+  seasonIcons.classList.add('hidden');
+  seasonIcons.classList.remove('show');
+}
+
+stopButton.addEventListener('click', () => {
+  stopSeasonEffects();
+});
 }
 
 // ZIMA
