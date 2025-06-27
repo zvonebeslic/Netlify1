@@ -2,7 +2,7 @@
   position: absolute;
   width: 40px;
   height: 40px;
-  top: 30px;
+  top: 75px;
   left: 15px;
   z-index: 9999;
 }
@@ -14,8 +14,8 @@
 #season-icons {
   position: absolute;
   width: 32px;
-  height: 32px;
-  top: 60px;
+  height: auto;
+  top: 115px;
   left: 15px;
   display: flex;
   flex-direction: column;
@@ -40,6 +40,8 @@
   z-index: 9999;
   padding: 10px 15px;
   font-size: 14px;
+  opacity: 0.8;
+  border-radius: 12px;
 }
 #stop-season.hidden {
   display: none;
