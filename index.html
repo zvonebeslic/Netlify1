@@ -37,11 +37,6 @@
   <!-- === Link za fontove u naslovnoj slici === -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
-  <!-- === LINK ZA seasonchange.html === -->
-  <link rel="stylesheet" href="seasonchange.css">
-
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-      
 </head>
             
 <style>
@@ -610,9 +605,6 @@ a, button {
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
 
-  <!-- === SEASONCHANGE GUMB + IKONE GODIŠNJIH DOBA === -->
-  <!-- === LINK ZA seasonchange.html === -->
-  <div id="season-placeholder"></div>
 
   <!-- === SEKCIJE (parallax) === -->
   <div id="section1" class="section image-section"
@@ -792,22 +784,6 @@ a, button {
     © Mountain Adventures. All rights reserved.
   </footer>
 
-      <!-- === LINK ZA seasonchange.js === -->
-<script src="seasonchange.js"></script>
-      
-  <!-- === GUMB ZA GAŠENJE SEZONSKE ANIMACIJE === -->
-
-<!-- === PČELA ANIMACIJA (LOTTIE) === -->
-<lottie-player
-  id="bee"
-  src="https://lottie.host/8ad5709c-8881-4d09-87d2-03425d28ee04/KPCgT2kR6y.json"
-  background="transparent"
-  speed="1"
-  style="position: fixed; width: 60px; height: 60px; z-index: 9999; pointer-events: none;"
-  loop
-  autoplay>
-</lottie-player>
-
       
 <script>
 // === 1. DEFINICIJE ELEMENTA ===
@@ -954,20 +930,6 @@ window.addEventListener('pageshow', () => {
 // === 7. MARKACIJE + SEZONSKE ANIMACIJE ===
 document.addEventListener("DOMContentLoaded", function () {
 
-
-  
-    const bee = document.getElementById("bee");
-
-    function animateBee() {
-      const x = Math.random() * (window.innerWidth - 60);
-      const y = Math.random() * (window.innerHeight - 60);
-      bee.style.transition = "transform 3s ease-in-out";
-      bee.style.transform = `translate(${x}px, ${y}px)`;
-    }
-
-    setInterval(animateBee, 3000); // svakih 3 sekunde
-  
-
       
   // MARKACIJE
   const observer = new IntersectionObserver(entries => {
@@ -1047,15 +1009,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('.image-section').forEach(section => {
     observer.observe(section);
   });
-      
-  // SEZONSKE ANIMACIJE
-       // LINK ZA seasonchange.js
-  fetch('seasonchange.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('season-placeholder').innerHTML = html;
-      initSeasonChange(); // poziva funkciju iz .js fajla
-    });
   });
 
 // === 8. REFRESH MARKACIJA MANUALNO ===
