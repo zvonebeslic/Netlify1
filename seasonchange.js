@@ -9,7 +9,7 @@ function initSeasonChange() {
     if (activeSeason !== null) {
       stopSeasonEffects();
     } else {
-      seasonIcons.classList.toggle('hidden');
+      seasonIcons.classList.toggle('visible');
     }
   });
 
@@ -17,6 +17,7 @@ function initSeasonChange() {
   document.querySelectorAll('.season-icon').forEach(icon => {
     icon.addEventListener('click', () => {
       const season = icon.dataset.season;
+
       if (activeSeason === season) {
         stopSeasonEffects();
         return;
@@ -26,6 +27,7 @@ function initSeasonChange() {
       activeSeason = season;
       document.body.classList.add(`season-${season}`);
       stopButton.classList.remove('hidden');
+      seasonIcons.classList.remove('visible'); // automatski sakrijemo ikone nakon odabira
 
       if (season === 'winter') {
         startWinterEffect();
@@ -52,7 +54,7 @@ function initSeasonChange() {
 
     // Sakrij ikone i gumb
     stopButton.classList.add('hidden');
-    seasonIcons.classList.add('hidden');
+    seasonIcons.classList.remove('visible');
 
     // Očisti canvas ako postoji
     const canvas = document.getElementById('snow-canvas');
