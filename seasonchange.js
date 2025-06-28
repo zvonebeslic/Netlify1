@@ -4,56 +4,66 @@ function initSeasonChange() {
   const seasonIcons = document.getElementById('season-icons');
   const stopButton = document.getElementById('stop-season');
 
+  // Klik na glavnu ikonu
   seasonToggle.addEventListener('click', () => {
     if (activeSeason !== null) {
       stopSeasonEffects();
     } else {
       seasonIcons.classList.toggle('hidden');
-      seasonIcons.classList.toggle('show'); // 🎯 dodano: animacija skaliranja ikona
     }
   });
 
+  // Klik na emoji ikonu
   document.querySelectorAll('.season-icon').forEach(icon => {
-  icon.addEventListener('click', () => {
-    const season = icon.dataset.season;
-    if (activeSeason === season) {
-      stopSeasonEffects();
-      return;
-    }
+    icon.addEventListener('click', () => {
+      const season = icon.dataset.season;
+      if (activeSeason === season) {
+        stopSeasonEffects();
+        return;
+      }
 
-    stopSeasonEffects();
-    activeSeason = season;
-    document.body.classList.add(`season-${season}`);
-    stopButton.classList.remove('hidden');
+      stopSeasonEffects(); // očisti prethodnu sezonu
+      activeSeason = season;
+      document.body.classList.add(`season-${season}`);
+      stopButton.classList.remove('hidden');
 
-    if (season === 'winter') {
-      startWinterEffect();
-    }
+      if (season === 'winter') {
+        startWinterEffect();
+      }
+    });
   });
-});
 
-function stopSeasonEffects() {
-  if (activeSeason) {
-    document.body.classList.remove(`season-${activeSeason}`);
-    activeSeason = null;
+  // Gumb za stop
+  stopButton.addEventListener('click', () => {
+    stopSeasonEffects();
+  });
+
+  // Funkcija zaustavljanja sezonskog efekta
+  function stopSeasonEffects() {
+    if (activeSeason) {
+      document.body.classList.remove(`season-${activeSeason}`);
+      activeSeason = null;
+    }
+
+    // Zaustavi snijeg
+    if (typeof stopWinterEffect === 'function') {
+      stopWinterEffect();
+    }
+
+    // Sakrij ikone i gumb
+    stopButton.classList.add('hidden');
+    seasonIcons.classList.add('hidden');
+
+    // Očisti canvas ako postoji
+    const canvas = document.getElementById('snow-canvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
   }
-
-  // ✅ Dodano: zaustavi snijeg
-  if (typeof stopWinterEffect === 'function') {
-    stopWinterEffect();
-  }
-
-  stopButton.classList.add('hidden');
-  seasonIcons.classList.add('hidden');
-  seasonIcons.classList.remove('show');
 }
 
-stopButton.addEventListener('click', () => {
-  stopSeasonEffects();
-});
-}
-
-// ZIMA
+// Efekt zime
 function startWinterEffect() {
   const snowChars = ['❄', '❅', '❆'];
   let activeSnow = true;
@@ -62,10 +72,21 @@ function startWinterEffect() {
 
   const contentBoxes = document.querySelectorAll('.content-box');
   contentBoxes.forEach(box => {
-    let snowLayer = document.createElement('div');
-    snowLayer.classList.add('snow-layer');
-    box.appendChild(snowLayer);
+    // Stvori sloj samo ako ne postoji
+    if (!box.querySelector('.snow-layer')) {
+      let snowLayer = document.createElement('div');
+      snowLayer.classList.add('snow-layer');
+      box.appendChild(snowLayer);
+    }
   });
+
+  // Postavi canvas ako postoji
+  const canvas = document.getElementById('snow-canvas');
+  if (canvas) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.pointerEvents = 'none';
+  }
 
   function createSnowflake() {
     if (!activeSnow) return;
@@ -103,7 +124,7 @@ function startWinterEffect() {
 
     document.body.appendChild(snowflake);
 
-    // Nakupljanje snijega na box
+    // Nakupljanje snijega na slučajni box
     const box = contentBoxes[Math.floor(Math.random() * contentBoxes.length)];
     const layer = box.querySelector('.snow-layer');
     const currentHeight = parseFloat(layer.style.height || 0);
@@ -128,7 +149,7 @@ function startWinterEffect() {
     for (let i = 0; i < 5; i++) createSnowflake();
   }, 150);
 
-  // Prekini zimski efekt
+  // Globalna stop funkcija
   window.stopWinterEffect = () => {
     activeSnow = false;
     clearInterval(snowInterval);
