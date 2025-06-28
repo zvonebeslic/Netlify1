@@ -576,6 +576,9 @@ a, button {
             
 <body>
       
+  <!-- === LINK ZA seasonchange.html === -->
+  <div id="season-placeholder"></div>
+      
   <!-- === NAVIGACIJA (gore) === -->
   <div class="navbar">
     <div class="navbar-left">
@@ -609,8 +612,7 @@ a, button {
   </div>
 
   <!-- === SEASONCHANGE GUMB + IKONE GODIŠNJIH DOBA === -->
-  <!-- === LINK ZA seasonchange.html === -->
-  <div id="season-placeholder"></div>
+      
 
   <!-- === SEKCIJE (parallax) === -->
   <div id="section1" class="section image-section"
@@ -1086,15 +1088,19 @@ function refreshCurrentMarkacija() {
 </script>
 
  // LINK ZA seasonchange.js
+<script src="seasonchange.js"></script>
 <script>
   fetch('seasonchange.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('season-placeholder').innerHTML = html;
-      initSeasonChange(); // poziva funkciju iz .js fajla
+    })
+    .then(() => {
+      if (typeof initSeasonChange === 'function') {
+        initSeasonChange();
+      }
     });
 </script>
-<script src="seasonchange.js"></script>
       
 </body>
 </html>
