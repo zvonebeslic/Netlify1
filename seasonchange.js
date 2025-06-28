@@ -269,8 +269,12 @@ window.stopWinterEffect = () => {
 };
 
 // === SUMMER EFFECT === (POČETAK LJETA)
+let summerIntervals = [];
+let summerStyleTag = null;
+
 function startSummerEffect() {
-  // Glavni sloj
+  if (document.getElementById('summer-wrapper')) return;
+
   const summerWrapper = document.createElement('div');
   summerWrapper.id = 'summer-wrapper';
   summerWrapper.style.cssText = `
@@ -283,7 +287,6 @@ function startSummerEffect() {
   `;
   document.body.appendChild(summerWrapper);
 
-  // === SUNČEVO SREDIŠTE (nevidljivi izvor svjetla) ===
   const sunCore = document.createElement('div');
   sunCore.className = 'sun-core';
   sunCore.style.cssText = `
@@ -301,7 +304,6 @@ function startSummerEffect() {
   `;
   summerWrapper.appendChild(sunCore);
 
-  // === SUNČEVE ZRAKE (više slojeva, različiti kutovi) ===
   const rayColors = [
     'rgba(255,255,180,0.12)',
     'rgba(255,250,200,0.08)',
@@ -313,7 +315,6 @@ function startSummerEffect() {
   for (let i = 0; i < 120; i++) {
     const ray = document.createElement('div');
     ray.className = 'sun-ray';
-
     const size = 90 + Math.random() * 160;
     const angle = Math.random() * 360;
     const distance = 100 + Math.random() * 250;
@@ -339,9 +340,8 @@ function startSummerEffect() {
     summerWrapper.appendChild(ray);
   }
 
-  // === ANIMACIJE ZA SUNCE I ZRAKE ===
-  const style = document.createElement('style');
-  style.textContent = `
+  summerStyleTag = document.createElement('style');
+  summerStyleTag.textContent = `
     @keyframes sunPulse {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.1); opacity: 0.85; }
@@ -351,10 +351,29 @@ function startSummerEffect() {
       0%, 100% { opacity: 0.05; }
       50% { opacity: 0.25; }
     }
-  `;
-  document.head.appendChild(style);
 
-  // === HORIZONTALNI TOPLOTNI VALOVI (blur + shimmer) ===
+    @keyframes waveDrift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(3vw); }
+    }
+
+    @keyframes auraPulse {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.05); opacity: 0.25; }
+    }
+
+    @keyframes flareSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    body.summer-active {
+      filter: brightness(1.04) sepia(0.05) saturate(1.1);
+      transition: filter 1s ease;
+    }
+  `;
+  document.head.appendChild(summerStyleTag);
+
   for (let i = 0; i < 10; i++) {
     const wave = document.createElement('div');
     wave.className = 'heat-wave';
@@ -372,10 +391,9 @@ function startSummerEffect() {
     summerWrapper.appendChild(wave);
   }
 
-  // === AUREOLE SVIJETLA (koncentrični slojevi) ===
   for (let j = 0; j < 5; j++) {
-    const aura = document.createElement('div');
     const radius = 300 + j * 80;
+    const aura = document.createElement('div');
     aura.className = 'sun-aura';
     aura.style.cssText = `
       position: absolute;
@@ -392,11 +410,10 @@ function startSummerEffect() {
     summerWrapper.appendChild(aura);
   }
 
-  // === DODATNE USKE ZRAKE (brze, paralelne) ===
   for (let k = 0; k < 30; k++) {
     const flare = document.createElement('div');
-    flare.className = 'sun-flare-line';
     const angle = Math.random() * 360;
+    flare.className = 'sun-flare-line';
     flare.style.cssText = `
       position: absolute;
       top: 50%;
@@ -414,30 +431,10 @@ function startSummerEffect() {
     summerWrapper.appendChild(flare);
   }
 
-  // === DODATNI STILOVI ANIMACIJA ===
-  style.textContent += `
-    @keyframes waveDrift {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(3vw); }
-    }
-
-    @keyframes auraPulse {
-      0%, 100% { transform: scale(1); opacity: 0.15; }
-      50% { transform: scale(1.05); opacity: 0.25; }
-    }
-
-    @keyframes flareSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-
-  // === LETEĆE PTICE (solo i jata) ===
   function spawnBird(isGroup = false) {
     const bird = document.createElement('div');
     bird.textContent = '🐦';
     bird.className = 'summer-bird';
-
     Object.assign(bird.style, {
       position: 'fixed',
       top: `${Math.random() * 50 + 10}vh`,
@@ -447,21 +444,19 @@ function startSummerEffect() {
       transition: `transform ${14 + Math.random() * 5}s linear`,
       pointerEvents: 'none'
     });
-
     document.body.appendChild(bird);
     setTimeout(() => bird.style.transform = 'translateX(120vw)', 100);
     setTimeout(() => bird.remove(), 17000);
   }
 
-  setInterval(() => spawnBird(false), 20000); // solo ptice
-  setInterval(() => {
+  summerIntervals.push(setInterval(() => spawnBird(false), 20000));
+  summerIntervals.push(setInterval(() => {
     for (let i = 0; i < 6; i++) {
       setTimeout(() => spawnBird(true), i * 250);
     }
-  }, 45000); // jata
+  }, 45000));
 
-  // === SUN FLARE PREKO EKRANA ===
-  setInterval(() => {
+  summerIntervals.push(setInterval(() => {
     const flare = document.createElement('div');
     flare.className = 'sun-flare';
     Object.assign(flare.style, {
@@ -479,20 +474,18 @@ function startSummerEffect() {
     setTimeout(() => flare.style.opacity = '1', 100);
     setTimeout(() => flare.style.opacity = '0', 2500);
     setTimeout(() => flare.remove(), 5000);
-  }, 30000);
+  }, 30000));
 
-  // === REFLEKSIJE NA ELEMENTIMA WEBA ===
-  setInterval(() => {
+  summerIntervals.push(setInterval(() => {
     const elements = document.querySelectorAll('.content-box, .web-intro, .markacija');
     elements.forEach(el => {
       el.style.transition = 'filter 2s';
       el.style.filter = 'brightness(1.12) sepia(0.08)';
       setTimeout(() => el.style.filter = '', 4000);
     });
-  }, 12000);
+  }, 12000));
 
-    // === OBLAČNE SJENE KOJE PRELAZE EKRAN ===
-  setInterval(() => {
+  summerIntervals.push(setInterval(() => {
     const cloudShadow = document.createElement('div');
     cloudShadow.className = 'summer-shadow';
     Object.assign(cloudShadow.style, {
@@ -508,36 +501,34 @@ function startSummerEffect() {
     document.body.appendChild(cloudShadow);
     setTimeout(() => cloudShadow.style.transform = 'translateX(100vw)', 100);
     setTimeout(() => cloudShadow.remove(), 27000);
-  }, 50000);
+  }, 50000));
 
-  // === TOPLI FILTER NA CIJELOM BODYJU ===
   document.body.classList.add('summer-active');
+}
 
-  const summerGlobalStyle = document.createElement('style');
-  summerGlobalStyle.textContent = `
-    body.summer-active {
-      filter: brightness(1.04) sepia(0.05) saturate(1.1);
-      transition: filter 1s ease;
-    }
-  `;
-  document.head.appendChild(summerGlobalStyle);
+function stopSummerEffect() {
+  document.getElementById('summer-wrapper')?.remove();
+  document.querySelectorAll('.sun-flare, .summer-shadow, .summer-bird').forEach(el => el.remove());
+  document.body.classList.remove('summer-active');
+  summerStyleTag?.remove();
 
-  // === STOP SUMMER FUNKCIJA ===
-  window.stopSummerEffect = () => {
-    document.getElementById('summer-wrapper')?.remove();
-    document.querySelectorAll('.sun-flare, .summer-shadow, .summer-bird').forEach(el => el.remove());
-    document.body.classList.remove('summer-active');
-  };
+  if (window.summerIntervals) {
+    window.summerIntervals.forEach(id => clearInterval(id));
+    window.summerIntervals = [];
+  }
 }
 // === SUMMER EFFECT === (KRAJ LJETA)
-  
-  // === FALL EFEKT === (POCETAK JESENI)
 
-  // === AUTUMN EFFECT === (POČETAK)
+  // === AUTUMN EFFECT === (POČETAK JESENI)
+let autumnIntervals = [];
+let autumnStyleTag = null;
+
 function startAutumnEffect() {
-  const autumnWrapper = document.createElement('div');
-  autumnWrapper.id = 'autumn-wrapper';
-  Object.assign(autumnWrapper.style, {
+  if (document.getElementById('autumn-wrapper')) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.id = 'autumn-wrapper';
+  Object.assign(wrapper.style, {
     position: 'fixed',
     top: '0',
     left: '0',
@@ -547,9 +538,8 @@ function startAutumnEffect() {
     pointerEvents: 'none',
     zIndex: '9990'
   });
-  document.body.appendChild(autumnWrapper);
+  document.body.appendChild(wrapper);
 
-  // === VRSTE LIŠĆA (SVG slike, transparent background) ===
   const leafImages = [
     'images/leaf-maple-yellow.png',
     'images/leaf-oak-brown.png',
@@ -576,12 +566,12 @@ function startAutumnEffect() {
         width: `${size}px`,
         height: 'auto',
         opacity: 0.85,
-        zIndex: zIndex,
+        zIndex,
         transform: `rotate(${Math.random() * 360}deg)`,
         animation: `fallLeaf ${duration}s linear ${delay}s forwards, spinLeaf ${3 + Math.random() * 3}s ease-in-out infinite`
       });
 
-      autumnWrapper.appendChild(leaf);
+      wrapper.appendChild(leaf);
       activeLeaves.push(leaf);
 
       setTimeout(() => {
@@ -591,28 +581,10 @@ function startAutumnEffect() {
     }
   }
 
-  // === PRVI SLOJ PADANJA LIŠĆA (maple / oak) ===
-  setInterval(() => {
+  autumnIntervals.push(setInterval(() => {
     createLeafLayer(5, 6, 9, 9991);
-  }, 1000);
+  }, 1000));
 
-  // === ANIMACIJE ===
-  const autumnStyles = document.createElement('style');
-  autumnStyles.textContent = `
-    @keyframes fallLeaf {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
-      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.4; }
-    }
-
-    @keyframes spinLeaf {
-      0% { transform: rotateY(0deg) rotateX(0deg); }
-      50% { transform: rotateY(180deg) rotateX(90deg); }
-      100% { transform: rotateY(360deg) rotateX(0deg); }
-    }
-  `;
-  document.head.appendChild(autumnStyles);
-
-  // === DRUGI SLOJ: SITNO LIŠĆE (ukrasna pozadina) ===
   function createMiniLeafLayer(count = 40, speedMin = 10, speedMax = 20, zIndex = 9988) {
     for (let i = 0; i < count; i++) {
       const miniLeaf = document.createElement('img');
@@ -628,27 +600,48 @@ function startAutumnEffect() {
         width: `${size}px`,
         opacity: 0.5,
         pointerEvents: 'none',
-        zIndex: zIndex,
+        zIndex,
         transform: `rotate(${Math.random() * 360}deg)`,
         animation: `miniFall ${duration}s linear ${delay}s infinite`
       });
 
-      autumnWrapper.appendChild(miniLeaf);
+      wrapper.appendChild(miniLeaf);
     }
   }
 
-  // Pokreni sitno lišće jednom
   createMiniLeafLayer();
 
-  // === ANIMACIJA ZA MINI LIŠĆE ===
-  autumnStyles.textContent += `
+  autumnStyleTag = document.createElement('style');
+  autumnStyleTag.textContent = `
+    @keyframes fallLeaf {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.4; }
+    }
+
+    @keyframes spinLeaf {
+      0% { transform: rotateY(0deg) rotateX(0deg); }
+      50% { transform: rotateY(180deg) rotateX(90deg); }
+      100% { transform: rotateY(360deg) rotateX(0deg); }
+    }
+
     @keyframes miniFall {
       0% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
       100% { transform: translateY(120vh) rotate(720deg); opacity: 0.1; }
     }
-  `;
 
-  // === TURBULENCIJA: POVREMENI NALETI VJETRA NA AKTIVNO LIŠĆE ===
+    @keyframes fogFloat {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(10vw); }
+    }
+
+    @keyframes dripFall {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(20px); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(autumnStyleTag);
+
+  // === TURBULENTNI VJETAR ===
   function triggerTurbulentWind() {
     activeLeaves.forEach(leaf => {
       const drift = (Math.random() - 0.5) * 100;
@@ -657,12 +650,11 @@ function startAutumnEffect() {
       leaf.style.transform += ` translateX(${drift}px) rotate(${rotate}deg)`;
     });
   }
-
-  setInterval(() => {
+  autumnIntervals.push(setInterval(() => {
     if (Math.random() < 0.5) triggerTurbulentWind();
-  }, 9000);
+  }, 9000));
 
-  // === MAGLA PRI TLU ===
+  // === MAGLA ===
   function createFogLayer(opacity, blur, zIndex, delay) {
     const fog = document.createElement('div');
     fog.className = 'autumn-fog-layer';
@@ -676,29 +668,20 @@ function startAutumnEffect() {
       background: 'linear-gradient(to top, rgba(200,200,200,0.2), transparent)',
       opacity: '0',
       filter: `blur(${blur}px)`,
-      zIndex: zIndex,
+      zIndex,
       transition: 'opacity 2s ease',
       animation: `fogFloat ${10 + Math.random() * 10}s ease-in-out ${delay}s infinite alternate`
     });
 
-    autumnWrapper.appendChild(fog);
+    wrapper.appendChild(fog);
     setTimeout(() => fog.style.opacity = opacity, 300);
   }
 
-  // Stvori 3 sloja magle s različitim parametrima
   createFogLayer(0.2, 8, 9980, 0);
   createFogLayer(0.15, 12, 9981, 4);
   createFogLayer(0.1, 16, 9982, 8);
 
-  // === ANIMACIJA MAGLE ===
-  autumnStyles.textContent += `
-    @keyframes fogFloat {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(10vw); }
-    }
-  `;
-
-  // === KIŠA – CANVAS SLOJ ===
+  // === KIŠA ===
   const rainCanvas = document.createElement('canvas');
   rainCanvas.id = 'autumn-rain-canvas';
   Object.assign(rainCanvas.style, {
@@ -711,34 +694,25 @@ function startAutumnEffect() {
     zIndex: 9985
   });
   document.body.appendChild(rainCanvas);
-
   const ctx = rainCanvas.getContext('2d');
   rainCanvas.width = window.innerWidth;
   rainCanvas.height = window.innerHeight;
 
-  window.addEventListener('resize', () => {
-    rainCanvas.width = window.innerWidth;
-    rainCanvas.height = window.innerHeight;
-  });
-
   const drops = [];
-
   function spawnRainDrop() {
-    const drop = {
+    drops.push({
       x: Math.random() * rainCanvas.width,
       y: 0,
       length: 10 + Math.random() * 15,
-      speed: 4 + Math.random() * 3,
-      opacity: 0.05 + Math.random() * 0.1
-    };
-    drops.push(drop);
+      speed: 4 + Math.random() * 3
+    });
   }
 
-  setInterval(() => {
+  autumnIntervals.push(setInterval(() => {
     if (Math.random() < 0.8) {
       for (let i = 0; i < 6; i++) spawnRainDrop();
     }
-  }, 100);
+  }, 100));
 
   function drawRain() {
     ctx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
@@ -751,18 +725,15 @@ function startAutumnEffect() {
       ctx.moveTo(drop.x, drop.y);
       ctx.lineTo(drop.x, drop.y + drop.length);
       ctx.stroke();
-
       drop.y += drop.speed;
-
       if (drop.y > rainCanvas.height) drops.splice(i, 1);
     }
 
     requestAnimationFrame(drawRain);
   }
-
   drawRain();
 
-  // === MUNJE – FLASH EFEKT NA EKRANU ===
+  // === MUNJE ===
   function triggerLightningFlash() {
     const flash = document.createElement('div');
     flash.className = 'autumn-lightning';
@@ -779,26 +750,16 @@ function startAutumnEffect() {
       transition: 'opacity 0.15s ease'
     });
     document.body.appendChild(flash);
-
     setTimeout(() => (flash.style.opacity = '1'), 50);
     setTimeout(() => (flash.style.opacity = '0'), 200);
     setTimeout(() => flash.remove(), 400);
   }
 
-  setInterval(() => {
+  autumnIntervals.push(setInterval(() => {
     if (Math.random() < 0.3) triggerLightningFlash();
-  }, 25000);
+  }, 25000));
 
-  // === REFLEKSIJE NA ELEMENATIMA (.content-box, .markacija, .web-intro) ===
-  setInterval(() => {
-    document.querySelectorAll('.content-box, .markacija, .web-intro').forEach(el => {
-      el.style.transition = 'filter 1s';
-      el.style.filter = 'brightness(0.95) saturate(0.9)';
-      setTimeout(() => (el.style.filter = ''), 3000);
-    });
-  }, 14000);
-
-  // === VODA SE NAKUPLJA NA ELEMENATIMA ===
+  // === REFLEKSIJE I KAPANJE ===
   function dripOnElement(el) {
     const drop = document.createElement('div');
     drop.className = 'autumn-drip';
@@ -817,295 +778,284 @@ function startAutumnEffect() {
 
     el.style.position = 'relative';
     el.appendChild(drop);
-
     setTimeout(() => drop.remove(), 2100);
   }
 
-  setInterval(() => {
+  autumnIntervals.push(setInterval(() => {
     document.querySelectorAll('.content-box, .markacija, .web-intro').forEach(el => {
       if (Math.random() < 0.4) dripOnElement(el);
+      el.style.transition = 'filter 1s';
+      el.style.filter = 'brightness(0.95) saturate(0.9)';
+      setTimeout(() => (el.style.filter = ''), 3000);
     });
-  }, 6000);
+  }, 6000));
+}
 
-  // === STIL ZA KAPANJE ===
-  autumnStyles.textContent += `
-    @keyframes dripFall {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(20px); opacity: 0; }
-    }
-  `;
+function stopAutumnEffect() {
+  document.getElementById('autumn-wrapper')?.remove();
+  document.getElementById('autumn-rain-canvas')?.remove();
 
-  // === STOP AUTUMN EFFECT ===
-  window.stopAutumnEffect = () => {
-    clearInterval(leafGen);
-    document.getElementById('autumn-wrapper')?.remove();
-    document.getElementById('autumn-rain-canvas')?.remove();
+  document.querySelectorAll('.autumn-lightning, .autumn-drip, .autumn-leaf, .autumn-fog-layer')
+    .forEach(el => el.remove());
 
-    // Ukloni sve efekte
-    document.querySelectorAll('.autumn-lightning').forEach(el => el.remove());
-    document.querySelectorAll('.autumn-drip').forEach(el => el.remove());
-    document.querySelectorAll('.autumn-mini-leaf').forEach(el => el.remove());
-    document.querySelectorAll('.autumn-leaf').forEach(el => el.remove());
-    document.querySelectorAll('.autumn-fog-layer').forEach(el => el.remove());
+  document.querySelectorAll('.content-box, .markacija, .web-intro').forEach(el => {
+    el.style.filter = '';
+    el.style.position = '';
+  });
 
-    // Reset stilova
-    document.querySelectorAll('.content-box, .markacija, .web-intro').forEach(el => {
-      el.style.filter = '';
-      el.style.position = '';
-    });
+  if (autumnStyleTag) autumnStyleTag.remove();
 
-    // Ukloni sve <style> tagove dodane iz jeseni
-    document.querySelectorAll('style').forEach(style => {
-      if (style.textContent.includes('fallLeaf') || style.textContent.includes('fogFloat') || style.textContent.includes('dripFall')) {
-        style.remove();
-      }
-    });
-  };
-
+  if (autumnIntervals.length > 0) {
+    autumnIntervals.forEach(id => clearInterval(id));
+    autumnIntervals = [];
+  }
 }
 // === KRAJ FUNKCIJE startAutumnEffect()
 
 // === SPRING START === (POCETAK PROLJECA)
+function startSpringEffect() {
+  const targets = document.querySelectorAll('.content-box, .web-intro, .web-subintro, .blog-bubble, .markacija-wrapper');
+  const flowers = [];
 
-// === SPRING EFFECT === function startSpringEffect() 
-  
-  { const targets = document.querySelectorAll('.content-box, .web-intro, .web-subintro, .blog-bubble, .markacija-wrapper'); const flowers = [];
+  // === SVG cvjetovi ===
+  const runolistSVG = `<svg viewBox="0 0 64 64" width="24" height="24"><circle cx="32" cy="32" r="6" fill="#f8f8f8"/><path d="M32 10 L36 30 L58 32 L36 34 L32 54 L28 34 L6 32 L28 30 Z" fill="#e0e0e0"/></svg>`;
+  const maslacakSVG = `<svg viewBox="0 0 64 64" width="22" height="22"><circle cx="32" cy="32" r="8" fill="#fdf168"/><g stroke="#fce205" stroke-width="1.5"><line x1="32" y1="4" x2="32" y2="20"/><line x1="32" y1="44" x2="32" y2="60"/><line x1="4" y1="32" x2="20" y2="32"/><line x1="44" y1="32" x2="60" y2="32"/><line x1="14" y1="14" x2="26" y2="26"/><line x1="50" y1="14" x2="38" y2="26"/><line x1="14" y1="50" x2="26" y2="38"/><line x1="50" y1="50" x2="38" y2="38"/></g></svg>`;
+  const visibabaSVG = `<svg viewBox="0 0 64 64" width="20" height="20"><path d="M32 4 Q35 20 32 32 Q29 20 32 4" fill="#d3f9d8"/><circle cx="32" cy="38" r="4" fill="#a5d6a7"/></svg>`;
 
-// === SVG CVJETOVI === const runolistSVG =  <svg viewBox="0 0 64 64" width="24" height="24"> <circle cx="32" cy="32" r="6" fill="#f8f8f8"/> <path d="M32 10 L36 30 L58 32 L36 34 L32 54 L28 34 L6 32 L28 30 Z" fill="#e0e0e0"/> </svg>;
+  function createFlower(svg, target) {
+    const flower = document.createElement('div');
+    flower.innerHTML = svg;
+    flower.classList.add('spring-flower');
+    Object.assign(flower.style, {
+      position: 'absolute',
+      opacity: '0',
+      transform: 'scale(0.1)',
+      transition: 'transform 2s ease-out, opacity 2s',
+      pointerEvents: 'none',
+      zIndex: '20'
+    });
 
-const maslacakSVG =  <svg viewBox="0 0 64 64" width="22" height="22"> <circle cx="32" cy="32" r="8" fill="#fdf168"/> <g stroke="#fce205" stroke-width="1.5"> <line x1="32" y1="4" x2="32" y2="20"/> <line x1="32" y1="44" x2="32" y2="60"/> <line x1="4" y1="32" x2="20" y2="32"/> <line x1="44" y1="32" x2="60" y2="32"/> <line x1="14" y1="14" x2="26" y2="26"/> <line x1="50" y1="14" x2="38" y2="26"/> <line x1="14" y1="50" x2="26" y2="38"/> <line x1="50" y1="50" x2="38" y2="38"/> </g> </svg>;
+    const rect = target.getBoundingClientRect();
+    const offsetX = Math.random() * rect.width;
+    const offsetY = rect.height - 10;
 
-const visibabaSVG =  <svg viewBox="0 0 64 64" width="20" height="20"> <path d="M32 4 Q35 20 32 32 Q29 20 32 4" fill="#d3f9d8"/> <circle cx="32" cy="38" r="4" fill="#a5d6a7"/> </svg>;
+    flower.style.left = `${offsetX}px`;
+    flower.style.top = `${offsetY}px`;
 
-function createFlower(svg, target, positionClass) { const flower = document.createElement('div'); flower.innerHTML = svg; flower.classList.add('spring-flower', positionClass); flower.style.position = 'absolute'; flower.style.opacity = '0'; flower.style.transform = 'scale(0.1)'; flower.style.transition = 'transform 2s ease-out, opacity 2s'; target.appendChild(flower);
+    target.style.position = 'relative';
+    target.appendChild(flower);
 
-const rect = target.getBoundingClientRect();
-const offsetX = Math.random() * rect.width;
-const offsetY = Math.random() * 20 + (positionClass === 'bottom' ? rect.height - 25 : -5);
+    setTimeout(() => {
+      flower.style.opacity = '1';
+      flower.style.transform = 'scale(1)';
+    }, 100);
 
-flower.style.left = `${offsetX}px`;
-flower.style.top = `${offsetY}px`;
+    setTimeout(() => {
+      flower.style.animation = 'flowerSwing 4s ease-in-out infinite';
+    }, 2000);
 
-setTimeout(() => {
-  flower.style.opacity = '1';
-  flower.style.transform = 'scale(1)';
-}, 50);
-
-setTimeout(() => {
-  flower.style.animation = 'flowerSwing 4s ease-in-out infinite';
-}, 2000);
-
-flowers.push(flower);
-
-}
-
-targets.forEach(target => { createFlower(runolistSVG, target, 'bottom'); createFlower(maslacakSVG, target, 'left'); createFlower(visibabaSVG, target, 'right'); });
-
-const style = document.createElement('style'); style.innerHTML = @keyframes flowerSwing { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1) rotate(4deg); } 100% { transform: scale(1) rotate(-4deg); } } .spring-flower { pointer-events: none; z-index: 20; }; document.head.appendChild(style); window._springFlowers = flowers;
-
-// === LATICE === const petalImages = []; const petalCount = 25; const petals = [];
-
-const petalSVGs = [ <svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 2 Q28 12 16 30 Q4 12 16 2Z" fill="#f4c2c2"/></svg>, <svg viewBox="0 0 32 32" width="14" height="14"><path d="M16 0 Q30 16 16 32 Q2 16 16 0Z" fill="#f9e3e3"/></svg>, <svg viewBox="0 0 32 32" width="16" height="16"><path d="M16 4 Q24 20 16 28 Q8 20 16 4Z" fill="#fdebd3"/></svg> ];
-
-petalSVGs.forEach(svg => { const blob = new Blob([svg], { type: 'image/svg+xml' }); const url = URL.createObjectURL(blob); petalImages.push(url); });
-
-const springCanvas = document.createElement('canvas'); springCanvas.id = 'spring-canvas'; springCanvas.style.position = 'fixed'; springCanvas.style.top = '0'; springCanvas.style.left = '0'; springCanvas.style.width = '100vw'; springCanvas.style.height = '100vh'; springCanvas.style.zIndex = '10'; springCanvas.style.pointerEvents = 'none'; document.body.appendChild(springCanvas);
-
-const ctx = springCanvas.getContext('2d'); springCanvas.width = window.innerWidth; springCanvas.height = window.innerHeight;
-
-class Petal { constructor() { this.reset(); }
-
-reset() {
-  this.x = Math.random() * springCanvas.width;
-  this.y = Math.random() * -springCanvas.height;
-  this.size = 16 + Math.random() * 12;
-  this.speedY = 0.5 + Math.random() * 1.5;
-  this.speedX = Math.random() * 1 - 0.5;
-  this.rotation = Math.random() * 360;
-  this.rotationSpeed = Math.random() * 0.5 - 0.25;
-  this.img = new Image();
-  this.img.src = petalImages[Math.floor(Math.random() * petalImages.length)];
-}
-
-update() {
-  this.y += this.speedY;
-  this.x += this.speedX;
-  this.rotation += this.rotationSpeed;
-  if (this.y > springCanvas.height || this.x < -50 || this.x > springCanvas.width + 50) {
-    this.reset();
-  }
-}
-
-draw() {
-  ctx.save();
-  ctx.translate(this.x, this.y);
-  ctx.rotate(this.rotation * Math.PI / 180);
-  ctx.drawImage(this.img, -this.size / 2, -this.size / 2, this.size, this.size);
-  ctx.restore();
-}
-
-}
-
-for (let i = 0; i < petalCount; i++) { petals.push(new Petal()); }
-
-let springActive = true;
-
-function animatePetals() { if (!springActive) return; ctx.clearRect(0, 0, springCanvas.width, springCanvas.height); petals.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animatePetals); }
-
-animatePetals();
-
-window.addEventListener('resize', () => { springCanvas.width = window.innerWidth; springCanvas.height = window.innerHeight; });
-
-window._springCanvas = springCanvas; window._springPetals = petals; window._springPetalActive = () => { springActive = false; };
-
-// === PČELE === const beeCount = 5; const bees = [];
-
-const beeSVG =  <svg viewBox="0 0 64 64" width="32" height="32" class="bee-svg"> <ellipse cx="32" cy="32" rx="10" ry="16" fill="#fbc02d" stroke="#000" stroke-width="1.5"/> <line x1="22" y1="32" x2="42" y2="32" stroke="#000" stroke-width="2"/> <line x1="26" y1="24" x2="38" y2="24" stroke="#000" stroke-width="2"/> <line x1="26" y1="40" x2="38" y2="40" stroke="#000" stroke-width="2"/> <ellipse class="bee-wing wing-left" cx="24" cy="20" rx="8" ry="14" fill="#e1f5fe" opacity="0.7"/> <ellipse class="bee-wing wing-right" cx="40" cy="20" rx="8" ry="14" fill="#e1f5fe" opacity="0.7"/> <path class="bee-antenna antenna-left" d="M26 16 Q20 8 24 4" stroke="#000" stroke-width="1.5" fill="none"/> <path class="bee-antenna antenna-right" d="M38 16 Q44 8 40 4" stroke="#000" stroke-width="1.5" fill="none"/> </svg>;
-
-const beeContainer = document.createElement('div'); beeContainer.style.position = 'fixed'; beeContainer.style.top = '0'; beeContainer.style.left = '0'; beeContainer.style.width = '100vw'; beeContainer.style.height = '100vh'; beeContainer.style.pointerEvents = 'none'; beeContainer.style.zIndex = '50'; document.body.appendChild(beeContainer);
-
-class Bee { constructor() { this.el = document.createElement('div'); this.el.innerHTML = beeSVG; this.el.style.position = 'absolute'; this.el.style.top = '50%'; this.el.style.left = '50%'; this.el.style.width = '32px'; this.el.style.height = '32px'; this.el.style.transformOrigin = 'center center'; beeContainer.appendChild(this.el);
-
-this.x = Math.random() * window.innerWidth;
-  this.y = Math.random() * window.innerHeight;
-  this.vx = Math.random() * 2 - 1;
-  this.vy = Math.random() * 1.5 - 0.75;
-  this.rotation = 0;
-
-  this.animate();
-}
-
-animate() {
-  const move = () => {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.rotation += Math.random() * 4 - 2;
-
-    if (this.x < 0 || this.x > window.innerWidth - 30) this.vx *= -1;
-    if (this.y < 0 || this.y > window.innerHeight - 30) this.vy *= -1;
-
-    const zoom = 1 + 0.05 * Math.sin(Date.now() / 300);
-    this.el.style.transform = `translate(${this.x}px, ${this.y}px) rotate(${this.rotation}deg) scale(${zoom})`;
-
-    requestAnimationFrame(move);
-  };
-  move();
-}
-
-}
-
-for (let i = 0; i < beeCount; i++) { bees.push(new Bee()); }
-
-const beeStyle = document.createElement('style'); beeStyle.textContent = ` .bee-wing { transform-origin: center; animation: wingFlap 0.25s ease-in-out infinite alternate; }
-
-.bee-antenna {
-  transform-origin: top;
-  animation: antennaWiggle 2s ease-in-out infinite alternate;
-}
-
-@keyframes wingFlap {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(30deg); }
-}
-
-@keyframes antennaWiggle {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(10deg); }
-}
-
-`; document.head.appendChild(beeStyle);
-
-window._springBees = beeContainer;
-
-// === TRAVA === const grassSVG =  <svg viewBox="0 0 200 40" preserveAspectRatio="none" style="width: 100%; height: 100%;"> <path d="M0,40 Q10,10 20,40 Q30,10 40,40 Q50,10 60,40 Q70,10 80,40 Q90,10 100,40 Q110,10 120,40 Q130,10 140,40 Q150,10 160,40 Q170,10 180,40 Q190,10 200,40 Z"  fill="#4caf50"> <animate attributeName="d" dur="2s" repeatCount="indefinite" values=" M0,40 Q10,10 20,40 Q30,10 40,40 Q50,10 60,40 Q70,10 80,40 Q90,10 100,40 Q110,10 120,40 Q130,10 140,40 Q150,10 160,40 Q170,10 180,40 Q190,10 200,40 Z; M0,40 Q10,12 20,40 Q30,8 40,40 Q50,12 60,40 Q70,8 80,40 Q90,12 100,40 Q110,8 120,40 Q130,12 140,40 Q150,8 160,40 Q170,12 180,40 Q190,8 200,40 Z; M0,40 Q10,10 20,40 Q30,10 40,40 Q50,10 60,40 Q70,10 80,40 Q90,10 100,40 Q110,10 120,40 Q130,10 140,40 Q150,10 160,40 Q170,10 180,40 Q190,10 200,40 Z"/> </path> </svg>;
-
-const grass = document.createElement('div'); grass.innerHTML = grassSVG; grass.style.position = 'fixed'; grass.style.bottom = '0'; grass.style.left = '0'; grass.style.width = '100%'; grass.style.height = '60px'; grass.style.zIndex = '30'; grass.style.pointerEvents = 'none'; document.body.appendChild(grass); window._springGrass = grass;
-
-// === VJETAR === let windInterval = setInterval(() => { document.querySelectorAll('.spring-flower').forEach(f => { f.style.animation = 'flowerWind 1.5s ease-in-out 2'; });
-
-petals.forEach(p => {
-  p.vx += Math.random() * 1.5 - 0.75;
-  p.vy += Math.random() * 0.5 - 0.25;
-});
-
-bees.forEach(b => {
-  b.vx += Math.random() * 1 - 0.5;
-  b.vy += Math.random() * 0.5 - 0.25;
-});
-
-}, 10000);
-
-const windAnim = document.createElement('style'); windAnim.textContent = @keyframes flowerWind { 0% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.05) rotate(7deg); } 50% { transform: scale(1.05) rotate(-7deg); } 100% { transform: scale(1) rotate(0deg); } }; document.head.appendChild(windAnim);
-
-window._springWind = windInterval;
-
-// === SUN FLARE === const flare = document.createElement('div'); flare.style.position = 'fixed'; flare.style.top = '0'; flare.style.left = '0'; flare.style.width = '100vw'; flare.style.height = '100vh'; flare.style.pointerEvents = 'none'; flare.style.zIndex = '5'; flare.innerHTML =  <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%; height:100%;"> <radialGradient id="sunlight" cx="30%" cy="20%" r="80%"> <stop offset="0%" stop-color="rgba(255,255,200,0.35)"/> <stop offset="100%" stop-color="transparent"/> </radialGradient> <circle cx="30" cy="20" r="80" fill="url(#sunlight)"> <animate attributeName="r" values="70;80;70" dur="8s" repeatCount="indefinite"/> </circle> </svg>; document.body.appendChild(flare); window._springFlare = flare;
-
-// === PČELINJE ZUJANJE === const beeBuzz = new Audio('https://cdn.pixabay.com/audio/2021/10/21/audio_a6edc8e492.mp3'); beeBuzz.loop = true; beeBuzz.volume = 0.1; beeBuzz.play().catch(() => {}); window._springBuzz = beeBuzz;
-
-// === EFEKT DUBINE === document.querySelectorAll('.spring-flower').forEach(f => { f.style.transition = 'filter 2s ease, transform 3s ease'; f.style.filter = 'blur(0.4px)'; });
-
-petals.forEach(p => { p.speedX *= 0.9; p.speedY *= 0.9; });
-
-setInterval(() => { document.querySelectorAll('.spring-flower').forEach(f => { f.style.transform += ' scale(0.98)'; }); }, 15000); }
-
-// === STOP SPRING EFFECT ===
-window.stopSpringEffect = () => {
-  // Ukloni sve cvjetove
-  if (window._springFlowers) {
-    window._springFlowers.forEach(f => f.remove());
-    window._springFlowers = [];
+    flowers.push(flower);
   }
 
-  // Zaustavi latice
+  targets.forEach(target => {
+    createFlower(runolistSVG, target);
+    createFlower(maslacakSVG, target);
+    createFlower(visibabaSVG, target);
+  });
+
+  // === LATICE (Canvas) ===
+  const petalSVGs = [
+    `<svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 2 Q28 12 16 30 Q4 12 16 2Z" fill="#f4c2c2"/></svg>`,
+    `<svg viewBox="0 0 32 32" width="14" height="14"><path d="M16 0 Q30 16 16 32 Q2 16 16 0Z" fill="#f9e3e3"/></svg>`,
+    `<svg viewBox="0 0 32 32" width="16" height="16"><path d="M16 4 Q24 20 16 28 Q8 20 16 4Z" fill="#fdebd3"/></svg>`
+  ];
+  const petalImages = [];
+
+  petalSVGs.forEach(svg => {
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    petalImages.push(url);
+  });
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'spring-canvas';
+  Object.assign(canvas.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100vw',
+    height: '100vh',
+    pointerEvents: 'none',
+    zIndex: '10'
+  });
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  class Petal {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * -canvas.height;
+      this.size = 16 + Math.random() * 10;
+      this.speedY = 0.5 + Math.random() * 1.5;
+      this.speedX = Math.random() * 1 - 0.5;
+      this.rotation = Math.random() * 360;
+      this.rotationSpeed = Math.random() * 0.5 - 0.25;
+      this.img = new Image();
+      this.img.src = petalImages[Math.floor(Math.random() * petalImages.length)];
+    }
+    update() {
+      this.y += this.speedY;
+      this.x += this.speedX;
+      this.rotation += this.rotationSpeed;
+      if (this.y > canvas.height || this.x < -50 || this.x > canvas.width + 50) this.reset();
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation * Math.PI / 180);
+      ctx.drawImage(this.img, -this.size / 2, -this.size / 2, this.size, this.size);
+      ctx.restore();
+    }
+  }
+
+  const petals = Array.from({ length: 25 }, () => new Petal());
+
+  let springActive = true;
+  function animatePetals() {
+    if (!springActive) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    petals.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animatePetals);
+  }
+  animatePetals();
+
+  // === PČELE ===
+  const beeSVG = `<svg viewBox="0 0 64 64" width="32" height="32"><ellipse cx="32" cy="32" rx="10" ry="16" fill="#fbc02d" stroke="#000" stroke-width="1.5"/><line x1="22" y1="32" x2="42" y2="32" stroke="#000" stroke-width="2"/><line x1="26" y1="24" x2="38" y2="24" stroke="#000" stroke-width="2"/><line x1="26" y1="40" x2="38" y2="40" stroke="#000" stroke-width="2"/><ellipse cx="24" cy="20" rx="8" ry="14" fill="#e1f5fe" opacity="0.7"/><ellipse cx="40" cy="20" rx="8" ry="14" fill="#e1f5fe" opacity="0.7"/></svg>`;
+  const beeContainer = document.createElement('div');
+  Object.assign(beeContainer.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100vw',
+    height: '100vh',
+    zIndex: '50',
+    pointerEvents: 'none'
+  });
+  document.body.appendChild(beeContainer);
+
+  class Bee {
+    constructor() {
+      this.el = document.createElement('div');
+      this.el.innerHTML = beeSVG;
+      Object.assign(this.el.style, {
+        position: 'absolute',
+        width: '32px',
+        height: '32px'
+      });
+      beeContainer.appendChild(this.el);
+
+      this.x = Math.random() * window.innerWidth;
+      this.y = Math.random() * window.innerHeight;
+      this.vx = Math.random() * 2 - 1;
+      this.vy = Math.random() * 1.5 - 0.75;
+      this.rotation = 0;
+
+      this.move();
+    }
+
+    move() {
+      const tick = () => {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rotation += Math.random() * 4 - 2;
+
+        if (this.x < 0 || this.x > window.innerWidth - 30) this.vx *= -1;
+        if (this.y < 0 || this.y > window.innerHeight - 30) this.vy *= -1;
+
+        const zoom = 1 + 0.05 * Math.sin(Date.now() / 300);
+        this.el.style.transform = `translate(${this.x}px, ${this.y}px) rotate(${this.rotation}deg) scale(${zoom})`;
+        requestAnimationFrame(tick);
+      };
+      tick();
+    }
+  }
+
+  Array.from({ length: 5 }, () => new Bee());
+
+  // === SUN FLARE ===
+  const flare = document.createElement('div');
+  flare.innerHTML = `
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%; height:100%;">
+      <radialGradient id="sunlight" cx="30%" cy="20%" r="80%">
+        <stop offset="0%" stop-color="rgba(255,255,200,0.35)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+      <circle cx="30" cy="20" r="80" fill="url(#sunlight)">
+        <animate attributeName="r" values="70;80;70" dur="8s" repeatCount="indefinite"/>
+      </circle>
+    </svg>`;
+  Object.assign(flare.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100vw',
+    height: '100vh',
+    pointerEvents: 'none',
+    zIndex: '5'
+  });
+  document.body.appendChild(flare);
+
+  // === ZVUK ===
+  const beeBuzz = new Audio('https://cdn.pixabay.com/audio/2021/10/21/audio_a6edc8e492.mp3');
+  beeBuzz.loop = true;
+  beeBuzz.volume = 0.1;
+  beeBuzz.play().catch(() => {});
+  window._springBuzz = beeBuzz;
+
+  // === STILOVI ===
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes flowerSwing {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1) rotate(4deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // === ZAVRŠNI PODACI ===
+  window._springPetals = petals;
+  window._springCanvas = canvas;
+  window._springActive = () => { springActive = false; };
+  window._springFlowers = flowers;
+  window._springFlare = flare;
+  window._springBees = beeContainer;
+}
+
+function stopSpringEffect() {
   if (window._springCanvas) window._springCanvas.remove();
-  if (window._springPetalActive) window._springPetalActive();
-
-  // Ukloni pčele
-  if (window._springBees) window._springBees.remove();
-
-  // Ukloni travu
-  if (window._springGrass) window._springGrass.remove();
-
-  // Zaustavi vjetar
-  if (window._springWind) clearInterval(window._springWind);
-
-  // Ukloni sun flare
-  if (window._springFlare) window._springFlare.remove();
-
-  // Zaustavi zujanje
+  if (window._springActive) window._springActive();
   if (window._springBuzz) {
     window._springBuzz.pause();
     window._springBuzz = null;
   }
+  if (window._springFlare) window._springFlare.remove();
+  if (window._springBees) window._springBees.remove();
+  if (window._springFlowers) window._springFlowers.forEach(f => f.remove());
 
-  // Ukloni sve dodatne mini trave na rubovima elemenata
-  document.querySelectorAll('.content-box, .web-subintro, .markacija-wrapper, .blog-bubble').forEach(el => {
-    const grassBlades = el.querySelectorAll('div');
-    grassBlades.forEach(blade => {
-      const height = blade.offsetHeight;
-      if (height <= 20 && blade.style.background === 'rgb(76, 175, 80)') {
-        blade.remove();
-      }
-    });
-  });
-
-  // Reset stilova
-  document.querySelectorAll('.spring-flower').forEach(el => el.remove());
-
-  // Ukloni sve <style> tagove dodane iz proljeća
+  // Ukloni stilove
   document.querySelectorAll('style').forEach(style => {
-    if (
-      style.textContent.includes('flowerSwing') ||
-      style.textContent.includes('flowerWind') ||
-      style.textContent.includes('wingFlap') ||
-      style.textContent.includes('antennaWiggle')
-    ) {
+    if (style.textContent.includes('flowerSwing')) {
       style.remove();
     }
   });
-
-  // Dodatno: makni body class ako postoji
-  document.body.classList.remove('season-spring');
-};
-};
+}
+// === KRAJ PROLJECA ===
