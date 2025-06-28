@@ -8,6 +8,7 @@ function initSeasonChange() {
 
   seasonToggle.addEventListener('click', () => {
     seasonIcons.classList.toggle('visible');
+    seasonIcons.classList.toggle('hidden'); // obavezno!
   });
 
   document.querySelectorAll('.season-icon').forEach(icon => {
