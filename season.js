@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         toggle.addEventListener('click', () => {
           iconsWrapper.classList.toggle('hidden');
+          iconsWrapper.classList.toggle('show');
         });
 
         document.querySelectorAll('.season-icon').forEach(icon => {
