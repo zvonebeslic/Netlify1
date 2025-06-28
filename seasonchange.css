@@ -1,6 +1,7 @@
 /* === MOBILNA VERZIJA: GUMB + IKONE === */
 #season-toggle-wrapper {
   position: fixed;
+  display: flex;
   top: 38px; /* odmah ispod navbara */
   left: 6px;
   width: 36px;
@@ -9,15 +10,14 @@
 }
 
 #season-toggle {
-  width: 38px;
-  height: 6px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
 
 /* IKONE GODIŠNJIH DOBA */
 #season-icons {
-  display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
@@ -32,7 +32,7 @@
   font-size: 22px;
   transform: scale(0);
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 #season-icons:not(.hidden) .season-icon {
