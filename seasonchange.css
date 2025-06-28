@@ -1,26 +1,20 @@
-/* === MOBILNA VERZIJA: GUMB + IKONE === */
+<style>
 #season-toggle-wrapper {
   position: fixed;
-  display: flex;
-  top: 38px; /* odmah ispod navbara */
+  top: 38px;
   left: 6px;
-  width: 36px;
-  height: 36px;
-  z-index: 9999;
+  z-index: 99999;
 }
 
 #season-toggle {
-  position: relative;
   width: 36px;
   height: 36px;
   cursor: pointer;
-  transition: transform 0.3s ease;
 }
 
-/* === IKONE GODIŠNJIH DOBA === */
 #season-icons {
   position: absolute;
-  top: 100%; /* izlazi ispod toggle ikone */
+  top: 100%;
   left: 50%;
   transform: translateX(-50%) scaleY(0);
   transform-origin: top;
@@ -30,18 +24,15 @@
   align-items: center;
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  z-index: 99999;
 }
 
-#season-icons.visible {
+#season-icons.show {
   transform: translateX(-50%) scaleY(1);
   opacity: 1;
 }
 
 .season-icon {
   font-size: 22px;
-  transform: scale(1);
-  opacity: 1;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -50,24 +41,20 @@
   transform: scale(1.2);
 }
 
-/* === STOP SEASON GUMB === */
 #stop-season {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  padding: 12px 24px;
-  font-size: 13px;
-  background-color: #fff;
-  color: #333;
+  padding: 10px 20px;
+  font-size: 14px;
+  background: #fff;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
+  border-radius: 8px;
+  z-index: 99999;
   cursor: pointer;
-  text-align: center;
-  opacity: 0.85;
 }
 
 #stop-season.hidden {
   display: none;
 }
+</style>
