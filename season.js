@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
       stopButton.classList.remove('hidden');
 
       // Tu možeš ubaciti funkcije poput startWinterEffect(), itd.
+   
+    if (selected === 'winter') {
+  particlesJS.load('snow-particles', 'animations/snow-realistic.json', function () {
+    console.log('Snijeg učitan');
+  });
+}
     });
   });
 
@@ -44,5 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
     stopButton.classList.add('hidden');
 
     // Ovdje također možeš pozvati stopWinterEffect(), itd.
+ if (window.pJSDom && window.pJSDom.length) {
+  window.pJSDom[0].pJS.fn.vendors.destroypJS();
+  window.pJSDom = [];
+}
+  
   }
 });
