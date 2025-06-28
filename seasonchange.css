@@ -18,9 +18,6 @@
 /* IKONE GODIŠNJIH DOBA */
 #season-icons {
   position: absolute;
-  top: 42px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   gap: 10px;
