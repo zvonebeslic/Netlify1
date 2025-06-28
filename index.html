@@ -790,8 +790,8 @@ a, button {
     © Mountain Adventures. All rights reserved.
   </footer>
 
-  <!-- === ZIMSKI UVJETI === -->  
-
+      <!-- === LINK ZA seasonchange.js === -->
+<script src="seasonchange.js"></script>
       
   <!-- === GUMB ZA GAŠENJE SEZONSKE ANIMACIJE === -->
 
@@ -1019,9 +1019,16 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('.image-section').forEach(section => {
     observer.observe(section);
   });
-});
-  // SEZONSKE ANIMACIJE
       
+  // SEZONSKE ANIMACIJE
+       // LINK ZA seasonchange.js
+  fetch('seasonchange.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('season-placeholder').innerHTML = html;
+      initSeasonChange(); // poziva funkciju iz .js fajla
+    });
+  });
 
 // === 8. REFRESH MARKACIJA MANUALNO ===
 function refreshCurrentMarkacija() {
@@ -1084,17 +1091,6 @@ function refreshCurrentMarkacija() {
   setTimeout(() => gumb.classList.add('show'), 2600);
 }
 </script>
-
- // LINK ZA seasonchange.js
-<script>
-  fetch('seasonchange.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('season-placeholder').innerHTML = html;
-      initSeasonChange(); // poziva funkciju iz .js fajla
-    });
-</script>
-<script src="seasonchange.js"></script>
       
 </body>
 </html>
