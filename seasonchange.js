@@ -7,7 +7,7 @@ function initSeasonChange() {
   const stopButton = document.getElementById('stop-season');
 
   seasonToggle.addEventListener('click', () => {
-    seasonIcons.classList.toggle('show');
+    seasonIcons.classList.toggle('visible');
   });
 
   document.querySelectorAll('.season-icon').forEach(icon => {
