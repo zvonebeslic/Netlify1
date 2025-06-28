@@ -37,6 +37,9 @@
   <!-- === Link za fontove u naslovnoj slici === -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
+<!-- === SEASON STILOVI === -->
+<link rel="stylesheet" href="season.css" />
+      
 </head>
             
 <style>
@@ -784,6 +787,8 @@ a, button {
     © Mountain Adventures. All rights reserved.
   </footer>
 
+  <!-- Season toggle će se dinamički umetnuti ovdje -->
+  <div id="season-placeholder"></div>
       
 <script>
 // === 1. DEFINICIJE ELEMENTA ===
@@ -931,6 +936,15 @@ window.addEventListener('pageshow', () => {
 document.addEventListener("DOMContentLoaded", function () {
 
       
+    fetch('season.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('season-placeholder').innerHTML = html;
+      })
+      .catch(error => console.error('Greška pri učitavanju season.html:', error));
+
+
+      
   // MARKACIJE
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -1072,6 +1086,6 @@ function refreshCurrentMarkacija() {
   setTimeout(() => gumb.classList.add('show'), 2600);
 }
 </script>
-      
+   <script src="season.js"></script>   
 </body>
 </html>
