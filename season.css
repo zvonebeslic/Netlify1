@@ -1,5 +1,5 @@
 #season-toggle-wrapper {
-  position: fixed;
+  position: absolute;
   top: 38px;
   left: 6px;
   z-index: 99999;
@@ -12,7 +12,7 @@
 }
 
 #season-icons {
-  position: relative;
+  position: flex;
   top: 100%;
   left: 50%;
   transform: translateX(-50%) scaleY(0);
