@@ -26,7 +26,6 @@ function initializeSeasonToggle() {
       document.body.classList.add(`season-${selected}`);
       stopButton.classList.remove('hidden');
 
-      // Aktiviraj sezonski efekt
       if (selected === 'winter') startWinterEffect();
       else if (selected === 'summer') startSummerEffect();
       else if (selected === 'autumn') startAutumnEffect();
@@ -54,80 +53,83 @@ function initializeSeasonToggle() {
     stopSpringEffect();
   }
 
-  // ✅ ISPRAVNA verzija startWinterEffect()
+  // ❄️ ZIMA
   function startWinterEffect() {
-  // Ako već postoji sloj – ne pokreći ponovno
-  if (document.getElementById('season-layer')) return;
+    if (document.getElementById('season-layer')) return;
 
-  const layer = document.createElement('div');
-  layer.id = 'season-layer';
-  document.body.appendChild(layer);
+    const layer = document.createElement('div');
+    layer.id = 'season-layer';
+    document.body.appendChild(layer);
 
-  const style = document.createElement('style');
-  style.id = 'winter-style';
+    const style = document.createElement('style');
+    style.id = 'winter-style';
 
-  // Globalni sloj i animacija pada
-  style.innerHTML = `
-    #season-layer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 9998;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(120vh);
+    style.innerHTML = `
+      #season-layer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9998;
+        pointer-events: none;
+        overflow: hidden;
       }
-    }
-  `;
 
-  const numFlakes = 1000;
+      @keyframes fall {
+        to {
+          transform: translateY(120vh);
+        }
+      }
 
-  for (let i = 0; i < numFlakes; i++) {
-    const flake = document.createElement('div');
-    const size = Math.random() * 8 + 4;
-    const startX = Math.random() * 100;
-    const delay = Math.random() * 20;
-    const duration = Math.random() * 10 + 5;
-
-    const swayName = `sway${i}`;
-    const swayDuration = Math.random() * 4 + 2;
-    const swayDistance = Math.floor(Math.random() * 20 + 5);
-    const swayDirection = Math.random() < 0.5 ? '-' : '';
-
-    flake.style.position = 'absolute';
-    flake.style.top = '-10px';
-    flake.style.left = `${startX}vw`;
-    flake.style.width = `${size}px`;
-    flake.style.height = `${size}px`;
-    flake.style.background = 'white';
-    flake.style.borderRadius = '50%';
-    flake.style.opacity = Math.random() * 0.5 + 0.5;
-    flake.style.pointerEvents = 'none';
-    flake.style.filter = 'blur(0.5px)';
-    flake.style.animation = `
-      fall ${duration}s linear ${delay}s infinite,
-      ${swayName} ${swayDuration}s ease-in-out infinite alternate
-    `;
-
-    // Dodaj unikatni sway za ovu pahulju
-    style.innerHTML += `
-      @keyframes ${swayName} {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(${swayDirection}${swayDistance}px); }
+      .snowflake {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        will-change: transform;
+        filter: blur(0.5px);
       }
     `;
 
-    layer.appendChild(flake);
+    const numFlakes = 1000;
+
+    for (let i = 0; i < numFlakes; i++) {
+      const flake = document.createElement('div');
+      flake.classList.add('snowflake');
+
+      const size = Math.random() * 8 + 4;
+      const startX = Math.random() * 100;
+      const delay = Math.random() * 20;
+      const duration = Math.random() * 10 + 5;
+
+      const swayName = `sway${i}`;
+      const swayDuration = Math.random() * 4 + 2;
+      const swayDistance = Math.floor(Math.random() * 20 + 5);
+      const swayDirection = Math.random() < 0.5 ? '-' : '';
+
+      flake.style.top = '-10px';
+      flake.style.left = `${startX}vw`;
+      flake.style.width = `${size}px`;
+      flake.style.height = `${size}px`;
+      flake.style.opacity = Math.random() * 0.5 + 0.5;
+      flake.style.animation = `
+        fall ${duration}s linear ${delay}s infinite,
+        ${swayName} ${swayDuration}s ease-in-out infinite alternate
+      `;
+
+      style.innerHTML += `
+        @keyframes ${swayName} {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(${swayDirection}${swayDistance}px); }
+        }
+      `;
+
+      layer.appendChild(flake);
+    }
+
+    document.head.appendChild(style);
   }
-
-  document.head.appendChild(style);
-}
 
   function stopWinterEffect() {
     const layer = document.getElementById('season-layer');
@@ -137,6 +139,7 @@ function initializeSeasonToggle() {
     if (style) style.remove();
   }
 
+  // ☀️ LJETO
   function startSummerEffect() {
     console.log("☀️ Pokrenut ljetni efekt");
   }
@@ -145,6 +148,7 @@ function initializeSeasonToggle() {
     console.log("🧹 Ugašen ljetni efekt");
   }
 
+  // 🍂 JESEN
   function startAutumnEffect() {
     console.log("🍂 Pokrenut jesenski efekt");
   }
@@ -153,6 +157,7 @@ function initializeSeasonToggle() {
     console.log("🧹 Ugašen jesenski efekt");
   }
 
+  // 🌸 PROLJEĆE
   function startSpringEffect() {
     console.log("🌸 Pokrenut proljetni efekt");
   }
