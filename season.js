@@ -56,24 +56,18 @@ function initializeSeasonToggle() {
 
   // ✅ ISPRAVNA verzija startWinterEffect()
   function startWinterEffect() {
-  if (document.getElementById('season-layer')) return; // već postoji
+  // Ako već postoji sloj – ne pokreći ponovno
+  if (document.getElementById('season-layer')) return;
 
   const layer = document.createElement('div');
   layer.id = 'season-layer';
   document.body.appendChild(layer);
 
-  const numFlakes = 1000;
   const style = document.createElement('style');
   style.id = 'winter-style';
 
-  // Dodaj osnovni stil sloja i pada
+  // Globalni sloj i animacija pada
   style.innerHTML = `
-    @keyframes fall {
-      to {
-        transform: translateY(110vh);
-      }
-    }
-
     #season-layer {
       position: fixed;
       top: 0;
@@ -84,22 +78,28 @@ function initializeSeasonToggle() {
       pointer-events: none;
       overflow: hidden;
     }
+
+    @keyframes fall {
+      to {
+        transform: translateY(120vh);
+      }
+    }
   `;
+
+  const numFlakes = 1000;
 
   for (let i = 0; i < numFlakes; i++) {
     const flake = document.createElement('div');
-    flake.classList.add('snowflake');
-
     const size = Math.random() * 8 + 4;
     const startX = Math.random() * 100;
     const delay = Math.random() * 20;
     const duration = Math.random() * 10 + 5;
+
     const swayName = `sway${i}`;
     const swayDuration = Math.random() * 4 + 2;
     const swayDistance = Math.floor(Math.random() * 20 + 5);
     const swayDirection = Math.random() < 0.5 ? '-' : '';
 
-    // Unikatna animacija po pahulji
     flake.style.position = 'absolute';
     flake.style.top = '-10px';
     flake.style.left = `${startX}vw`;
@@ -115,15 +115,15 @@ function initializeSeasonToggle() {
       ${swayName} ${swayDuration}s ease-in-out infinite alternate
     `;
 
-    layer.appendChild(flake);
-
-    // Dodaj unikatni @keyframes za svaku pahulju
+    // Dodaj unikatni sway za ovu pahulju
     style.innerHTML += `
       @keyframes ${swayName} {
         0% { transform: translateX(0); }
         100% { transform: translateX(${swayDirection}${swayDistance}px); }
       }
     `;
+
+    layer.appendChild(flake);
   }
 
   document.head.appendChild(style);
