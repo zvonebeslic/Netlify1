@@ -1,19 +1,17 @@
-/* === TOGGLE WRAPPER (ikona sezonskog upravljača) === */
+/* === TOGGLE WRAPPER === */
 #season-toggle-wrapper {
   position: fixed;
   top: 50px;
-  left: 6px;
+  left: 10px;
   z-index: 99999;
 }
 
-/* === GLAVNA IKONA ZA OTVARANJE === */
 #season-toggle {
-  width: 33px;
-  height: 33px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
 }
 
-/* === WRAPPER ZA IKONE GODIŠNJIH DOBA === */
 #season-icons {
   position: absolute;
   top: 100%;
@@ -23,7 +21,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: center;
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
   pointer-events: none;
@@ -33,108 +30,85 @@
   transform: translateX(-50%) scaleY(1);
   opacity: 1;
   pointer-events: auto;
-  z-index: 99997;
 }
 
-#season-icons.hidden {
-  transform: translateX(-50%) scaleY(0);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* === POJEDINAČNA IKONA (emoji za sezonu) === */
 .season-icon {
-  font-size: 18px;
-  z-index: 99997;
+  font-size: 20px;
   cursor: pointer;
-  transition: transform 0.3s ease;
 }
 
-.season-icon:hover {
-  transform: scale(1.2);
-}
-
-/* === STOP SEASON GUMB === */
 #stop-season {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  padding: 10px 20px;
+  padding: 10px 16px;
   font-size: 14px;
   background: white;
-  border: 1px solid #ccc;
+  border: 1px solid #aaa;
   border-radius: 8px;
   z-index: 99999;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: opacity 0.3s ease;
 }
 
 #stop-season.hidden {
   display: none;
 }
 
-/* === SNJEŽNI SVG POKROV NA ELEMENTIMA === */
-.snow-on-top::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 0;
-  width: 100%;
-  height: 20px;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 15 Q 10 10 20 15 T 40 15 T 60 15 T 80 15 T 100 15 V20 H0 Z' fill='white'/%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-size: contain;
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* === ZIMSKI FILTER NA POZADINSKE SLIKE === */
-body.season-winter .image-section {
-  filter: brightness(0.93) contrast(1.05) saturate(0.85);
-  background-blend-mode: overlay;
-}
-
-/* === OSIGURAVANJE DA SE SLOJ SNIJEGA ISPRAVNO PRIKAŽE === */
-body.season-winter .web-intro,
-body.season-winter .web-subintro,
-body.season-winter .content-box,
-body.season-winter .markacija,
-body.season-winter .markacija-btn,
-body.season-winter .blog-bubble,
-body.season-winter .section {
-  position: relative;
-}
-
-/* === ❄️ SNIJEG: GLAVNI SLOJ === */
+/* === GLOBAL SEASON LAYER === */
 #season-layer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 99988;
+  z-index: 99998;
   pointer-events: none;
   overflow: hidden;
-  pointer-events: none;
 }
 
-/* === ❄️ Pojedinačne pahulje === */
+/* === WINTER (Snowflakes) === */
 .snowflake {
   position: absolute;
   background: white;
   border-radius: 50%;
-  pointer-events: none;
-  z-index: 99988;
-  will-change: transform;
+  opacity: 0.7;
   filter: blur(0.8px);
-  opacity: 0.8;
-  animation: fall 10s linear infinite;
+  will-change: transform;
 }
 
-/* === ❄️ Padanje s vrha === */
 @keyframes fall {
   to {
     transform: translateY(120vh);
   }
+}
+
+/* === SPRING (Petals & Seeds) === */
+.petal, .seed {
+  position: absolute;
+  background: radial-gradient(circle at center, #fff 20%, pink 60%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0.6;
+  will-change: transform;
+}
+
+/* === AUTUMN (Raindrops) === */
+.raindrop {
+  position: absolute;
+  width: 2px;
+  height: 14px;
+  background: rgba(173, 216, 230, 0.6);
+  border-radius: 1px;
+  will-change: transform;
+  filter: blur(0.5px);
+}
+
+/* === SUMMER (Sun rays) === */
+.sunray {
+  position: absolute;
+  width: 120px;
+  height: 2px;
+  background: rgba(255, 255, 0, 0.15);
+  transform-origin: left;
+  will-change: transform;
+  box-shadow: 0 0 8px rgba(255, 255, 100, 0.3);
 }
