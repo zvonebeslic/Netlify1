@@ -27,9 +27,8 @@ function initializeSeasonToggle() {
       stopButton.classList.remove('hidden');
 
       if (selected === 'winter') {
-        particlesJS.load('snow-particles', 'animations/snow-realistic.json', () => {
-          console.log('Snijeg učitan');
-        });
+        document.querySelectorAll('.web-intro, .web-subintro, .content-box, .markacija, .markacija-btn, .blog-bubble, .section')
+          .forEach(el => el.classList.add('snow-on-top'));
       }
     });
   });
@@ -39,13 +38,17 @@ function initializeSeasonToggle() {
   });
 
   function stopSeasonEffects() {
-    document.body.classList.remove('season-winter', 'season-summer', 'season-autumn', 'season-spring');
+    document.body.classList.remove(
+      'season-winter',
+      'season-summer',
+      'season-autumn',
+      'season-spring'
+    );
     activeSeason = null;
     stopButton.classList.add('hidden');
 
-    if (window.pJSDom && window.pJSDom.length) {
-      window.pJSDom[0].pJS.fn.vendors.destroypJS();
-      window.pJSDom = [];
-    }
+    // ❄️ Ukloni snježni pokrov
+    document.querySelectorAll('.snow-on-top')
+      .forEach(el => el.classList.remove('snow-on-top'));
   }
 }
