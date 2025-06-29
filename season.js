@@ -71,7 +71,7 @@ function initializeSeasonToggle() {
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: 9998;
+        z-index: 99988;
         pointer-events: none;
         overflow: hidden;
       }
@@ -87,6 +87,7 @@ function initializeSeasonToggle() {
         background: white;
         border-radius: 50%;
         pointer-events: none;
+        z-index: 99988;
         will-change: transform;
         filter: blur(0.5px);
       }
