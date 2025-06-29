@@ -1,15 +1,15 @@
 /* === TOGGLE WRAPPER (ikona sezonskog upravljača) === */
 #season-toggle-wrapper {
   position: fixed;
-  top: 40px;
+  top: 50px;
   left: 6px;
   z-index: 99999;
 }
 
 /* === GLAVNA IKONA ZA OTVARANJE === */
 #season-toggle {
-  width: 36px;
-  height: 36px;
+  width: 33px;
+  height: 33px;
   cursor: pointer;
 }
 
@@ -46,7 +46,7 @@
 
 /* === POJEDINAČNA IKONA (emoji za sezonu) === */
 .season-icon {
-  font-size: 22px;
+  font-size: 18px;
   z-index: 99997;
   cursor: pointer;
   transition: transform 0.3s ease;
