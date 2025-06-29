@@ -65,12 +65,53 @@
   display: none;
 }
 
-#snow-particles {
-  position: fixed;
-  top: 0;
+/* === SNJEŽNI POKROV: SVG preko gornjeg ruba === */
+.snow-on-top::before {
+  content: '';
+  position: absolute;
+  top: -10px;
   left: 0;
   width: 100%;
-  height: 100%;
-  z-index: 99998;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 15 Q 10 10 20 15 T 40 15 T 60 15 T 80 15 T 100 15 V20 H0 Z' fill='white'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: contain;
+  z-index: 10;
   pointer-events: none;
+}
+
+/* === ZIMSKI UGOĐAJ: Hladnije toniranje pozadine === */
+body.season-winter .image-section {
+  filter: brightness(0.93) contrast(1.05) saturate(0.85);
+  background-blend-mode: overlay;
+}
+
+/* === Obavezno za pravilno pozicioniranje pokrova === */
+body.season-winter .web-intro,
+body.season-winter .web-subintro,
+body.season-winter .content-box,
+body.season-winter .markacija,
+body.season-winter .markacija-btn,
+body.season-winter .blog-bubble,
+body.season-winter .section {
+  position: relative;
+}
+
+/* === Stil za STOP gumb da se uklopi u idilu === */
+#stop-season {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  z-index: 99999;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+#stop-season.hidden {
+  display: none;
 }
