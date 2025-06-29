@@ -29,7 +29,6 @@
   pointer-events: none;
 }
 
-/* === PRIKAZ IKONA (aktivirano) === */
 #season-icons.visible {
   transform: translateX(-50%) scaleY(1);
   opacity: 1;
@@ -37,7 +36,6 @@
   z-index: 99997;
 }
 
-/* === SAKRIVANJE IKONA === */
 #season-icons.hidden {
   transform: translateX(-50%) scaleY(0);
   opacity: 0;
@@ -72,7 +70,6 @@
   transition: opacity 0.3s ease;
 }
 
-/* === SAKRIVANJE STOP GUMBA === */
 #stop-season.hidden {
   display: none;
 }
@@ -107,4 +104,37 @@ body.season-winter .markacija-btn,
 body.season-winter .blog-bubble,
 body.season-winter .section {
   position: relative;
+}
+
+/* === ❄️ SNIJEG: GLAVNI SLOJ === */
+#season-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99988;
+  pointer-events: none;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* === ❄️ Pojedinačne pahulje === */
+.snowflake {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99988;
+  will-change: transform;
+  filter: blur(0.8px);
+  opacity: 0.8;
+  animation: fall 10s linear infinite;
+}
+
+/* === ❄️ Padanje s vrha === */
+@keyframes fall {
+  to {
+    transform: translateY(120vh);
+  }
 }
