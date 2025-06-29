@@ -38,9 +38,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
 <!-- === SEASON STILOVI === -->
-<link rel="stylesheet" href="season.css" />
-      
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>     
+<link rel="stylesheet" href="season.css" />    
 
       
 </head>
@@ -938,12 +936,13 @@ window.addEventListener('pageshow', () => {
 // === 7. MARKACIJE + SEZONSKE ANIMACIJE ===
 document.addEventListener("DOMContentLoaded", function () {
 
-      fetch('season.html')
-  .then(response => response.text())
-  .then(html => {
-    document.getElementById('season-placeholder').innerHTML = html;
-    initializeSeasonToggle(); // Poziv izvan season.js
-  });
+   
+    fetch('season.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('season-placeholder').innerHTML = html;
+        initializeSeasonToggle(); // poziva funkciju iz season.js
+      });
 
       
   // MARKACIJE
