@@ -12,7 +12,7 @@
 }
 
 #season-icons {
-  position: fixed;
+  position: flex;
   top: 100%;
   left: 50%;
   transform: translateX(-50%) scaleY(0);
