@@ -26,10 +26,11 @@ function initializeSeasonToggle() {
       document.body.classList.add(`season-${selected}`);
       stopButton.classList.remove('hidden');
 
-      if (selected === 'winter') {
-        document.querySelectorAll('.web-intro, .web-subintro, .content-box, .markacija, .markacija-btn, .blog-bubble, .section')
-          .forEach(el => el.classList.add('snow-on-top'));
-      }
+      // 🔁 Aktiviraj sezonski efekt
+      if (selected === 'winter') startWinterEffect();
+      else if (selected === 'summer') startSummerEffect();
+      else if (selected === 'autumn') startAutumnEffect();
+      else if (selected === 'spring') startSpringEffect();
     });
   });
 
@@ -47,8 +48,50 @@ function initializeSeasonToggle() {
     activeSeason = null;
     stopButton.classList.add('hidden');
 
-    // ❄️ Ukloni snježni pokrov
+    // 🧹 Očisti sve efekte
+    stopWinterEffect();
+    stopSummerEffect();
+    stopAutumnEffect();
+    stopSpringEffect();
+  }
+
+  // 🔧 Prazne funkcije za sad – dodavat ćemo animacije
+  function startWinterEffect() {
+    console.log("❄️ Pokrenut zimski efekt");
+    // ovdje ide snijeg, pokrov itd.
+  }
+
+  function stopWinterEffect() {
+    console.log("🧹 Ugašen zimski efekt");
     document.querySelectorAll('.snow-on-top')
       .forEach(el => el.classList.remove('snow-on-top'));
+    // ovdje se brišu elementi, canvas itd.
+  }
+
+  function startSummerEffect() {
+    console.log("☀️ Pokrenut ljetni efekt");
+    // sunčeve zrake
+  }
+
+  function stopSummerEffect() {
+    console.log("🧹 Ugašen ljetni efekt");
+  }
+
+  function startAutumnEffect() {
+    console.log("🍂 Pokrenut jesenski efekt");
+    // kiša, vjetar
+  }
+
+  function stopAutumnEffect() {
+    console.log("🧹 Ugašen jesenski efekt");
+  }
+
+  function startSpringEffect() {
+    console.log("🌸 Pokrenut proljetni efekt");
+    // latice, pčele
+  }
+
+  function stopSpringEffect() {
+    console.log("🧹 Ugašen proljetni efekt");
   }
 }
