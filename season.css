@@ -27,6 +27,7 @@
 }
 
 #season-icons.visible {
+  display: flex;
   transform: translateX(-50%) scaleY(1);
   opacity: 1;
   pointer-events: auto;
