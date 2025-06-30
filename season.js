@@ -47,96 +47,86 @@ function createSeasonCanvas() {
   return canvas;
 }
 
+// ZIMA
 function startWinterEffect() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'winter-canvas';
-  canvas.style.position = 'fixed';
+  const canvas = document.createElement("canvas");
+  canvas.id = "winter-canvas";
+  canvas.style.position = "fixed";
   canvas.style.top = 0;
   canvas.style.left = 0;
-  canvas.style.width = '100vw';
-  canvas.style.height = '100vh';
-  canvas.style.pointerEvents = 'none';
+  canvas.style.width = "100vw";
+  canvas.style.height = "100vh";
   canvas.style.zIndex = 9999;
+  canvas.style.pointerEvents = "none";
   document.body.appendChild(canvas);
 
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
+  const ctx = canvas.getContext("2d");
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
   });
 
   const snowflakes = [];
-  const flakeCount = 300;
+  const total = 300;
 
-  let windForce = 0;
-  let windDirection = 1; // 1 = s desna u lijevo
+  const windTypes = [0.2, 1.0, 2.5, 4.5];
+  let windStrength = 0;
   let windTimer = 0;
 
   function random(min, max) {
     return Math.random() * (max - min) + min;
   }
 
-  function createFlake(type = 'regular') {
+  function createSnowflake(type) {
+    const baseSize =
+      type === "xlg" ? 1.5 : type === "lg" ? 1.0 : type === "md" ? 0.8 : 0.6;
     return {
-      x: random(0, width),
-      y: random(-height, 0),
-      vx: random(-0.5, 0.5),
-      vy: random(1.4, 2.5),
-      size: type === 'irregular' ? random(3, 7) : random(2, 6),
+      x: Math.random() * width,
+      y: Math.random() * -height,
+      vx: 0,
+      vy: random(2.5, 4.5),
+      size: baseSize * 3.78,
       alpha: random(0.6, 1),
-      rotationAngle: random(0, Math.PI * 2),
-      rotationSpeed: type === 'irregular' ? random(0.02, 0.06) : 0,
+      rotation: random(0, Math.PI * 2),
+      rotationSpeed: type === "irregular" ? random(-0.04, 0.04) : 0,
       type,
     };
   }
 
-  for (let i = 0; i < flakeCount; i++) {
-    if (i < 30) snowflakes.push(createFlake('large'));
-    else if (i < 180) snowflakes.push(createFlake('irregular'));
-    else snowflakes.push(createFlake('regular'));
-  }
+  // Add snowflakes by type
+  [...Array(20)].forEach(() => snowflakes.push(createSnowflake("xlg")));
+  [...Array(130)].forEach(() => snowflakes.push(createSnowflake("lg")));
+  [...Array(50)].forEach(() => snowflakes.push(createSnowflake("md")));
+  [...Array(80)].forEach(() => snowflakes.push(createSnowflake("sm")));
+  [...Array(30)].forEach(() => snowflakes.push(createSnowflake("irregular")));
 
-  function drawFlake(flake) {
-    if (flake.type === 'regular') {
-      ctx.beginPath();
-      ctx.ellipse(flake.x, flake.y, flake.size, flake.size * 0.9, 0, 0, 2 * Math.PI);
-      ctx.fillStyle = `rgba(255,255,255,${flake.alpha})`;
-      ctx.fill();
-    } else if (flake.type === 'large') {
-      ctx.beginPath();
-      ctx.ellipse(flake.x, flake.y, flake.size * 1.2, flake.size, 0, 0, 2 * Math.PI);
-      ctx.fillStyle = `rgba(255,255,255,${flake.alpha})`;
-      ctx.shadowBlur = 4;
-      ctx.shadowColor = 'rgba(255,255,255,0.5)';
-      ctx.fill();
-    } else if (flake.type === 'irregular') {
-      drawIrregularFlake(flake);
-    }
-  }
-
-  function drawIrregularFlake(flake) {
+  function drawSnowflake(flake) {
     ctx.save();
     ctx.translate(flake.x, flake.y);
-    ctx.rotate(flake.rotationAngle);
+    ctx.rotate(flake.rotation);
     ctx.beginPath();
 
-    const points = 12;
-    for (let i = 0; i < points; i++) {
-      const angle = (Math.PI * 2 / points) * i + random(-0.2, 0.2);
-      const radius = flake.size * random(0.6, 1.4);
-      const px = Math.cos(angle) * radius;
-      const py = Math.sin(angle) * radius;
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
+    if (flake.type === "irregular") {
+      const points = Math.floor(random(8, 16));
+      for (let i = 0; i < points; i++) {
+        const angle = (Math.PI * 2 * i) / points + random(-0.1, 0.1);
+        const radius = flake.size * random(0.5, 1.3);
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+    } else {
+      ctx.ellipse(0, 0, flake.size, flake.size * 0.9, 0, 0, 2 * Math.PI);
     }
 
-    ctx.closePath();
     ctx.fillStyle = `rgba(255, 255, 255, ${flake.alpha})`;
+    ctx.shadowColor = "rgba(255,255,255,0.4)";
     ctx.shadowBlur = 2;
-    ctx.shadowColor = 'rgba(255,255,255,0.5)';
     ctx.fill();
     ctx.restore();
   }
@@ -144,36 +134,32 @@ function startWinterEffect() {
   function updateWind() {
     windTimer--;
     if (windTimer <= 0) {
-      windForce = random(1.0, 4.0); // jak nalet vjetra
-      windDirection = -1; // s desna u lijevo
-      windTimer = random(50, 150); // novi nalet za 1–3 sekunde
+      windStrength = windTypes[Math.floor(Math.random() * windTypes.length)];
+      windTimer = random(500, 1500); // 8–25 sekundi ovisno o FPS
     }
   }
 
-  function updateFlakes() {
+  function animate() {
     ctx.clearRect(0, 0, width, height);
     updateWind();
 
     for (let flake of snowflakes) {
-      flake.x += flake.vx + windForce * windDirection * (flake.size / 6);
+      flake.x += windStrength * (flake.size / 7);
       flake.y += flake.vy;
-      flake.rotationAngle += flake.rotationSpeed;
+      flake.rotation += flake.rotationSpeed;
 
-      if (flake.x > width + 50 || flake.x < -50 || flake.y > height + 50) {
-        Object.assign(flake, createFlake(flake.type));
+      if (flake.y > height + 10 || flake.x < -20 || flake.x > width + 20) {
+        Object.assign(flake, createSnowflake(flake.type));
         flake.y = -10;
-        flake.x = random(0, width);
       }
 
-      drawFlake(flake);
+      drawSnowflake(flake);
     }
-
-    requestAnimationFrame(updateFlakes);
+    requestAnimationFrame(animate);
   }
 
-  updateFlakes();
+  animate();
 }
-
 
 function startSpringEffect() {
   const canvas = createSeasonCanvas();
