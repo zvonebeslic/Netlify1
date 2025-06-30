@@ -1,5 +1,47 @@
 // season.js - kompaktan za mobilni prikaz
 
+let seasonCanvas;
+let ctx;
+let dpr = window.devicePixelRatio || 1;
+
+function setupSeasonCanvas() {
+  // Ako već postoji, koristi ga ponovno
+  if (!document.getElementById('season-canvas')) {
+    seasonCanvas = document.createElement('canvas');
+    seasonCanvas.id = 'season-canvas';
+    Object.assign(seasonCanvas.style, {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100vw',
+      height: '100vh',
+      pointerEvents: 'none',
+      zIndex: '99998'
+    });
+    document.body.appendChild(seasonCanvas);
+  } else {
+    seasonCanvas = document.getElementById('season-canvas');
+  }
+
+  ctx = seasonCanvas.getContext('2d');
+  dpr = window.devicePixelRatio || 1;
+  seasonCanvas.width = window.innerWidth * dpr;
+  seasonCanvas.height = window.innerHeight * dpr;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+  ctx.scale(dpr, dpr);
+
+  // Resize listener (poziva se samo jednom)
+  if (!setupSeasonCanvas._resized) {
+    window.addEventListener('resize', () => {
+      seasonCanvas.width = window.innerWidth * dpr;
+      seasonCanvas.height = window.innerHeight * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    });
+    setupSeasonCanvas._resized = true;
+  }
+}
+
 function initializeSeasonToggle() {
   const toggle = document.getElementById('season-toggle');
   const iconsWrapper = document.getElementById('season-icons');
@@ -36,36 +78,10 @@ function stopSeasonEffects() {
   if (canvas) canvas.remove();
 }
 
-function createSeasonCanvas() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'season-canvas';
-  Object.assign(canvas.style, {
-    position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
-    pointerEvents: 'none', zIndex: '99998'
-  });
-  document.body.appendChild(canvas);
-  return canvas;
-}
-
 // ZIMA
 // === REALISTIC WINTER EFFECT ===
 function startWinterEffect() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'season-canvas';
-  canvas.style.position = 'fixed';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.width = '100vw';
-  canvas.style.height = '100vh';
-  canvas.style.zIndex = '9999';
-  canvas.style.pointerEvents = 'none';
-  document.body.appendChild(canvas);
-
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = window.innerWidth * dpr;
-  canvas.height = window.innerHeight * dpr;
-  ctx.scale(dpr, dpr);
+  setupSeasonCanvas();
 
   const snowflakes = [];
     // Generiraj 150 zguzvanih
@@ -179,11 +195,26 @@ for (let i = 0; i < 10; i++) {
       flake.y += flake.speedY;
       flake.x += flake.drift + currentWind;
       flake.angle += flake.rotateSpeed;
+      // Malo prirodnog njihanja (kao da vjetar puše neujednačeno)
+flake.drift += (Math.random() - 0.5) * 0.05;
+flake.drift = Math.max(-2, Math.min(2, flake.drift)); // ograniči
 
-      if (flake.y > window.innerHeight) flake.y = -10;
-      if (flake.x > window.innerWidth) flake.x = -10;
-      if (flake.x < -10) flake.x = window.innerWidth + 10;
+      // Ako ode previše desno (vjetar nosi ulijevo)
+if (flake.x > window.innerWidth + 50) {
+  flake.x = -20 - Math.random() * 30; // pojavi se slijeva
+  flake.y = Math.random() * window.innerHeight;
+}
 
+// Ako ode previše lijevo (vjetar nosi udesno)
+if (flake.x < -50) {
+  flake.x = window.innerWidth + 20 + Math.random() * 30; // pojavi se sdesna
+  flake.y = Math.random() * window.innerHeight;
+}
+      if (flake.y > window.innerHeight + 10) {
+  flake.y = -10;
+  flake.x = Math.random() * window.innerWidth;
+}
+      
       ctx.save();
       ctx.globalAlpha = flake.alpha;
       ctx.translate(flake.x, flake.y);
@@ -233,10 +264,8 @@ for (let i = 0; i < 10; i++) {
 
 
 function startSpringEffect() {
-  const canvas = createSeasonCanvas();
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
+  setupSeasonCanvas();
+  
   const petals = Array.from({ length: 300 }, () => ({
     x: Math.random() * width, y: Math.random() * height,
     size: Math.random() * 5 + 4, drift: Math.random() * 1 - 0.5,
@@ -262,10 +291,8 @@ function startSpringEffect() {
 }
 
 function startSummerEffect() {
-  const canvas = createSeasonCanvas();
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
+  setupSeasonCanvas();
+  
   const rays = Array.from({ length: 200 }, () => ({
     x: Math.random() * width, y: Math.random() * height * 0.3,
     length: Math.random() * 60 + 40, alpha: Math.random() * 0.2 + 0.1,
@@ -296,10 +323,8 @@ function startSummerEffect() {
 }
 
 function startAutumnEffect() {
-  const canvas = createSeasonCanvas();
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
+  setupSeasonCanvas();
+  
   const leaves = Array.from({ length: 300 }, () => ({
     x: Math.random() * width, y: Math.random() * height,
     size: Math.random() * 5 + 4, drift: Math.random() * 1 - 0.5,
