@@ -26,6 +26,10 @@
   pointer-events: none;
 }
 
+.hidden {
+  display: none !important;
+}
+
 #season-icons.visible {
   display: flex;
   transform: translateX(-50%) scaleY(1);
