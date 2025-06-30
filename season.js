@@ -68,7 +68,76 @@ function startWinterEffect() {
   ctx.scale(dpr, dpr);
 
   const snowflakes = [];
-  const totalFlakes = 300;
+    // Generiraj 150 zguzvanih
+for (let i = 0; i < 150; i++) {
+  snowflakes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    radius: Math.random() * 1.2 + 0.3,
+    speedY: Math.random() * 2 + 3,
+    drift: Math.random() * 2 - 1,
+    rotation: Math.random() * Math.PI,
+    opacity: Math.random() * 0.5 + 0.5,
+    type: 'crumpled'
+  });
+}
+
+// 80 eliptičnih malih
+for (let i = 0; i < 80; i++) {
+  snowflakes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    radius: 0.6,
+    speedY: Math.random() * 2.5 + 2,
+    drift: Math.random() * 1.5 - 0.75,
+    rotation: Math.random() * Math.PI,
+    opacity: Math.random() * 0.4 + 0.4,
+    type: 'ellipse'
+  });
+}
+
+// 40 eliptičnih srednjih
+for (let i = 0; i < 40; i++) {
+  snowflakes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    radius: 0.8,
+    speedY: Math.random() * 2.2 + 2,
+    drift: Math.random() * 1.2 - 0.6,
+    rotation: Math.random() * Math.PI,
+    opacity: Math.random() * 0.4 + 0.5,
+    type: 'ellipse'
+  });
+}
+
+// 20 eliptičnih normalnih
+for (let i = 0; i < 20; i++) {
+  snowflakes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    radius: 1.0,
+    speedY: Math.random() * 2 + 2.2,
+    drift: Math.random() * 1.0 - 0.5,
+    rotation: Math.random() * Math.PI,
+    opacity: Math.random() * 0.3 + 0.6,
+    type: 'ellipse'
+  });
+}
+
+// 10 eliptičnih velikih
+for (let i = 0; i < 10; i++) {
+  snowflakes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    radius: 1.5,
+    speedY: Math.random() * 1 + 2,
+    drift: Math.random() * 0.8 - 0.4,
+    rotation: Math.random() * Math.PI,
+    opacity: Math.random() * 0.3 + 0.7,
+    type: 'ellipse'
+  });
+}
+
   const windStates = [0.2, 0.5, 1.2, 2.5];
   let currentWind = windStates[0];
 
@@ -78,9 +147,9 @@ function startWinterEffect() {
     let radius, shape;
 
     switch (type) {
-      case 'large': radius = 1.5; break;
-      case 'medium': radius = 0.8; break;
-      case 'tiny': radius = 0.6; break;
+      case 'large': radius = 1.3; break;
+      case 'medium': radius = 0.6; break;
+      case 'tiny': radius = 0.4; break;
       case 'crumpled': radius = 0.7; shape = 'crumpled'; break;
       default: radius = 1.0;
     }
