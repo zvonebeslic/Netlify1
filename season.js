@@ -49,117 +49,129 @@ function createSeasonCanvas() {
 
 function startWinterEffect() {
   const canvas = document.createElement('canvas');
-  canvas.id = 'snow-canvas';
+  canvas.id = 'winter-canvas';
   canvas.style.position = 'fixed';
   canvas.style.top = 0;
   canvas.style.left = 0;
-  canvas.style.width = '100%';
-  canvas.style.height = '100%';
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
   canvas.style.pointerEvents = 'none';
-  canvas.style.zIndex = '99999';
+  canvas.style.zIndex = 9999;
   document.body.appendChild(canvas);
 
   const ctx = canvas.getContext('2d');
   let width = canvas.width = window.innerWidth;
   let height = canvas.height = window.innerHeight;
 
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
   const snowflakes = [];
-  const maxFlakes = 280;
-  let globalWind = 0;
+  const flakeCount = 300;
+
+  let windForce = 0;
+  let windDirection = 1; // 1 = s desna u lijevo
+  let windTimer = 0;
 
   function random(min, max) {
     return Math.random() * (max - min) + min;
   }
 
-  function updateWind() {
-    const intensity = Math.random() * 2 - 1;
-    globalWind = intensity * 2.5;
-    setTimeout(updateWind, 2500 + Math.random() * 3000);
+  function createFlake(type = 'regular') {
+    return {
+      x: random(0, width),
+      y: random(-height, 0),
+      vx: random(-0.5, 0.5),
+      vy: random(1.4, 2.5),
+      size: type === 'irregular' ? random(3, 7) : random(2, 6),
+      alpha: random(0.6, 1),
+      rotationAngle: random(0, Math.PI * 2),
+      rotationSpeed: type === 'irregular' ? random(0.02, 0.06) : 0,
+      type,
+    };
   }
-  updateWind();
+
+  for (let i = 0; i < flakeCount; i++) {
+    if (i < 30) snowflakes.push(createFlake('large'));
+    else if (i < 180) snowflakes.push(createFlake('irregular'));
+    else snowflakes.push(createFlake('regular'));
+  }
+
+  function drawFlake(flake) {
+    if (flake.type === 'regular') {
+      ctx.beginPath();
+      ctx.ellipse(flake.x, flake.y, flake.size, flake.size * 0.9, 0, 0, 2 * Math.PI);
+      ctx.fillStyle = `rgba(255,255,255,${flake.alpha})`;
+      ctx.fill();
+    } else if (flake.type === 'large') {
+      ctx.beginPath();
+      ctx.ellipse(flake.x, flake.y, flake.size * 1.2, flake.size, 0, 0, 2 * Math.PI);
+      ctx.fillStyle = `rgba(255,255,255,${flake.alpha})`;
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = 'rgba(255,255,255,0.5)';
+      ctx.fill();
+    } else if (flake.type === 'irregular') {
+      drawIrregularFlake(flake);
+    }
+  }
 
   function drawIrregularFlake(flake) {
     ctx.save();
     ctx.translate(flake.x, flake.y);
     ctx.rotate(flake.rotationAngle);
     ctx.beginPath();
-    for (let i = 0; i < 5; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = flake.size + Math.random() * flake.size * 0.5;
+
+    const points = 12;
+    for (let i = 0; i < points; i++) {
+      const angle = (Math.PI * 2 / points) * i + random(-0.2, 0.2);
+      const radius = flake.size * random(0.6, 1.4);
       const px = Math.cos(angle) * radius;
       const py = Math.sin(angle) * radius;
-      ctx.lineTo(px, py);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
     }
+
     ctx.closePath();
     ctx.fillStyle = `rgba(255, 255, 255, ${flake.alpha})`;
-    ctx.shadowBlur = 1;
-    ctx.shadowColor = 'rgba(255,255,255,0.4)';
+    ctx.shadowBlur = 2;
+    ctx.shadowColor = 'rgba(255,255,255,0.5)';
     ctx.fill();
     ctx.restore();
   }
 
-  function createFlake(type) {
-    return {
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: type === 'big' ? random(10, 14) : type === 'medium' ? random(6, 9) : random(3, 5),
-      speed: random(1.5, 3.5),
-      drift: random(-0.3, 0.3),
-      alpha: random(0.3, 0.8),
-      type,
-      rotationAngle: random(0, Math.PI * 2),
-      rotationSpeed: type === 'irregular' ? random(0.2, 0.6) : 0
-    };
-  }
-
-  for (let i = 0; i < maxFlakes; i++) {
-    if (i < 10) snowflakes.push(createFlake('big'));
-    else if (i < 50) snowflakes.push(createFlake('medium'));
-    else if (i < 130) snowflakes.push(createFlake('small'));
-    else snowflakes.push(createFlake('irregular'));
-  }
-
-  function drawFlake(flake) {
-    ctx.beginPath();
-    ctx.fillStyle = `rgba(255, 255, 255, ${flake.alpha})`;
-    ctx.shadowBlur = 1;
-    ctx.shadowColor = 'rgba(255,255,255,0.3)';
-
-    if (flake.type === 'irregular') {
-      drawIrregularFlake(flake);
-      return;
+  function updateWind() {
+    windTimer--;
+    if (windTimer <= 0) {
+      windForce = random(1.0, 4.0); // jak nalet vjetra
+      windDirection = -1; // s desna u lijevo
+      windTimer = random(50, 150); // novi nalet za 1–3 sekunde
     }
-
-    ctx.ellipse(flake.x, flake.y, flake.size, flake.size * 0.6, 0, 0, Math.PI * 2);
-    ctx.fill();
   }
 
-  function update() {
+  function updateFlakes() {
     ctx.clearRect(0, 0, width, height);
-    for (const flake of snowflakes) {
-      flake.y += flake.speed;
-      flake.x += flake.drift + globalWind * 0.1;
-      if (flake.rotationSpeed) flake.rotationAngle += flake.rotationSpeed;
+    updateWind();
 
-      if (flake.y > height) {
-        flake.y = -flake.size;
-        flake.x = Math.random() * width;
-        flake.rotationAngle = random(0, Math.PI * 2);
+    for (let flake of snowflakes) {
+      flake.x += flake.vx + windForce * windDirection * (flake.size / 6);
+      flake.y += flake.vy;
+      flake.rotationAngle += flake.rotationSpeed;
+
+      if (flake.x > width + 50 || flake.x < -50 || flake.y > height + 50) {
+        Object.assign(flake, createFlake(flake.type));
+        flake.y = -10;
+        flake.x = random(0, width);
       }
-      if (flake.x > width) flake.x = 0;
-      if (flake.x < 0) flake.x = width;
 
       drawFlake(flake);
     }
-    requestAnimationFrame(update);
+
+    requestAnimationFrame(updateFlakes);
   }
 
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  update();
+  updateFlakes();
 }
 
 
