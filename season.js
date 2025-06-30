@@ -47,96 +47,121 @@ function createSeasonCanvas() {
   return canvas;
 }
 
-
 function startWinterEffect() {
-  const existing = document.getElementById('season-canvas');
-  if (existing) existing.remove();
   const canvas = document.createElement('canvas');
-  canvas.id = 'season-canvas';
+  canvas.id = 'snow-canvas';
   canvas.style.position = 'fixed';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.width = '100vw';
-  canvas.style.height = '100vh';
+  canvas.style.top = 0;
+  canvas.style.left = 0;
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
   canvas.style.pointerEvents = 'none';
-  canvas.style.zIndex = '99998';
+  canvas.style.zIndex = '99999';
   document.body.appendChild(canvas);
 
   const ctx = canvas.getContext('2d');
   let width = canvas.width = window.innerWidth;
   let height = canvas.height = window.innerHeight;
 
+  const snowflakes = [];
+  const maxFlakes = 280;
+  let globalWind = 0;
+
+  function random(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function updateWind() {
+    const intensity = Math.random() * 2 - 1;
+    globalWind = intensity * 2.5;
+    setTimeout(updateWind, 2500 + Math.random() * 3000);
+  }
+  updateWind();
+
+  function drawIrregularFlake(flake) {
+    ctx.save();
+    ctx.translate(flake.x, flake.y);
+    ctx.rotate(flake.rotationAngle);
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = flake.size + Math.random() * flake.size * 0.5;
+      const px = Math.cos(angle) * radius;
+      const py = Math.sin(angle) * radius;
+      ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fillStyle = `rgba(255, 255, 255, ${flake.alpha})`;
+    ctx.shadowBlur = 1;
+    ctx.shadowColor = 'rgba(255,255,255,0.4)';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function createFlake(type) {
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: type === 'big' ? random(10, 14) : type === 'medium' ? random(6, 9) : random(3, 5),
+      speed: random(1.5, 3.5),
+      drift: random(-0.3, 0.3),
+      alpha: random(0.3, 0.8),
+      type,
+      rotationAngle: random(0, Math.PI * 2),
+      rotationSpeed: type === 'irregular' ? random(0.2, 0.6) : 0
+    };
+  }
+
+  for (let i = 0; i < maxFlakes; i++) {
+    if (i < 10) snowflakes.push(createFlake('big'));
+    else if (i < 50) snowflakes.push(createFlake('medium'));
+    else if (i < 130) snowflakes.push(createFlake('small'));
+    else snowflakes.push(createFlake('irregular'));
+  }
+
+  function drawFlake(flake) {
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255, 255, 255, ${flake.alpha})`;
+    ctx.shadowBlur = 1;
+    ctx.shadowColor = 'rgba(255,255,255,0.3)';
+
+    if (flake.type === 'irregular') {
+      drawIrregularFlake(flake);
+      return;
+    }
+
+    ctx.ellipse(flake.x, flake.y, flake.size, flake.size * 0.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function update() {
+    ctx.clearRect(0, 0, width, height);
+    for (const flake of snowflakes) {
+      flake.y += flake.speed;
+      flake.x += flake.drift + globalWind * 0.1;
+      if (flake.rotationSpeed) flake.rotationAngle += flake.rotationSpeed;
+
+      if (flake.y > height) {
+        flake.y = -flake.size;
+        flake.x = Math.random() * width;
+        flake.rotationAngle = random(0, Math.PI * 2);
+      }
+      if (flake.x > width) flake.x = 0;
+      if (flake.x < 0) flake.x = width;
+
+      drawFlake(flake);
+    }
+    requestAnimationFrame(update);
+  }
+
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
   });
 
-  let wind = 0;
-  let windTarget = 0;
-
-  const flakes = [];
-  for (let i = 0; i < 300; i++) {
-    const isIrregular = Math.random() < 0.3;
-    flakes.push({
-      type: isIrregular ? 'irregular' : 'ellipse',
-      x: Math.random() * width,
-      y: Math.random() * height,
-      rX: isIrregular ? Math.random() * 2 + 1 : Math.random() * 3 + 2,
-      rY: isIrregular ? Math.random() * 1.5 + 1 : Math.random() * 2 + 1.5,
-      angle: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.01,
-      speedY: Math.random() * 1 + 0.5,
-      drift: Math.random() * 0.5 - 0.25,
-      opacity: Math.random() * 0.4 + 0.4
-    });
-  }
-
-  function updateWind() {
-    windTarget = (Math.random() - 0.5) * 1.2;
-    setTimeout(updateWind, Math.random() * 5000 + 3000);
-  }
-  updateWind();
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    wind += (windTarget - wind) * 0.01;
-    flakes.forEach(f => {
-      ctx.save();
-      ctx.translate(f.x, f.y);
-      ctx.rotate(f.angle);
-      ctx.globalAlpha = f.opacity;
-      ctx.beginPath();
-
-      if (f.type === 'irregular') {
-        const t = 16;
-        const step = (Math.PI * 2) / t;
-        ctx.moveTo(f.rX * (1 + 0.2 * Math.random()) * Math.cos(0), f.rY * (1 + 0.2 * Math.random()) * Math.sin(0));
-        for (let a = step; a < Math.PI * 2; a += step) {
-          const r1 = f.rX * (1 + 0.2 * Math.random());
-          const r2 = f.rY * (1 + 0.2 * Math.random());
-          ctx.lineTo(r1 * Math.cos(a), r2 * Math.sin(a));
-        }
-        ctx.closePath();
-      } else {
-        ctx.ellipse(0, 0, f.rX, f.rY, 0, 0, Math.PI * 2);
-      }
-
-      ctx.fillStyle = 'white';
-      ctx.fill();
-      ctx.restore();
-
-      f.y += f.speedY;
-      f.x += wind + f.drift;
-      f.angle += f.rotationSpeed;
-
-      if (f.y > height + 10) f.y = -10;
-      if (f.x > width + 20) f.x = -20;
-      if (f.x < -20) f.x = width + 20;
-    });
-    requestAnimationFrame(animate);
-  }
-  animate();
+  update();
 }
+
 
 function startSpringEffect() {
   const canvas = createSeasonCanvas();
