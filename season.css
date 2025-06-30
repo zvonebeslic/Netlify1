@@ -68,6 +68,7 @@
   height: 100vh;
   pointer-events: none;
   z-index: 99998;
+  display: block;
 }
 
 /* === UNIVERZALNA KOMPATIBILNOST ZA ANIMACIJE === */
@@ -75,12 +76,6 @@ html, body {
   overflow-x: hidden;
   overscroll-behavior: none;
   scroll-behavior: smooth;
-}
-
-canvas {
-  display: block;
-  max-width: 100%;
-  height: auto;
 }
 
 @media (max-width: 480px) {
