@@ -1,4 +1,5 @@
-// season.js function initializeSeasonToggle() { const toggle = document.getElementById('season-toggle'); const iconsWrapper = document.getElementById('season-icons'); const stopButton = document.getElementById('stop-season');
+// season.js
+function initializeSeasonToggle() { const toggle = document.getElementById('season-toggle'); const iconsWrapper = document.getElementById('season-icons'); const stopButton = document.getElementById('stop-season');
 
 if (!toggle || !iconsWrapper || !stopButton) return;
 
