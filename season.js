@@ -18,7 +18,7 @@ function setupSeasonCanvas() {
       pointerEvents: 'none',
       zIndex: '99998'
     });
-    document.body.appendChild(seasonCanvas);
+    document.body.insertBefore(seasonCanvas, document.body.firstChild);
   } else {
     seasonCanvas = document.getElementById('season-canvas');
   }
