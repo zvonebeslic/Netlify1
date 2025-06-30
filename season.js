@@ -184,13 +184,9 @@ for (let i = 0; i < 10; i++) {
     };
   }
 
-  for (let i = 0; i < totalFlakes; i++) {
-    snowflakes.push(createFlake());
-  }
-
   function draw() {
-    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-
+    ctx.clearRect(0, 0, seasonCanvas.width / dpr, seasonCanvas.height / dpr);
+    
     snowflakes.forEach(flake => {
       flake.y += flake.speedY;
       flake.x += flake.drift + currentWind;
@@ -253,18 +249,14 @@ if (flake.x < -50) {
     windIndex = (windIndex + 1) % windStates.length;
     currentWind = windStates[windIndex] * (Math.random() < 0.5 ? 1 : -1);
   }, 10000);
-
-  // Resize
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    ctx.scale(dpr, dpr);
-  });
 } 
 
 
 function startSpringEffect() {
   setupSeasonCanvas();
+
+  const width = seasonCanvas.width / dpr;
+  const height = seasonCanvas.height / dpr;
   
   const petals = Array.from({ length: 300 }, () => ({
     x: Math.random() * width, y: Math.random() * height,
@@ -292,6 +284,9 @@ function startSpringEffect() {
 
 function startSummerEffect() {
   setupSeasonCanvas();
+
+  const width = seasonCanvas.width / dpr;
+  const height = seasonCanvas.height / dpr;
   
   const rays = Array.from({ length: 200 }, () => ({
     x: Math.random() * width, y: Math.random() * height * 0.3,
@@ -324,6 +319,9 @@ function startSummerEffect() {
 
 function startAutumnEffect() {
   setupSeasonCanvas();
+
+  const width = seasonCanvas.width / dpr;
+  const height = seasonCanvas.height / dpr;
   
   const leaves = Array.from({ length: 300 }, () => ({
     x: Math.random() * width, y: Math.random() * height,
