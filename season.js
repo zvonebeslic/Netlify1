@@ -100,14 +100,14 @@ function updateWind(deltaTime) {
   windTimer += deltaTime;
   if (windTimer > windInterval) {
     windTimer = 0;
-    windInterval = Math.random() * 7000 + 8000;
+    windInterval = Math.random() * 10000 + 11000;
     targetWind = (Math.random() - 0.5) * 2 * maxWindStrength;
   }
 
   // Povremeni jaki nalet vjetra (gust)
   if (!isGustActive && Math.random() < 0.002) { // rjeđe
     isGustActive = true;
-    gustDuration = Math.random() * 2000 + 2000;
+    gustDuration = Math.random() * 3000 + 4000;
     targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 2; // jači gust
     gustTimer = 0;
   }
@@ -115,13 +115,16 @@ function updateWind(deltaTime) {
   if (isGustActive) {
     gustTimer += deltaTime;
     if (gustTimer > gustDuration) {
-      isGustActive = false;
-      targetWind = 0;
+  isGustActive = false;
+
+  setTimeout(() => {
+    targetWind = 0;
+      }, 2000);
     }
   }
 
   // Postepeni prijelaz (lerp)
-  const transitionSpeed = 0.02; // sporiji prijelaz (oko 2 sekunde)
+  const transitionSpeed = 0.01; // sporiji prijelaz (oko 2 sekunde)
   windStrength += (targetWind - windStrength) * transitionSpeed;
 }
   
