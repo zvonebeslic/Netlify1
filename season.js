@@ -83,6 +83,48 @@ function stopSeasonEffects() {
 function startWinterEffect() {
   setupSeasonCanvas();
 
+let windStrength = 0;
+let targetWind = 0;
+let windTimer = 0;
+let windInterval = Math.random() * 7000 + 8000;
+
+let isGustActive = false;
+let gustTimer = 0;
+let gustDuration = 0;
+let maxWindStrength = 2.5; // možeš povećati na 3.5 za brutalnije udare
+
+  let lastFrameTime = performance.now();
+  
+function updateWind(deltaTime) {
+  // Redovni vjetar (lagani drift svakih 8–15 sekundi)
+  windTimer += deltaTime;
+  if (windTimer > windInterval) {
+    windTimer = 0;
+    windInterval = Math.random() * 7000 + 8000;
+    targetWind = (Math.random() - 0.5) * 2 * maxWindStrength;
+  }
+
+  // Povremeni jaki nalet vjetra (gust)
+  if (!isGustActive && Math.random() < 0.002) { // rjeđe
+    isGustActive = true;
+    gustDuration = Math.random() * 2000 + 2000;
+    targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 2; // jači gust
+    gustTimer = 0;
+  }
+
+  if (isGustActive) {
+    gustTimer += deltaTime;
+    if (gustTimer > gustDuration) {
+      isGustActive = false;
+      targetWind = 0;
+    }
+  }
+
+  // Postepeni prijelaz (lerp)
+  const transitionSpeed = 0.02; // sporiji prijelaz (oko 2 sekunde)
+  windStrength += (targetWind - windStrength) * transitionSpeed;
+}
+  
   const snowflakes = [];
     // Generiraj 150 zguzvanih
 for (let i = 0; i < 150; i++) {
@@ -186,10 +228,16 @@ for (let i = 0; i < 10; i++) {
 
   function draw() {
     ctx.clearRect(0, 0, seasonCanvas.width / dpr, seasonCanvas.height / dpr);
+
+    const now = performance.now();
+const deltaTime = now - lastFrameTime;
+lastFrameTime = now;
+
+updateWind(deltaTime);
     
     snowflakes.forEach(flake => {
       flake.y += flake.speedY;
-      flake.x += flake.drift + currentWind;
+      flake.x += windStrenght * flake.speedY * 0.5;
       flake.angle += flake.rotateSpeed;
       // Malo prirodnog njihanja (kao da vjetar puše neujednačeno)
 flake.drift += (Math.random() - 0.5) * 0.05;
