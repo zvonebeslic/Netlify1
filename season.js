@@ -42,6 +42,24 @@ function setupSeasonCanvas() {
   }
 }
 
+// animacija za automatsko gašenje sezonskih efekata
+let winterAnimationId = null;
+let autumnAnimationId = null;
+let springAnimationId = null;
+let summerAnimationId = null;
+
+function cancelAllSeasonAnimations() {
+  if (winterAnimationId) cancelAnimationFrame(winterAnimationId);
+  if (autumnAnimationId) cancelAnimationFrame(autumnAnimationId);
+  if (springAnimationId) cancelAnimationFrame(springAnimationId);
+  if (summerAnimationId) cancelAnimationFrame(summerAnimationId);
+
+  winterAnimationId = null;
+  autumnAnimationId = null;
+  springAnimationId = null;
+  summerAnimationId = null;
+}
+
 function initializeSeasonToggle() {
   const toggle = document.getElementById('season-toggle');
   const iconsWrapper = document.getElementById('season-icons');
@@ -81,6 +99,9 @@ function stopSeasonEffects() {
 // ZIMA
 // === REALISTIC WINTER EFFECT ===
 function startWinterEffect() {
+  cancelAllSeasonAnimations();
+  stopSeasonEffects();
+  
   setupSeasonCanvas();
 
 let windStrength = 0;
@@ -90,7 +111,9 @@ let windInterval = Math.random() * 7000 + 8000;
 
 let isGustActive = false;
 let gustTimer = 0;
+const gustCooldown = 10000;
 let gustDuration = 0;
+let lastGustTime = 0;
 let maxWindStrength = 2.5; // možeš povećati na 3.5 za brutalnije udare
 
   let lastFrameTime = performance.now();
@@ -105,10 +128,6 @@ function updateWind(deltaTime) {
   }
 
   // Povremeni jaki nalet vjetra (gust)
-    let isGustActive = false;
-    let lastGustTime = 0;            // kad je zadnji gust bio
-    let gustCooldown = 10000;         // minimalni razmak između gustova (u ms)
-  
     const now = Date.now();
       if (!isGustActive && now - lastGustTime > gustCooldown && Math.random() < 0.002) {
     isGustActive = true;
@@ -205,9 +224,6 @@ for (let i = 0; i < 10; i++) {
   });
 }
 
-  const windStates = [0.2, 0.5, 1.2, 2.5];
-  let currentWind = windStates[0];
-
   function createFlake() {
     const types = ['small', 'medium', 'tiny', 'large', 'crumpled'];
     const type = types[Math.floor(Math.random() * types.length)];
@@ -295,21 +311,16 @@ if (flake.x < -50) {
       ctx.restore();
     });
 
-    requestAnimationFrame(draw);
+    winterAnimationId = requestAnimationFrame(draw);
   }
-
   draw();
-
-  // Vjetar svakih 10 sekundi
-  let windIndex = 0;
-  setInterval(() => {
-    windIndex = (windIndex + 1) % windStates.length;
-    currentWind = windStates[windIndex] * (Math.random() < 0.5 ? 1 : -1);
-  }, 10000);
 } 
 
 
 function startSpringEffect() {
+  cancelAllSeasonAnimations();
+  stopSeasonEffects();
+  
   setupSeasonCanvas();
 
   const width = seasonCanvas.width / dpr;
@@ -340,6 +351,9 @@ function startSpringEffect() {
 }
 
 function startSummerEffect() {
+  cancelAllSeasonAnimations();
+  stopSeasonEffects();
+  
   setupSeasonCanvas();
 
   const width = seasonCanvas.width / dpr;
@@ -375,6 +389,9 @@ function startSummerEffect() {
 }
 
 function startAutumnEffect() {
+  cancelAllSeasonAnimations();
+  stopSeasonEffects();
+  
   setupSeasonCanvas();
 
   const width = seasonCanvas.width / dpr;
