@@ -261,8 +261,10 @@ lastFrameTime = now;
 updateWind(deltaTime);
     
     snowflakes.forEach(flake => {
-      flake.y += flake.speedY;
-      flake.x += windStrength * flake.speedY * 0.5;
+      const timeScale = deltaTime / 16.67; // normalizira na 60fps
+
+flake.y += flake.speedY * timeScale;
+flake.x += windStrength * flake.speedY * 0.5 * timeScale;
       flake.angle += flake.rotateSpeed;
       // Malo prirodnog njihanja (kao da vjetar puše neujednačeno)
 flake.drift += (Math.random() - 0.5) * 0.05;
