@@ -105,11 +105,17 @@ function updateWind(deltaTime) {
   }
 
   // Povremeni jaki nalet vjetra (gust)
-  if (!isGustActive && Math.random() < 0.002) { // rjeđe
+    let isGustActive = false;
+    let lastGustTime = 0;            // kad je zadnji gust bio
+    let gustCooldown = 10000;         // minimalni razmak između gustova (u ms)
+  
+    const now = Date.now();
+      if (!isGustActive && now - lastGustTime > gustCooldown && Math.random() < 0.002) {
     isGustActive = true;
     gustDuration = Math.random() * 3000 + 4000;
     targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 2; // jači gust
     gustTimer = 0;
+    lastGustTime = now; 
   }
 
   if (isGustActive) {
@@ -139,7 +145,7 @@ for (let i = 0; i < 150; i++) {
     drift: Math.random() * 2 - 1,
     rotation: Math.random() * Math.PI,
     opacity: Math.random() * 0.5 + 0.5,
-    type: 'crumpled'
+    type: 'ellipse'
   });
 }
 
@@ -153,7 +159,7 @@ for (let i = 0; i < 80; i++) {
     drift: Math.random() * 1.5 - 0.75,
     rotation: Math.random() * Math.PI,
     opacity: Math.random() * 0.4 + 0.4,
-    type: 'ellipse'
+    type: 'crumpled'
   });
 }
 
@@ -190,12 +196,12 @@ for (let i = 0; i < 10; i++) {
   snowflakes.push({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    radius: 1.5,
+    radius: 1.4,
     speedY: Math.random() * 1 + 2,
     drift: Math.random() * 0.8 - 0.4,
     rotation: Math.random() * Math.PI,
     opacity: Math.random() * 0.3 + 0.7,
-    type: 'ellipse'
+    type: 'crumpled'
   });
 }
 
