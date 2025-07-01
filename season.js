@@ -237,7 +237,7 @@ updateWind(deltaTime);
     
     snowflakes.forEach(flake => {
       flake.y += flake.speedY;
-      flake.x += windStrenght * flake.speedY * 0.5;
+      flake.x += windStrength * flake.speedY * 0.5;
       flake.angle += flake.rotateSpeed;
       // Malo prirodnog njihanja (kao da vjetar puše neujednačeno)
 flake.drift += (Math.random() - 0.5) * 0.05;
