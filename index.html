@@ -609,10 +609,17 @@ a, button {
     <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
 
-<!-- Season toggle će se dinamički umetnuti ovdje -->
-  <div id="season-placeholder"></div>
-
-          
+  <!-- === SEASON TOGGLE IKONE === -->
+<div id="season-toggle-wrapper">
+  <img src="images/seasonchange.svg" id="season-toggle" alt="Season toggle" />
+  <div id="season-icons">
+    <div class="season-icon" data-season="winter">❄️</div>
+    <div class="season-icon" data-season="spring">🌸</div>
+    <div class="season-icon" data-season="summer">☀️</div>
+    <div class="season-icon" data-season="autumn">🍂</div>
+  </div>
+</div>
+      
   <!-- === SEKCIJE (parallax) === -->
   <div id="section1" class="section image-section"
        style="background-image: url('images/planinarske-staze-balkana-cvrsnica-hiking-trails-balkan.jpg'); background-size: cover; background-position: center; height: 100vh; position: relative;"
@@ -936,17 +943,10 @@ window.addEventListener('pageshow', () => {
 
 
 // === 7. MARKACIJE + SEZONSKE ANIMACIJE ===
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () 
 
-   
-    fetch('season.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('season-placeholder').innerHTML = html;
-        initializeSeasonToggle(); // poziva funkciju iz season.js
-      });
-
-      
+      initializeSeasomToggle();
+                          
   // MARKACIJE
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
