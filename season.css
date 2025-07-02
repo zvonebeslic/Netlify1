@@ -42,21 +42,16 @@
   cursor: pointer;
 }
 
-#stop-season {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 10px 20px;
-  font-size: 14px;
-  background: white;
-  border: 1px solid #aaa;
-  border-radius: 8px;
-  z-index: 99999;
-  cursor: pointer;
-}
-
-#stop-season.hidden {
-  display: none;
+#season-toggle.active-season::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 30px;
+  height: 2px;
+  background: red;
+  transform: rotate(45deg);
+  z-index: 999999;
 }
 
 /* === GLOBAL CANVAS LAYER === */
