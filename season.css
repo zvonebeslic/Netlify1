@@ -46,10 +46,10 @@
 #season-toggle.active-season::after {
   content: "";
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 70px;
+  left: 7px;
   width: 30px;
-  height: 2px;
+  height: 4px;
   background: red;
   transform: rotate(45deg);
   z-index: 999999;
