@@ -71,7 +71,7 @@ function initializeSeasonToggle() {
       toggle.classList.add('active-season');
       iconsWrapper.classList.remove('visible');
 
-      else if (selected === 'winter') startWinterEffect();
+      if (selected === 'winter') startWinterEffect();
       else if (selected === 'spring') startSpringEffect();
       else if (selected === 'summer') startSummerEffect();
       else if (selected === 'autumn') startAutumnEffect();
