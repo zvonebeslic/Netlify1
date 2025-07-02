@@ -72,7 +72,7 @@ function initializeSeasonToggle() {
 
       document.body.classList.add(`season-${selected}`);
       toggle.classList.add('active-season');
-      iconsWrapper.classList.add('hidden');
+      iconsWrapper.classList.add('visible');
 
       if (selected === 'winter') startWinterEffect();
       else if (selected === 'spring') startSpringEffect();
