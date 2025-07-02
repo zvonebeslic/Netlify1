@@ -49,17 +49,6 @@ function initializeSeasonToggle() {
   const toggle = document.getElementById('season-toggle');
   const iconsWrapper = document.getElementById('season-icons');
 
-  if (!toggle || !iconsWrapper) return;
-
-  toggle.addEventListener('click', () => {
-    if (seasonIsRunning) {
-      stopSeasonEffects();
-      toggle.classList.remove('active-season');
-    } else {
-      iconsWrapper.classList.toggle('visible');
-    }
-  });
-
   document.querySelectorAll('.season-icon').forEach(icon => {
     icon.addEventListener('click', () => {
       const selected = icon.dataset.season;
@@ -83,6 +72,17 @@ function initializeSeasonToggle() {
         startAutumnEffect();
       }
     });
+  });
+  
+  if (!toggle || !iconsWrapper) return;
+
+  toggle.addEventListener('click', () => {
+    if (seasonIsRunning) {
+      stopSeasonEffects();
+      toggle.classList.remove('active-season');
+    } else {
+      iconsWrapper.classList.toggle('visible');
+    }
   });
 }
 
