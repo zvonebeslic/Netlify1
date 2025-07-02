@@ -422,14 +422,11 @@ function startSummerEffect() {
 }
 
 function startAutumnEffect() {
+  cancelAllSeasonAnimations();  
+  setupSeasonCanvas(); 
 
-  cancelAllSeasonAnimations(); // zaustavi ostale efekte
-  
-  setupSeasonCanvas(); // koristi zajednički canvas
-
-  const width = seasonCanvas.width = window.innerWidth * dpr;
-  const height = seasonCanvas.height = window.innerHeight * dpr;
-  ctx.scale(dpr, dpr);
+  const width = seasonCanvas.width / dpr;
+  const height = seasonCanvas.height / dpr;
 
   const numDrops = 1000;
   const raindrops = [];
@@ -441,13 +438,14 @@ function startAutumnEffect() {
       length: 10 + Math.random() * 20,
       speed: 4 + Math.random() * 6,
       opacity: Math.random() * 0.3 + 0.1,
-      angle: Math.random() * 0.2 - 0.1 // blagi nagib udesno
+      angle: Math.random() * 0.2 - 0.1
     });
   }
 
   let pulse = 0;
+  let pulseTimer = 0;
 
-  function animateRain() {
+  function animateRain(timestamp) {
     ctx.clearRect(0, 0, width, height);
     ctx.lineWidth = 1;
 
@@ -469,13 +467,15 @@ function startAutumnEffect() {
       }
     }
 
+    // Pulse efekt svakih ~4 sekunde
+    pulseTimer += 1;
+    if (pulseTimer > 240) { // ~4 sekunde na 60fps
+      pulse = pulse === 0 ? 5 : 0;
+      pulseTimer = 0;
+    }
+
     autumnAnimationId = requestAnimationFrame(animateRain);
   }
 
   animateRain();
-
-  // Pulse efekt (mahovi svake 4 sekunde)
-  setInterval(() => {
-    pulse = pulse === 0 ? 5 : 0;
-  }, 4000);
 }
