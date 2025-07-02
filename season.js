@@ -422,32 +422,30 @@ function startSummerEffect() {
 }
 
 function startAutumnEffect() {
+  
   cancelAllSeasonAnimations();  
   setupSeasonCanvas(); 
 
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
 
-  const numDrops = 1000;
+  const numDrops = 1800; // Više kapi
   const raindrops = [];
 
   for (let i = 0; i < numDrops; i++) {
     raindrops.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      length: 10 + Math.random() * 20,
-      speed: 4 + Math.random() * 6,
-      opacity: Math.random() * 0.3 + 0.1,
-      angle: Math.random() * 0.2 - 0.1
+      length: 12 + Math.random() * 18,         // realistična dužina
+      speed: 6 + Math.random() * 4,            // brza kiša
+      opacity: Math.random() * 0.4 + 0.2,      // raznolika prozirnost
+      angle: Math.random() * 0.1 - 0.05        // mali nagib
     });
   }
 
-  let pulse = 0;
-  let pulseTimer = 0;
-
-  function animateRain(timestamp) {
+  function animateRain() {
     ctx.clearRect(0, 0, width, height);
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.5; // Deblje kapi za jaču kišu
 
     for (let drop of raindrops) {
       ctx.beginPath();
@@ -459,19 +457,12 @@ function startAutumnEffect() {
       ctx.strokeStyle = `rgba(200,200,255,${drop.opacity})`;
       ctx.stroke();
 
-      drop.y += drop.speed + pulse;
+      drop.y += drop.speed;
 
       if (drop.y > height) {
         drop.y = -20;
         drop.x = Math.random() * width;
       }
-    }
-
-    // Pulse efekt svakih ~4 sekunde
-    pulseTimer += 1;
-    if (pulseTimer > 240) { // ~4 sekunde na 60fps
-      pulse = pulse === 0 ? 5 : 0;
-      pulseTimer = 0;
     }
 
     autumnAnimationId = requestAnimationFrame(animateRain);
