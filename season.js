@@ -4,6 +4,38 @@ let seasonCanvas;
 let ctx;
 let dpr = window.devicePixelRatio || 1;
 
+// ID-jevi animacija za upravljanje (za cancelAnimationFrame)
+let winterAnimationId = null;
+let springAnimationId = null;
+let summerAnimationId = null;
+let autumnAnimationId = null;
+
+// === FUNKCIJA ZA PREKID SVIH AKTIVNIH SEZONSKIH ANIMACIJA ===
+function cancelAllSeasonAnimations() {
+  if (winterAnimationId !== null) {
+    cancelAnimationFrame(winterAnimationId);
+    winterAnimationId = null;
+  }
+  if (springAnimationId !== null) {
+    cancelAnimationFrame(springAnimationId);
+    springAnimationId = null;
+  }
+  if (summerAnimationId !== null) {
+    cancelAnimationFrame(summerAnimationId);
+    summerAnimationId = null;
+  }
+  if (autumnAnimationId !== null) {
+    cancelAnimationFrame(autumnAnimationId);
+    autumnAnimationId = null;
+  }
+
+  // Ukloni canvas iz DOM-a ako postoji
+  const canvas = document.getElementById('season-canvas');
+  if (canvas) {
+    canvas.remove();
+  }
+}
+
 function setupSeasonCanvas() {
   // Ako već postoji, koristi ga ponovno
   if (!document.getElementById('season-canvas')) {
