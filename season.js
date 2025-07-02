@@ -215,7 +215,7 @@ for (let i = 0; i < 10; i++) {
   snowflakes.push({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    radius: 1.4,
+    radius: 1.2,
     speedY: Math.random() * 1 + 2,
     drift: Math.random() * 0.8 - 0.4,
     rotation: Math.random() * Math.PI,
