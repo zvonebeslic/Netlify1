@@ -98,6 +98,7 @@ function stopSeasonEffects() {
 
 // ZIMA
 // === REALISTIC WINTER EFFECT ===
+function startWinterEffect() {
   
   cancelAllSeasonAnimations();
   
@@ -315,8 +316,7 @@ if (flake.x < -50) {
     winterAnimationId = requestAnimationFrame(draw);
   }
   draw();
-} 
-
+}
 
 function startSpringEffect() {
 
