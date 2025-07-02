@@ -378,7 +378,7 @@ function startSpringEffect() {
       if (p.x > width + 20) p.x = -20;
       if (p.x < -20) p.x = width + 20;
     });
-    requestAnimationFrame(animate);
+    springAnimationId = requestAnimationFrame(animate);
   }
   animate();
 }
@@ -416,7 +416,7 @@ function startSummerEffect() {
         r.fade = Math.random() * 0.01 + 0.005;
       }
     });
-    requestAnimationFrame(animate);
+    summerAnimationId = requestAnimationFrame(animate);
   }
   animate();
 }
@@ -449,7 +449,7 @@ function startAutumnEffect() {
       if (l.x > width + 20) l.x = -20;
       if (l.x < -20) l.x = width + 20;
     });
-    requestAnimationFrame(animate);
+    autumnAnimationId = requestAnimationFrame(animate);
   }
   animate();
 }
