@@ -423,33 +423,59 @@ function startSummerEffect() {
 
 function startAutumnEffect() {
 
-  cancelAllSeasonAnimations();
+  cancelAllSeasonAnimations(); // zaustavi ostale efekte
   
-  setupSeasonCanvas();
+  setupSeasonCanvas(); // koristi zajednički canvas
 
-  const width = seasonCanvas.width / dpr;
-  const height = seasonCanvas.height / dpr;
-  
-  const leaves = Array.from({ length: 300 }, () => ({
-    x: Math.random() * width, y: Math.random() * height,
-    size: Math.random() * 5 + 4, drift: Math.random() * 1 - 0.5,
-    fall: Math.random() * 0.8 + 0.4, angle: Math.random() * Math.PI * 2,
-    rotation: (Math.random() - 0.5) * 0.02, opacity: Math.random() * 0.4 + 0.4
-  }));
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    leaves.forEach(l => {
-      ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.angle);
-      ctx.globalAlpha = l.opacity;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, l.size, l.size * 0.5, 0, 0, 2 * Math.PI);
-      ctx.fillStyle = 'orange'; ctx.fill(); ctx.restore();
-      l.y += l.fall; l.x += l.drift; l.angle += l.rotation;
-      if (l.y > height + 10) l.y = -10;
-      if (l.x > width + 20) l.x = -20;
-      if (l.x < -20) l.x = width + 20;
+  const width = seasonCanvas.width = window.innerWidth * dpr;
+  const height = seasonCanvas.height = window.innerHeight * dpr;
+  ctx.scale(dpr, dpr);
+
+  const numDrops = 1000;
+  const raindrops = [];
+
+  for (let i = 0; i < numDrops; i++) {
+    raindrops.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      length: 10 + Math.random() * 20,
+      speed: 4 + Math.random() * 6,
+      opacity: Math.random() * 0.3 + 0.1,
+      angle: Math.random() * 0.2 - 0.1 // blagi nagib udesno
     });
-    autumnAnimationId = requestAnimationFrame(animate);
   }
-  animate();
+
+  let pulse = 0;
+
+  function animateRain() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.lineWidth = 1;
+
+    for (let drop of raindrops) {
+      ctx.beginPath();
+      ctx.moveTo(drop.x, drop.y);
+      ctx.lineTo(
+        drop.x + drop.length * drop.angle,
+        drop.y + drop.length
+      );
+      ctx.strokeStyle = `rgba(200,200,255,${drop.opacity})`;
+      ctx.stroke();
+
+      drop.y += drop.speed + pulse;
+
+      if (drop.y > height) {
+        drop.y = -20;
+        drop.x = Math.random() * width;
+      }
+    }
+
+    autumnAnimationId = requestAnimationFrame(animateRain);
+  }
+
+  animateRain();
+
+  // Pulse efekt (mahovi svake 4 sekunde)
+  setInterval(() => {
+    pulse = pulse === 0 ? 5 : 0;
+  }, 4000);
 }
