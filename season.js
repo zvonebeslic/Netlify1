@@ -55,7 +55,6 @@ function initializeSeasonToggle() {
     if (seasonIsRunning) {
       stopSeasonEffects();
       toggle.classList.remove('active-season');
-      seasonIsRunning = false;
     } else {
       iconsWrapper.classList.toggle('visible');
     }
@@ -65,19 +64,24 @@ function initializeSeasonToggle() {
     icon.addEventListener('click', () => {
       const selected = icon.dataset.season;
 
-      stopSeasonEffects(); // osiguraj da sve staro stane
+      stopSeasonEffects(); // Zaustavi sve prethodne
+
+      activeSeason = selected;
+      seasonIsRunning = true;
 
       document.body.classList.add(`season-${selected}`);
       toggle.classList.add('active-season');
       iconsWrapper.classList.remove('visible');
 
-      if (selected === 'winter') startWinterEffect();
-      else if (selected === 'spring') startSpringEffect();
-      else if (selected === 'summer') startSummerEffect();
-      else if (selected === 'autumn') startAutumnEffect();
-    
-      activeSeason = selected;
-      seasonIsRunning = true;
+      if (selected === 'winter') {
+        startWinterEffect();
+      } else if (selected === 'spring') {
+        startSpringEffect();
+      } else if (selected === 'summer') {
+        startSummerEffect();
+      } else if (selected === 'autumn') {
+        startAutumnEffect();
+      }
     });
   });
 }
