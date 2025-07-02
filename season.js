@@ -57,7 +57,7 @@ function initializeSeasonToggle() {
       toggle.classList.remove('active-season');
       seasonIsRunning = false;
     } else {
-      iconsWrapper.classList.toggle('hidden');
+      iconsWrapper.classList.toggle('visible');
     }
   });
 
@@ -72,7 +72,7 @@ function initializeSeasonToggle() {
 
       document.body.classList.add(`season-${selected}`);
       toggle.classList.add('active-season');
-      iconsWrapper.classList.add('visible');
+      iconsWrapper.classList.remove('visible');
 
       if (selected === 'winter') startWinterEffect();
       else if (selected === 'spring') startSpringEffect();
