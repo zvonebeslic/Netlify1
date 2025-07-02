@@ -53,6 +53,7 @@
   background: red;
   transform: rotate(45deg);
   z-index: 999999;
+  pointer-events: none;
 }
 
 /* === GLOBAL CANVAS LAYER === */
