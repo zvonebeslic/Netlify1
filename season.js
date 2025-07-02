@@ -42,65 +42,62 @@ function setupSeasonCanvas() {
   }
 }
 
-// animacija za automatsko gašenje sezonskih efekata
-let winterAnimationId = null;
-let autumnAnimationId = null;
-let springAnimationId = null;
-let summerAnimationId = null;
-
-function cancelAllSeasonAnimations() {
-  if (winterAnimationId) cancelAnimationFrame(winterAnimationId);
-  if (autumnAnimationId) cancelAnimationFrame(autumnAnimationId);
-  if (springAnimationId) cancelAnimationFrame(springAnimationId);
-  if (summerAnimationId) cancelAnimationFrame(summerAnimationId);
-
-  winterAnimationId = null;
-  autumnAnimationId = null;
-  springAnimationId = null;
-  summerAnimationId = null;
-}
+let activeSeason = null;
+let seasonIsRunning = false;
 
 function initializeSeasonToggle() {
   const toggle = document.getElementById('season-toggle');
   const iconsWrapper = document.getElementById('season-icons');
-  const stopButton = document.getElementById('stop-season');
-  if (!toggle || !iconsWrapper || !stopButton) return;
-  let activeSeason = null;
+
+  if (!toggle || !iconsWrapper) return;
+
   toggle.addEventListener('click', () => {
-    iconsWrapper.classList.toggle('hidden');
-    iconsWrapper.classList.toggle('visible');
+    if (seasonIsRunning) {
+      stopSeasonEffects();
+      toggle.classList.remove('active-season');
+      seasonIsRunning = false;
+    } else {
+      iconsWrapper.classList.toggle('hidden');
+    }
   });
+
   document.querySelectorAll('.season-icon').forEach(icon => {
     icon.addEventListener('click', () => {
       const selected = icon.dataset.season;
-      if (activeSeason === selected) {
-        stopSeasonEffects(); return;
-      }
-      stopSeasonEffects();
+
+      stopSeasonEffects(); // osiguraj da sve staro stane
+
       activeSeason = selected;
+      seasonIsRunning = true;
+
       document.body.classList.add(`season-${selected}`);
-      stopButton.classList.remove('hidden');
+      toggle.classList.add('active-season');
+      iconsWrapper.classList.add('hidden');
+
       if (selected === 'winter') startWinterEffect();
       else if (selected === 'spring') startSpringEffect();
-      else if (selected === 'autumn') startAutumnEffect();
       else if (selected === 'summer') startSummerEffect();
+      else if (selected === 'autumn') startAutumnEffect();
     });
   });
-  stopButton.addEventListener('click', stopSeasonEffects);
 }
 
 function stopSeasonEffects() {
   document.body.classList.remove('season-winter', 'season-spring', 'season-autumn', 'season-summer');
-  document.getElementById('stop-season').classList.add('hidden');
+
   const canvas = document.getElementById('season-canvas');
   if (canvas) canvas.remove();
+
+  activeSeason = null;
+  seasonIsRunning = false;
 }
 
 // ZIMA
 // === REALISTIC WINTER EFFECT ===
 function startWinterEffect() {
+  if (seasonIsRunning && activeSeason === 'winter') return;
+  
   cancelAllSeasonAnimations();
-  stopSeasonEffects();
   
   setupSeasonCanvas();
 
@@ -320,8 +317,9 @@ if (flake.x < -50) {
 
 
 function startSpringEffect() {
+  if (seasonIsRunning && activeSeason === 'spring') return;
+  
   cancelAllSeasonAnimations();
-  stopSeasonEffects();
   
   setupSeasonCanvas();
 
@@ -353,8 +351,9 @@ function startSpringEffect() {
 }
 
 function startSummerEffect() {
+  if (seasonIsRunning && activeSeason === 'summer') return;
+  
   cancelAllSeasonAnimations();
-  stopSeasonEffects();
   
   setupSeasonCanvas();
 
@@ -391,8 +390,9 @@ function startSummerEffect() {
 }
 
 function startAutumnEffect() {
+  if (seasonIsRunning && activeSeason === 'autumn') return;
+  
   cancelAllSeasonAnimations();
-  stopSeasonEffects();
   
   setupSeasonCanvas();
 
