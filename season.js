@@ -365,25 +365,26 @@ function startSpringEffect() {
   const seeds = [];
   const totalSeeds = 120;
 
-  for (let i = 0; i < totalSeeds; i++) {
+  function createSeed(sizeGroup) {
     let size = 1.0;
-    if (i >= 30 && i < 60) size += 1 / mm;
-    else if (i >= 60 && i < 90) size += 2 / mm;
-    else if (i >= 90) size += 3 / mm;
+    if (sizeGroup === 1) size += 1 / mm;
+    if (sizeGroup === 2) size += 2 / mm;
+    if (sizeGroup === 3) size += 3 / mm;
 
-    seeds.push({
-      x: Math.random() * width,
-      y: i < 20 ? height - Math.random() * height * 0.5 : height + Math.random() * 80,
-      baseDriftY: -0.2 - Math.random() * 0.4,
-      driftX: (Math.random() - 0.5) * 0.4,
-      speedFactor: 0.4 + Math.random() * 1.2,
-      floatOffset: Math.random() * 3000,
-      rotationOffset: Math.random() * 1000,
+    return {
+      x: width - Math.random() * (mm * 5),
+      y: height + Math.random() * (mm * 5),
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: -0.3 - Math.random() * 0.3,
       angle: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.004,
+      rotationSpeed: (Math.random() - 0.5) * 0.005,
       size,
-      time: 0
-    });
+    };
+  }
+
+  for (let i = 0; i < totalSeeds; i++) {
+    const sizeGroup = Math.floor(i / 30); // 0,1,2,3
+    seeds.push(createSeed(sizeGroup));
   }
 
   let wind = 0;
@@ -401,40 +402,48 @@ function startSpringEffect() {
     wind += (targetWind - wind) * 0.003;
   }
 
-  function drawSeed(seed, time) {
-    const float = Math.sin((time + seed.floatOffset) / 400) * mm * 0.7;
-    const lw = 2 + seed.size * 1.5;
+  function drawSeed(s) {
+    const lw = 2 + s.size * 1.5;
 
     ctx.save();
-    ctx.translate(seed.x, seed.y + float);
-    ctx.rotate(seed.angle + Math.sin(time / 1000 + seed.rotationOffset) * 0.1);
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.angle);
 
-    // STABLjIKA
+    // Stabljika
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
     ctx.lineWidth = lw;
     ctx.moveTo(0, 0);
     ctx.bezierCurveTo(
-      -0.6 * seed.size, mm * 1 * seed.size,
-      -0.3 * seed.size, mm * 2 * seed.size,
-      0, mm * 2.5 * seed.size
+      -0.6 * s.size, mm * 1 * s.size,
+      -0.3 * s.size, mm * 2 * s.size,
+      0, mm * 2.5 * s.size
     );
     ctx.stroke();
 
-    // SJEME
+    // Sjeme
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
-    ctx.ellipse(0, mm * 2.8 * seed.size, mm * 0.6 * seed.size, mm * 1 * seed.size, 0, 0, 2 * Math.PI);
+    ctx.ellipse(
+      0,
+      mm * 2.8 * s.size,
+      mm * 0.6 * s.size,
+      mm * 1 * s.size,
+      0,
+      0,
+      2 * Math.PI
+    );
     ctx.fill();
 
-    // TICALA
+    // Ticala
     const count = 30;
-    const radius = mm * 2 * seed.size;
+    const radius = mm * 2 * s.size;
     ctx.lineWidth = lw;
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 1.2) * (i / (count - 1)) - Math.PI * 0.6;
+      const angle =
+        (Math.PI * 1.2) * (i / (count - 1)) - Math.PI * 0.6;
       const cx = Math.cos(angle) * radius * 0.4;
       const cy = Math.sin(angle) * radius * 0.4;
       const x2 = Math.cos(angle) * radius;
@@ -458,42 +467,21 @@ function startSpringEffect() {
     ctx.clearRect(0, 0, width, height);
     updateWind(delta);
 
-    for (let i = seeds.length - 1; i >= 0; i--) {
+    for (let i = 0; i < seeds.length; i++) {
       const s = seeds[i];
-      s.time += delta;
 
-      const oscillationY = Math.sin((s.time + s.floatOffset) / 1100) * 0.25;
-      const driftY = s.baseDriftY + oscillationY + wind * 0.05;
-
-      s.y += driftY * s.speedFactor;
-      s.x += (s.driftX + wind * 0.4) * s.speedFactor;
+      s.x += (s.vx + wind * 0.4);
+      s.y += s.vy;
       s.angle += s.rotationSpeed;
 
-      drawSeed(s, currentTime);
+      drawSeed(s);
 
       if (
         s.x < -100 || s.x > width + 100 ||
-        s.y < -150 || s.y > height + 150
+        s.y < -100 || s.y > height + 100
       ) {
-        let size = 1.0;
-        if (i >= 30 && i < 60) size += 1 / mm;
-        else if (i >= 60 && i < 90) size += 2 / mm;
-        else if (i >= 90) size += 3 / mm;
-
-        seeds.splice(i, 1);
-        seeds.push({
-          x: Math.random() * width,
-          y: height + Math.random() * 60,
-          baseDriftY: -0.2 - Math.random() * 0.4,
-          driftX: (Math.random() - 0.5) * 0.4,
-          speedFactor: 0.4 + Math.random() * 1.2,
-          floatOffset: Math.random() * 3000,
-          rotationOffset: Math.random() * 1000,
-          angle: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.004,
-          size,
-          time: 0
-        });
+        const group = Math.floor(i / 30);
+        seeds[i] = createSeed(group);
       }
     }
 
