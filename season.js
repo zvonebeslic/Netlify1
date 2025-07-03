@@ -352,35 +352,113 @@ if (flake.x < -50) {
 
 // PROLJEĆE
 function startSpringEffect() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'season-canvas';
+  Object.assign(canvas.style, {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    pointerEvents: 'none',
+    zIndex: 99998
+  });
+  document.body.appendChild(canvas);
 
-  cancelAllSeasonAnimations();
-  
-  setupSeasonCanvas();
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width = window.innerWidth;
+  const height = canvas.height = window.innerHeight;
 
-  const width = seasonCanvas.width / dpr;
-  const height = seasonCanvas.height / dpr;
-  
-  const petals = Array.from({ length: 300 }, () => ({
-    x: Math.random() * width, y: Math.random() * height,
-    size: Math.random() * 5 + 4, drift: Math.random() * 1 - 0.5,
-    fall: Math.random() * 0.8 + 0.2, angle: Math.random() * Math.PI * 2,
-    rotation: (Math.random() - 0.5) * 0.01, opacity: Math.random() * 0.4 + 0.4
-  }));
+  const seeds = [];
+
+  function spawnSeeds(count = 25) {
+    for (let i = 0; i < count; i++) {
+      seeds.push({
+        x: width - 20 + Math.random() * 10,    // blizu donjeg desnog kuta
+        y: height - 20 + Math.random() * 10,
+        angle: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.01,
+        driftX: (Math.random() - 0.5) * 0.2,
+        driftY: -0.3 - Math.random() * 0.2,
+        size: 10 + Math.random() * 10,
+        lifespan: 800 + Math.random() * 800,
+        age: 0
+      });
+    }
+  }
+
+  // Povremeno ubacuj sjemenke
+  let spawnInterval = setInterval(() => {
+    spawnSeeds(20 + Math.floor(Math.random() * 10)); // 20-30
+  }, 4000); // svakih 4 sekunde
+
+  function drawSeed(seed) {
+    ctx.save();
+    ctx.translate(seed.x, seed.y);
+    ctx.rotate(seed.angle);
+
+    const size = seed.size;
+    const radius = size * 0.6;
+
+    // Padobranski dio – bijeli filamenti
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.lineWidth = 0.4;
+    for (let i = 0; i < 12; i++) {
+      const theta = (i / 12) * 2 * Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(theta) * radius, Math.sin(theta) * radius - size * 0.8);
+      ctx.stroke();
+    }
+
+    // Siva drška
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, size * 0.8);
+    ctx.stroke();
+
+    // Tamno sjeme
+    ctx.fillStyle = '#444';
+    ctx.beginPath();
+    ctx.ellipse(0, size * 0.9, 1.5, 2.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  // Efekt povremenog povjetarca
+  let wind = 0;
+  let windTarget = 0;
+
+  setInterval(() => {
+    windTarget = (Math.random() - 0.5) * 0.6; // slab do umjeren vjetar
+  }, 6000);
+
   function animate() {
     ctx.clearRect(0, 0, width, height);
-    petals.forEach(p => {
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
-      ctx.globalAlpha = p.opacity;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, 2 * Math.PI);
-      ctx.fillStyle = 'pink'; ctx.fill(); ctx.restore();
-      p.y += p.fall; p.x += p.drift; p.angle += p.rotation;
-      if (p.y > height + 10) p.y = -10;
-      if (p.x > width + 20) p.x = -20;
-      if (p.x < -20) p.x = width + 20;
-    });
-    springAnimationId = requestAnimationFrame(animate);
+
+    // lagano približi wind cilju
+    wind += (windTarget - wind) * 0.01;
+
+    for (let i = seeds.length - 1; i >= 0; i--) {
+      const s = seeds[i];
+      s.x += s.driftX + wind * 0.5;
+      s.y += s.driftY;
+      s.angle += s.rotationSpeed;
+      s.age++;
+
+      drawSeed(s);
+
+      if (s.age > s.lifespan || s.x < -50 || s.x > width + 50 || s.y < -50) {
+        seeds.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(animate);
   }
+
   animate();
 }
 
