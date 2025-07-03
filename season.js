@@ -352,29 +352,30 @@ if (flake.x < -50) {
 
 // PROLJEĆE
 function startSpringEffect() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'season-canvas';
-  Object.assign(canvas.style, {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    pointerEvents: 'none',
-    zIndex: 99998
-  });
-  document.body.appendChild(canvas);
+  
+  cancelAllSeasonAnimations();
+  
+  setupSeasonCanvas();
 
-  const ctx = canvas.getContext('2d');
-  const width = canvas.width = window.innerWidth;
-  const height = canvas.height = window.innerHeight;
+  const ctx = seasonCanvas.getContext('2d');
+  const width = seasonCanvas.width;
+  const height = seasonCanvas.height;
 
   const seeds = [];
 
+  // === Povjetarac + njihanje ===
+  let windStrength = 0;
+  let targetWind = 0;
+  let windTimer = 0;
+  let windInterval = Math.random() * 8000 + 6000;
+
+  let lastFrameTime = performance.now();
+
+  // === Sporo ubacivanje novih sjemenki iz donjeg desnog kuta ===
   function spawnSeeds(count = 25) {
     for (let i = 0; i < count; i++) {
       seeds.push({
-        x: width - 20 + Math.random() * 10,    // blizu donjeg desnog kuta
+        x: width - 20 + Math.random() * 10,
         y: height - 20 + Math.random() * 10,
         angle: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.01,
@@ -387,10 +388,11 @@ function startSpringEffect() {
     }
   }
 
-  // Povremeno ubacuj sjemenke
-  let spawnInterval = setInterval(() => {
-    spawnSeeds(20 + Math.floor(Math.random() * 10)); // 20-30
-  }, 4000); // svakih 4 sekunde
+  const springSpawnInterval = setInterval(() => {
+    spawnSeeds(20 + Math.floor(Math.random() * 10));
+  }, 4000);
+
+  springAnimationId = requestAnimationFrame(animate);
 
   function drawSeed(seed) {
     ctx.save();
@@ -400,7 +402,7 @@ function startSpringEffect() {
     const size = seed.size;
     const radius = size * 0.6;
 
-    // Padobranski dio – bijeli filamenti
+    // bijele dlačice (padobranski dio)
     ctx.strokeStyle = 'rgba(255,255,255,0.6)';
     ctx.lineWidth = 0.4;
     for (let i = 0; i < 12; i++) {
@@ -411,7 +413,7 @@ function startSpringEffect() {
       ctx.stroke();
     }
 
-    // Siva drška
+    // siva drška
     ctx.strokeStyle = '#888';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -419,7 +421,7 @@ function startSpringEffect() {
     ctx.lineTo(0, size * 0.8);
     ctx.stroke();
 
-    // Tamno sjeme
+    // tamno sjeme
     ctx.fillStyle = '#444';
     ctx.beginPath();
     ctx.ellipse(0, size * 0.9, 1.5, 2.2, 0, 0, Math.PI * 2);
@@ -428,23 +430,28 @@ function startSpringEffect() {
     ctx.restore();
   }
 
-  // Efekt povremenog povjetarca
-  let wind = 0;
-  let windTarget = 0;
+  function updateWind(deltaTime) {
+    windTimer += deltaTime;
+    if (windTimer > windInterval) {
+      windTimer = 0;
+      windInterval = Math.random() * 9000 + 7000;
+      targetWind = (Math.random() - 0.5) * 1.2;
+    }
 
-  setInterval(() => {
-    windTarget = (Math.random() - 0.5) * 0.6; // slab do umjeren vjetar
-  }, 6000);
+    windStrength += (targetWind - windStrength) * 0.01;
+  }
 
-  function animate() {
+  function animate(currentTime) {
+    const deltaTime = currentTime - lastFrameTime;
+    lastFrameTime = currentTime;
+
+    updateWind(deltaTime);
+
     ctx.clearRect(0, 0, width, height);
-
-    // lagano približi wind cilju
-    wind += (windTarget - wind) * 0.01;
 
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
-      s.x += s.driftX + wind * 0.5;
+      s.x += s.driftX + windStrength * 0.4;
       s.y += s.driftY;
       s.angle += s.rotationSpeed;
       s.age++;
@@ -456,9 +463,8 @@ function startSpringEffect() {
       }
     }
 
-    requestAnimationFrame(animate);
+    springAnimationId = requestAnimationFrame(animate);
   }
-
   animate();
 }
 
