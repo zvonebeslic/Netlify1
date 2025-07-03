@@ -352,147 +352,84 @@ if (flake.x < -50) {
 
 // PROLJEĆE
 function startSpringEffect() {
+  
   cancelAllSeasonAnimations();
+  
   setupSeasonCanvas();
 
-  const ctx = seasonCanvas.getContext('2d');
+  const seeds = [];
+  const maxSeeds = 25;
   const width = seasonCanvas.width;
   const height = seasonCanvas.height;
-  const seeds = [];
 
-  let windStrength = 0;
-  let targetWind = 0;
-  let windTimer = 0;
-  let windInterval = Math.random() * 8000 + 6000;
-  let lastFrameTime = performance.now();
-
-  // Dodajemo sjemenke svakih par sekundi
-  const springSpawnInterval = setInterval(() => {
-    spawnSeeds(20 + Math.floor(Math.random() * 10));
-  }, 3500);
-
-  function spawnSeeds(count = 25) {
-    for (let i = 0; i < count; i++) {
-      const fromBottom = Math.random() < 0.5;
-      let x, y;
-
-      if (fromBottom) {
-        x = width / 2 + Math.random() * (width / 2);
-        y = height - 10 + Math.random() * 10;
-      } else {
-        x = width - 10 + Math.random() * 10;
-        y = height / 2 + Math.random() * (height / 2);
-      }
-
-      seeds.push({
-        x,
-        y,
-        baseY: y, // za početno lebdenje
-        delay: fromBottom ? 1000 + Math.random() * 1000 : 0,
-        timeAlive: 0,
-        angle: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.02,
-        driftX: (Math.random() - 0.5) * 1.0,  // umanjeno za 20%
-        driftY: -0.8 - Math.random() * 0.4,  // umanjeno za 20%
-        size: 10 + Math.random() * 10,
-        swayOffset: Math.random() * 1000
-      });
-    }
+  for (let i = 0; i < maxSeeds; i++) {
+    seeds.push({
+      x: Math.random() * width,
+      y: height + Math.random() * 100,
+      driftX: (Math.random() - 0.5) * 0.3,
+      driftY: -0.4 - Math.random() * 0.4,
+      size: 0.5 + Math.random() * 0.5,
+      angle: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - 0.5) * 0.002,
+      floatOffset: Math.random() * 1000
+    });
   }
 
   function drawSeed(seed, time) {
+    const float = Math.sin((time + seed.floatOffset) / 300) * 5;
+
+    // 3D simulacija: njihanje po Y i X osi
+    const tiltX = Math.sin((time + seed.floatOffset) / 600) * 0.15;
+    const tiltY = Math.cos((time + seed.floatOffset) / 800) * 0.15;
+
     ctx.save();
-    ctx.translate(seed.x, seed.y);
+    ctx.translate(seed.x, seed.y + float);
+    ctx.rotate(seed.angle);
+    ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
 
-    const size = seed.size;
-    const radius = size * 0.5;
-    const sway = Math.sin((time + seed.swayOffset) / 500) * 0.2;
-
-    // === sjemenka uvijek vodoravno (ne rotiramo cijeli seed)
-    ctx.rotate(0); // može i izostati
-
-    // === dlačice (rotiraju se kao padobranski rotor)
-    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth = 0.6;
-    const hairRotation = seed.angle + sway;
-
-    for (let i = 0; i < 12; i++) {
-      const theta = (i / 12) * 2 * Math.PI + hairRotation;
-      const xEnd = Math.cos(theta) * radius;
-      const yEnd = Math.sin(theta) * radius - size * 1.1;
-
-      // glavno ticalo
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(xEnd, yEnd);
-      ctx.stroke();
-
-      // bočni kraci na vrhu svakog ticala
-      const angleOffset = 0.25;
-      const tx1 = xEnd + Math.cos(theta + angleOffset) * 5;
-      const ty1 = yEnd + Math.sin(theta + angleOffset) * 5;
-      const tx2 = xEnd + Math.cos(theta - angleOffset) * 5;
-      const ty2 = yEnd + Math.sin(theta - angleOffset) * 5;
-
-      ctx.beginPath();
-      ctx.moveTo(xEnd, yEnd);
-      ctx.lineTo(tx1, ty1);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(xEnd, yEnd);
-      ctx.lineTo(tx2, ty2);
-      ctx.stroke();
-    }
-
-    // === drška
-    ctx.strokeStyle = '#888';
-    ctx.lineWidth = 1;
+    // === STABLjIKA ===
     ctx.beginPath();
+    ctx.strokeStyle = '#8B5A2B';
+    ctx.lineWidth = 2;
     ctx.moveTo(0, 0);
-    ctx.lineTo(0, size * 0.8);
+    ctx.bezierCurveTo(-2, 10, -1, 30, 0, 50);
     ctx.stroke();
 
-    // === sjeme
-    ctx.fillStyle = '#444';
+    // === SJEME (baza) ===
     ctx.beginPath();
-    ctx.ellipse(0, size * 0.9, 1.5, 1.7, 0, 0, Math.PI * 2); // kraće za 0.5mm
+    ctx.fillStyle = '#5C432A';
+    ctx.ellipse(0, 55, 2.5, 5, 0, 0, 2 * Math.PI);
     ctx.fill();
+
+    // === TICALA ===
+    const count = 30;
+    const radius = 25;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#ffffff';
+
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 1.2) * (i / (count - 1)) - Math.PI * 0.6;
+      const cx = Math.cos(angle) * radius * 0.4;
+      const cy = Math.sin(angle) * radius * 0.4;
+      const x2 = Math.cos(angle) * radius;
+      const y2 = Math.sin(angle) * radius;
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(cx, cy, x2, y2);
+      ctx.stroke();
+    }
 
     ctx.restore();
   }
 
-  function updateWind(deltaTime) {
-    windTimer += deltaTime;
-    if (windTimer > windInterval) {
-      windTimer = 0;
-      windInterval = Math.random() * 9000 + 7000;
-      targetWind = (Math.random() - 0.5) * 1.2;
-    }
-    windStrength += (targetWind - windStrength) * 0.01;
-  }
-
   function animate(currentTime) {
-    const deltaTime = currentTime - lastFrameTime;
-    lastFrameTime = currentTime;
-
-    updateWind(deltaTime);
     ctx.clearRect(0, 0, width, height);
 
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
-      s.timeAlive += deltaTime;
 
-      if (s.delay > 0) {
-        if (s.timeAlive < s.delay) {
-          // lebdenje u donjoj polovici prije uzleta
-          s.y = s.baseY + Math.sin(s.timeAlive / 300) * 1;
-          drawSeed(s, currentTime);
-          continue;
-        }
-      }
-
-      s.x += s.driftX + windStrength * 0.3;
+      s.x += s.driftX;
       s.y += s.driftY;
       s.angle += s.rotationSpeed;
 
@@ -503,6 +440,16 @@ function startSpringEffect() {
         s.y < -100 || s.y > height + 100
       ) {
         seeds.splice(i, 1);
+        seeds.push({
+          x: Math.random() * width,
+          y: height + 50 + Math.random() * 100,
+          driftX: (Math.random() - 0.5) * 0.3,
+          driftY: -0.4 - Math.random() * 0.4,
+          size: 0.5 + Math.random() * 0.5,
+          angle: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.002,
+          floatOffset: Math.random() * 1000
+        });
       }
     }
 
@@ -511,7 +458,6 @@ function startSpringEffect() {
 
   animate();
 }
-
 // LJETO
 function startSummerEffect() {
 
