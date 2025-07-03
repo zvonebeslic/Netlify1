@@ -352,26 +352,21 @@ if (flake.x < -50) {
 
 // PROLJEĆE
 function startSpringEffect() {
-  
   cancelAllSeasonAnimations();
-  
   setupSeasonCanvas();
 
   const ctx = seasonCanvas.getContext('2d');
   const width = seasonCanvas.width;
   const height = seasonCanvas.height;
-
   const seeds = [];
 
-  // === VJETAR ===
   let windStrength = 0;
   let targetWind = 0;
   let windTimer = 0;
   let windInterval = Math.random() * 8000 + 6000;
-
   let lastFrameTime = performance.now();
 
-  // === UBACIVANJE SJEMENKI IZ DVIJE ZONE ===
+  // Dodajemo sjemenke svakih par sekundi
   const springSpawnInterval = setInterval(() => {
     spawnSeeds(20 + Math.floor(Math.random() * 10));
   }, 3500);
@@ -392,49 +387,65 @@ function startSpringEffect() {
       seeds.push({
         x,
         y,
+        baseY: y, // za početno lebdenje
+        delay: fromBottom ? 1000 + Math.random() * 1000 : 0,
+        timeAlive: 0,
         angle: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.03, // brža rotacija
-        driftX: (Math.random() - 0.5) * 1.2,         // brže gibanje
-        driftY: -1 - Math.random() * 0.6,            // brže prema gore
+        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        driftX: (Math.random() - 0.5) * 1.0,  // umanjeno za 20%
+        driftY: -0.8 - Math.random() * 0.4,  // umanjeno za 20%
         size: 10 + Math.random() * 10,
         swayOffset: Math.random() * 1000
       });
     }
   }
 
-  // === CRTANJE SJEMENKE ===
   function drawSeed(seed, time) {
     ctx.save();
     ctx.translate(seed.x, seed.y);
 
-    const sway = Math.sin((time + seed.swayOffset) / 500) * 0.1;
-    ctx.rotate(seed.angle + sway);
-
     const size = seed.size;
     const radius = size * 0.5;
+    const sway = Math.sin((time + seed.swayOffset) / 500) * 0.2;
 
-    // dlačice – glavno ticalo + dvije bočne
-    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-    ctx.lineWidth = 0.4;
+    // === sjemenka uvijek vodoravno (ne rotiramo cijeli seed)
+    ctx.rotate(0); // može i izostati
 
-    // glavno ticalo
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -radius * 1.5);
-    ctx.stroke();
+    // === dlačice (rotiraju se kao padobranski rotor)
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 0.6;
+    const hairRotation = seed.angle + sway;
 
-    // bočna dva ticala u obliku slova V
-    ctx.beginPath();
-    ctx.moveTo(0, -radius * 1.2);
-    ctx.lineTo(-radius * 0.4, -radius * 1.5);
-    ctx.stroke();
+    for (let i = 0; i < 12; i++) {
+      const theta = (i / 12) * 2 * Math.PI + hairRotation;
+      const xEnd = Math.cos(theta) * radius;
+      const yEnd = Math.sin(theta) * radius - size * 1.1;
 
-    ctx.beginPath();
-    ctx.moveTo(0, -radius * 1.2);
-    ctx.lineTo(radius * 0.4, -radius * 1.5);
-    ctx.stroke();
+      // glavno ticalo
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(xEnd, yEnd);
+      ctx.stroke();
 
-    // drška
+      // bočni kraci na vrhu svakog ticala
+      const angleOffset = 0.25;
+      const tx1 = xEnd + Math.cos(theta + angleOffset) * 5;
+      const ty1 = yEnd + Math.sin(theta + angleOffset) * 5;
+      const tx2 = xEnd + Math.cos(theta - angleOffset) * 5;
+      const ty2 = yEnd + Math.sin(theta - angleOffset) * 5;
+
+      ctx.beginPath();
+      ctx.moveTo(xEnd, yEnd);
+      ctx.lineTo(tx1, ty1);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(xEnd, yEnd);
+      ctx.lineTo(tx2, ty2);
+      ctx.stroke();
+    }
+
+    // === drška
     ctx.strokeStyle = '#888';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -442,10 +453,10 @@ function startSpringEffect() {
     ctx.lineTo(0, size * 0.8);
     ctx.stroke();
 
-    // sjeme
+    // === sjeme
     ctx.fillStyle = '#444';
     ctx.beginPath();
-    ctx.ellipse(0, size * 0.9, 1.5, 2.2, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, size * 0.9, 1.5, 1.7, 0, 0, Math.PI * 2); // kraće za 0.5mm
     ctx.fill();
 
     ctx.restore();
@@ -455,10 +466,9 @@ function startSpringEffect() {
     windTimer += deltaTime;
     if (windTimer > windInterval) {
       windTimer = 0;
-      windInterval = Math.random() * 8000 + 7000;
+      windInterval = Math.random() * 9000 + 7000;
       targetWind = (Math.random() - 0.5) * 1.2;
     }
-
     windStrength += (targetWind - windStrength) * 0.01;
   }
 
@@ -471,13 +481,23 @@ function startSpringEffect() {
 
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
+      s.timeAlive += deltaTime;
+
+      if (s.delay > 0) {
+        if (s.timeAlive < s.delay) {
+          // lebdenje u donjoj polovici prije uzleta
+          s.y = s.baseY + Math.sin(s.timeAlive / 300) * 1;
+          drawSeed(s, currentTime);
+          continue;
+        }
+      }
+
       s.x += s.driftX + windStrength * 0.3;
       s.y += s.driftY;
       s.angle += s.rotationSpeed;
 
       drawSeed(s, currentTime);
 
-      // uklanjanje sjemenki kada izađu van ekrana
       if (
         s.x < -100 || s.x > width + 100 ||
         s.y < -100 || s.y > height + 100
