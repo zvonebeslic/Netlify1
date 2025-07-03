@@ -350,6 +350,7 @@ if (flake.x < -50) {
   draw();
 }
 
+// PROLJEĆE
 function startSpringEffect() {
 
   cancelAllSeasonAnimations();
@@ -383,6 +384,7 @@ function startSpringEffect() {
   animate();
 }
 
+// LJETO
 function startSummerEffect() {
 
   cancelAllSeasonAnimations();
@@ -421,52 +423,77 @@ function startSummerEffect() {
   animate();
 }
 
+// JESEN
 function startAutumnEffect() {
-  
-  cancelAllSeasonAnimations();  
-  setupSeasonCanvas(); 
+  const canvas = document.createElement('canvas');
+  canvas.id = 'season-canvas';
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
+  canvas.style.zIndex = '99998';
+  canvas.style.pointerEvents = 'none';
+  document.body.appendChild(canvas);
 
-  const width = seasonCanvas.width / dpr;
-  const height = seasonCanvas.height / dpr;
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
 
-  const numDrops = 1800; // Više kapi
-  const raindrops = [];
+  const drops = [];
+  const dropLayers = 3; // pozadina, sredina, prednji sloj
+  const layerConfigs = [
+    { count: 80, speed: 2, opacity: 0.15, width: 0.7 },
+    { count: 100, speed: 4, opacity: 0.25, width: 1 },
+    { count: 80, speed: 6, opacity: 0.35, width: 1.5 }
+  ];
 
-  for (let i = 0; i < numDrops; i++) {
-    raindrops.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      length: 12 + Math.random() * 18,         // realistična dužina
-      speed: 6 + Math.random() * 4,            // brza kiša
-      opacity: Math.random() * 0.4 + 0.2,      // raznolika prozirnost
-      angle: Math.random() * 0.1 - 0.05        // mali nagib
-    });
+  for (let layer = 0; layer < dropLayers; layer++) {
+    const config = layerConfigs[layer];
+    for (let i = 0; i < config.count; i++) {
+      drops.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        length: 10 + Math.random() * 15,
+        speed: config.speed + Math.random() * 1,
+        width: config.width,
+        opacity: config.opacity
+      });
+    }
   }
 
-  function animateRain() {
-    ctx.clearRect(0, 0, width, height);
-    ctx.lineWidth = 1.5; // Deblje kapi za jaču kišu
+  let lightningTimer = 0;
 
-    for (let drop of raindrops) {
+  function drawRain() {
+    ctx.clearRect(0, 0, width, height);
+
+    // povremeni bljesak
+    if (Math.random() < 0.002 && lightningTimer <= 0) {
+      lightningTimer = 5;
+    }
+    if (lightningTimer > 0) {
+      ctx.fillStyle = `rgba(255,255,255,${0.1 * lightningTimer})`;
+      ctx.fillRect(0, 0, width, height);
+      lightningTimer--;
+    }
+
+    drops.forEach(drop => {
       ctx.beginPath();
+      ctx.strokeStyle = `rgba(255,255,255,${drop.opacity})`;
+      ctx.lineWidth = drop.width;
       ctx.moveTo(drop.x, drop.y);
-      ctx.lineTo(
-        drop.x + drop.length * drop.angle,
-        drop.y + drop.length
-      );
-      ctx.strokeStyle = `rgba(200,200,255,${drop.opacity})`;
+      ctx.lineTo(drop.x, drop.y + drop.length);
       ctx.stroke();
 
       drop.y += drop.speed;
-
       if (drop.y > height) {
         drop.y = -20;
         drop.x = Math.random() * width;
       }
-    }
+    });
 
-    autumnAnimationId = requestAnimationFrame(animateRain);
+    requestAnimationFrame(drawRain);
   }
 
-  animateRain();
+  drawRain();
 }
