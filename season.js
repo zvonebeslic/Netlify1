@@ -381,8 +381,6 @@ if (flake.x < -50) {
 
   for (let i = 0; i < totalSeeds; i++) {
     const startInside = i < 20;
-
-    // Grupirana veličina
     let size = 1.0;
     if (i >= 30 && i < 60) size += 1 / mm;
     else if (i >= 60 && i < 90) size += 2 / mm;
@@ -390,9 +388,7 @@ if (flake.x < -50) {
 
     seeds.push({
       x: Math.random() * width,
-      y: startInside
-        ? height - 100 - Math.random() * 100
-        : height + Math.random() * 80,
+      y: startInside ? height - 100 - Math.random() * 100 : height + Math.random() * 80,
       baseDriftY: -0.2 - Math.random() * 0.4,
       driftX: (Math.random() - 0.5) * 0.4,
       speedFactor: 0.4 + Math.random() * 1.2,
@@ -406,32 +402,29 @@ if (flake.x < -50) {
 
   function drawSeed(seed, time) {
     const float = Math.sin((time + seed.floatOffset) / 400) * mm * 0.7;
-    const tiltX = Math.sin((time + seed.floatOffset) / 600) * 0.15;
-    const tiltY = Math.cos((time + seed.floatOffset) / 800) * 0.15;
-
     ctx.save();
-    ctx.translate(seed.x, seed.y + float);
+    ctx.translate(seed.x, seed.y + float + seed.size * mm * 0.3);
     ctx.rotate(seed.angle);
-    ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
+    ctx.scale(seed.size, seed.size); // Samo veličina, bez oscilacije
 
-    // STABLjIKA
+    // === STABLjIKA ===
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5 * seed.size + 0.5;
     ctx.moveTo(0, 0);
     ctx.bezierCurveTo(-0.6, mm * 1, -0.3, mm * 2, 0, mm * 2.5);
     ctx.stroke();
 
-    // SJEME
+    // === SJEME ===
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
-    ctx.ellipse(0, mm * 2.8, mm * 0.6, mm * 1, 0, 0, 2 * Math.PI);
+    ctx.ellipse(0, mm * 2.8, mm * 0.6 * seed.size, mm * 1 * seed.size, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // TICALA
+    // === TICALA ===
     const count = 30;
     const radius = mm * 2;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5 * seed.size + 0.5;
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
@@ -476,7 +469,7 @@ if (flake.x < -50) {
         s.x < -100 || s.x > width + 100 ||
         s.y < -150 || s.y > height + 150
       ) {
-        // Nova sjemenka zadržava grupu veličine
+        // nova sjemenka zadržava veličinsku grupu
         let size = 1.0;
         if (i >= 30 && i < 60) size += 1 / mm;
         else if (i >= 60 && i < 90) size += 2 / mm;
@@ -502,8 +495,7 @@ if (flake.x < -50) {
   }
 
   animate();
-}   
-
+}
     
 // LJETO
 function startSummerEffect() {
