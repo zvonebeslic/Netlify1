@@ -351,19 +351,39 @@ if (flake.x < -50) {
 }
 
 // PROLJEĆE
- function startSpringEffect() {
-   
+function startSpringEffect() {
+  
   cancelAllSeasonAnimations();
-   
+  
   setupSeasonCanvas();
 
   const mm = 3.78;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
   const seeds = [];
   const totalSeeds = 120;
-  const width = seasonCanvas.width;
-  const height = seasonCanvas.height;
 
-  // POVJETARAC
+  for (let i = 0; i < totalSeeds; i++) {
+    let size = 1.0;
+    if (i >= 30 && i < 60) size += 1 / mm;
+    else if (i >= 60 && i < 90) size += 2 / mm;
+    else if (i >= 90) size += 3 / mm;
+
+    seeds.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      baseDriftY: -0.2 - Math.random() * 0.4,
+      driftX: (Math.random() - 0.5) * 0.4,
+      speedFactor: 0.4 + Math.random() * 1.2,
+      floatOffset: Math.random() * 3000,
+      angle: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - 0.5) * 0.004,
+      size,
+      time: 0
+    });
+  }
+
   let wind = 0;
   let targetWind = 0;
   let windTimer = 0;
@@ -379,52 +399,37 @@ if (flake.x < -50) {
     wind += (targetWind - wind) * 0.003;
   }
 
-  for (let i = 0; i < totalSeeds; i++) {
-    const startInside = i < 20;
-    let size = 1.0;
-    if (i >= 30 && i < 60) size += 1 / mm;
-    else if (i >= 60 && i < 90) size += 2 / mm;
-    else if (i >= 90) size += 3 / mm;
-
-    seeds.push({
-      x: Math.random() * width,
-      y: startInside ? height - 100 - Math.random() * 100 : height + Math.random() * 80,
-      baseDriftY: -0.2 - Math.random() * 0.4,
-      driftX: (Math.random() - 0.5) * 0.4,
-      speedFactor: 0.4 + Math.random() * 1.2,
-      floatOffset: Math.random() * 3000,
-      angle: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.004,
-      size: size,
-      time: 0
-    });
-  }
-
   function drawSeed(seed, time) {
     const float = Math.sin((time + seed.floatOffset) / 400) * mm * 0.7;
+
     ctx.save();
-    ctx.translate(seed.x, seed.y + float + seed.size * mm * 0.3);
+    ctx.translate(seed.x, seed.y + float);
     ctx.rotate(seed.angle);
-    ctx.scale(seed.size, seed.size); // Samo veličina, bez oscilacije
+
+    const lw = 2 + seed.size * 1.5;
 
     // === STABLjIKA ===
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 2.5 * seed.size + 0.5;
+    ctx.lineWidth = lw;
     ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(-0.6, mm * 1, -0.3, mm * 2, 0, mm * 2.5);
+    ctx.bezierCurveTo(
+      -0.6 * seed.size, mm * 1 * seed.size,
+      -0.3 * seed.size, mm * 2 * seed.size,
+      0, mm * 2.5 * seed.size
+    );
     ctx.stroke();
 
     // === SJEME ===
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
-    ctx.ellipse(0, mm * 2.8, mm * 0.6 * seed.size, mm * 1 * seed.size, 0, 0, 2 * Math.PI);
+    ctx.ellipse(0, mm * 2.8 * seed.size, mm * 0.6 * seed.size, mm * 1 * seed.size, 0, 0, 2 * Math.PI);
     ctx.fill();
 
     // === TICALA ===
     const count = 30;
-    const radius = mm * 2;
-    ctx.lineWidth = 2.5 * seed.size + 0.5;
+    const radius = mm * 2 * seed.size;
+    ctx.lineWidth = lw;
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
@@ -469,7 +474,6 @@ if (flake.x < -50) {
         s.x < -100 || s.x > width + 100 ||
         s.y < -150 || s.y > height + 150
       ) {
-        // nova sjemenka zadržava veličinsku grupu
         let size = 1.0;
         if (i >= 30 && i < 60) size += 1 / mm;
         else if (i >= 60 && i < 90) size += 2 / mm;
@@ -485,7 +489,7 @@ if (flake.x < -50) {
           floatOffset: Math.random() * 3000,
           angle: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.004,
-          size: size,
+          size,
           time: 0
         });
       }
@@ -496,6 +500,7 @@ if (flake.x < -50) {
 
   animate();
 }
+
     
 // LJETO
 function startSummerEffect() {
