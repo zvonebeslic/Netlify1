@@ -359,7 +359,7 @@ if (flake.x < -50) {
 
   const mm = 3.78;
   const seeds = [];
-  const totalSeeds = 100;
+  const totalSeeds = 120;
   const width = seasonCanvas.width;
   const height = seasonCanvas.height;
 
@@ -382,8 +382,14 @@ if (flake.x < -50) {
   for (let i = 0; i < totalSeeds; i++) {
     const startInside = i < 20;
 
+    // Grupirana veličina
+    let size = 1.0;
+    if (i >= 30 && i < 60) size += 1 / mm;
+    else if (i >= 60 && i < 90) size += 2 / mm;
+    else if (i >= 90) size += 3 / mm;
+
     seeds.push({
-      x: Math.random() * width, // 🔁 razbacane po širini
+      x: Math.random() * width,
       y: startInside
         ? height - 100 - Math.random() * 100
         : height + Math.random() * 80,
@@ -393,7 +399,7 @@ if (flake.x < -50) {
       floatOffset: Math.random() * 3000,
       angle: Math.random() * Math.PI * 2,
       rotationSpeed: (Math.random() - 0.5) * 0.004,
-      size: 0.5 + Math.random() * 0.6, // 🔁 različite veličine
+      size: size,
       time: 0
     });
   }
@@ -408,7 +414,7 @@ if (flake.x < -50) {
     ctx.rotate(seed.angle);
     ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
 
-    // === STABLjIKA ===
+    // STABLjIKA
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
     ctx.lineWidth = 3;
@@ -416,13 +422,13 @@ if (flake.x < -50) {
     ctx.bezierCurveTo(-0.6, mm * 1, -0.3, mm * 2, 0, mm * 2.5);
     ctx.stroke();
 
-    // === SJEME ===
+    // SJEME
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
     ctx.ellipse(0, mm * 2.8, mm * 0.6, mm * 1, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // === TICALA ===
+    // TICALA
     const count = 30;
     const radius = mm * 2;
     ctx.lineWidth = 3;
@@ -470,6 +476,12 @@ if (flake.x < -50) {
         s.x < -100 || s.x > width + 100 ||
         s.y < -150 || s.y > height + 150
       ) {
+        // Nova sjemenka zadržava grupu veličine
+        let size = 1.0;
+        if (i >= 30 && i < 60) size += 1 / mm;
+        else if (i >= 60 && i < 90) size += 2 / mm;
+        else if (i >= 90) size += 3 / mm;
+
         seeds.splice(i, 1);
         seeds.push({
           x: Math.random() * width,
@@ -480,7 +492,7 @@ if (flake.x < -50) {
           floatOffset: Math.random() * 3000,
           angle: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.004,
-          size: 0.5 + Math.random() * 0.6,
+          size: size,
           time: 0
         });
       }
@@ -490,7 +502,7 @@ if (flake.x < -50) {
   }
 
   animate();
-}
+}   
 
     
 // LJETO
