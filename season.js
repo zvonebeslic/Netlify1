@@ -357,7 +357,7 @@ if (flake.x < -50) {
    
   setupSeasonCanvas();
 
-  const mm = 3.78; // 1 mm = 3.78 px
+  const mm = 3.78;
   const seeds = [];
   const totalSeeds = 100;
   const width = seasonCanvas.width;
@@ -383,15 +383,17 @@ if (flake.x < -50) {
     const startInside = i < 20;
 
     seeds.push({
-      x: width * 0.5 + Math.random() * (width * 0.5),
-      y: startInside ? height - 100 - Math.random() * 100 : height + Math.random() * 80,
+      x: Math.random() * width, // 🔁 razbacane po širini
+      y: startInside
+        ? height - 100 - Math.random() * 100
+        : height + Math.random() * 80,
       baseDriftY: -0.2 - Math.random() * 0.4,
       driftX: (Math.random() - 0.5) * 0.4,
       speedFactor: 0.4 + Math.random() * 1.2,
       floatOffset: Math.random() * 3000,
       angle: Math.random() * Math.PI * 2,
       rotationSpeed: (Math.random() - 0.5) * 0.004,
-      size: 0.7 + Math.random() * 0.4,
+      size: 0.5 + Math.random() * 0.6, // 🔁 različite veličine
       time: 0
     });
   }
@@ -406,7 +408,7 @@ if (flake.x < -50) {
     ctx.rotate(seed.angle);
     ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
 
-    // STABLjIKA
+    // === STABLjIKA ===
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
     ctx.lineWidth = 3;
@@ -414,13 +416,13 @@ if (flake.x < -50) {
     ctx.bezierCurveTo(-0.6, mm * 1, -0.3, mm * 2, 0, mm * 2.5);
     ctx.stroke();
 
-    // SJEME
+    // === SJEME ===
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
     ctx.ellipse(0, mm * 2.8, mm * 0.6, mm * 1, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // TICALA
+    // === TICALA ===
     const count = 30;
     const radius = mm * 2;
     ctx.lineWidth = 3;
@@ -470,7 +472,7 @@ if (flake.x < -50) {
       ) {
         seeds.splice(i, 1);
         seeds.push({
-          x: width * 0.5 + Math.random() * (width * 0.5),
+          x: Math.random() * width,
           y: height + Math.random() * 60,
           baseDriftY: -0.2 - Math.random() * 0.4,
           driftX: (Math.random() - 0.5) * 0.4,
@@ -478,7 +480,7 @@ if (flake.x < -50) {
           floatOffset: Math.random() * 3000,
           angle: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.004,
-          size: 0.7 + Math.random() * 0.4,
+          size: 0.5 + Math.random() * 0.6,
           time: 0
         });
       }
