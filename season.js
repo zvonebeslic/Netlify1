@@ -358,9 +358,10 @@ function startSpringEffect() {
   setupSeasonCanvas();
 
   const mm = 3.78;
+  const dpr = window.devicePixelRatio || 1;
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
-  
+
   const seeds = [];
   const totalSeeds = 120;
 
@@ -372,11 +373,12 @@ function startSpringEffect() {
 
     seeds.push({
       x: Math.random() * width,
-      y: Math.random() * height,
+      y: i < 20 ? height - Math.random() * height * 0.5 : height + Math.random() * 80,
       baseDriftY: -0.2 - Math.random() * 0.4,
       driftX: (Math.random() - 0.5) * 0.4,
       speedFactor: 0.4 + Math.random() * 1.2,
       floatOffset: Math.random() * 3000,
+      rotationOffset: Math.random() * 1000,
       angle: Math.random() * Math.PI * 2,
       rotationSpeed: (Math.random() - 0.5) * 0.004,
       size,
@@ -401,14 +403,13 @@ function startSpringEffect() {
 
   function drawSeed(seed, time) {
     const float = Math.sin((time + seed.floatOffset) / 400) * mm * 0.7;
+    const lw = 2 + seed.size * 1.5;
 
     ctx.save();
     ctx.translate(seed.x, seed.y + float);
-    ctx.rotate(seed.angle);
+    ctx.rotate(seed.angle + Math.sin(time / 1000 + seed.rotationOffset) * 0.1);
 
-    const lw = 2 + seed.size * 1.5;
-
-    // === STABLjIKA ===
+    // STABLjIKA
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
     ctx.lineWidth = lw;
@@ -420,13 +421,13 @@ function startSpringEffect() {
     );
     ctx.stroke();
 
-    // === SJEME ===
+    // SJEME
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
     ctx.ellipse(0, mm * 2.8 * seed.size, mm * 0.6 * seed.size, mm * 1 * seed.size, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // === TICALA ===
+    // TICALA
     const count = 30;
     const radius = mm * 2 * seed.size;
     ctx.lineWidth = lw;
@@ -487,6 +488,7 @@ function startSpringEffect() {
           driftX: (Math.random() - 0.5) * 0.4,
           speedFactor: 0.4 + Math.random() * 1.2,
           floatOffset: Math.random() * 3000,
+          rotationOffset: Math.random() * 1000,
           angle: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.004,
           size,
