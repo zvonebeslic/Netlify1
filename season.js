@@ -351,19 +351,18 @@ if (flake.x < -50) {
 }
 
 // PROLJEĆE
-function startSpringEffect() {
+ function startSpringEffect() {
+   
   cancelAllSeasonAnimations();
+   
   setupSeasonCanvas();
 
   const seeds = [];
   const totalSeeds = 100;
-  const burstSeeds = 12;
-  const loopSeeds = totalSeeds - burstSeeds;
-
   const width = seasonCanvas.width;
   const height = seasonCanvas.height;
 
-  // === POVJETARAC ===
+  // POVJETARAC
   let wind = 0;
   let targetWind = 0;
   let windTimer = 0;
@@ -379,29 +378,18 @@ function startSpringEffect() {
     wind += (targetWind - wind) * 0.005;
   }
 
-  // === BURST sjemenke: donji desni kut
-  for (let i = 0; i < burstSeeds; i++) {
-    seeds.push({
-      x: width * 0.5 + Math.random() * (width * 0.5),
-      y: height + 30 + Math.random() * 40,
-      baseDriftY: -1.8 - Math.random() * 1.2,
-      driftX: (Math.random() - 0.3) * 1.5,
-      size: 0.6 + Math.random() * 0.6,
-      angle: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.01,
-      floatOffset: Math.random() * 500,
-      time: 0
-    });
-  }
+  // GENERIRAJ 100 SJEMENKI (prvih 20 odmah u kadru)
+  for (let i = 0; i < totalSeeds; i++) {
+    const startInsideView = i < 20;
 
-  // === LOOP sjemenke: stalno se izmjenjuju
-  for (let i = 0; i < loopSeeds; i++) {
     seeds.push({
       x: width * 0.5 + Math.random() * (width * 0.5),
-      y: height + Math.random() * 80,
+      y: startInsideView
+        ? height - 100 - Math.random() * 100 // već u kadru
+        : height + Math.random() * 80,       // klasičan dolazak
       baseDriftY: -0.3 - Math.random() * 0.3,
       driftX: (Math.random() - 0.3) * 0.5,
-      size: 0.5 + Math.random() * 0.5,
+      size: 1,
       angle: Math.random() * Math.PI * 2,
       rotationSpeed: (Math.random() - 0.5) * 0.002,
       floatOffset: Math.random() * 1000,
@@ -410,7 +398,7 @@ function startSpringEffect() {
   }
 
   function drawSeed(seed, time) {
-    const float = Math.sin((time + seed.floatOffset) / 300) * 5;
+    const float = Math.sin((time + seed.floatOffset) / 300) * 0.6;
     const tiltX = Math.sin((time + seed.floatOffset) / 600) * 0.15;
     const tiltY = Math.cos((time + seed.floatOffset) / 800) * 0.15;
 
@@ -419,24 +407,24 @@ function startSpringEffect() {
     ctx.rotate(seed.angle);
     ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
 
-    // Stabljika
+    // === STABLjIKA (2.5mm)
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 0.6;
     ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(-2, 10, -1, 30, 0, 50);
+    ctx.bezierCurveTo(-0.5, 1, -0.3, 2, 0, 2.5);
     ctx.stroke();
 
-    // Sjeme
+    // === SJEME
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
-    ctx.ellipse(0, 55, 2.5, 5, 0, 0, 2 * Math.PI);
+    ctx.ellipse(0, 2.8, 0.5, 1, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // Ticala
+    // === TICALA (max 2mm)
     const count = 30;
-    const radius = 25;
-    ctx.lineWidth = 1;
+    const radius = 2;
+    ctx.lineWidth = 0.3;
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
@@ -482,12 +470,13 @@ function startSpringEffect() {
         s.y < -150 || s.y > height + 150
       ) {
         seeds.splice(i, 1);
+        // nova sjemenka iz desnog donjeg kuta
         seeds.push({
           x: width * 0.5 + Math.random() * (width * 0.5),
-          y: height + 30 + Math.random() * 60,
+          y: height + Math.random() * 60,
           baseDriftY: -0.3 - Math.random() * 0.3,
           driftX: (Math.random() - 0.3) * 0.5,
-          size: 0.5 + Math.random() * 0.5,
+          size: 1,
           angle: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.002,
           floatOffset: Math.random() * 1000,
