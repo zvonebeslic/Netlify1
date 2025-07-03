@@ -380,10 +380,9 @@ function startSpringEffect() {
     wind += (targetWind - wind) * 0.005;
   }
 
-  // SJEMENKE: prvih 20 odmah u prikazu
+  // SJEMENKE
   for (let i = 0; i < totalSeeds; i++) {
     const startInsideView = i < 20;
-
     seeds.push({
       x: width * 0.5 + Math.random() * (width * 0.5),
       y: startInsideView
@@ -409,24 +408,24 @@ function startSpringEffect() {
     ctx.rotate(seed.angle);
     ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
 
-    // === STABLjIKA (2.5 mm = 9.45 px)
+    // === STABLjIKA ===
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 1.1;
+    ctx.lineWidth = 3;
     ctx.moveTo(0, 0);
     ctx.bezierCurveTo(-0.6, mm * 1, -0.3, mm * 2, 0, mm * 2.5);
     ctx.stroke();
 
-    // === SJEME (tijelo)
+    // === SJEME ===
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
     ctx.ellipse(0, mm * 2.8, mm * 0.6, mm * 1, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // === TICALA (do 2 mm = 7.56 px)
+    // === TICALA ===
     const count = 30;
     const radius = mm * 2;
-    ctx.lineWidth = 0.8;
+    ctx.lineWidth = 3;
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
@@ -491,6 +490,7 @@ function startSpringEffect() {
 
   animate();
 }
+
     
 // LJETO
 function startSummerEffect() {
