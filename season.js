@@ -358,9 +358,9 @@ function startSpringEffect() {
   setupSeasonCanvas();
 
   const mm = 3.78;
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-
+  const width = seasonCanvas.width / dpr;
+  const height = seasonCanvas.height / dpr;
+  
   const seeds = [];
   const totalSeeds = 120;
 
