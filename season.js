@@ -357,6 +357,8 @@ function startSpringEffect() {
   
   setupSeasonCanvas();
 
+  const mm = 3.78; // 1 mm = 3.78 px
+
   const seeds = [];
   const totalSeeds = 100;
   const width = seasonCanvas.width;
@@ -378,7 +380,7 @@ function startSpringEffect() {
     wind += (targetWind - wind) * 0.005;
   }
 
-  // GENERIRAJ SJEMENKE (prvih 20 odmah u prikazu)
+  // SJEMENKE: prvih 20 odmah u prikazu
   for (let i = 0; i < totalSeeds; i++) {
     const startInsideView = i < 20;
 
@@ -398,7 +400,7 @@ function startSpringEffect() {
   }
 
   function drawSeed(seed, time) {
-    const float = Math.sin((time + seed.floatOffset) / 300) * 0.6;
+    const float = Math.sin((time + seed.floatOffset) / 300) * mm * 0.2;
     const tiltX = Math.sin((time + seed.floatOffset) / 600) * 0.15;
     const tiltY = Math.cos((time + seed.floatOffset) / 800) * 0.15;
 
@@ -407,24 +409,24 @@ function startSpringEffect() {
     ctx.rotate(seed.angle);
     ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
 
-    // === STABLjIKA (2.5 mm) sa debljom linijom
+    // === STABLjIKA (2.5 mm = 9.45 px)
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 1.2; // deblje
+    ctx.lineWidth = 1.1;
     ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(-0.6, 1, -0.3, 2, 0, 2.5);
+    ctx.bezierCurveTo(-0.6, mm * 1, -0.3, mm * 2, 0, mm * 2.5);
     ctx.stroke();
 
-    // === SJEME (jača elipsa)
+    // === SJEME (tijelo)
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
-    ctx.ellipse(0, 2.8, 0.8, 1.4, 0, 0, 2 * Math.PI);
+    ctx.ellipse(0, mm * 2.8, mm * 0.6, mm * 1, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // === TICALA (do 2 mm, deblje linije)
+    // === TICALA (do 2 mm = 7.56 px)
     const count = 30;
-    const radius = 2;
-    ctx.lineWidth = 0.7; // jasno vidljivo
+    const radius = mm * 2;
+    ctx.lineWidth = 0.8;
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
