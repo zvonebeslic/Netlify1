@@ -363,7 +363,7 @@ function startSpringEffect() {
 
   const seeds = [];
 
-  // === Povjetarac + njihanje ===
+  // === VJETAR ===
   let windStrength = 0;
   let targetWind = 0;
   let windTimer = 0;
@@ -371,49 +371,70 @@ function startSpringEffect() {
 
   let lastFrameTime = performance.now();
 
-  // === Sporo ubacivanje novih sjemenki iz donjeg desnog kuta ===
+  // === UBACIVANJE SJEMENKI IZ DVIJE ZONE ===
+  const springSpawnInterval = setInterval(() => {
+    spawnSeeds(20 + Math.floor(Math.random() * 10));
+  }, 3500);
+
   function spawnSeeds(count = 25) {
     for (let i = 0; i < count; i++) {
+      const fromBottom = Math.random() < 0.5;
+      let x, y;
+
+      if (fromBottom) {
+        x = width / 2 + Math.random() * (width / 2);
+        y = height - 10 + Math.random() * 10;
+      } else {
+        x = width - 10 + Math.random() * 10;
+        y = height / 2 + Math.random() * (height / 2);
+      }
+
       seeds.push({
-        x: width - 20 + Math.random() * 10,
-        y: height - 20 + Math.random() * 10,
+        x,
+        y,
         angle: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.01,
-        driftX: (Math.random() - 0.5) * 0.2,
-        driftY: -0.3 - Math.random() * 0.2,
+        rotationSpeed: (Math.random() - 0.5) * 0.03, // brža rotacija
+        driftX: (Math.random() - 0.5) * 1.2,         // brže gibanje
+        driftY: -1 - Math.random() * 0.6,            // brže prema gore
         size: 10 + Math.random() * 10,
-        lifespan: 800 + Math.random() * 800,
-        age: 0
+        swayOffset: Math.random() * 1000
       });
     }
   }
 
-  const springSpawnInterval = setInterval(() => {
-    spawnSeeds(20 + Math.floor(Math.random() * 10));
-  }, 4000);
-
-  springAnimationId = requestAnimationFrame(animate);
-
-  function drawSeed(seed) {
+  // === CRTANJE SJEMENKE ===
+  function drawSeed(seed, time) {
     ctx.save();
     ctx.translate(seed.x, seed.y);
-    ctx.rotate(seed.angle);
+
+    const sway = Math.sin((time + seed.swayOffset) / 500) * 0.1;
+    ctx.rotate(seed.angle + sway);
 
     const size = seed.size;
-    const radius = size * 0.6;
+    const radius = size * 0.5;
 
-    // bijele dlačice (padobranski dio)
+    // dlačice – glavno ticalo + dvije bočne
     ctx.strokeStyle = 'rgba(255,255,255,0.6)';
     ctx.lineWidth = 0.4;
-    for (let i = 0; i < 12; i++) {
-      const theta = (i / 12) * 2 * Math.PI;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(Math.cos(theta) * radius, Math.sin(theta) * radius - size * 0.8);
-      ctx.stroke();
-    }
 
-    // siva drška
+    // glavno ticalo
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -radius * 1.5);
+    ctx.stroke();
+
+    // bočna dva ticala u obliku slova V
+    ctx.beginPath();
+    ctx.moveTo(0, -radius * 1.2);
+    ctx.lineTo(-radius * 0.4, -radius * 1.5);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, -radius * 1.2);
+    ctx.lineTo(radius * 0.4, -radius * 1.5);
+    ctx.stroke();
+
+    // drška
     ctx.strokeStyle = '#888';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -421,7 +442,7 @@ function startSpringEffect() {
     ctx.lineTo(0, size * 0.8);
     ctx.stroke();
 
-    // tamno sjeme
+    // sjeme
     ctx.fillStyle = '#444';
     ctx.beginPath();
     ctx.ellipse(0, size * 0.9, 1.5, 2.2, 0, 0, Math.PI * 2);
@@ -434,7 +455,7 @@ function startSpringEffect() {
     windTimer += deltaTime;
     if (windTimer > windInterval) {
       windTimer = 0;
-      windInterval = Math.random() * 9000 + 7000;
+      windInterval = Math.random() * 8000 + 7000;
       targetWind = (Math.random() - 0.5) * 1.2;
     }
 
@@ -446,25 +467,28 @@ function startSpringEffect() {
     lastFrameTime = currentTime;
 
     updateWind(deltaTime);
-
     ctx.clearRect(0, 0, width, height);
 
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
-      s.x += s.driftX + windStrength * 0.4;
+      s.x += s.driftX + windStrength * 0.3;
       s.y += s.driftY;
       s.angle += s.rotationSpeed;
-      s.age++;
 
-      drawSeed(s);
+      drawSeed(s, currentTime);
 
-      if (s.age > s.lifespan || s.x < -50 || s.x > width + 50 || s.y < -50) {
+      // uklanjanje sjemenki kada izađu van ekrana
+      if (
+        s.x < -100 || s.x > width + 100 ||
+        s.y < -100 || s.y > height + 100
+      ) {
         seeds.splice(i, 1);
       }
     }
 
     springAnimationId = requestAnimationFrame(animate);
   }
+
   animate();
 }
 
