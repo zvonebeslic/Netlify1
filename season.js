@@ -351,10 +351,10 @@ if (flake.x < -50) {
 }
 
 // PROLJEĆE
- function startSpringEffect() {
-   
+function startSpringEffect() {
+  
   cancelAllSeasonAnimations();
-   
+  
   setupSeasonCanvas();
 
   const seeds = [];
@@ -378,15 +378,15 @@ if (flake.x < -50) {
     wind += (targetWind - wind) * 0.005;
   }
 
-  // GENERIRAJ 100 SJEMENKI (prvih 20 odmah u kadru)
+  // GENERIRAJ SJEMENKE (prvih 20 odmah u prikazu)
   for (let i = 0; i < totalSeeds; i++) {
     const startInsideView = i < 20;
 
     seeds.push({
       x: width * 0.5 + Math.random() * (width * 0.5),
       y: startInsideView
-        ? height - 100 - Math.random() * 100 // već u kadru
-        : height + Math.random() * 80,       // klasičan dolazak
+        ? height - 100 - Math.random() * 100
+        : height + Math.random() * 80,
       baseDriftY: -0.3 - Math.random() * 0.3,
       driftX: (Math.random() - 0.3) * 0.5,
       size: 1,
@@ -407,24 +407,24 @@ if (flake.x < -50) {
     ctx.rotate(seed.angle);
     ctx.scale(seed.size * (1 + tiltX), seed.size * (1 + tiltY));
 
-    // === STABLjIKA (2.5mm)
+    // === STABLjIKA (2.5 mm) sa debljom linijom
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 0.6;
+    ctx.lineWidth = 1.2; // deblje
     ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(-0.5, 1, -0.3, 2, 0, 2.5);
+    ctx.bezierCurveTo(-0.6, 1, -0.3, 2, 0, 2.5);
     ctx.stroke();
 
-    // === SJEME
+    // === SJEME (jača elipsa)
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
-    ctx.ellipse(0, 2.8, 0.5, 1, 0, 0, 2 * Math.PI);
+    ctx.ellipse(0, 2.8, 0.8, 1.4, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // === TICALA (max 2mm)
+    // === TICALA (do 2 mm, deblje linije)
     const count = 30;
     const radius = 2;
-    ctx.lineWidth = 0.3;
+    ctx.lineWidth = 0.7; // jasno vidljivo
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
@@ -470,7 +470,6 @@ if (flake.x < -50) {
         s.y < -150 || s.y > height + 150
       ) {
         seeds.splice(i, 1);
-        // nova sjemenka iz desnog donjeg kuta
         seeds.push({
           x: width * 0.5 + Math.random() * (width * 0.5),
           y: height + Math.random() * 60,
@@ -490,7 +489,7 @@ if (flake.x < -50) {
 
   animate();
 }
-
+    
 // LJETO
 function startSummerEffect() {
 
