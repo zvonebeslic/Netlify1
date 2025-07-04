@@ -490,9 +490,9 @@ function startAutumnEffect() {
   const drops = [];
   const dropLayers = 3;
   const layerConfigs = [
-    { count: 80, speed: 2, opacity: 0.15, width: 0.7 },
-    { count: 100, speed: 4, opacity: 0.25, width: 1 },
-    { count: 80, speed: 6, opacity: 0.35, width: 1.5 }
+    { count: 150, speed: 2, opacity: 0.15, width: 0.7 },
+    { count: 130, speed: 4, opacity: 0.25, width: 1 },
+    { count: 140, speed: 6, opacity: 0.35, width: 1.5 }
   ];
 
   // Funkcija za stvaranje kapi
@@ -501,7 +501,7 @@ function startAutumnEffect() {
     return {
       x: Math.random() * width,
       y: Math.random() * (height * 0.1), // samo vrh ekrana
-      length: 10 + Math.random() * 15,
+      length: 5 + Math.random() * 35,
       speed: config.speed + Math.random() * 1,
       width: config.width,
       opacity: config.opacity,
@@ -512,7 +512,7 @@ function startAutumnEffect() {
   // Kontrola postepenog dodavanja kapi
   let dropSpawnTimer = 0;
   const totalLayers = layerConfigs.length;
-  const maxDropsPerLayer = [80, 100, 80];
+  const maxDropsPerLayer = [150, 130, 140];
 
   let lightningTimer = 0;
 
