@@ -184,11 +184,11 @@ function startWinterEffect() {
   const snowflakes = [];
 
   const targetCounts = [
-    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.1] },
+    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.5] },
     { count: 80, type: 'crumpled', radius: 0.6 },
     { count: 40, type: 'ellipse', radius: 0.8 },
     { count: 20, type: 'ellipse', radius: 1.0 },
-    { count: 10, type: 'crumpled', radius: 1.3 }
+    { count: 10, type: 'crumpled', radius: 1.2 }
   ];
 
   let currentCounts = [0, 0, 0, 0, 0];
@@ -199,6 +199,18 @@ function startWinterEffect() {
       if (currentCounts[i] < targetCounts[i].count) {
         const conf = targetCounts[i];
         let radius = conf.radius || (Math.random() * (conf.radiusRange[1] - conf.radiusRange[0]) + conf.radiusRange[0]);
+
+        let points = [];
+        if (conf.type === 'crumpled') {
+          for (let j = 0; j < 6; j++) {
+            const angle = j * (Math.PI * 2 / 6) + Math.random() * 0.5;
+            const r = radius * 4 + Math.random() * 2;
+            const x = Math.cos(angle) * r;
+            const y = Math.sin(angle) * r;
+            points.push({ x, y });
+          }
+        }
+
         snowflakes.push({
           x: Math.random() * window.innerWidth,
           y: Math.random() * (window.innerHeight * 0.1),
@@ -207,7 +219,8 @@ function startWinterEffect() {
           drift: Math.random() * 2 - 1,
           opacity: Math.random() * 0.5 + 0.5,
           type: conf.type,
-          alpha: Math.random() * 0.4 + 0.6
+          alpha: Math.random() * 0.4 + 0.6,
+          points
         });
         currentCounts[i]++;
         return;
@@ -225,7 +238,7 @@ function startWinterEffect() {
     updateWind(deltaTime);
 
     snowSpawnTimer += deltaTime;
-    if (snowSpawnTimer > 50) { // dodaj jednu pahulju svakih 50ms
+    if (snowSpawnTimer > 50) {
       snowSpawnTimer = 0;
       spawnSnowflake();
     }
@@ -259,17 +272,16 @@ function startWinterEffect() {
 
       if (flake.type === 'crumpled') {
         ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = i * (Math.PI * 2 / 6) + Math.random() * 0.5;
-          const r = flake.radius * 4 + Math.random() * 2;
-          const x = Math.cos(angle) * r;
-          const y = Math.sin(angle) * r;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+        const pts = flake.points;
+        if (pts && pts.length > 0) {
+          ctx.moveTo(pts[0].x, pts[0].y);
+          for (let i = 1; i < pts.length; i++) {
+            ctx.lineTo(pts[i].x, pts[i].y);
+          }
+          ctx.closePath();
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
         }
-        ctx.closePath();
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
       } else {
         ctx.beginPath();
         ctx.ellipse(0, 0, flake.radius * 3, flake.radius * 2, 0, 0, 2 * Math.PI);
@@ -285,6 +297,7 @@ function startWinterEffect() {
 
   draw();
 }
+
 
 // PROLJEĆE
 function startSpringEffect() {
