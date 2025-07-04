@@ -378,12 +378,12 @@ function startSpringEffect() {
       vy: -0.3 - Math.random() * 0.3,
       angle: Math.random() * Math.PI * 2,
       rotationSpeed: (Math.random() - 0.5) * 0.005,
-      size,
+      size
     };
   }
 
   for (let i = 0; i < totalSeeds; i++) {
-    const sizeGroup = Math.floor(i / 30); // 0,1,2,3
+    const sizeGroup = Math.floor(i / 30);
     seeds.push(createSeed(sizeGroup));
   }
 
@@ -403,16 +403,14 @@ function startSpringEffect() {
   }
 
   function drawSeed(s) {
-    const lw = 2 + s.size * 1.5;
-
     ctx.save();
     ctx.translate(s.x, s.y);
     ctx.rotate(s.angle);
 
-    // Stabljika
+    // === STABLjIKA ===
     ctx.beginPath();
     ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = lw;
+    ctx.lineWidth = 1.5;
     ctx.moveTo(0, 0);
     ctx.bezierCurveTo(
       -0.6 * s.size, mm * 1 * s.size,
@@ -421,29 +419,28 @@ function startSpringEffect() {
     );
     ctx.stroke();
 
-    // Sjeme
+    // === SJEME (elipsa) ===
     ctx.beginPath();
     ctx.fillStyle = '#5C432A';
     ctx.ellipse(
       0,
       mm * 2.8 * s.size,
       mm * 0.6 * s.size,
-      mm * 1 * s.size,
+      mm * 1.0 * s.size,
       0,
       0,
       2 * Math.PI
     );
     ctx.fill();
 
-    // Ticala
+    // === TICALA ===
     const count = 30;
     const radius = mm * 2 * s.size;
-    ctx.lineWidth = lw;
+    ctx.lineWidth = 0.5;
     ctx.strokeStyle = '#ffffff';
 
     for (let i = 0; i < count; i++) {
-      const angle =
-        (Math.PI * 1.2) * (i / (count - 1)) - Math.PI * 0.6;
+      const angle = (Math.PI * 1.2) * (i / (count - 1)) - Math.PI * 0.6;
       const cx = Math.cos(angle) * radius * 0.4;
       const cy = Math.sin(angle) * radius * 0.4;
       const x2 = Math.cos(angle) * radius;
@@ -469,7 +466,6 @@ function startSpringEffect() {
 
     for (let i = 0; i < seeds.length; i++) {
       const s = seeds[i];
-
       s.x += (s.vx + wind * 0.4);
       s.y += s.vy;
       s.angle += s.rotationSpeed;
