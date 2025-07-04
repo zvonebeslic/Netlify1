@@ -184,11 +184,11 @@ function startWinterEffect() {
   const snowflakes = [];
 
   const targetCounts = [
-    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.5] },
+    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.1] },
     { count: 80, type: 'crumpled', radius: 0.6 },
     { count: 40, type: 'ellipse', radius: 0.8 },
     { count: 20, type: 'ellipse', radius: 1.0 },
-    { count: 10, type: 'crumpled', radius: 1.2 }
+    { count: 10, type: 'crumpled', radius: 1.3 }
   ];
 
   let currentCounts = [0, 0, 0, 0, 0];
@@ -205,11 +205,8 @@ function startWinterEffect() {
           radius,
           speedY: Math.random() * 2 + 2,
           drift: Math.random() * 2 - 1,
-          rotation: Math.random() * Math.PI,
           opacity: Math.random() * 0.5 + 0.5,
           type: conf.type,
-          rotateSpeed: (Math.random() - 0.5) * 0.2,
-          angle: Math.random() * Math.PI * 2,
           alpha: Math.random() * 0.4 + 0.6
         });
         currentCounts[i]++;
