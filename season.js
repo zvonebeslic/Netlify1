@@ -365,6 +365,9 @@ function startSpringEffect() {
   const seeds = [];
   const totalSeeds = 120;
 
+  const seedImage = new Image();
+  seedImage.src = 'images/maslacak.png';
+
   function createSeed(sizeGroup) {
     let size = 1.0;
     if (sizeGroup === 1) size += 1 / mm;
@@ -374,11 +377,14 @@ function startSpringEffect() {
     return {
       x: width - Math.random() * (mm * 5),
       y: height + Math.random() * (mm * 5),
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: -0.3 - Math.random() * 0.3,
+      baseDriftY: -0.2 - Math.random() * 0.4,
+      driftX: (Math.random() - 0.5) * 0.4,
+      speedFactor: 0.4 + Math.random() * 1.2,
+      floatOffset: Math.random() * 3000,
       angle: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.005,
-      size
+      rotationSpeed: (Math.random() - 0.5) * 0.004,
+      size,
+      time: 0
     };
   }
 
@@ -387,6 +393,7 @@ function startSpringEffect() {
     seeds.push(createSeed(sizeGroup));
   }
 
+  // POVJETARAC
   let wind = 0;
   let targetWind = 0;
   let windTimer = 0;
@@ -403,55 +410,11 @@ function startSpringEffect() {
   }
 
   function drawSeed(s) {
+    const pxSize = 30 * s.size;
     ctx.save();
     ctx.translate(s.x, s.y);
     ctx.rotate(s.angle);
-
-    // === STABLjIKA ===
-    ctx.beginPath();
-    ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 1.5;
-    ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(
-      -0.6 * s.size, mm * 1 * s.size,
-      -0.3 * s.size, mm * 2 * s.size,
-      0, mm * 2.5 * s.size
-    );
-    ctx.stroke();
-
-    // === SJEME (elipsa) ===
-    ctx.beginPath();
-    ctx.fillStyle = '#5C432A';
-    ctx.ellipse(
-      0,
-      mm * 2.8 * s.size,
-      mm * 0.6 * s.size,
-      mm * 1.0 * s.size,
-      0,
-      0,
-      2 * Math.PI
-    );
-    ctx.fill();
-
-    // === TICALA ===
-    const count = 30;
-    const radius = mm * 2 * s.size;
-    ctx.lineWidth = 0.5;
-    ctx.strokeStyle = '#ffffff';
-
-    for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 1.2) * (i / (count - 1)) - Math.PI * 0.6;
-      const cx = Math.cos(angle) * radius * 0.4;
-      const cy = Math.sin(angle) * radius * 0.4;
-      const x2 = Math.cos(angle) * radius;
-      const y2 = Math.sin(angle) * radius;
-
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.quadraticCurveTo(cx, cy, x2, y2);
-      ctx.stroke();
-    }
-
+    ctx.drawImage(seedImage, -pxSize / 2, -pxSize / 2, pxSize, pxSize);
     ctx.restore();
   }
 
@@ -464,17 +427,22 @@ function startSpringEffect() {
     ctx.clearRect(0, 0, seasonCanvas.width / dpr, seasonCanvas.height / dpr);
     updateWind(delta);
 
-    for (let i = 0; i < seeds.length; i++) {
+    for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
-      s.x += (s.vx + wind * 0.4);
-      s.y += s.vy;
+      s.time += delta;
+
+      const oscillationY = Math.sin((s.time + s.floatOffset) / 1100) * 0.25;
+      const driftY = s.baseDriftY + oscillationY + wind * 0.05;
+
+      s.y += driftY * s.speedFactor;
+      s.x += (s.driftX + wind * 0.4) * s.speedFactor;
       s.angle += s.rotationSpeed;
 
       drawSeed(s);
 
       if (
         s.x < -100 || s.x > width + 100 ||
-        s.y < -100 || s.y > height + 100
+        s.y < -150 || s.y > height + 150
       ) {
         const group = Math.floor(i / 30);
         seeds[i] = createSeed(group);
@@ -484,7 +452,9 @@ function startSpringEffect() {
     springAnimationId = requestAnimationFrame(animate);
   }
 
-  animate();
+  seedImage.onload = () => {
+    animate();
+  };
 }
 
     
