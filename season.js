@@ -355,6 +355,8 @@ function startSpringEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
 
+  ctx = seasonCanvas.getContext('2d');
+
   const mm = 3.78;
   const dpr = window.devicePixelRatio || 1;
   const width = seasonCanvas.width / dpr;
