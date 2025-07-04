@@ -375,14 +375,12 @@ function startSpringEffect() {
     if (sizeGroup === 3) size += 3 / mm;
 
     return {
-      x: width - Math.random() * (mm * 5),
-      y: height + Math.random() * (mm * 5),
-      baseDriftY: -0.2 - Math.random() * 0.4,
-      driftX: (Math.random() - 0.5) * 0.4,
+      x: width - Math.random() * (mm * 18),
+      y: height - Math.random() * (mm * 18),
+      baseDriftY: (Math.random() - 0.5) * 0.6,
+      driftX: (Math.random() - 0.5) * 1.2,
       speedFactor: 0.4 + Math.random() * 1.2,
       floatOffset: Math.random() * 3000,
-      angle: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.004,
       size,
       time: 0
     };
@@ -411,9 +409,15 @@ function startSpringEffect() {
 
   function drawSeed(s) {
     const pxSize = 30 * s.size;
+
     ctx.save();
     ctx.translate(s.x, s.y);
-    ctx.rotate(s.angle);
+
+    // === 3D efekt – njihanje oko horizontalne osi ===
+    const swing = Math.sin((s.time + s.floatOffset) / 900);
+    const tiltY = 1 + swing * 0.2;
+    ctx.scale(1, tiltY);
+
     ctx.drawImage(seedImage, -pxSize / 2, -pxSize / 2, pxSize, pxSize);
     ctx.restore();
   }
@@ -423,6 +427,7 @@ function startSpringEffect() {
   function animate(currentTime) {
     const delta = currentTime - lastTime;
     lastTime = currentTime;
+    const timeScale = delta / 16.67;
 
     ctx.clearRect(0, 0, width, height);
     updateWind(delta);
@@ -434,9 +439,8 @@ function startSpringEffect() {
       const oscillationY = Math.sin((s.time + s.floatOffset) / 1100) * 0.25;
       const driftY = s.baseDriftY + oscillationY + wind * 0.05;
 
-      s.y += driftY * s.speedFactor;
-      s.x += (s.driftX + wind * 0.4) * s.speedFactor;
-      s.angle += s.rotationSpeed;
+      s.y += driftY * s.speedFactor * timeScale;
+      s.x += (s.driftX + wind * 0.4) * s.speedFactor * timeScale;
 
       drawSeed(s);
 
