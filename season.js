@@ -301,140 +301,130 @@ function startWinterEffect() {
 
 // PROLJEĆE
 function startSpringEffect() {
-  cancelAllSeasonAnimations(); // Prekini sve prethodne animacije
-  setupSeasonCanvas();         // Postavi canvas, ctx, dpr, width, height
+  cancelAllSeasonAnimations();
+  setupSeasonCanvas();
 
-  if (!ctx) {
-    console.warn('⚠️ ctx nije dostupan — canvas nije inicijaliziran.');
-    return;
-  }
+  const seedImage = new Image();
+  seedImage.src = 'images/maslacak.png'; // Putanja do tvoje sličice
 
   const mm = 3.78;
+  const dpr = window.devicePixelRatio || 1;
+  const width = seasonCanvas.width / dpr;
+  const height = seasonCanvas.height / dpr;
+
   const seeds = [];
   const maxSeeds = 120;
-  const burstStart = 20;
+  const groupCount = 4;
   let spawnTimer = 0;
-  const spawnInterval = 220;
+  const spawnInterval = 180;
 
-  // === POVJETARAC ===
-  let wind = 0;
-  let targetWind = 0;
+  let windX = 0;
+  let windY = 0;
+  let targetWindX = 0;
+  let targetWindY = 0;
   let windTimer = 0;
-  let windInterval = Math.random() * 6000 + 6000;
+  let windInterval = Math.random() * 6000 + 8000;
 
   function updateWind(deltaTime) {
     windTimer += deltaTime;
     if (windTimer > windInterval) {
       windTimer = 0;
       windInterval = Math.random() * 8000 + 6000;
-      targetWind = (Math.random() - 0.5) * 1.5;
+      targetWindX = (Math.random() - 0.5) * 0.9;
+      targetWindY = (Math.random() - 0.5) * 0.6;
     }
-    wind += (targetWind - wind) * 0.003;
-  }
 
-  function createSeed(sizeGroup, insideViewport = false) {
-    let size = 1.0;
-    if (sizeGroup === 1) size += 1 / mm;
-    if (sizeGroup === 2) size += 2 / mm;
-    if (sizeGroup === 3) size += 3 / mm;
-
-    return {
-      x: insideViewport
-        ? width - Math.random() * 100
-        : width + Math.random() * 10,
-      y: height * 0.6 + Math.random() * height * 0.4,
-      baseDriftY: (Math.random() - 0.5) * 0.6,
-      driftX: -0.4 - Math.random() * 0.8,
-      speedFactor: 0.4 + Math.random() * 1.2,
-      floatOffset: Math.random() * 3000,
-      size,
-      time: 0
-    };
+    windX += (targetWindX - windX) * 0.002;
+    windY += (targetWindY - windY) * 0.002;
   }
 
   function spawnSeed() {
     if (seeds.length >= maxSeeds) return;
-    const group = Math.floor(seeds.length / 30);
-    seeds.push(createSeed(group));
+
+    const groupIndex = Math.floor(seeds.length / (maxSeeds / groupCount));
+    const sizeIncrease = groupIndex * 1;
+
+    const scale = 1 + sizeIncrease / 5;
+    const w = 12 * scale;
+    const h = 12 * scale;
+
+    const yPos = Math.random() * height;
+    const xStart = width + Math.random() * 10;
+
+    const directionAngle = Math.random() * 2 * Math.PI;
+    const speed = 0.03 + Math.random() * 0.2;
+
+    seeds.push({
+      x: xStart,
+      y: yPos,
+      width: w,
+      height: h,
+      baseSpeed: speed,
+      direction: directionAngle,
+      swayOffset: Math.random() * Math.PI * 2,
+      swaySpeed: 0.003 + Math.random() * 0.004,
+      swayRange: 8 + Math.random() * 10,
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - 0.5) * 0.002,
+      idleTime: 2000 + Math.random() * 2000,
+      age: 0,
+    });
   }
 
-  function drawSeed(s) {
-    const pxSize = 30 * s.size;
-
-    ctx.save();
-    ctx.translate(s.x, s.y);
-
-    const swing = Math.sin((s.time + s.floatOffset) / 900);
-    const tiltY = 1 + swing * 0.2;
-    ctx.scale(1, tiltY);
-
-    if (seedImage && seedImage.width > 0) {
-      ctx.drawImage(seedImage, -pxSize / 2, -pxSize / 2, pxSize, pxSize);
-    } else {
-      // Fallback prikaz ako slika nije učitana
-      ctx.beginPath();
-      ctx.arc(0, 0, pxSize / 3, 0, Math.PI * 2);
-      ctx.fillStyle = 'red';
-      ctx.fill();
-    }
-
-    ctx.restore();
-  }
-
-  let lastTime = performance.now();
-
-  function animate(currentTime) {
-    const deltaTime = currentTime - lastTime;
-    lastTime = currentTime;
-    const timeScale = deltaTime / 16.67;
-
+  function updateAndDrawSeeds(deltaTime) {
     ctx.clearRect(0, 0, width, height);
-    updateWind(deltaTime);
 
-    spawnTimer += deltaTime;
-    if (spawnTimer > spawnInterval) {
-      spawnSeed();
-      spawnTimer = 0;
-    }
+    seeds.forEach(seed => {
+      seed.age += deltaTime;
+
+      const speed = seed.baseSpeed;
+      const angle = seed.direction;
+
+      const swayX = Math.sin(seed.swayOffset + seed.age * seed.swaySpeed) * (seed.swayRange / 100);
+      const swayY = Math.cos(seed.swayOffset + seed.age * seed.swaySpeed) * (seed.swayRange / 100);
+
+      const dx = Math.cos(angle) * speed * deltaTime + swayX + windX * 0.8;
+      const dy = Math.sin(angle) * speed * deltaTime + swayY + windY * 0.8;
+
+      seed.x += dx;
+      seed.y += dy;
+      seed.rotation += seed.rotationSpeed * deltaTime;
+
+      ctx.save();
+      ctx.translate(seed.x, seed.y);
+      ctx.rotate(seed.rotation);
+      ctx.drawImage(seedImage, -seed.width / 2, -seed.height / 2, seed.width, seed.height);
+      ctx.restore();
+    });
 
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
-      s.time += deltaTime;
-
-      const oscillationY = Math.sin((s.time + s.floatOffset) / 1100) * 0.25;
-      const driftY = s.baseDriftY + oscillationY + wind * 0.05;
-
-      s.y += driftY * s.speedFactor * timeScale;
-      s.x += (s.driftX + wind * 0.4) * s.speedFactor * timeScale;
-
-      drawSeed(s);
-
-      if (
-        s.x < -100 || s.x > width + 150 ||
-        s.y < -150 || s.y > height + 150
-      ) {
-        const group = Math.floor(i / 30);
-        seeds[i] = createSeed(group);
+      if (s.x < -50 || s.x > width + 50 || s.y < -50 || s.y > height + 50) {
+        seeds.splice(i, 1);
       }
     }
-
-    springAnimationId = requestAnimationFrame(animate);
   }
 
-  // 📦 Pokreni burst sjeme + animaciju
-  for (let i = 0; i < burstStart; i++) {
-    const group = Math.floor(i / 30);
-    seeds.push(createSeed(group, true));
+  let lastFrame = performance.now();
+  function animateSpring(now) {
+    const deltaTime = now - lastFrame;
+    lastFrame = now;
+
+    updateWind(deltaTime);
+    spawnTimer += deltaTime;
+    if (spawnTimer > spawnInterval) {
+      spawnTimer = 0;
+      spawnSeed();
+    }
+
+    updateAndDrawSeeds(deltaTime);
+    springAnimationId = requestAnimationFrame(animateSpring);
   }
 
-  if (!seedImage.complete || seedImage.width === 0) {
-    seedImage.onload = () => {
-      console.log('🌱 seedImage loaded.');
-      animate();
-    };
-  } else {
-    animate();
-  }
+  seedImage.onload = () => {
+    lastFrame = performance.now();
+    springAnimationId = requestAnimationFrame(animateSpring);
+  };
 }
 
 
