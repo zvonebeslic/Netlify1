@@ -134,199 +134,135 @@ function stopSeasonEffects() {
 // ZIMA
 // === REALISTIC WINTER EFFECT ===
 function startWinterEffect() {
-  
   cancelAllSeasonAnimations();
-  
   setupSeasonCanvas();
 
-let windStrength = 0;
-let targetWind = 0;
-let windTimer = 0;
-let windInterval = Math.random() * 7000 + 8000;
+  let windStrength = 0;
+  let targetWind = 0;
+  let windTimer = 0;
+  let windInterval = Math.random() * 7000 + 8000;
 
-let isGustActive = false;
-let gustTimer = 0;
-const gustCooldown = 10000;
-let gustDuration = 0;
-let lastGustTime = 0;
-let maxWindStrength = 2.5; // možeš povećati na 3.5 za brutalnije udare
+  let isGustActive = false;
+  let gustTimer = 0;
+  const gustCooldown = 10000;
+  let gustDuration = 0;
+  let lastGustTime = 0;
+  let maxWindStrength = 2.5;
 
   let lastFrameTime = performance.now();
-  
-function updateWind(deltaTime) {
-  // Redovni vjetar (lagani drift svakih 8–15 sekundi)
-  windTimer += deltaTime;
-  if (windTimer > windInterval) {
-    windTimer = 0;
-    windInterval = Math.random() * 10000 + 11000;
-    targetWind = (Math.random() - 0.5) * 2 * maxWindStrength;
-  }
 
-  // Povremeni jaki nalet vjetra (gust)
+  function updateWind(deltaTime) {
+    windTimer += deltaTime;
+    if (windTimer > windInterval) {
+      windTimer = 0;
+      windInterval = Math.random() * 10000 + 11000;
+      targetWind = (Math.random() - 0.5) * 2 * maxWindStrength;
+    }
+
     const now = Date.now();
-      if (!isGustActive && now - lastGustTime > gustCooldown && Math.random() < 0.002) {
-    isGustActive = true;
-    gustDuration = Math.random() * 3000 + 4000;
-    targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 2; // jači gust
-    gustTimer = 0;
-    lastGustTime = now; 
-  }
-
-  if (isGustActive) {
-    gustTimer += deltaTime;
-    if (gustTimer > gustDuration) {
-  isGustActive = false;
-
-  setTimeout(() => {
-    targetWind = 0;
-      }, 2000);
+    if (!isGustActive && now - lastGustTime > gustCooldown && Math.random() < 0.002) {
+      isGustActive = true;
+      gustDuration = Math.random() * 3000 + 4000;
+      targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 2;
+      gustTimer = 0;
+      lastGustTime = now;
     }
+
+    if (isGustActive) {
+      gustTimer += deltaTime;
+      if (gustTimer > gustDuration) {
+        isGustActive = false;
+        setTimeout(() => {
+          targetWind = 0;
+        }, 2000);
+      }
+    }
+
+    windStrength += (targetWind - windStrength) * 0.01;
   }
 
-  // Postepeni prijelaz (lerp)
-  const transitionSpeed = 0.01; // sporiji prijelaz (oko 2 sekunde)
-  windStrength += (targetWind - windStrength) * transitionSpeed;
-}
-  
   const snowflakes = [];
-    // Generiraj 150 zguzvanih
-for (let i = 0; i < 150; i++) {
-  snowflakes.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * (window.innerHeight * 0.10),
-    radius: Math.random() * 1.2 + 0.3,
-    speedY: Math.random() * 2 + 3,
-    drift: Math.random() * 2 - 1,
-    rotation: Math.random() * Math.PI,
-    opacity: Math.random() * 0.5 + 0.5,
-    type: 'ellipse'
-  });
-}
 
-// 80 eliptičnih malih
-for (let i = 0; i < 80; i++) {
-  snowflakes.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    radius: 0.6,
-    speedY: Math.random() * 2.5 + 2,
-    drift: Math.random() * 1.5 - 0.75,
-    rotation: Math.random() * Math.PI,
-    opacity: Math.random() * 0.4 + 0.4,
-    type: 'crumpled'
-  });
-}
+  const targetCounts = [
+    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.5] },
+    { count: 80, type: 'crumpled', radius: 0.6 },
+    { count: 40, type: 'ellipse', radius: 0.8 },
+    { count: 20, type: 'ellipse', radius: 1.0 },
+    { count: 10, type: 'crumpled', radius: 1.2 }
+  ];
 
-// 40 eliptičnih srednjih
-for (let i = 0; i < 40; i++) {
-  snowflakes.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    radius: 0.8,
-    speedY: Math.random() * 2.2 + 2,
-    drift: Math.random() * 1.2 - 0.6,
-    rotation: Math.random() * Math.PI,
-    opacity: Math.random() * 0.4 + 0.5,
-    type: 'ellipse'
-  });
-}
+  let currentCounts = [0, 0, 0, 0, 0];
+  let snowSpawnTimer = 0;
 
-// 20 eliptičnih normalnih
-for (let i = 0; i < 20; i++) {
-  snowflakes.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    radius: 1.0,
-    speedY: Math.random() * 2 + 2.2,
-    drift: Math.random() * 1.0 - 0.5,
-    rotation: Math.random() * Math.PI,
-    opacity: Math.random() * 0.3 + 0.6,
-    type: 'ellipse'
-  });
-}
-
-// 10 eliptičnih velikih
-for (let i = 0; i < 10; i++) {
-  snowflakes.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    radius: 1.2,
-    speedY: Math.random() * 1 + 2,
-    drift: Math.random() * 0.8 - 0.4,
-    rotation: Math.random() * Math.PI,
-    opacity: Math.random() * 0.3 + 0.7,
-    type: 'crumpled'
-  });
-}
-
-  function createFlake() {
-    const types = ['small', 'medium', 'tiny', 'large', 'crumpled'];
-    const type = types[Math.floor(Math.random() * types.length)];
-    let radius, shape;
-
-    switch (type) {
-      case 'large': radius = 1.3; break;
-      case 'medium': radius = 0.6; break;
-      case 'tiny': radius = 0.4; break;
-      case 'crumpled': radius = 0.7; shape = 'crumpled'; break;
-      default: radius = 1.0;
+  function spawnSnowflake() {
+    for (let i = 0; i < targetCounts.length; i++) {
+      if (currentCounts[i] < targetCounts[i].count) {
+        const conf = targetCounts[i];
+        let radius = conf.radius || (Math.random() * (conf.radiusRange[1] - conf.radiusRange[0]) + conf.radiusRange[0]);
+        snowflakes.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * (window.innerHeight * 0.1),
+          radius,
+          speedY: Math.random() * 2 + 2,
+          drift: Math.random() * 2 - 1,
+          rotation: Math.random() * Math.PI,
+          opacity: Math.random() * 0.5 + 0.5,
+          type: conf.type,
+          rotateSpeed: (Math.random() - 0.5) * 0.2,
+          angle: Math.random() * Math.PI * 2,
+          alpha: Math.random() * 0.4 + 0.6
+        });
+        currentCounts[i]++;
+        return;
+      }
     }
-
-    return {
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      radius,
-      shape: shape || 'ellipse',
-      speedY: 2 + Math.random() * 3,
-      speedX: 0,
-      angle: Math.random() * Math.PI * 2,
-      rotateSpeed: (Math.random() - 0.5) * 0.2,
-      drift: (Math.random() - 0.5) * 0.5,
-      alpha: 0.5 + Math.random() * 0.5
-    };
   }
 
   function draw() {
     ctx.clearRect(0, 0, seasonCanvas.width / dpr, seasonCanvas.height / dpr);
 
     const now = performance.now();
-const deltaTime = now - lastFrameTime;
-lastFrameTime = now;
+    const deltaTime = now - lastFrameTime;
+    lastFrameTime = now;
 
-updateWind(deltaTime);
-    
+    updateWind(deltaTime);
+
+    snowSpawnTimer += deltaTime;
+    if (snowSpawnTimer > 50) { // dodaj jednu pahulju svakih 50ms
+      snowSpawnTimer = 0;
+      spawnSnowflake();
+    }
+
     snowflakes.forEach(flake => {
-      const timeScale = deltaTime / 16.67; // normalizira na 60fps
+      const timeScale = deltaTime / 16.67;
 
-flake.y += flake.speedY * timeScale;
-flake.x += windStrength * flake.speedY * 0.5 * timeScale;
+      flake.y += flake.speedY * timeScale;
+      flake.x += windStrength * flake.speedY * 0.5 * timeScale;
       flake.angle += flake.rotateSpeed;
-      // Malo prirodnog njihanja (kao da vjetar puše neujednačeno)
-flake.drift += (Math.random() - 0.5) * 0.05;
-flake.drift = Math.max(-2, Math.min(2, flake.drift)); // ograniči
+      flake.drift += (Math.random() - 0.5) * 0.05;
+      flake.drift = Math.max(-2, Math.min(2, flake.drift));
 
-      // Ako ode previše desno (vjetar nosi ulijevo)
-if (flake.x > window.innerWidth + 50) {
-  flake.x = -20 - Math.random() * 30; // pojavi se slijeva
-  flake.y = Math.random() * window.innerHeight;
-}
+      if (flake.x > window.innerWidth + 50) {
+        flake.x = -20 - Math.random() * 30;
+        flake.y = Math.random() * window.innerHeight;
+      }
 
-// Ako ode previše lijevo (vjetar nosi udesno)
-if (flake.x < -50) {
-  flake.x = window.innerWidth + 20 + Math.random() * 30; // pojavi se sdesna
-  flake.y = Math.random() * window.innerHeight;
-}
+      if (flake.x < -50) {
+        flake.x = window.innerWidth + 20 + Math.random() * 30;
+        flake.y = Math.random() * window.innerHeight;
+      }
+
       if (flake.y > window.innerHeight + 10) {
-  flake.y = -10;
-  flake.x = Math.random() * window.innerWidth;
-}
-      
+        flake.y = -10;
+        flake.x = Math.random() * window.innerWidth;
+      }
+
       ctx.save();
       ctx.globalAlpha = flake.alpha;
       ctx.translate(flake.x, flake.y);
       ctx.rotate(flake.angle);
 
-      if (flake.shape === 'crumpled') {
+      if (flake.type === 'crumpled') {
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
           const angle = i * (Math.PI * 2 / 6) + Math.random() * 0.5;
@@ -345,11 +281,13 @@ if (flake.x < -50) {
         ctx.fillStyle = '#ffffff';
         ctx.fill();
       }
+
       ctx.restore();
     });
 
     winterAnimationId = requestAnimationFrame(draw);
   }
+
   draw();
 }
 
