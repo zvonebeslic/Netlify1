@@ -238,7 +238,6 @@ function startWinterEffect() {
 
       flake.y += flake.speedY * timeScale;
       flake.x += windStrength * flake.speedY * 0.5 * timeScale;
-      flake.angle += flake.rotateSpeed;
       flake.drift += (Math.random() - 0.5) * 0.05;
       flake.drift = Math.max(-2, Math.min(2, flake.drift));
 
@@ -260,7 +259,6 @@ function startWinterEffect() {
       ctx.save();
       ctx.globalAlpha = flake.alpha;
       ctx.translate(flake.x, flake.y);
-      ctx.rotate(flake.angle);
 
       if (flake.type === 'crumpled') {
         ctx.beginPath();
