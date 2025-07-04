@@ -362,11 +362,14 @@ function startSpringEffect() {
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
 
-  const seeds = [];
-  const totalSeeds = 120;
-
   const seedImage = new Image();
   seedImage.src = 'images/maslacak.png';
+
+  const seeds = [];
+  const maxSeeds = 120;
+  const burstStart = 12;
+  let spawnTimer = 0;
+  const spawnInterval = 220;
 
   function createSeed(sizeGroup) {
     let size = 1.0;
@@ -375,10 +378,10 @@ function startSpringEffect() {
     if (sizeGroup === 3) size += 3 / mm;
 
     return {
-      x: width - Math.random() * (mm * 18),
-      y: height - Math.random() * (mm * 18),
-      baseDriftY: (Math.random() - 0.5) * 0.6,
-      driftX: (Math.random() - 0.5) * 1.2,
+      x: width + Math.random() * 10,           // točno uz desni rub
+      y: Math.random() * height,               // bilo gdje po visini
+      baseDriftY: (Math.random() - 0.5) * 0.6,  // gore/dolje
+      driftX: -0.4 - Math.random() * 0.8,       // prema lijevo
       speedFactor: 0.4 + Math.random() * 1.2,
       floatOffset: Math.random() * 3000,
       size,
@@ -386,9 +389,14 @@ function startSpringEffect() {
     };
   }
 
-  for (let i = 0; i < totalSeeds; i++) {
-    const sizeGroup = Math.floor(i / 30);
-    seeds.push(createSeed(sizeGroup));
+  function spawnSeed() {
+    if (seeds.length >= maxSeeds) return;
+    const group = Math.floor(seeds.length / 30);
+    seeds.push(createSeed(group));
+  }
+
+  for (let i = 0; i < 20; i++) {
+    spawnSeed();
   }
 
   // POVJETARAC
@@ -413,7 +421,7 @@ function startSpringEffect() {
     ctx.save();
     ctx.translate(s.x, s.y);
 
-    // === 3D efekt – njihanje oko horizontalne osi ===
+    // 3D swing efekt (rotacija oko vodoravne osi)
     const swing = Math.sin((s.time + s.floatOffset) / 900);
     const tiltY = 1 + swing * 0.2;
     ctx.scale(1, tiltY);
@@ -425,16 +433,22 @@ function startSpringEffect() {
   let lastTime = performance.now();
 
   function animate(currentTime) {
-    const delta = currentTime - lastTime;
+    const deltaTime = currentTime - lastTime;
     lastTime = currentTime;
-    const timeScale = delta / 16.67;
+    const timeScale = deltaTime / 16.67; // normalizirano na 60 FPS
 
     ctx.clearRect(0, 0, width, height);
-    updateWind(delta);
+    updateWind(deltaTime);
+
+    spawnTimer += deltaTime;
+    if (spawnTimer > spawnInterval) {
+      spawnSeed();
+      spawnTimer = 0;
+    }
 
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
-      s.time += delta;
+      s.time += deltaTime;
 
       const oscillationY = Math.sin((s.time + s.floatOffset) / 1100) * 0.25;
       const driftY = s.baseDriftY + oscillationY + wind * 0.05;
@@ -445,11 +459,11 @@ function startSpringEffect() {
       drawSeed(s);
 
       if (
-        s.x < -100 || s.x > width + 100 ||
+        s.x < -100 || s.x > width + 150 ||
         s.y < -150 || s.y > height + 150
       ) {
         const group = Math.floor(i / 30);
-        seeds[i] = createSeed(group);
+        seeds[i] = createSeed(group); // reset kad izađe
       }
     }
 
@@ -461,7 +475,7 @@ function startSpringEffect() {
   };
 }
 
-    
+
 // LJETO
 function startSummerEffect() {
 
