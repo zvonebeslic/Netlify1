@@ -533,15 +533,18 @@ function startSummerEffect() {
 
 // JESEN
 function startAutumnEffect() {
+  // Priprema canvasa
   const canvas = document.createElement('canvas');
   canvas.id = 'season-canvas';
-  canvas.style.position = 'fixed';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.width = '100vw';
-  canvas.style.height = '100vh';
-  canvas.style.zIndex = '99998';
-  canvas.style.pointerEvents = 'none';
+  Object.assign(canvas.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100vw',
+    height: '100vh',
+    zIndex: '99998',
+    pointerEvents: 'none'
+  });
   document.body.appendChild(canvas);
 
   ctx = canvas.getContext('2d');
@@ -549,33 +552,38 @@ function startAutumnEffect() {
   let height = canvas.height = window.innerHeight;
 
   const drops = [];
-  const dropLayers = 3; // pozadina, sredina, prednji sloj
+  const dropLayers = 3;
   const layerConfigs = [
     { count: 80, speed: 2, opacity: 0.15, width: 0.7 },
     { count: 100, speed: 4, opacity: 0.25, width: 1 },
     { count: 80, speed: 6, opacity: 0.35, width: 1.5 }
   ];
 
-  for (let layer = 0; layer < dropLayers; layer++) {
+  // Funkcija za stvaranje kapi
+  function createDrop(layer) {
     const config = layerConfigs[layer];
-    for (let i = 0; i < config.count; i++) {
-      drops.push({
-        x: Math.random() * width,
-        y: Math.random() * (height * 0.10),
-        length: 10 + Math.random() * 15,
-        speed: config.speed + Math.random() * 1,
-        width: config.width,
-        opacity: config.opacity
-      });
-    }
+    return {
+      x: Math.random() * width,
+      y: Math.random() * (height * 0.1), // samo vrh ekrana
+      length: 10 + Math.random() * 15,
+      speed: config.speed + Math.random() * 1,
+      width: config.width,
+      opacity: config.opacity,
+      layer: layer
+    };
   }
+
+  // Kontrola postepenog dodavanja kapi
+  let dropSpawnTimer = 0;
+  const totalLayers = layerConfigs.length;
+  const maxDropsPerLayer = [80, 100, 80];
 
   let lightningTimer = 0;
 
   function drawRain() {
     ctx.clearRect(0, 0, width, height);
 
-    // povremeni bljesak
+    // Povremeni bljesak munje
     if (Math.random() < 0.002 && lightningTimer <= 0) {
       lightningTimer = 5;
     }
@@ -585,6 +593,20 @@ function startAutumnEffect() {
       lightningTimer--;
     }
 
+    // Dodavanje novih kapi svakih nekoliko frameova
+    dropSpawnTimer += 1;
+    if (dropSpawnTimer >= 2) {
+      dropSpawnTimer = 0;
+      for (let layer = 0; layer < totalLayers; layer++) {
+        const config = layerConfigs[layer];
+        const currentCount = drops.filter(d => d.layer === layer).length;
+        if (currentCount < maxDropsPerLayer[layer]) {
+          drops.push(createDrop(layer));
+        }
+      }
+    }
+
+    // Crtanje svake kapi
     drops.forEach(drop => {
       ctx.beginPath();
       ctx.strokeStyle = `rgba(255,255,255,${drop.opacity})`;
