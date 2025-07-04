@@ -4,6 +4,9 @@ let seasonCanvas;
 let ctx;
 let dpr = window.devicePixelRatio || 1;
 
+const seedImage = new Image();
+seedImage.src = 'images/maslacak.png';
+
 // ID-jevi animacija za upravljanje (za cancelAnimationFrame)
 let winterAnimationId = null;
 let springAnimationId = null;
@@ -352,23 +355,20 @@ if (flake.x < -50) {
 
 // PROLJEĆE
 function startSpringEffect() {
-  cancelAllSeasonAnimations();
-  setupSeasonCanvas();
+  
+  cancelAllSeasonAnimations(); // Prekini sve aktivne
+  
+  setupSeasonCanvas();         // Inicijaliziraj canvas i ctx
 
-  ctx = seasonCanvas.getContext('2d');
-
-  const mm = 3.78;
-  const dpr = window.devicePixelRatio || 1;
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
+  const mm = 3.78;
 
   const seeds = [];
   const maxSeeds = 120;
   const burstStart = 20;
   let spawnTimer = 0;
   const spawnInterval = 220;
-
-  const seedImage = new Image();
 
   // === POVJETARAC ===
   let wind = 0;
@@ -394,9 +394,9 @@ function startSpringEffect() {
 
     return {
       x: insideViewport
-        ? width - Math.random() * 100  // odmah unutar vidljivog područja
-        : width + Math.random() * 10, // izlazi s desne strane
-      y: Math.random() * height,
+        ? width - Math.random() * 100
+        : width + Math.random() * 10,
+      y: height * 0.6 + Math.random() * height * 0.4,
       baseDriftY: (Math.random() - 0.5) * 0.6,
       driftX: -0.4 - Math.random() * 0.8,
       speedFactor: 0.4 + Math.random() * 1.2,
@@ -418,7 +418,6 @@ function startSpringEffect() {
     ctx.save();
     ctx.translate(s.x, s.y);
 
-    // Efekt njihanja i rotacije u 3D (swing oko vodoravne osi)
     const swing = Math.sin((s.time + s.floatOffset) / 900);
     const tiltY = 1 + swing * 0.2;
     ctx.scale(1, tiltY);
@@ -467,18 +466,22 @@ function startSpringEffect() {
     springAnimationId = requestAnimationFrame(animate);
   }
 
-  // ⬇️ VAŽNO: prvo se definira .onload, tek onda .src
-  seedImage.onload = () => {
+  if (!seedImage.complete) {
+    seedImage.onload = () => {
+      for (let i = 0; i < burstStart; i++) {
+        const group = Math.floor(i / 30);
+        seeds.push(createSeed(group, true));
+      }
+      animate();
+    };
+  } else {
     for (let i = 0; i < burstStart; i++) {
       const group = Math.floor(i / 30);
-      seeds.push(createSeed(group, true)); // Prvih 20 odmah vidljivo
+      seeds.push(createSeed(group, true));
     }
     animate();
-  };
-
-  seedImage.src = 'images/maslacak.png';
+  }
 }
-
 
 // LJETO
 function startSummerEffect() {
