@@ -367,21 +367,23 @@ function startSpringEffect() {
 
   const seeds = [];
   const maxSeeds = 120;
-  const burstStart = 12;
+  const burstStart = 20;
   let spawnTimer = 0;
   const spawnInterval = 220;
 
-  function createSeed(sizeGroup) {
+  function createSeed(sizeGroup, insideViewport = false) {
     let size = 1.0;
     if (sizeGroup === 1) size += 1 / mm;
     if (sizeGroup === 2) size += 2 / mm;
     if (sizeGroup === 3) size += 3 / mm;
 
     return {
-      x: width + Math.random() * 10,           // točno uz desni rub
-      y: Math.random() * height,               // bilo gdje po visini
-      baseDriftY: (Math.random() - 0.5) * 0.6,  // gore/dolje
-      driftX: -0.4 - Math.random() * 0.8,       // prema lijevo
+      x: insideViewport
+        ? width - Math.random() * 100  // odmah unutar ekrana
+        : width + Math.random() * 10, // izvan ekrana
+      y: Math.random() * height,
+      baseDriftY: (Math.random() - 0.5) * 0.6,
+      driftX: -0.4 - Math.random() * 0.8,
       speedFactor: 0.4 + Math.random() * 1.2,
       floatOffset: Math.random() * 3000,
       size,
@@ -393,10 +395,6 @@ function startSpringEffect() {
     if (seeds.length >= maxSeeds) return;
     const group = Math.floor(seeds.length / 30);
     seeds.push(createSeed(group));
-  }
-
-  for (let i = 0; i < 20; i++) {
-    spawnSeed();
   }
 
   // POVJETARAC
@@ -435,7 +433,7 @@ function startSpringEffect() {
   function animate(currentTime) {
     const deltaTime = currentTime - lastTime;
     lastTime = currentTime;
-    const timeScale = deltaTime / 16.67; // normalizirano na 60 FPS
+    const timeScale = deltaTime / 16.67;
 
     ctx.clearRect(0, 0, width, height);
     updateWind(deltaTime);
@@ -463,14 +461,19 @@ function startSpringEffect() {
         s.y < -150 || s.y > height + 150
       ) {
         const group = Math.floor(i / 30);
-        seeds[i] = createSeed(group); // reset kad izađe
+        seeds[i] = createSeed(group);
       }
     }
 
     springAnimationId = requestAnimationFrame(animate);
   }
 
+  // Start animacije tek kad se slika učita
   seedImage.onload = () => {
+    for (let i = 0; i < burstStart; i++) {
+      const group = Math.floor(i / 30);
+      seeds.push(createSeed(group, true)); // odmah u viewportu
+    }
     animate();
   };
 }
