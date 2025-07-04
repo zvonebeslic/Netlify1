@@ -352,9 +352,7 @@ if (flake.x < -50) {
 
 // PROLJEĆE
 function startSpringEffect() {
-  
   cancelAllSeasonAnimations();
-  
   setupSeasonCanvas();
 
   const mm = 3.78;
@@ -362,14 +360,29 @@ function startSpringEffect() {
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
 
-  const seedImage = new Image();
-  seedImage.src = 'images/maslacak.png';
-
   const seeds = [];
   const maxSeeds = 120;
   const burstStart = 20;
   let spawnTimer = 0;
   const spawnInterval = 220;
+
+  const seedImage = new Image();
+
+  // === POVJETARAC ===
+  let wind = 0;
+  let targetWind = 0;
+  let windTimer = 0;
+  let windInterval = Math.random() * 6000 + 6000;
+
+  function updateWind(deltaTime) {
+    windTimer += deltaTime;
+    if (windTimer > windInterval) {
+      windTimer = 0;
+      windInterval = Math.random() * 8000 + 6000;
+      targetWind = (Math.random() - 0.5) * 1.5;
+    }
+    wind += (targetWind - wind) * 0.003;
+  }
 
   function createSeed(sizeGroup, insideViewport = false) {
     let size = 1.0;
@@ -379,8 +392,8 @@ function startSpringEffect() {
 
     return {
       x: insideViewport
-        ? width - Math.random() * 100  // odmah unutar ekrana
-        : width + Math.random() * 10, // izvan ekrana
+        ? width - Math.random() * 100  // odmah unutar vidljivog područja
+        : width + Math.random() * 10, // izlazi s desne strane
       y: Math.random() * height,
       baseDriftY: (Math.random() - 0.5) * 0.6,
       driftX: -0.4 - Math.random() * 0.8,
@@ -397,29 +410,13 @@ function startSpringEffect() {
     seeds.push(createSeed(group));
   }
 
-  // POVJETARAC
-  let wind = 0;
-  let targetWind = 0;
-  let windTimer = 0;
-  let windInterval = Math.random() * 6000 + 6000;
-
-  function updateWind(deltaTime) {
-    windTimer += deltaTime;
-    if (windTimer > windInterval) {
-      windTimer = 0;
-      windInterval = Math.random() * 8000 + 6000;
-      targetWind = (Math.random() - 0.5) * 1.5;
-    }
-    wind += (targetWind - wind) * 0.003;
-  }
-
   function drawSeed(s) {
     const pxSize = 30 * s.size;
 
     ctx.save();
     ctx.translate(s.x, s.y);
 
-    // 3D swing efekt (rotacija oko vodoravne osi)
+    // Efekt njihanja i rotacije u 3D (swing oko vodoravne osi)
     const swing = Math.sin((s.time + s.floatOffset) / 900);
     const tiltY = 1 + swing * 0.2;
     ctx.scale(1, tiltY);
@@ -468,14 +465,16 @@ function startSpringEffect() {
     springAnimationId = requestAnimationFrame(animate);
   }
 
-  // Start animacije tek kad se slika učita
+  // ⬇️ VAŽNO: prvo se definira .onload, tek onda .src
   seedImage.onload = () => {
     for (let i = 0; i < burstStart; i++) {
       const group = Math.floor(i / 30);
-      seeds.push(createSeed(group, true)); // odmah u viewportu
+      seeds.push(createSeed(group, true)); // Prvih 20 odmah vidljivo
     }
     animate();
   };
+
+  seedImage.src = 'images/maslacak.png';
 }
 
 
