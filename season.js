@@ -424,7 +424,7 @@ function startSpringEffect() {
     const delta = currentTime - lastTime;
     lastTime = currentTime;
 
-    ctx.clearRect(0, 0, seasonCanvas.width / dpr, seasonCanvas.height / dpr);
+    ctx.clearRect(0, 0, width, height);
     updateWind(delta);
 
     for (let i = seeds.length - 1; i >= 0; i--) {
