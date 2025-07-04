@@ -193,7 +193,7 @@ function updateWind(deltaTime) {
 for (let i = 0; i < 150; i++) {
   snowflakes.push({
     x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
+    y: Math.random() * (window.innerHeight * 0.10),
     radius: Math.random() * 1.2 + 0.3,
     speedY: Math.random() * 2 + 3,
     drift: Math.random() * 2 - 1,
@@ -561,7 +561,7 @@ function startAutumnEffect() {
     for (let i = 0; i < config.count; i++) {
       drops.push({
         x: Math.random() * width,
-        y: Math.random() * height,
+        y: Math.random() * (height * 0.10),
         length: 10 + Math.random() * 15,
         speed: config.speed + Math.random() * 1,
         width: config.width,
