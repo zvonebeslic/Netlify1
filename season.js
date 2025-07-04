@@ -355,15 +355,15 @@ if (flake.x < -50) {
 
 // PROLJEĆE
 function startSpringEffect() {
-  
-  cancelAllSeasonAnimations(); // Prekini sve aktivne
-  
-  setupSeasonCanvas();         // Inicijaliziraj canvas i ctx
+  cancelAllSeasonAnimations(); // Prekini sve prethodne animacije
+  setupSeasonCanvas();         // Postavi canvas, ctx, dpr, width, height
 
-  const width = seasonCanvas.width / dpr;
-  const height = seasonCanvas.height / dpr;
+  if (!ctx) {
+    console.warn('⚠️ ctx nije dostupan — canvas nije inicijaliziran.');
+    return;
+  }
+
   const mm = 3.78;
-
   const seeds = [];
   const maxSeeds = 120;
   const burstStart = 20;
@@ -422,7 +422,16 @@ function startSpringEffect() {
     const tiltY = 1 + swing * 0.2;
     ctx.scale(1, tiltY);
 
-    ctx.drawImage(seedImage, -pxSize / 2, -pxSize / 2, pxSize, pxSize);
+    if (seedImage && seedImage.width > 0) {
+      ctx.drawImage(seedImage, -pxSize / 2, -pxSize / 2, pxSize, pxSize);
+    } else {
+      // Fallback prikaz ako slika nije učitana
+      ctx.beginPath();
+      ctx.arc(0, 0, pxSize / 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+    }
+
     ctx.restore();
   }
 
@@ -466,22 +475,22 @@ function startSpringEffect() {
     springAnimationId = requestAnimationFrame(animate);
   }
 
-  if (!seedImage.complete) {
+  // 📦 Pokreni burst sjeme + animaciju
+  for (let i = 0; i < burstStart; i++) {
+    const group = Math.floor(i / 30);
+    seeds.push(createSeed(group, true));
+  }
+
+  if (!seedImage.complete || seedImage.width === 0) {
     seedImage.onload = () => {
-      for (let i = 0; i < burstStart; i++) {
-        const group = Math.floor(i / 30);
-        seeds.push(createSeed(group, true));
-      }
+      console.log('🌱 seedImage loaded.');
       animate();
     };
   } else {
-    for (let i = 0; i < burstStart; i++) {
-      const group = Math.floor(i / 30);
-      seeds.push(createSeed(group, true));
-    }
     animate();
   }
 }
+
 
 // LJETO
 function startSummerEffect() {
