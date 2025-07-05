@@ -346,13 +346,12 @@ function startSpringEffect() {
 
     const scale = 1 + sizeIncrease / 5;
     const w = 12 * scale;
-    const h = 12 * scale;
+    const h = 15* scale;
 
     const yPos = Math.random() * height;
     const xStart = width + Math.random() * 10;
 
-    const directionAngle = Math.random() * 2 * Math.PI;
-    const speed = 0.03 + Math.random() * 0.2;
+    const speed = 0.01 + Math.random() * 0.4;
 
     seeds.push({
       x: xStart,
@@ -360,12 +359,9 @@ function startSpringEffect() {
       width: w,
       height: h,
       baseSpeed: speed,
-      direction: directionAngle,
       swayOffset: Math.random() * Math.PI * 2,
       swaySpeed: 0.003 + Math.random() * 0.004,
       swayRange: 8 + Math.random() * 10,
-      rotation: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.002,
       idleTime: 2000 + Math.random() * 2000,
       age: 0,
     });
@@ -388,11 +384,9 @@ function startSpringEffect() {
 
       seed.x += dx;
       seed.y += dy;
-      seed.rotation += seed.rotationSpeed * deltaTime;
 
       ctx.save();
       ctx.translate(seed.x, seed.y);
-      ctx.rotate(seed.rotation);
       ctx.drawImage(seedImage, -seed.width / 2, -seed.height / 2, seed.width, seed.height);
       ctx.restore();
     });
