@@ -378,7 +378,7 @@ function startSpringEffect() {
       seed.x += dx;
       seed.y += dy;
 
-      ctx.drawImage(seedImage, seed.x - seed.width / 2, seed.y - seed.height / 2, seed.width, seed.height);
+      ctx.drawImage(seedImage, seed.x - seed.width / 2, seed.y - seed.height / 2, seed.width + 1, seed.height + 1);
     });
 
     // Automatsko uklanjanje sjemenki izvan ekrana
