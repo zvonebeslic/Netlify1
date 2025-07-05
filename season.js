@@ -460,6 +460,10 @@ function startAutumnEffect() {
   let lightningTimer = 0;
 
   function drawRain() {
+
+    ctx.fillStyle = 'rgba(30, 30, 30, 0.05)';
+    ctx.fillRect(0, 0, width, height);
+    
     ctx.clearRect(0, 0, width, height);
 
     // Povremeni bljesak munje
