@@ -457,13 +457,13 @@ function startAutumnEffect() {
   // Kontrola postepenog dodavanja kapi
   let dropSpawnTimer = 0;
   const totalLayers = layerConfigs.length;
-  const maxDropsPerLayer = [150, 130, 140];
+  const maxDropsPerLayer = [150, 120, 120, 80, 80];
 
   let lightningTimer = 0;
 
   function drawRain() {
 
-    ctx.fillStyle = 'rgba(30, 30, 30, 0.05)';
+    ctx.fillStyle = 'rgba(120, 120, 120, 0.15)';
     ctx.fillRect(0, 0, width, height);
     
     ctx.clearRect(0, 0, width, height);
