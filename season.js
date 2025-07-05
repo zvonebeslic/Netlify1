@@ -61,7 +61,8 @@ function setupSeasonCanvas() {
   seasonCanvas.height = window.innerHeight * dpr;
   ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
   ctx.scale(dpr, dpr);
-
+  seasonCanvas.style.height = '100vh';
+  
   // Resize listener (poziva se samo jednom)
   if (!setupSeasonCanvas._resized) {
     window.addEventListener('resize', () => {
@@ -359,7 +360,7 @@ function startSpringEffect() {
   }
 
   function updateAndDrawSeeds(deltaTime) {
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, seasonCanvas.width, seasonCanvas.height);
 
     if (Math.random() < 0.4) spawnSeed();
 
