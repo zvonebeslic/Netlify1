@@ -297,7 +297,7 @@ function startWinterEffect() {
 }
 
 // LJETO
-  function startSummerEffect() {
+function startSummerEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
 
@@ -316,90 +316,91 @@ function startWinterEffect() {
 
   class SunRay {
     constructor() {
-      // Gornji rub uvijek izvan ekrana
       this.y = -150 - Math.random() * 100;
-
-      // Zraka ulazi iz desnog ruba ili iz gornjeg
-      if (Math.random() < 0.5) {
-        this.x = width + Math.random() * 100;
-        this.speedX = -0.03 - Math.random() * 0.05;
-      } else {
-        this.x = Math.random() * width;
-        this.speedX = 0;
-      }
-
+      this.x = Math.random() < 0.5 ? width + Math.random() * 100 : Math.random() * width;
+      this.speedX = this.x > width ? -0.02 - Math.random() * 0.04 : 0;
       this.speedY = 0.01 + Math.random() * 0.015;
 
       this.length = height * (0.6 + Math.random() * 0.4);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.2;
 
-      this.widthStart = (2 + Math.random() * 4) * mm;
-      this.widthEnd = (9 + Math.random() * 13) * mm;
+      this.baseWidthStart = (2 + Math.random() * 4) * mm;
+      this.baseWidthEnd = (9 + Math.random() * 13) * mm;
 
+      this.pulseOffset = Math.random() * 10000;
+      this.pulseSpeed = 0.0002 + Math.random() * 0.0003;
       this.opacity = 0;
-      this.fadeInSpeed = 0.00025;
       this.opacityMax = 0.1;
       this.appeared = false;
 
       this.life = 0;
-      this.maxLife = 20000 + Math.random() * 15000;
-
-      this.pulse = 1;
+      this.maxLife = 30000 + Math.random() * 10000;
     }
 
-    update(delta) {
+    update(delta, time) {
       this.life += delta;
 
+      // Fade in
       if (!this.appeared) {
-        this.opacity += delta * this.fadeInSpeed;
+        this.opacity += delta * 0.00025;
         if (this.opacity >= this.opacityMax) {
           this.opacity = this.opacityMax;
           this.appeared = true;
         }
       }
 
-      const t = this.life / this.maxLife;
-      this.pulse = 1 - t;
+      // Sinusna širina koja raste i opada nepredvidivo
+      const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
+      this.widthStart = this.baseWidthStart * (0.8 + 0.4 * pulse); // 80%–120%
+      this.widthEnd = this.baseWidthEnd * (0.7 + 0.6 * pulse);     // 70%–130%
 
-      // Kretanje
+      // Pomicanje
       this.x += this.speedX * delta * 0.04;
       this.y += this.speedY * delta * 0.04;
 
-      // Ako zraka izađe s lijeve strane ili ispod
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
-      if (endX < -100 || this.x < -100 || endY > height + 200) {
+      if (endX < -150 || this.x < -150 || endY > height + 200) {
         const index = rays.indexOf(this);
         if (index !== -1) rays.splice(index, 1);
       }
     }
 
     draw(ctx) {
-      const endX = this.x + Math.cos(this.angle) * this.length;
-      const endY = this.y + Math.sin(this.angle) * this.length;
+      const segments = 10;
+      const step = this.length / segments;
+      const angleX = Math.cos(this.angle);
+      const angleY = Math.sin(this.angle);
 
-      const grad = ctx.createLinearGradient(this.x, this.y, endX, endY);
-      grad.addColorStop(0, `rgba(255,255,220,${this.opacity * 2.2})`);
-      grad.addColorStop(1, `rgba(255,255,220,0)`);
+      for (let i = 0; i < segments; i++) {
+        const t = i / segments;
+        const startX = this.x + angleX * step * i;
+        const startY = this.y + angleY * step * i;
+        const endX = this.x + angleX * step * (i + 1);
+        const endY = this.y + angleY * step * (i + 1);
 
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = this.widthStart + (this.widthEnd - this.widthStart) * this.pulse;
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(endX, endY);
-      ctx.stroke();
+        const width = this.widthStart + (this.widthEnd - this.widthStart) * t;
+        const localAlpha = this.opacity * (1 - t * 0.9);
+
+        ctx.strokeStyle = `rgba(255,255,220,${localAlpha * 2.2})`;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+      }
     }
   }
 
-  // Dodaj prvu zraku s malim zakašnjenjem
-  setTimeout(() => rays.push(new SunRay()), 300);
+  // Prva zraka s malim delayem
+  setTimeout(() => rays.push(new SunRay()), 500);
 
-  // Postepeno dodaj nove ako ih je manje od 3
+  // Nove zrake se pojavljuju svakih 10–16 sekundi, najviše 3
   setInterval(() => {
     if (rays.length < maxRays) {
       rays.push(new SunRay());
     }
-  }, 8000 + Math.random() * 8000); // svaka 8–16 sekundi nova
+  }, 10000 + Math.random() * 6000);
 
   let lastTime = performance.now();
   function animate() {
@@ -409,7 +410,6 @@ function startWinterEffect() {
     lastTime = now;
 
     ctx.clearRect(0, 0, width, height);
-
     ctx.fillStyle = 'rgba(255, 240, 200, 0.05)';
     ctx.fillRect(0, 0, width, height);
 
@@ -417,7 +417,7 @@ function startWinterEffect() {
     ctx.globalCompositeOperation = 'lighter';
 
     for (const ray of rays) {
-      ray.update(delta);
+      ray.update(delta, now);
       ray.draw(ctx);
     }
 
@@ -425,7 +425,7 @@ function startWinterEffect() {
   }
 
   animate();
-}  
+}
       
 
 // PROLJEĆE
