@@ -312,19 +312,19 @@ function startSummerEffect() {
 
   const mm = 3.78;
   const rays = [];
-  const maxRays = 4;
+  const maxRays = 6; // više zraka sada
 
   class SunRay {
     constructor() {
       this.x = Math.random() < 0.5 ? Math.random() * width : width;
-      this.y = -150 - Math.random() * 100; // fiksirano iznad ekrana
+      this.y = -150 - Math.random() * 100; // fiksiran gornji rub
 
       this.length = height * (0.6 + Math.random() * 0.4);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.2;
 
-      // Širine (pretvorene iz mm)
-      this.widthStart = (2 + Math.random() * 4) * mm;  // 2–6 mm
-      this.widthEnd = (9 + Math.random() * 13) * mm;   // 9–22 mm
+      // Širine (mm u px)
+      this.widthStart = (2 + Math.random() * 4) * mm;
+      this.widthEnd = (9 + Math.random() * 13) * mm;
 
       this.opacity = 0;
       this.life = 0;
@@ -337,11 +337,10 @@ function startSummerEffect() {
     update(delta) {
       this.life += delta;
 
-      // Fade in
       if (!this.appeared) {
-        this.opacity += delta * 0.0002;
-        if (this.opacity >= 0.05) {
-          this.opacity = 0.05;
+        this.opacity += delta * 0.00025;
+        if (this.opacity >= 0.07) {
+          this.opacity = 0.07;
           this.appeared = true;
         }
       }
@@ -362,7 +361,7 @@ function startSummerEffect() {
       const endY = this.y + Math.sin(this.angle) * this.length;
 
       const grad = ctx.createLinearGradient(this.x, this.y, endX, endY);
-      grad.addColorStop(0, `rgba(255,255,220,${this.opacity})`);
+      grad.addColorStop(0, `rgba(255,255,220,${this.opacity * 1.6})`);
       grad.addColorStop(1, `rgba(255,255,220,0)`);
 
       ctx.strokeStyle = grad;
@@ -374,12 +373,13 @@ function startSummerEffect() {
     }
   }
 
-  // Odmah dodaj do 4 zrake
-  for (let i = 0; i < maxRays; i++) {
+  // Pokreni odmah 4–5 zraka
+  const startCount = Math.floor(4 + Math.random() * 2);
+  for (let i = 0; i < startCount; i++) {
     rays.push(new SunRay());
   }
 
-  // Pokretanje nove zrake svakih 20–30 sekundi
+  // Dodaj nove zrake svakih 20–30 sekundi ako ih ima manje od max
   setInterval(() => {
     if (rays.length < maxRays) {
       rays.push(new SunRay());
@@ -395,8 +395,8 @@ function startSummerEffect() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Topli filter
-    ctx.fillStyle = 'rgba(255, 240, 200, 0.04)';
+    // Blagi topli filter
+    ctx.fillStyle = 'rgba(255, 240, 200, 0.045)';
     ctx.fillRect(0, 0, width, height);
 
     ctx.save();
@@ -412,6 +412,7 @@ function startSummerEffect() {
 
   animate();
 }
+      
 
 // PROLJEĆE
 function startSpringEffect() {
