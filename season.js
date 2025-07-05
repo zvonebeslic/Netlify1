@@ -345,13 +345,13 @@ function startSpringEffect() {
     const sizeIncrease = groupIndex * 1;
 
     const scale = 1 + sizeIncrease / 5;
-    const w = 12 * scale;
-    const h = 15* scale;
+    const w = 14 * scale;
+    const h = 14* scale;
 
     const yPos = Math.random() * height;
     const xStart = width + Math.random() * 10;
 
-    const speed = 0.01 + Math.random() * 0.4;
+    const speed = 0.01 + Math.random() * 0.04;
 
     seeds.push({
       x: xStart,
