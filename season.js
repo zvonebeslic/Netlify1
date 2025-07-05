@@ -4,9 +4,6 @@ let seasonCanvas;
 let ctx;
 let dpr = window.devicePixelRatio || 1;
 
-const seedImage = new Image();
-seedImage.src = 'images/maslacak.png';
-
 // ID-jevi animacija za upravljanje (za cancelAnimationFrame)
 let winterAnimationId = null;
 let springAnimationId = null;
