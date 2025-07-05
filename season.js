@@ -313,31 +313,34 @@ function startSummerEffect() {
   const mm = 3.78;
   const rays = [];
   const maxRays = 3;
-  const minSpacing = width / 4; // min. udaljenost između zraka (ne preklapaju se)
+  const minSpacing = width / 4;
 
   class SunRay {
     constructor(x) {
       this.x = x;
       this.y = -200 - Math.random() * 100;
 
-      this.length = height * (0.6 + Math.random() * 0.4);
+      this.length = height * (0.7 + Math.random() * 0.3);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.2;
 
+      // Širine
       this.baseWidthStart = (2 + Math.random() * 4) * mm;
-      this.baseWidthEnd = (9 + Math.random() * 13) * mm;
+      this.baseWidthEnd = (20 + Math.random() * 10) * mm; // do 30 mm
 
+      // Animacija širenja (valna)
       this.pulseOffset = Math.random() * 10000;
-      this.pulseSpeed = 0.0002 + Math.random() * 0.0003;
+      this.pulseSpeed = 0.00015 + Math.random() * 0.00015;
+
       this.opacity = 0;
       this.opacityMax = 0.1;
       this.appeared = false;
 
       this.life = 0;
-      this.maxLife = 25000 + Math.random() * 10000;
+      this.maxLife = 30000 + Math.random() * 10000;
 
-      // Lagano pomicanje lijevo-dolje
-      this.speedX = -0.02 - Math.random() * 0.03;
-      this.speedY = 0.01 + Math.random() * 0.015;
+      // Vrlo sporo kretanje (osim rijetkih iznimki)
+      this.speedX = -0.005 - Math.random() * 0.015;
+      this.speedY = 0.004 + Math.random() * 0.01;
     }
 
     update(delta, time) {
@@ -351,16 +354,17 @@ function startSummerEffect() {
         }
       }
 
+      // Valno pulsiranje širine
       const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
 
+      // Kretanje
       this.x += this.speedX * delta * 0.04;
       this.y += this.speedY * delta * 0.04;
 
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
-
       if (endX < -150 || this.x < -150 || endY > height + 200) {
         const index = rays.indexOf(this);
         if (index !== -1) rays.splice(index, 1);
@@ -376,7 +380,7 @@ function startSummerEffect() {
       grad.addColorStop(1, `rgba(255,255,220,0)`);
 
       ctx.strokeStyle = grad;
-      ctx.lineWidth = this.widthEnd; // debljina u dnu se animira
+      ctx.lineWidth = this.widthEnd; // širina raste do dna
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
       ctx.lineTo(endX, endY);
@@ -399,16 +403,16 @@ function startSummerEffect() {
     }
   }
 
-  // ➤ Dodaj 2 odmah nakon klika
+  // ➤ Dvije odmah
   spawnRay();
-  setTimeout(spawnRay, 500);
+  setTimeout(spawnRay, 600);
 
-  // ➤ Loop za kasnije – samo ako ih je manje od 3 i ako nije preblizu
+  // ➤ Loop za ostatak
   setInterval(() => {
     if (rays.length < maxRays) {
       spawnRay();
     }
-  }, 10000 + Math.random() * 6000);
+  }, 11000 + Math.random() * 6000);
 
   let lastTime = performance.now();
   function animate() {
