@@ -305,9 +305,8 @@ function startSpringEffect() {
   setupSeasonCanvas();
 
   const seedImage = new Image();
-  seedImage.src = 'images/maslacak.png'; // Putanja do tvoje sličice
+  seedImage.src = 'images/maslacak.png';
 
-  const mm = 3.78;
   const dpr = window.devicePixelRatio || 1;
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
@@ -346,12 +345,14 @@ function startSpringEffect() {
 
     const scale = 1 + sizeIncrease / 5;
     const w = 14 * scale;
-    const h = 14* scale;
+    const h = 14 * scale;
 
     const yPos = Math.random() * height;
     const xStart = width + Math.random() * 10;
 
     const speed = 0.01 + Math.random() * 0.04;
+    const speedX = (Math.random() - 0.5) * 0.05;
+    const speedY = (Math.random() - 0.5) * 0.03;
 
     seeds.push({
       x: xStart,
@@ -359,6 +360,8 @@ function startSpringEffect() {
       width: w,
       height: h,
       baseSpeed: speed,
+      speedX,
+      speedY,
       swayOffset: Math.random() * Math.PI * 2,
       swaySpeed: 0.003 + Math.random() * 0.004,
       swayRange: 8 + Math.random() * 10,
@@ -373,22 +376,16 @@ function startSpringEffect() {
     seeds.forEach(seed => {
       seed.age += deltaTime;
 
-      const speed = seed.baseSpeed;
-      const angle = seed.direction;
-
       const swayX = Math.sin(seed.swayOffset + seed.age * seed.swaySpeed) * (seed.swayRange / 100);
       const swayY = Math.cos(seed.swayOffset + seed.age * seed.swaySpeed) * (seed.swayRange / 100);
 
-      const dx = Math.cos(angle) * speed * deltaTime + swayX + windX * 0.8;
-      const dy = Math.sin(angle) * speed * deltaTime + swayY + windY * 0.8;
+      const dx = seed.speedX * deltaTime + swayX + windX * 0.8;
+      const dy = seed.speedY * deltaTime + swayY + windY * 0.8;
 
       seed.x += dx;
       seed.y += dy;
 
-      ctx.save();
-      ctx.translate(seed.x, seed.y);
-      ctx.drawImage(seedImage, -seed.width / 2, -seed.height / 2, seed.width, seed.height);
-      ctx.restore();
+      ctx.drawImage(seedImage, seed.x - seed.width / 2, seed.y - seed.height / 2, seed.width, seed.height);
     });
 
     for (let i = seeds.length - 1; i >= 0; i--) {
