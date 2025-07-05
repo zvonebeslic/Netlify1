@@ -433,9 +433,9 @@ function startAutumnEffect() {
   const drops = [];
   const dropLayers = 3;
   const layerConfigs = [
-    { count: 150, speed: 6, opacity: 0.15, width: 0.7 },
-    { count: 130, speed: 9, opacity: 0.25, width: 1 },
-    { count: 140, speed: 12, opacity: 0.35, width: 1.5 }
+    { count: 200, speed: 9, opacity: 0.15, width: 0.7 },
+    { count: 180, speed: 11, opacity: 0.25, width: 1 },
+    { count: 180, speed: 12, opacity: 0.35, width: 1.5 }
   ];
 
   // Funkcija za stvaranje kapi
@@ -488,7 +488,7 @@ function startAutumnEffect() {
     // Crtanje svake kapi
     drops.forEach(drop => {
       ctx.beginPath();
-      ctx.strokeStyle = `rgba(80,80,100,${drop.opacity})`;
+      ctx.strokeStyle = `rgba(60,60,60,${drop.opacity})`;
       ctx.lineWidth = drop.width;
       ctx.moveTo(drop.x, drop.y);
       ctx.lineTo(drop.x, drop.y + drop.length);
