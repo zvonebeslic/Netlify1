@@ -433,9 +433,9 @@ function startAutumnEffect() {
   const drops = [];
   const dropLayers = 3;
   const layerConfigs = [
-    { count: 200, speed: 9, opacity: 0.15, width: 0.7 },
-    { count: 180, speed: 11, opacity: 0.25, width: 1 },
-    { count: 180, speed: 12, opacity: 0.35, width: 1.5 }
+    { count: 250, speed: 8, opacity: 0.15, width: 0.7 },
+    { count: 230, speed: 11, opacity: 0.25, width: 1 },
+    { count: 230, speed: 12, opacity: 0.35, width: 1.5 }
   ];
 
   // Funkcija za stvaranje kapi
