@@ -313,13 +313,12 @@ function startSummerEffect() {
   const mm = 3.78;
   const rays = [];
   const maxRays = 3;
+  const minSpacing = width / 4; // min. udaljenost između zraka (ne preklapaju se)
 
   class SunRay {
-    constructor() {
-      this.y = -150 - Math.random() * 100;
-      this.x = Math.random() < 0.5 ? width + Math.random() * 100 : Math.random() * width;
-      this.speedX = this.x > width ? -0.02 - Math.random() * 0.04 : 0;
-      this.speedY = 0.01 + Math.random() * 0.015;
+    constructor(x) {
+      this.x = x;
+      this.y = -200 - Math.random() * 100;
 
       this.length = height * (0.6 + Math.random() * 0.4);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.2;
@@ -334,13 +333,16 @@ function startSummerEffect() {
       this.appeared = false;
 
       this.life = 0;
-      this.maxLife = 30000 + Math.random() * 10000;
+      this.maxLife = 25000 + Math.random() * 10000;
+
+      // Lagano pomicanje lijevo-dolje
+      this.speedX = -0.02 - Math.random() * 0.03;
+      this.speedY = 0.01 + Math.random() * 0.015;
     }
 
     update(delta, time) {
       this.life += delta;
 
-      // Fade in
       if (!this.appeared) {
         this.opacity += delta * 0.00025;
         if (this.opacity >= this.opacityMax) {
@@ -349,17 +351,16 @@ function startSummerEffect() {
         }
       }
 
-      // Sinusna širina koja raste i opada nepredvidivo
       const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
-      this.widthStart = this.baseWidthStart * (0.8 + 0.4 * pulse); // 80%–120%
-      this.widthEnd = this.baseWidthEnd * (0.7 + 0.6 * pulse);     // 70%–130%
+      this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
+      this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
 
-      // Pomicanje
       this.x += this.speedX * delta * 0.04;
       this.y += this.speedY * delta * 0.04;
 
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
+
       if (endX < -150 || this.x < -150 || endY > height + 200) {
         const index = rays.indexOf(this);
         if (index !== -1) rays.splice(index, 1);
@@ -367,38 +368,45 @@ function startSummerEffect() {
     }
 
     draw(ctx) {
-      const segments = 10;
-      const step = this.length / segments;
-      const angleX = Math.cos(this.angle);
-      const angleY = Math.sin(this.angle);
+      const endX = this.x + Math.cos(this.angle) * this.length;
+      const endY = this.y + Math.sin(this.angle) * this.length;
 
-      for (let i = 0; i < segments; i++) {
-        const t = i / segments;
-        const startX = this.x + angleX * step * i;
-        const startY = this.y + angleY * step * i;
-        const endX = this.x + angleX * step * (i + 1);
-        const endY = this.y + angleY * step * (i + 1);
+      const grad = ctx.createLinearGradient(this.x, this.y, endX, endY);
+      grad.addColorStop(0, `rgba(255,255,220,${this.opacity * 2.2})`);
+      grad.addColorStop(1, `rgba(255,255,220,0)`);
 
-        const width = this.widthStart + (this.widthEnd - this.widthStart) * t;
-        const localAlpha = this.opacity * (1 - t * 0.9);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = this.widthEnd; // debljina u dnu se animira
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+    }
+  }
 
-        ctx.strokeStyle = `rgba(255,255,220,${localAlpha * 2.2})`;
-        ctx.lineWidth = width;
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
+  function isTooClose(x) {
+    return rays.some(r => Math.abs(r.x - x) < minSpacing);
+  }
+
+  function spawnRay() {
+    let attempts = 10;
+    while (attempts--) {
+      const x = Math.random() * width;
+      if (!isTooClose(x)) {
+        rays.push(new SunRay(x));
+        break;
       }
     }
   }
 
-  // Prva zraka s malim delayem
-  setTimeout(() => rays.push(new SunRay()), 500);
+  // ➤ Dodaj 2 odmah nakon klika
+  spawnRay();
+  setTimeout(spawnRay, 500);
 
-  // Nove zrake se pojavljuju svakih 10–16 sekundi, najviše 3
+  // ➤ Loop za kasnije – samo ako ih je manje od 3 i ako nije preblizu
   setInterval(() => {
     if (rays.length < maxRays) {
-      rays.push(new SunRay());
+      spawnRay();
     }
   }, 10000 + Math.random() * 6000);
 
