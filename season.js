@@ -302,7 +302,7 @@ function startSummerEffect() {
   setupSeasonCanvas();
 
   const rays = [];
-  const maxRays = 15;
+  const maxRays = 20;
   const dpr = window.devicePixelRatio || 1;
   const ctx = seasonCanvas.getContext('2d');
   seasonCanvas.width = window.innerWidth * dpr;
@@ -320,55 +320,66 @@ function startSummerEffect() {
     reset(initial = false) {
       const fromRight = Math.random() < 0.5;
 
-      // Početna točka (gore ili s desne strane)
+      // Gornji kraj je uvijek iznad ekrana
       if (fromRight) {
         this.x = width;
-        this.y = Math.random() * height * 0.45;
+        this.y = -Math.random() * 100;
       } else {
         this.x = Math.random() * width;
-        this.y = 0;
+        this.y = -Math.random() * 100;
       }
 
-      this.length = height * (0.5 + Math.random() * 0.4);
+      this.length = height * (0.7 + Math.random() * 0.4);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.25;
+
+      // Donji dio može biti znatno širi
       this.widthStart = 1 + Math.random() * 2;
-      this.widthEnd = 8 + Math.random() * 12;
+      this.widthEnd = Math.random() < 0.5
+        ? 5 + Math.random() * 10
+        : 20 + Math.random() * 25;
 
       this.opacity = 0;
       this.fadeIn = true;
       this.life = 0;
-      this.maxLife = 8000 + Math.random() * 5000;
-      this.speedX = -0.1 - Math.random() * 0.2;
-      this.speedY = 0.05 + Math.random() * 0.1;
+      this.maxLife = 12000 + Math.random() * 8000;
 
-      this.pulseOffset = Math.random() * 1000;
+      // Neke zrake sporije, neke brže
+      const speedFactor = 0.2 + Math.random() * 0.4;
+      this.speedX = -0.05 - Math.random() * 0.1;
+      this.speedY = speedFactor;
+
+      this.pulseOffset = Math.random() * 2000;
       this.appeared = initial;
+      this.pulse = 1;
     }
 
     update(delta) {
       this.life += delta;
 
-      // Pojavljivanje iz ničega
+      // Pojavljivanje
       if (!this.appeared) {
-        this.opacity += delta * 0.0003;
-        if (this.opacity >= 0.05) {
-          this.opacity = 0.05;
+        this.opacity += delta * 0.0002;
+        if (this.opacity >= 0.04) {
+          this.opacity = 0.04;
           this.appeared = true;
         }
       }
 
-      // Pulsiranje širine
-      const pulse = Math.sin((performance.now() + this.pulseOffset) * 0.001) * 0.5 + 0.5;
-      this.pulseWidth = this.widthStart + (this.widthEnd - this.widthStart) * pulse;
+      // Pulsiranje širine (postepeno stanjivanje)
+      const time = performance.now();
+      const pulseProgress = Math.sin((time + this.pulseOffset) * 0.0004) * 0.5 + 0.5;
+      this.pulse = 1 - (this.life / this.maxLife); // Stanjivanje prema kraju
+
+      // Za gašenje: kad je širina < 0.1px, nestani
+      const currentWidth = this.widthStart + (this.widthEnd - this.widthStart) * this.pulse;
+      if (this.pulse <= 0.01 || currentWidth < 0.1) {
+        this.reset();
+        return;
+      }
 
       // Kretanje
-      this.x += this.speedX * delta * 0.06;
-      this.y += this.speedY * delta * 0.06;
-
-      // Nestajanje
-      if (this.life > this.maxLife || this.y > height || this.x < -width * 0.5) {
-        this.reset();
-      }
+      this.x += this.speedX * delta * 0.05;
+      this.y += this.speedY * delta * 0.05;
     }
 
     draw(ctx) {
@@ -380,7 +391,7 @@ function startSummerEffect() {
       grad.addColorStop(1, `rgba(255,255,220,0)`);
 
       ctx.strokeStyle = grad;
-      ctx.lineWidth = this.pulseWidth;
+      ctx.lineWidth = this.widthStart + (this.widthEnd - this.widthStart) * this.pulse;
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
       ctx.lineTo(endX, endY);
@@ -388,7 +399,7 @@ function startSummerEffect() {
     }
   }
 
-  // Inicijalizacija zraka
+  // Početne zrake
   for (let i = 0; i < maxRays; i++) {
     rays.push(new SunRay());
   }
@@ -402,8 +413,8 @@ function startSummerEffect() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Blagi sunčev veo
-    ctx.fillStyle = 'rgba(255, 240, 200, 0.06)';
+    // Blagi topli filter
+    ctx.fillStyle = 'rgba(255, 240, 200, 0.04)';
     ctx.fillRect(0, 0, width, height);
 
     ctx.save();
