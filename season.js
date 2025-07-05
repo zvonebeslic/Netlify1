@@ -303,23 +303,20 @@ function startWinterEffect() {
 function startSpringEffect() {
   cancelAllSeasonAnimations();
 
-  // Postavi canvas kao u jesenskom efektu
+  // Postavke canvas-a
+  const dpr = window.devicePixelRatio || 1;
   seasonCanvas.width = window.innerWidth * dpr;
   seasonCanvas.height = window.innerHeight * dpr;
   ctx = seasonCanvas.getContext('2d');
   ctx.scale(dpr, dpr);
 
-  const seedImage = new Image();
-  seedImage.src = 'images/maslacak.png';
-
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
 
+  const seedImage = new Image();
+  seedImage.src = 'images/maslacak.png';
+
   const seeds = [];
-  const maxSeeds = 120;
-  const groupCount = 4;
-  let spawnTimer = 0;
-  const spawnInterval = 180;
 
   let windX = 0;
   let windY = 0;
@@ -336,24 +333,17 @@ function startSpringEffect() {
       targetWindX = (Math.random() - 0.5) * 0.9;
       targetWindY = (Math.random() - 0.5) * 0.6;
     }
-
     windX += (targetWindX - windX) * 0.002;
     windY += (targetWindY - windY) * 0.002;
   }
 
   function spawnSeed() {
-    if (seeds.length >= maxSeeds) return;
-
-    const groupIndex = Math.floor(seeds.length / (maxSeeds / groupCount));
-    const sizeIncrease = groupIndex * 1;
-
-    const scale = 1 + sizeIncrease / 5;
+    const scale = 1 + Math.random() * 0.6;
     const w = 14 * scale;
     const h = 14 * scale;
 
     const yPos = Math.random() * height;
     const xStart = width + Math.random() * 10;
-
     const speed = 0.01 + Math.random() * 0.04;
     const directionAngle = Math.random() * 2 * Math.PI;
 
@@ -367,13 +357,15 @@ function startSpringEffect() {
       swayOffset: Math.random() * Math.PI * 2,
       swaySpeed: 0.003 + Math.random() * 0.004,
       swayRange: 8 + Math.random() * 10,
-      idleTime: 2000 + Math.random() * 2000,
-      age: 0,
+      age: 0
     });
   }
 
   function updateAndDrawSeeds(deltaTime) {
     ctx.clearRect(0, 0, width, height);
+
+    // Stalno dodajemo nove sjemenke u ritmu
+    if (Math.random() < 0.4) spawnSeed();
 
     seeds.forEach(seed => {
       seed.age += deltaTime;
@@ -393,9 +385,10 @@ function startSpringEffect() {
       ctx.drawImage(seedImage, seed.x - seed.width / 2, seed.y - seed.height / 2, seed.width, seed.height);
     });
 
+    // Uklanjanje sjemenki koje su izašle izvan ekrana
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
-      if (s.x < -50 || s.x > width + 50 || s.y < -50 || s.y > height + 50) {
+      if (s.x < -100 || s.x > width + 100 || s.y < -100 || s.y > height + 100) {
         seeds.splice(i, 1);
       }
     }
@@ -407,12 +400,6 @@ function startSpringEffect() {
     lastFrame = now;
 
     updateWind(deltaTime);
-    spawnTimer += deltaTime;
-    if (spawnTimer > spawnInterval) {
-      spawnTimer = 0;
-      spawnSeed();
-    }
-
     updateAndDrawSeeds(deltaTime);
     springAnimationId = requestAnimationFrame(animateSpring);
   }
