@@ -302,12 +302,16 @@ function startWinterEffect() {
 // PROLJEĆE
 function startSpringEffect() {
   cancelAllSeasonAnimations();
-  setupSeasonCanvas();
+
+  // Postavi canvas kao u jesenskom efektu
+  seasonCanvas.width = window.innerWidth * dpr;
+  seasonCanvas.height = window.innerHeight * dpr;
+  ctx = seasonCanvas.getContext('2d');
+  ctx.scale(dpr, dpr);
 
   const seedImage = new Image();
   seedImage.src = 'images/maslacak.png';
 
-  const dpr = window.devicePixelRatio || 1;
   const width = seasonCanvas.width / dpr;
   const height = seasonCanvas.height / dpr;
 
@@ -351,8 +355,7 @@ function startSpringEffect() {
     const xStart = width + Math.random() * 10;
 
     const speed = 0.01 + Math.random() * 0.04;
-    const speedX = (Math.random() - 0.5) * 0.05;
-    const speedY = (Math.random() - 0.5) * 0.03;
+    const directionAngle = Math.random() * 2 * Math.PI;
 
     seeds.push({
       x: xStart,
@@ -360,8 +363,7 @@ function startSpringEffect() {
       width: w,
       height: h,
       baseSpeed: speed,
-      speedX,
-      speedY,
+      direction: directionAngle,
       swayOffset: Math.random() * Math.PI * 2,
       swaySpeed: 0.003 + Math.random() * 0.004,
       swayRange: 8 + Math.random() * 10,
@@ -376,11 +378,14 @@ function startSpringEffect() {
     seeds.forEach(seed => {
       seed.age += deltaTime;
 
+      const speed = seed.baseSpeed;
+      const angle = seed.direction;
+
       const swayX = Math.sin(seed.swayOffset + seed.age * seed.swaySpeed) * (seed.swayRange / 100);
       const swayY = Math.cos(seed.swayOffset + seed.age * seed.swaySpeed) * (seed.swayRange / 100);
 
-      const dx = seed.speedX * deltaTime + swayX + windX * 0.8;
-      const dy = seed.speedY * deltaTime + swayY + windY * 0.8;
+      const dx = Math.cos(angle) * speed * deltaTime + swayX + windX * 0.8;
+      const dy = Math.sin(angle) * speed * deltaTime + swayY + windY * 0.8;
 
       seed.x += dx;
       seed.y += dy;
