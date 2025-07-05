@@ -296,6 +296,130 @@ function startWinterEffect() {
   draw();
 }
 
+// LJETO
+function startSummerEffect() {
+  cancelAllSeasonAnimations();
+  setupSeasonCanvas();
+
+  const rays = [];
+  const maxRays = 15;
+  const dpr = window.devicePixelRatio || 1;
+  const ctx = seasonCanvas.getContext('2d');
+  seasonCanvas.width = window.innerWidth * dpr;
+  seasonCanvas.height = window.innerHeight * dpr;
+  ctx.scale(dpr, dpr);
+
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  class SunRay {
+    constructor() {
+      this.reset(true);
+    }
+
+    reset(initial = false) {
+      const fromRight = Math.random() < 0.5;
+
+      // Početna točka (gore ili s desne strane)
+      if (fromRight) {
+        this.x = width;
+        this.y = Math.random() * height * 0.45;
+      } else {
+        this.x = Math.random() * width;
+        this.y = 0;
+      }
+
+      this.length = height * (0.5 + Math.random() * 0.4);
+      this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.25;
+      this.widthStart = 1 + Math.random() * 2;
+      this.widthEnd = 8 + Math.random() * 12;
+
+      this.opacity = 0;
+      this.fadeIn = true;
+      this.life = 0;
+      this.maxLife = 8000 + Math.random() * 5000;
+      this.speedX = -0.1 - Math.random() * 0.2;
+      this.speedY = 0.05 + Math.random() * 0.1;
+
+      this.pulseOffset = Math.random() * 1000;
+      this.appeared = initial;
+    }
+
+    update(delta) {
+      this.life += delta;
+
+      // Pojavljivanje iz ničega
+      if (!this.appeared) {
+        this.opacity += delta * 0.0003;
+        if (this.opacity >= 0.05) {
+          this.opacity = 0.05;
+          this.appeared = true;
+        }
+      }
+
+      // Pulsiranje širine
+      const pulse = Math.sin((performance.now() + this.pulseOffset) * 0.001) * 0.5 + 0.5;
+      this.pulseWidth = this.widthStart + (this.widthEnd - this.widthStart) * pulse;
+
+      // Kretanje
+      this.x += this.speedX * delta * 0.06;
+      this.y += this.speedY * delta * 0.06;
+
+      // Nestajanje
+      if (this.life > this.maxLife || this.y > height || this.x < -width * 0.5) {
+        this.reset();
+      }
+    }
+
+    draw(ctx) {
+      const endX = this.x + Math.cos(this.angle) * this.length;
+      const endY = this.y + Math.sin(this.angle) * this.length;
+
+      const grad = ctx.createLinearGradient(this.x, this.y, endX, endY);
+      grad.addColorStop(0, `rgba(255,255,220,${this.opacity})`);
+      grad.addColorStop(1, `rgba(255,255,220,0)`);
+
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = this.pulseWidth;
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+    }
+  }
+
+  // Inicijalizacija zraka
+  for (let i = 0; i < maxRays; i++) {
+    rays.push(new SunRay());
+  }
+
+  let lastTime = performance.now();
+  function animate() {
+    summerAnimationId = requestAnimationFrame(animate);
+    const now = performance.now();
+    const delta = now - lastTime;
+    lastTime = now;
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Blagi sunčev veo
+    ctx.fillStyle = 'rgba(255, 240, 200, 0.06)';
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+
+    for (const ray of rays) {
+      ray.update(delta);
+      ray.draw(ctx);
+    }
+
+    ctx.restore();
+  }
+
+  animate();
+}
+
 
 // PROLJEĆE
 function startSpringEffect() {
