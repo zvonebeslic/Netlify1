@@ -442,8 +442,8 @@ function startAutumnEffect() {
   function createDrop(layer) {
     const config = layerConfigs[layer];
     return {
-      x: Math.random() * width,
-      y: Math.random() * (height * 0.1), // samo vrh ekrana
+      x: Math.random() * width + Math.sin(Math.random() * 1000) * 5,
+      y: Math.random() * -height * 0.3, 
       length: 3 + Math.random() * 5,
       speed: config.speed + Math.random() * 1,
       width: config.width,
