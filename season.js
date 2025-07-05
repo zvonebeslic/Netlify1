@@ -372,20 +372,28 @@ function startSummerEffect() {
     }
 
     draw(ctx) {
-      const endX = this.x + Math.cos(this.angle) * this.length;
-      const endY = this.y + Math.sin(this.angle) * this.length;
+  const steps = 20; // broj slojeva za glatkoću
+  const angleX = Math.cos(this.angle);
+  const angleY = Math.sin(this.angle);
 
-      const grad = ctx.createLinearGradient(this.x, this.y, endX, endY);
-      grad.addColorStop(0, `rgba(255,255,220,${this.opacity * 2.2})`);
-      grad.addColorStop(1, `rgba(255,255,220,0)`);
+  for (let i = 0; i < steps; i++) {
+    const t = i / steps;
+    const x1 = this.x + angleX * this.length * t;
+    const y1 = this.y + angleY * this.length * t;
+    const x2 = this.x + angleX * this.length * (t + 1 / steps);
+    const y2 = this.y + angleY * this.length * (t + 1 / steps);
 
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = this.widthEnd; // širina raste do dna
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(endX, endY);
-      ctx.stroke();
-    }
+    const localWidth = this.widthStart + (this.widthEnd - this.widthStart) * t;
+    const localAlpha = this.opacity * (1 - t * 0.8); // prozirnije prema dnu
+
+    ctx.strokeStyle = `rgba(255,255,220,${localAlpha * 2.2})`;
+    ctx.lineWidth = localWidth;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+}
   }
 
   function isTooClose(x) {
