@@ -297,7 +297,7 @@ function startWinterEffect() {
 }
 
 // LJETO
-function startSummerEffect() {
+  function startSummerEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
 
@@ -312,12 +312,23 @@ function startSummerEffect() {
 
   const mm = 3.78;
   const rays = [];
-  const maxRays = 6;
+  const maxRays = 3;
 
   class SunRay {
     constructor() {
-      this.x = Math.random() < 0.5 ? Math.random() * width : width;
+      // Gornji rub uvijek izvan ekrana
       this.y = -150 - Math.random() * 100;
+
+      // Zraka ulazi iz desnog ruba ili iz gornjeg
+      if (Math.random() < 0.5) {
+        this.x = width + Math.random() * 100;
+        this.speedX = -0.03 - Math.random() * 0.05;
+      } else {
+        this.x = Math.random() * width;
+        this.speedX = 0;
+      }
+
+      this.speedY = 0.01 + Math.random() * 0.015;
 
       this.length = height * (0.6 + Math.random() * 0.4);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.2;
@@ -326,16 +337,12 @@ function startSummerEffect() {
       this.widthEnd = (9 + Math.random() * 13) * mm;
 
       this.opacity = 0;
-      this.fadeInSpeed = 0.0003;
+      this.fadeInSpeed = 0.00025;
       this.opacityMax = 0.1;
       this.appeared = false;
 
       this.life = 0;
-      this.maxLife = 15000 + Math.random() * 15000;
-
-      // Novi: blago kretanje ulijevo i dolje
-      this.speedX = -0.02 - Math.random() * 0.05;
-      this.speedY = 0.01 + Math.random() * 0.015;
+      this.maxLife = 20000 + Math.random() * 15000;
 
       this.pulse = 1;
     }
@@ -343,7 +350,6 @@ function startSummerEffect() {
     update(delta) {
       this.life += delta;
 
-      // Fade in
       if (!this.appeared) {
         this.opacity += delta * this.fadeInSpeed;
         if (this.opacity >= this.opacityMax) {
@@ -352,15 +358,14 @@ function startSummerEffect() {
         }
       }
 
-      // Pulsiranje širine
       const t = this.life / this.maxLife;
       this.pulse = 1 - t;
 
-      // Kretanje ulijevo i dolje
-      this.x += this.speedX * delta * 0.05;
-      this.y += this.speedY * delta * 0.05;
+      // Kretanje
+      this.x += this.speedX * delta * 0.04;
+      this.y += this.speedY * delta * 0.04;
 
-      // Reset kad zraka nestane s ekrana (desni i donji dio nestali)
+      // Ako zraka izađe s lijeve strane ili ispod
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
       if (endX < -100 || this.x < -100 || endY > height + 200) {
@@ -386,18 +391,15 @@ function startSummerEffect() {
     }
   }
 
-  // Odmah ubaci nekoliko zraka
-  const startCount = Math.floor(4 + Math.random() * 2);
-  for (let i = 0; i < startCount; i++) {
-    rays.push(new SunRay());
-  }
+  // Dodaj prvu zraku s malim zakašnjenjem
+  setTimeout(() => rays.push(new SunRay()), 300);
 
-  // Loop za povremeno stvaranje novih
+  // Postepeno dodaj nove ako ih je manje od 3
   setInterval(() => {
     if (rays.length < maxRays) {
       rays.push(new SunRay());
     }
-  }, 18000 + Math.random() * 10000);
+  }, 8000 + Math.random() * 8000); // svaka 8–16 sekundi nova
 
   let lastTime = performance.now();
   function animate() {
@@ -408,7 +410,6 @@ function startSummerEffect() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Topli filter
     ctx.fillStyle = 'rgba(255, 240, 200, 0.05)';
     ctx.fillRect(0, 0, width, height);
 
@@ -424,7 +425,7 @@ function startSummerEffect() {
   }
 
   animate();
-}
+}  
       
 
 // PROLJEĆE
