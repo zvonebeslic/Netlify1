@@ -302,8 +302,8 @@ function startWinterEffect() {
 // PROLJEĆE
 function startSpringEffect() {
   cancelAllSeasonAnimations();
+  setupSeasonCanvas(); // ← samo ovo, kao kod zime
 
-  // Postavke canvas-a
   const dpr = window.devicePixelRatio || 1;
   seasonCanvas.width = window.innerWidth * dpr;
   seasonCanvas.height = window.innerHeight * dpr;
@@ -364,7 +364,6 @@ function startSpringEffect() {
   function updateAndDrawSeeds(deltaTime) {
     ctx.clearRect(0, 0, width, height);
 
-    // Stalno dodajemo nove sjemenke u ritmu
     if (Math.random() < 0.4) spawnSeed();
 
     seeds.forEach(seed => {
@@ -385,7 +384,7 @@ function startSpringEffect() {
       ctx.drawImage(seedImage, seed.x - seed.width / 2, seed.y - seed.height / 2, seed.width, seed.height);
     });
 
-    // Uklanjanje sjemenki koje su izašle izvan ekrana
+    // Automatsko uklanjanje sjemenki izvan ekrana
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
       if (s.x < -100 || s.x > width + 100 || s.y < -100 || s.y > height + 100) {
@@ -395,6 +394,7 @@ function startSpringEffect() {
   }
 
   let lastFrame = performance.now();
+
   function animateSpring(now) {
     const deltaTime = now - lastFrame;
     lastFrame = now;
@@ -408,46 +408,6 @@ function startSpringEffect() {
     lastFrame = performance.now();
     springAnimationId = requestAnimationFrame(animateSpring);
   };
-}
-
-
-// LJETO
-function startSummerEffect() {
-
-  cancelAllSeasonAnimations();
-  
-  setupSeasonCanvas();
-
-  const width = seasonCanvas.width / dpr;
-  const height = seasonCanvas.height / dpr;
-  
-  const rays = Array.from({ length: 200 }, () => ({
-    x: Math.random() * width, y: Math.random() * height * 0.3,
-    length: Math.random() * 60 + 40, alpha: Math.random() * 0.2 + 0.1,
-    thickness: Math.random() * 1 + 0.5, fade: Math.random() * 0.01 + 0.005
-  }));
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    rays.forEach(r => {
-      ctx.save(); ctx.globalAlpha = r.alpha;
-      ctx.beginPath();
-      ctx.moveTo(r.x, r.y);
-      ctx.lineTo(r.x, r.y + r.length);
-      ctx.strokeStyle = 'rgba(255, 255, 150, 1)';
-      ctx.lineWidth = r.thickness; ctx.stroke(); ctx.restore();
-      r.alpha -= r.fade;
-      if (r.alpha <= 0) {
-        r.x = Math.random() * width;
-        r.y = Math.random() * height * 0.3;
-        r.length = Math.random() * 60 + 40;
-        r.alpha = Math.random() * 0.2 + 0.1;
-        r.thickness = Math.random() * 1 + 0.5;
-        r.fade = Math.random() * 0.01 + 0.005;
-      }
-    });
-    summerAnimationId = requestAnimationFrame(animate);
-  }
-  animate();
 }
 
 // JESEN
