@@ -301,8 +301,6 @@ function startSummerEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
 
-  const rays = [];
-  const maxRays = 20;
   const dpr = window.devicePixelRatio || 1;
   const ctx = seasonCanvas.getContext('2d');
   seasonCanvas.width = window.innerWidth * dpr;
@@ -312,74 +310,67 @@ function startSummerEffect() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
+  const mm = 3.78;
+  const maxRays = 4;
+  const rays = [];
+
   class SunRay {
     constructor() {
       this.reset(true);
     }
 
     reset(initial = false) {
-      const fromRight = Math.random() < 0.5;
+      const fromTop = Math.random() < 0.6;
 
-      // Gornji kraj je uvijek iznad ekrana
-      if (fromRight) {
-        this.x = width;
-        this.y = -Math.random() * 100;
-      } else {
-        this.x = Math.random() * width;
-        this.y = -Math.random() * 100;
-      }
+      this.x = fromTop ? Math.random() * width : width;
+      this.y = fromTop ? -Math.random() * 150 : Math.random() * height * 0.4;
 
-      this.length = height * (0.7 + Math.random() * 0.4);
+      this.length = height * (0.8 + Math.random() * 0.4);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.25;
 
-      // Donji dio može biti znatno širi
-      this.widthStart = 1 + Math.random() * 2;
-      this.widthEnd = Math.random() < 0.5
-        ? 5 + Math.random() * 10
-        : 20 + Math.random() * 25;
+      // Širine (pretvorene iz mm u px)
+      this.widthStart = (2 + Math.random() * 4) * mm;    // 2–6 mm
+      this.widthEnd = (9 + Math.random() * 13) * mm;     // 9–22 mm
 
       this.opacity = 0;
       this.fadeIn = true;
       this.life = 0;
-      this.maxLife = 12000 + Math.random() * 8000;
+      this.maxLife = 15000 + Math.random() * 15000; // 15–30 sekundi
 
-      // Neke zrake sporije, neke brže
-      const speedFactor = 0.2 + Math.random() * 0.4;
-      this.speedX = -0.05 - Math.random() * 0.1;
-      this.speedY = speedFactor;
+      this.speedX = -0.03 - Math.random() * 0.05;
+      this.speedY = 0.01 + Math.random() * 0.02;
 
-      this.pulseOffset = Math.random() * 2000;
       this.appeared = initial;
-      this.pulse = 1;
+      this.pulse = 0;
     }
 
     update(delta) {
       this.life += delta;
 
-      // Pojavljivanje
+      // Fade-in
       if (!this.appeared) {
         this.opacity += delta * 0.0002;
-        if (this.opacity >= 0.04) {
-          this.opacity = 0.04;
+        if (this.opacity >= 0.045) {
+          this.opacity = 0.045;
           this.appeared = true;
         }
       }
 
-      // Pulsiranje širine (postepeno stanjivanje)
-      const time = performance.now();
-      const pulseProgress = Math.sin((time + this.pulseOffset) * 0.0004) * 0.5 + 0.5;
-      this.pulse = 1 - (this.life / this.maxLife); // Stanjivanje prema kraju
+      // Pulsirajuća širina prema životnom vijeku
+      const t = this.life / this.maxLife;
+      this.pulse = 1 - t;
 
-      // Za gašenje: kad je širina < 0.1px, nestani
       const currentWidth = this.widthStart + (this.widthEnd - this.widthStart) * this.pulse;
-      if (this.pulse <= 0.01 || currentWidth < 0.1) {
+
+      // Nestajanje kad se previše stanjila
+      if (currentWidth < 0.1 || this.pulse <= 0.01) {
         this.reset();
         return;
       }
 
-      // Kretanje
-      this.x += this.speedX * delta * 0.05;
-      this.y += this.speedY * delta * 0.05;
+      // Blago pomicanje
+      this.x += this.speedX * delta * 0.04;
+      this.y += this.speedY * delta * 0.04;
     }
 
     draw(ctx) {
@@ -399,10 +390,20 @@ function startSummerEffect() {
     }
   }
 
-  // Početne zrake
+  // Inicijalno nekoliko zraka
   for (let i = 0; i < maxRays; i++) {
-    rays.push(new SunRay());
+    const delay = Math.random() * 10000;
+    setTimeout(() => {
+      rays.push(new SunRay());
+    }, delay);
   }
+
+  // Svakih 20+ sekundi pokušaj dodati novu zraku ako ih je manje od 4
+  setInterval(() => {
+    if (rays.length < maxRays) {
+      rays.push(new SunRay());
+    }
+  }, 20000 + Math.random() * 5000);
 
   let lastTime = performance.now();
   function animate() {
@@ -413,7 +414,7 @@ function startSummerEffect() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Blagi topli filter
+    // Blagi sunčev filter
     ctx.fillStyle = 'rgba(255, 240, 200, 0.04)';
     ctx.fillRect(0, 0, width, height);
 
