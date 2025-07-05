@@ -299,7 +299,7 @@ function startWinterEffect() {
 // PROLJEĆE
 function startSpringEffect() {
   cancelAllSeasonAnimations();
-  setupSeasonCanvas(); // ← samo ovo, kao kod zime
+  setupSeasonCanvas(); 
 
   const dpr = window.devicePixelRatio || 1;
   seasonCanvas.width = window.innerWidth * dpr;
@@ -378,7 +378,7 @@ function startSpringEffect() {
       seed.x += dx;
       seed.y += dy;
 
-      ctx.drawImage(seedImage, seed.x - seed.width / 2, seed.y - seed.height / 2, seed.width, seed.height);
+      ctx.drawImage(seedImage, seed.x - seed.width + 1 / 2, seed.y - seed.height + 1 / 2, seed.width, seed.height);
     });
 
     // Automatsko uklanjanje sjemenki izvan ekrana
