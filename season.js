@@ -302,6 +302,8 @@ function startSpringEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas(); 
 
+const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
+  
   const dpr = window.devicePixelRatio || 1;
   seasonCanvas.width = window.innerWidth * dpr;
   seasonCanvas.height = window.innerHeight * dpr;
@@ -336,9 +338,9 @@ function startSpringEffect() {
   }
 
   function spawnSeed() {
-    const scale = 1 + Math.random() * 0.6;
-    const w = 14 * scale;
-    const h = 14 * scale;
+    const scale = screenFactor * (1 + Math.random() * 0.6);
+    const w = 15 * scale;
+    const h = 15 * scale;
 
     const yPos = Math.random() * height;
     const xStart = width + Math.random() * 10;
