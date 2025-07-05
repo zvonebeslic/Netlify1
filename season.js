@@ -431,11 +431,13 @@ function startAutumnEffect() {
   let height = canvas.height = window.innerHeight;
 
   const drops = [];
-  const dropLayers = 3;
+  const dropLayers = 5;
   const layerConfigs = [
-    { count: 250, speed: 8, opacity: 0.15, width: 0.7 },
-    { count: 230, speed: 11, opacity: 0.25, width: 1 },
-    { count: 230, speed: 12, opacity: 0.35, width: 1.5 }
+    { count: 150, speed: 8, opacity: 0.15, width: 0.7 },
+    { count: 120, speed: 11, opacity: 0.25, width: 1 },
+    { count: 120, speed: 12, opacity: 0.35, width: 1.5 },
+    { count: 80, speed: 9, opacity: 0.20, width: 1 },
+    { count: 80, speed: 10, opacity: 0.25, width: 1.2 },
   ];
 
   // Funkcija za stvaranje kapi
