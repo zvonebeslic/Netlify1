@@ -301,8 +301,8 @@ function startSummerEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
 
-  const dpr = window.devicePixelRatio || 1;
   const ctx = seasonCanvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
   seasonCanvas.width = window.innerWidth * dpr;
   seasonCanvas.height = window.innerHeight * dpr;
   ctx.scale(dpr, dpr);
@@ -369,11 +369,9 @@ function startSummerEffect() {
         }
       }
 
-      if (!this.appeared) {
       const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
-      }
 
       this.x += this.speedX * delta * 0.04;
       this.y += this.speedY * delta * 0.04;
@@ -393,6 +391,8 @@ function startSummerEffect() {
     }
 
     draw(ctx) {
+      if (this.opacity <= 0) return;
+
       const angleX = Math.cos(this.angle);
       const angleY = Math.sin(this.angle);
 
@@ -407,15 +407,17 @@ function startSummerEffect() {
 
       const p1x = this.x + normalX * startHalf;
       const p1y = this.y + normalY * startHalf;
-
       const p2x = this.x - normalX * startHalf;
       const p2y = this.y - normalY * startHalf;
-
       const p3x = endX - normalX * endHalf;
       const p3y = endY - normalY * endHalf;
-
       const p4x = endX + normalX * endHalf;
       const p4y = endY + normalY * endHalf;
+
+      const gradient = ctx.createLinearGradient(this.y, 0, endY, 0);
+      gradient.addColorStop(0, `rgba(255,255,220,${this.opacity})`);
+      gradient.addColorStop(0.8, `rgba(255,255,220,${this.opacity * 0.4})`);
+      gradient.addColorStop(1, `rgba(255,255,220,0)`);
 
       ctx.beginPath();
       ctx.moveTo(p1x, p1y);
@@ -424,7 +426,7 @@ function startSummerEffect() {
       ctx.lineTo(p4x, p4y);
       ctx.closePath();
 
-      ctx.fillStyle = `rgba(255,255,220,${this.opacity * 2.2})`;
+      ctx.fillStyle = gradient;
       ctx.fill();
     }
   }
@@ -446,6 +448,10 @@ function startSummerEffect() {
       }
     }
   }
+
+  // === Odmah na početku ===
+  spawnRay();
+  spawnRay();
 
   setInterval(() => {
     spawnRay();
@@ -479,7 +485,6 @@ function startSummerEffect() {
 
   animate();
 }
-      
 
 // PROLJEĆE
 function startSpringEffect() {
