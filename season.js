@@ -731,25 +731,25 @@ function startAutumnEffect() {
     }
 
     if (lightning) {
-      const now = performance.now();
-      const elapsed = now - lightning.created;
+  const now = performance.now();
+  const elapsed = now - lightning.created;
 
-      if (elapsed < 30) {
-        lightning.state = 'forming';
-        lightning.paths.forEach(p => drawLightning(p, elapsed / 30));
-      } else if (elapsed < 130) {
-        lightning.state = 'flashing';
-        lightning.paths.forEach(p => drawLightning(p, 1));
-        ctx.fillStyle = `rgba(255,255,255,${(130 - elapsed) / 100 * 0.25})`;
-        ctx.fillRect(0, 0, width, height);
-      } else if (elapsed < 200) {
-        lightning.state = 'fading';
-        const fadeProgress = 1 - (elapsed - 130) / 70;
-        lightning.paths.forEach(p => drawLightning(p, 1, fadeProgress));
-      } else {
-        lightning = null;
-      }
-    }
+  if (elapsed < 300) {
+    lightning.state = 'forming';
+    lightning.paths.forEach(p => drawLightning(p, elapsed / 300));
+  } else if (elapsed < 400) {
+    lightning.state = 'flashing';
+    lightning.paths.forEach(p => drawLightning(p, 1));
+    ctx.fillStyle = `rgba(255,255,255,${(400 - elapsed) / 100 * 0.25})`;
+    ctx.fillRect(0, 0, width, height);
+  } else if (elapsed < 1000) {
+    lightning.state = 'fading';
+    const fadeProgress = 1 - (elapsed - 400) / 600;
+    lightning.paths.forEach(p => drawLightning(p, 1, fadeProgress));
+  } else {
+    lightning = null;
+  }
+}
 
     // === Kapi ===
     dropSpawnTimer++;
