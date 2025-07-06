@@ -625,44 +625,51 @@ function startAutumnEffect() {
   let lightningCooldown = 0;
 
   function generateLightningPath() {
-    const mainPath = [];
-    const branches = [];
+  const branches = [];
 
-    let x = Math.random() * width;
-    let y = Math.random() * height * 0.05 + height * 0.05;
+  // Početna točka munje
+  let x = Math.random() * width;
+  let y = Math.random() * height * 0.05 + height * 0.05;
 
-    const segmentLength = 15 + Math.random() * 15;
-    const maxLength = height * 0.5;
-    let steps = 0;
+  const mainPath = [{ x, y }]; // ➤ obavezna početna točka
 
-    while (y < maxLength && steps < 40) {
-      const dx = (Math.random() - 0.5) * 40; // više iskrivljenja
-      const dy = segmentLength + Math.random() * 20;
-      x += dx;
-      y += dy;
-      mainPath.push({ x, y });
+  const segmentLength = 15 + Math.random() * 15;
+  const maxLength = height * 0.5;
+  let steps = 0;
 
-      // Grane
-      if (Math.random() < 0.3 && steps > 2) {
-        const branch = [];
-        let bx = x;
-        let by = y;
-        const branchLen = 2 + Math.floor(Math.random() * 4);
-        for (let i = 0; i < branchLen; i++) {
-          const bdx = (Math.random() - 0.5) * 50;
-          const bdy = (Math.random() - 0.3) * 30;
-          bx += bdx;
-          by += bdy;
-          branch.push({ x: bx, y: by });
-        }
-        branches.push({ start: { x, y }, path: branch });
+  while (y < maxLength && steps < 40) {
+    const dx = (Math.random() - 0.5) * 40;
+    const dy = segmentLength + Math.random() * 20;
+    x += dx;
+    y += dy;
+    mainPath.push({ x, y });
+
+    // Grane
+    if (Math.random() < 0.3 && steps > 2) {
+      const branch = [];
+      let bx = x;
+      let by = y;
+      const branchLen = 2 + Math.floor(Math.random() * 4);
+      for (let i = 0; i < branchLen; i++) {
+        const bdx = (Math.random() - 0.5) * 50;
+        const bdy = (Math.random() - 0.3) * 30;
+        bx += bdx;
+        by += bdy;
+        branch.push({ x: bx, y: by });
       }
-
-      steps++;
+      branches.push({ start: { x, y }, path: branch });
     }
 
-    return { main: mainPath, branches };
+    steps++;
   }
+
+  // Sigurnosna kopija ako je mainPath prekratak
+  if (mainPath.length < 2) {
+    mainPath.push({ x: x + 20, y: y + 40 });
+  }
+
+  return { main: mainPath, branches };
+}
 
   function drawLightning(pathObj, progress = 1, alpha = 1) {
   ctx.save();
