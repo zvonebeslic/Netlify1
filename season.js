@@ -312,35 +312,39 @@ function startSummerEffect() {
 
   const mm = 3.78;
   const rays = [];
-  const maxRays = 3;
-  const minSpacing = width / 4;
+  const maxRays = 5; // više ali bez preklapanja
+  const minSpacing = width / 5;
 
   class SunRay {
-    constructor(x) {
+    constructor(x, isThinFast = false) {
       this.x = x;
       this.y = -200 - Math.random() * 100;
-
       this.length = height * (0.7 + Math.random() * 0.3);
       this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.2;
 
-      // Širine
-      this.baseWidthStart = (2 + Math.random() * 4) * mm;
-      this.baseWidthEnd = (20 + Math.random() * 10) * mm; // do 30 mm
+      if (isThinFast) {
+        this.baseWidthStart = 1.5 * mm;
+        this.baseWidthEnd = 6 * mm;
+        this.speedX = -0.1;
+        this.speedY = 0.12;
+        this.opacityMax = 0.05;
+        this.maxLife = 6000 + Math.random() * 2000;
+      } else {
+        this.baseWidthStart = (3 + Math.random() * 3) * mm;
+        this.baseWidthEnd = (15 + Math.random() * 10) * mm;
+        this.speedX = -0.005 - Math.random() * 0.01;
+        this.speedY = 0.004 + Math.random() * 0.006;
+        this.opacityMax = 0.1;
+        this.maxLife = 30000 + Math.random() * 10000;
+      }
 
-      // Animacija širenja (valna)
       this.pulseOffset = Math.random() * 10000;
       this.pulseSpeed = 0.00015 + Math.random() * 0.00015;
 
       this.opacity = 0;
-      this.opacityMax = 0.1;
       this.appeared = false;
 
       this.life = 0;
-      this.maxLife = 30000 + Math.random() * 10000;
-
-      // Vrlo sporo kretanje (osim rijetkih iznimki)
-      this.speedX = -0.005 - Math.random() * 0.015;
-      this.speedY = 0.004 + Math.random() * 0.01;
     }
 
     update(delta, time) {
@@ -354,73 +358,93 @@ function startSummerEffect() {
         }
       }
 
-      // Valno pulsiranje širine
       const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
 
-      // Kretanje
       this.x += this.speedX * delta * 0.04;
       this.y += this.speedY * delta * 0.04;
 
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
-      if (endX < -150 || this.x < -150 || endY > height + 200) {
+
+      // Uvjeti nestajanja
+      const disappeared =
+        this.widthEnd < 0.1 ||
+        endX < -150 || this.x < -150 || endY > height + 200 ||
+        this.life > this.maxLife;
+
+      if (disappeared) {
         const index = rays.indexOf(this);
         if (index !== -1) rays.splice(index, 1);
       }
     }
 
     draw(ctx) {
-  const steps = 20; // broj slojeva za glatkoću
-  const angleX = Math.cos(this.angle);
-  const angleY = Math.sin(this.angle);
+      const angleX = Math.cos(this.angle);
+      const angleY = Math.sin(this.angle);
 
-  for (let i = 0; i < steps; i++) {
-    const t = i / steps;
-    const x1 = this.x + angleX * this.length * t;
-    const y1 = this.y + angleY * this.length * t;
-    const x2 = this.x + angleX * this.length * (t + 1 / steps);
-    const y2 = this.y + angleY * this.length * (t + 1 / steps);
+      const endX = this.x + angleX * this.length;
+      const endY = this.y + angleY * this.length;
 
-    const localWidth = this.widthStart + (this.widthEnd - this.widthStart) * t;
-    const localAlpha = this.opacity * (1 - t * 0.8); // prozirnije prema dnu
+      const normalX = -angleY;
+      const normalY = angleX;
 
-    ctx.strokeStyle = `rgba(255,255,220,${localAlpha * 2.2})`;
-    ctx.lineWidth = localWidth;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-  }
-}
+      const startHalf = this.widthStart / 2;
+      const endHalf = this.widthEnd / 2;
+
+      const p1x = this.x + normalX * startHalf;
+      const p1y = this.y + normalY * startHalf;
+
+      const p2x = this.x - normalX * startHalf;
+      const p2y = this.y - normalY * startHalf;
+
+      const p3x = endX - normalX * endHalf;
+      const p3y = endY - normalY * endHalf;
+
+      const p4x = endX + normalX * endHalf;
+      const p4y = endY + normalY * endHalf;
+
+      ctx.beginPath();
+      ctx.moveTo(p1x, p1y);
+      ctx.lineTo(p2x, p2y);
+      ctx.lineTo(p3x, p3y);
+      ctx.lineTo(p4x, p4y);
+      ctx.closePath();
+
+      ctx.fillStyle = `rgba(255,255,220,${this.opacity * 2.2})`;
+      ctx.fill();
+    }
   }
 
   function isTooClose(x) {
     return rays.some(r => Math.abs(r.x - x) < minSpacing);
   }
 
-  function spawnRay() {
+  function spawnRay(thin = false) {
     let attempts = 10;
     while (attempts--) {
       const x = Math.random() * width;
       if (!isTooClose(x)) {
-        rays.push(new SunRay(x));
+        rays.push(new SunRay(x, thin));
         break;
       }
     }
   }
 
-  // ➤ Dvije odmah
+  // ➤ Pokreni dvije odmah
   spawnRay();
   setTimeout(spawnRay, 600);
 
-  // ➤ Loop za ostatak
+  // ➤ Loop za normalne zrake
   setInterval(() => {
-    if (rays.length < maxRays) {
-      spawnRay();
-    }
+    if (rays.length < maxRays) spawnRay();
   }, 11000 + Math.random() * 6000);
+
+  // ➤ Loop za tanke zrake (svakih ~30s)
+  setInterval(() => {
+    spawnRay(true);
+  }, 30000 + Math.random() * 6000);
 
   let lastTime = performance.now();
   function animate() {
