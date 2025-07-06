@@ -369,9 +369,11 @@ function startSummerEffect() {
         }
       }
 
+      if (!this.appeared) {
       const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
+      }
 
       this.x += this.speedX * delta * 0.04;
       this.y += this.speedY * delta * 0.04;
