@@ -665,31 +665,39 @@ function startAutumnEffect() {
   }
 
   function drawLightning(pathObj, progress = 1, alpha = 1) {
-    ctx.save();
-    ctx.strokeStyle = `rgba(220, 240, 255, ${alpha})`;
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
+  ctx.save();
+  ctx.strokeStyle = `rgba(220, 240, 255, ${alpha})`;
+  ctx.lineWidth = 1.2;
 
-    const main = pathObj.main;
+  // === Glavna grana ===
+  const main = pathObj.main;
+  const mainCount = Math.max(2, Math.floor(main.length * progress));
+
+  if (main.length >= 2) {
+    ctx.beginPath();
     ctx.moveTo(main[0].x, main[0].y);
-    for (let i = 1; i < main.length * progress; i++) {
+    for (let i = 1; i < mainCount && i < main.length; i++) {
       ctx.lineTo(main[i].x, main[i].y);
     }
     ctx.stroke();
+  }
 
-    // Grane
-    pathObj.branches.forEach(branch => {
+  // === Bočne grane ===
+  pathObj.branches.forEach(branch => {
+    const branchCount = Math.max(2, Math.floor(branch.path.length * progress));
+    if (branch.path.length >= 2) {
       ctx.beginPath();
       ctx.moveTo(branch.start.x, branch.start.y);
-      for (let i = 0; i < branch.path.length * progress; i++) {
+      for (let i = 0; i < branchCount && i < branch.path.length; i++) {
         ctx.lineTo(branch.path[i].x, branch.path[i].y);
       }
       ctx.stroke();
-    });
+    }
+  });
 
-    ctx.restore();
-  }
-
+  ctx.restore();
+}
+  
   function triggerLightning() {
     lightning = {
       paths: [generateLightningPath()],
