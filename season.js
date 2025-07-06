@@ -626,98 +626,57 @@ function startAutumnEffect() {
   let lightning = null;
   let lightningCooldown = 0;
 
-  function generateLightningPath() {
-  const branches = [];
+  function drawLightning(x, y, depth = 0, angle = Math.PI / 2) {
+  if (depth > 5 || y > height * 0.5) return;
 
-  // Početna točka munje
-  let x = Math.random() * width;
-  let y = Math.random() * height * 0.05 + height * 0.05;
+  const segmentLength = 20 + Math.random() * 30;
+  const deviation = (Math.random() - 0.5) * Math.PI / 3;
+  const newAngle = angle + deviation;
 
-  const mainPath = [{ x, y }]; // ➤ obavezna početna točka
+  const x2 = x + Math.cos(newAngle) * segmentLength;
+  const y2 = y + Math.sin(newAngle) * segmentLength;
 
-  const segmentLength = 15 + Math.random() * 15;
-  const maxLength = height * 0.5;
-  let steps = 0;
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+  ctx.lineWidth = 1.8;
+  ctx.moveTo(x, y);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
 
-  while (y < maxLength && steps < 40) {
-    const dx = (Math.random() - 0.5) * 40;
-    const dy = segmentLength + Math.random() * 20;
-    x += dx;
-    y += dy;
-    mainPath.push({ x, y });
+  if (depth < 2) {
+    const branchCount = 1 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < branchCount; i++) {
+      const branchAngle = newAngle + ((Math.random() < 0.5 ? -1 : 1) * Math.random() * Math.PI / 3);
+      const branchLength = segmentLength * (0.4 + Math.random() * 0.4);
+      const bx = x2 + Math.cos(branchAngle) * branchLength;
+      const by = y2 + Math.sin(branchAngle) * branchLength;
 
-    // Grane
-    if (Math.random() < 0.3 && steps > 2) {
-      const branch = [];
-      let bx = x;
-      let by = y;
-      const branchLen = 2 + Math.floor(Math.random() * 4);
-      for (let i = 0; i < branchLen; i++) {
-        const bdx = (Math.random() - 0.5) * 50;
-        const bdy = (Math.random() - 0.3) * 30;
-        bx += bdx;
-        by += bdy;
-        branch.push({ x: bx, y: by });
+      if (by < height * 0.5) {
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
       }
-      branches.push({ start: { x, y }, path: branch });
     }
-
-    steps++;
   }
 
-  // Sigurnosna kopija ako je mainPath prekratak
-  if (mainPath.length < 2) {
-    mainPath.push({ x: x + 20, y: y + 40 });
+  if (Math.random() < 0.85 && y2 < height * 0.5) {
+    drawLightning(x2, y2, depth + 1, newAngle);
   }
-
-  return { main: mainPath, branches };
-}
-
-  function drawLightning(pathObj, progress = 1, alpha = 1) {
-  ctx.save();
-  ctx.strokeStyle = `rgba(220, 240, 255, ${alpha})`;
-  ctx.lineWidth = 1.2;
-
-  // === Glavna grana ===
-  const main = pathObj.main;
-  const mainCount = Math.max(2, Math.floor(main.length * progress));
-
-  if (main.length >= 2) {
-    ctx.beginPath();
-    ctx.moveTo(main[0].x, main[0].y);
-    for (let i = 1; i < mainCount && i < main.length; i++) {
-      ctx.lineTo(main[i].x, main[i].y);
-    }
-    ctx.stroke();
-  }
-
-  // === Bočne grane ===
-  pathObj.branches.forEach(branch => {
-    const branchCount = Math.max(2, Math.floor(branch.path.length * progress));
-    if (branch.path.length >= 2) {
-      ctx.beginPath();
-      ctx.moveTo(branch.start.x, branch.start.y);
-      for (let i = 0; i < branchCount && i < branch.path.length; i++) {
-        ctx.lineTo(branch.path[i].x, branch.path[i].y);
-      }
-      ctx.stroke();
-    }
-  });
-
-  ctx.restore();
 }
   
   function triggerLightning() {
-    lightning = {
-      paths: [generateLightningPath()],
-      created: performance.now(),
-      state: 'forming'
-    };
+  lightning = {
+    created: performance.now(),
+    flashes: [
+      { x: Math.random() * width, y: Math.random() * height * 0.1 + 10 }
+    ]
+  };
 
-    if (Math.random() < 0.4) {
-      lightning.paths.push(generateLightningPath());
-    }
+  if (Math.random() < 0.2) {
+    lightning.flashes.push({ x: Math.random() * width, y: Math.random() * height * 0.1 + 10 });
   }
+}
 
   function createDrop(layer) {
     const config = layerConfigs[layer];
@@ -747,22 +706,15 @@ function startAutumnEffect() {
       lightningCooldown -= 16.66;
     }
 
-    if (lightning) {
+if (lightning) {
   const now = performance.now();
   const elapsed = now - lightning.created;
 
-  if (elapsed < 300) {
-    lightning.state = 'forming';
-    lightning.paths.forEach(p => drawLightning(p, elapsed / 300));
-  } else if (elapsed < 400) {
-    lightning.state = 'flashing';
-    lightning.paths.forEach(p => drawLightning(p, 1));
-    ctx.fillStyle = `rgba(255,255,255,${(400 - elapsed) / 100 * 0.25})`;
+  if (elapsed < 80) {
+    lightning.flashes.forEach(p => drawLightning(p.x, p.y));
+  } else if (elapsed < 200) {
+    ctx.fillStyle = `rgba(255,255,255,${(200 - elapsed) / 120 * 0.3})`;
     ctx.fillRect(0, 0, width, height);
-  } else if (elapsed < 1000) {
-    lightning.state = 'fading';
-    const fadeProgress = 1 - (elapsed - 400) / 600;
-    lightning.paths.forEach(p => drawLightning(p, 1, fadeProgress));
   } else {
     lightning = null;
   }
