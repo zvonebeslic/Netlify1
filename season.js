@@ -587,7 +587,6 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
 
 // JESEN
 function startAutumnEffect() {
-  // Priprema canvasa
   const canvas = document.createElement('canvas');
   canvas.id = 'season-canvas';
   Object.assign(canvas.style, {
@@ -601,7 +600,7 @@ function startAutumnEffect() {
   });
   document.body.appendChild(canvas);
 
-  ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   let width = canvas.width = window.innerWidth;
   let height = canvas.height = window.innerHeight;
 
@@ -615,12 +614,92 @@ function startAutumnEffect() {
     { count: 80, speed: 10, opacity: 0.25, width: 1.2 },
   ];
 
-  // Funkcija za stvaranje kapi
+  let lightning = null;
+  let lightningCooldown = 0;
+
+  function generateLightningPath() {
+    const mainPath = [];
+    const branches = [];
+
+    let x = Math.random() * width;
+    let y = Math.random() * height * 0.05 + height * 0.05;
+
+    const segmentLength = 15 + Math.random() * 15;
+    const maxLength = height * 0.5;
+    let steps = 0;
+
+    while (y < maxLength && steps < 40) {
+      const dx = (Math.random() - 0.5) * 40; // više iskrivljenja
+      const dy = segmentLength + Math.random() * 20;
+      x += dx;
+      y += dy;
+      mainPath.push({ x, y });
+
+      // Grane
+      if (Math.random() < 0.3 && steps > 2) {
+        const branch = [];
+        let bx = x;
+        let by = y;
+        const branchLen = 2 + Math.floor(Math.random() * 4);
+        for (let i = 0; i < branchLen; i++) {
+          const bdx = (Math.random() - 0.5) * 50;
+          const bdy = (Math.random() - 0.3) * 30;
+          bx += bdx;
+          by += bdy;
+          branch.push({ x: bx, y: by });
+        }
+        branches.push({ start: { x, y }, path: branch });
+      }
+
+      steps++;
+    }
+
+    return { main: mainPath, branches };
+  }
+
+  function drawLightning(pathObj, progress = 1, alpha = 1) {
+    ctx.save();
+    ctx.strokeStyle = `rgba(220, 240, 255, ${alpha})`;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+
+    const main = pathObj.main;
+    ctx.moveTo(main[0].x, main[0].y);
+    for (let i = 1; i < main.length * progress; i++) {
+      ctx.lineTo(main[i].x, main[i].y);
+    }
+    ctx.stroke();
+
+    // Grane
+    pathObj.branches.forEach(branch => {
+      ctx.beginPath();
+      ctx.moveTo(branch.start.x, branch.start.y);
+      for (let i = 0; i < branch.path.length * progress; i++) {
+        ctx.lineTo(branch.path[i].x, branch.path[i].y);
+      }
+      ctx.stroke();
+    });
+
+    ctx.restore();
+  }
+
+  function triggerLightning() {
+    lightning = {
+      paths: [generateLightningPath()],
+      created: performance.now(),
+      state: 'forming'
+    };
+
+    if (Math.random() < 0.4) {
+      lightning.paths.push(generateLightningPath());
+    }
+  }
+
   function createDrop(layer) {
     const config = layerConfigs[layer];
     return {
       x: Math.random() * width + Math.sin(Math.random() * 1000) * 5,
-      y: Math.random() * -height * 0.3, 
+      y: Math.random() * -height * 0.3,
       length: 3 + Math.random() * 5,
       speed: config.speed + Math.random() * 1,
       width: config.width,
@@ -629,32 +708,44 @@ function startAutumnEffect() {
     };
   }
 
-  // Kontrola postepenog dodavanja kapi
   let dropSpawnTimer = 0;
   const totalLayers = layerConfigs.length;
   const maxDropsPerLayer = [150, 120, 120, 80, 80];
 
-  let lightningTimer = 0;
-
-  function drawRain() {
-
-    ctx.fillStyle = 'rgba(120, 120, 120, 0.15)';
-    ctx.fillRect(0, 0, width, height);
-    
+  function drawRain(timestamp) {
     ctx.clearRect(0, 0, width, height);
 
-    // Povremeni bljesak munje
-    if (Math.random() < 0.002 && lightningTimer <= 0) {
-      lightningTimer = 5;
-    }
-    if (lightningTimer > 0) {
-      ctx.fillStyle = `rgba(255,255,255,${0.1 * lightningTimer})`;
-      ctx.fillRect(0, 0, width, height);
-      lightningTimer--;
+    // === Munja ===
+    if (lightningCooldown <= 0 && Math.random() < 0.002) {
+      triggerLightning();
+      lightningCooldown = 5000;
+    } else {
+      lightningCooldown -= 16.66;
     }
 
-    // Dodavanje novih kapi svakih nekoliko frameova
-    dropSpawnTimer += 1;
+    if (lightning) {
+      const now = performance.now();
+      const elapsed = now - lightning.created;
+
+      if (elapsed < 30) {
+        lightning.state = 'forming';
+        lightning.paths.forEach(p => drawLightning(p, elapsed / 30));
+      } else if (elapsed < 130) {
+        lightning.state = 'flashing';
+        lightning.paths.forEach(p => drawLightning(p, 1));
+        ctx.fillStyle = `rgba(255,255,255,${(130 - elapsed) / 100 * 0.25})`;
+        ctx.fillRect(0, 0, width, height);
+      } else if (elapsed < 200) {
+        lightning.state = 'fading';
+        const fadeProgress = 1 - (elapsed - 130) / 70;
+        lightning.paths.forEach(p => drawLightning(p, 1, fadeProgress));
+      } else {
+        lightning = null;
+      }
+    }
+
+    // === Kapi ===
+    dropSpawnTimer++;
     if (dropSpawnTimer >= 2) {
       dropSpawnTimer = 0;
       for (let layer = 0; layer < totalLayers; layer++) {
@@ -666,7 +757,6 @@ function startAutumnEffect() {
       }
     }
 
-    // Crtanje svake kapi
     drops.forEach(drop => {
       ctx.beginPath();
       ctx.strokeStyle = `rgba(60,60,60,${drop.opacity})`;
