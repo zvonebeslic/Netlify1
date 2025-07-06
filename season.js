@@ -312,30 +312,42 @@ function startSummerEffect() {
 
   const mm = 3.78;
   const rays = [];
-  const maxRays = 5; // više ali bez preklapanja
+  const maxVisibleRays = 3;
+  const totalRayLimit = 7;
   const minSpacing = width / 5;
+  const sharedAngle = Math.PI * 0.6;
 
   class SunRay {
     constructor(x, isThinFast = false) {
       this.x = x;
       this.y = -200 - Math.random() * 100;
-      this.length = height * (0.7 + Math.random() * 0.3);
-      this.angle = Math.PI * 0.6 + (Math.random() - 0.5) * 0.2;
+      this.length = height * (0.6 + Math.random() * 0.5);
+      this.angle = sharedAngle;
+
+      const shapeType = Math.floor(Math.random() * 3);
 
       if (isThinFast) {
-        this.baseWidthStart = 1.5 * mm;
-        this.baseWidthEnd = 6 * mm;
+        this.baseWidthStart = (1 + Math.random() * 1.5) * mm;
+        this.baseWidthEnd = (4 + Math.random() * 3) * mm;
         this.speedX = -0.1;
         this.speedY = 0.12;
         this.opacityMax = 0.05;
         this.maxLife = 6000 + Math.random() * 2000;
       } else {
-        this.baseWidthStart = (3 + Math.random() * 3) * mm;
-        this.baseWidthEnd = (15 + Math.random() * 10) * mm;
+        this.baseWidthStart = (3 + Math.random() * 4) * mm;
+        this.baseWidthEnd = (12 + Math.random() * 14) * mm;
         this.speedX = -0.005 - Math.random() * 0.01;
         this.speedY = 0.004 + Math.random() * 0.006;
         this.opacityMax = 0.1;
-        this.maxLife = 30000 + Math.random() * 10000;
+        this.maxLife = 25000 + Math.random() * 15000;
+      }
+
+      if (shapeType === 1) {
+        this.baseWidthStart *= 1.3;
+        this.baseWidthEnd *= 0.9;
+      } else if (shapeType === 2) {
+        this.baseWidthStart *= 0.8;
+        this.baseWidthEnd *= 1.4;
       }
 
       this.pulseOffset = Math.random() * 10000;
@@ -343,7 +355,6 @@ function startSummerEffect() {
 
       this.opacity = 0;
       this.appeared = false;
-
       this.life = 0;
     }
 
@@ -368,7 +379,6 @@ function startSummerEffect() {
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
 
-      // Uvjeti nestajanja
       const disappeared =
         this.widthEnd < 0.1 ||
         endX < -150 || this.x < -150 || endY > height + 200 ||
@@ -422,6 +432,9 @@ function startSummerEffect() {
   }
 
   function spawnRay(thin = false) {
+    if (rays.length >= totalRayLimit) return;
+    if (rays.filter(r => r.opacity > 0.02).length >= maxVisibleRays) return;
+
     let attempts = 10;
     while (attempts--) {
       const x = Math.random() * width;
@@ -432,19 +445,13 @@ function startSummerEffect() {
     }
   }
 
-  // ➤ Pokreni dvije odmah
-  spawnRay();
-  setTimeout(spawnRay, 600);
-
-  // ➤ Loop za normalne zrake
   setInterval(() => {
-    if (rays.length < maxRays) spawnRay();
-  }, 11000 + Math.random() * 6000);
+    spawnRay();
+  }, 15000 + Math.random() * 8000);
 
-  // ➤ Loop za tanke zrake (svakih ~30s)
   setInterval(() => {
     spawnRay(true);
-  }, 30000 + Math.random() * 6000);
+  }, 30000 + Math.random() * 12000);
 
   let lastTime = performance.now();
   function animate() {
