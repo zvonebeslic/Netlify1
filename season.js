@@ -711,18 +711,14 @@ function startAutumnEffect() {
       lightningCooldown -= 16.66;
     }
 
-if (lightning) {
-  const now = performance.now();
-  const elapsed = now - lightning.created;
-
-  if (elapsed < 80) {
-    lightning.flashes.forEach(p => drawLightning(p.x, p.y));
-  } else if (elapsed < 200) {
-    ctx.fillStyle = `rgba(255,255,255,${(200 - elapsed) / 120 * 0.3})`;
-    ctx.fillRect(0, 0, width, height);
-  } else {
-    lightning = null;
-  }
+if (elapsed < 180) {
+  lightning.flashes.forEach(p => drawLightning(p.x, p.y));
+} else if (elapsed < 600) {
+  const alpha = (600 - elapsed) / 420 * 0.25;
+  ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+  ctx.fillRect(0, 0, width, height);
+} else {
+  lightning = null;
 }
 
     // === Kapi ===
