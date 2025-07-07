@@ -471,6 +471,11 @@ function drawBirdShape(ctx, frame) {
         }
       }
 
+      if (this.life > this.maxLife * 0.75) {
+      this.opacity -= delta * 0.0002;
+      if (this.opacity < 0) this.opacity = 0;
+      }
+
       const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
@@ -517,10 +522,11 @@ function drawBirdShape(ctx, frame) {
       const p4y = endY + normalY * endHalf;
 
       const gradient = ctx.createLinearGradient(this.y, 0, endY, 0);
-      gradient.addColorStop(0, `rgba(255,255,220,${this.opacity})`);
-      gradient.addColorStop(0.8, `rgba(255,255,220,${this.opacity * 0.4})`);
-      gradient.addColorStop(1, `rgba(255,255,220,0)`);
-
+         gradient.addColorStop(0, `rgba(255,255,220,${this.opacity * 0.8})`);
+         gradient.addColorStop(0.6, `rgba(255,255,220,${this.opacity * 0.3})`);
+         gradient.addColorStop(0.85, `rgba(255,255,220,${this.opacity * 0.1})`);
+         gradient.addColorStop(1, `rgba(255,255,220,0)`);
+      
       ctx.beginPath();
       ctx.moveTo(p1x, p1y);
       ctx.lineTo(p2x, p2y);
