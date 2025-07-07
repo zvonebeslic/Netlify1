@@ -712,14 +712,24 @@ function startAutumnEffect() {
     }
 
 if (elapsed < 180) {
-  lightning.flashes.forEach(p => drawLightning(p.x, p.y));
-} else if (elapsed < 600) {
-  const alpha = (600 - elapsed) / 420 * 0.25;
-  ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-  ctx.fillRect(0, 0, width, height);
-} else {
-  lightning = null;
-}
+
+function drawRain(timestamp) {
+  ctx.clearRect(0, 0, width, height);
+
+  const elapsed = lightning ? timestamp - lightning.created : 0;
+
+  // === Prikaz munje i bljeska ===
+  if (lightning) {
+    if (elapsed < 180) {
+      lightning.flashes.forEach(p => drawLightning(p.x, p.y));
+    } else if (elapsed < 600) {
+      const alpha = (600 - elapsed) / 420 * 0.25;
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fillRect(0, 0, width, height);
+    } else {
+      lightning = null;
+    }
+  }
 
     // === Kapi ===
     dropSpawnTimer++;
