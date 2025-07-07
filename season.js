@@ -310,6 +310,107 @@ function startSummerEffect() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
+  const birds = [];
+let birdSpawnTimer = 0;
+let birdSpawnInterval = 10000 + Math.random() * 10000;
+
+class Bird {
+  constructor() {
+    const mm = 3.78;
+    this.sizeMM = 3 + Math.random() * 3;
+    this.pixelSize = this.sizeMM * mm;
+    this.x = -this.pixelSize - Math.random() * 100;
+    this.y = Math.random() * (window.innerHeight * 0.5);
+    this.speed = 0.6 + Math.random();
+    this.frame = Math.floor(Math.random() * 5);
+    this.frameTimer = 0;
+    this.frameInterval = 50;
+    this.offsetY = Math.random() * 8 - 4;
+  }
+
+  update(deltaTime) {
+    this.x += this.speed;
+    this.y += Math.sin(this.x * 0.01) * 0.3;
+
+    this.frameTimer += deltaTime;
+    if (this.frameTimer > this.frameInterval) {
+      this.frame = (this.frame + 1) % 5;
+      this.frameTimer = 0;
+    }
+  }
+
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y + this.offsetY);
+    ctx.scale(this.pixelSize / 20, this.pixelSize / 20);
+    drawBirdShape(ctx, this.frame);
+    ctx.restore();
+  }
+
+  isOffScreen() {
+    return this.x > window.innerWidth + 100;
+  }
+}
+
+function spawnBirdFlock() {
+  const count = 3 + Math.floor(Math.random() * 13);
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => birds.push(new Bird()), i * 120);
+  }
+}
+
+function drawBirdShape(ctx, frame) {
+  ctx.lineWidth = 0.5;
+  ctx.lineJoin = 'round';
+
+  // Tijelo - bijeli trbuh
+  ctx.beginPath();
+  ctx.fillStyle = 'white';
+  ctx.ellipse(0, 0, 3, 1.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Glava/leđa - crno
+  ctx.beginPath();
+  ctx.fillStyle = 'black';
+  ctx.ellipse(-1, -0.4, 2.5, 1.2, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Žuta crta
+  ctx.strokeStyle = 'yellow';
+  ctx.beginPath();
+  ctx.moveTo(-2.5, -0.4);
+  ctx.lineTo(1.5, -0.4);
+  ctx.stroke();
+
+  // Krila (plava)
+  const wingAngles = [-0.9, -0.45, 0, 0.45, 0.9]; // 5 frameova
+  const angle = wingAngles[frame];
+
+  // Lijevo krilo
+  ctx.save();
+  ctx.fillStyle = '#2255cc';
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, -4);
+  ctx.lineTo(1, -2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // Desno krilo (zrcaljeno)
+  ctx.save();
+  ctx.scale(-1, 1);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, -4);
+  ctx.lineTo(1, -2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
   const mm = 3.78;
   const rays = [];
   const maxVisibleRays = 3;
@@ -474,6 +575,20 @@ function startSummerEffect() {
 
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
+
+    // === ANIMACIJA PTICA ===
+  birdSpawnTimer += deltaTime;
+  if (birdSpawnTimer > birdSpawnInterval) {
+    spawnBirdFlock();
+    birdSpawnInterval = 10000 + Math.random() * 10000;
+    birdSpawnTimer = 0;
+  }
+
+  birds.forEach(bird => bird.update(deltaTime));
+  birds.forEach(bird => bird.draw(ctx));
+  for (let i = birds.length - 1; i >= 0; i--) {
+    if (birds[i].isOffScreen()) birds.splice(i, 1);
+  }
 
     for (const ray of rays) {
       ray.update(delta, now);
