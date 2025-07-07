@@ -577,14 +577,14 @@ function drawBirdShape(ctx, frame) {
     ctx.globalCompositeOperation = 'lighter';
 
     // === ANIMACIJA PTICA ===
-  birdSpawnTimer += deltaTime;
+  birdSpawnTimer += delta;
   if (birdSpawnTimer > birdSpawnInterval) {
     spawnBirdFlock();
     birdSpawnInterval = 10000 + Math.random() * 10000;
     birdSpawnTimer = 0;
   }
 
-  birds.forEach(bird => bird.update(deltaTime));
+  birds.forEach(bird => bird.update(delta));
   birds.forEach(bird => bird.draw(ctx));
   for (let i = birds.length - 1; i >= 0; i--) {
     if (birds[i].isOffScreen()) birds.splice(i, 1);
