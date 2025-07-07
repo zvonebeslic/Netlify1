@@ -329,11 +329,11 @@ class Bird {
     this.offsetY = Math.random() * 8 - 4;
   }
 
-  update(deltaTime) {
+  update(delta) {
     this.x += this.speed;
     this.y += Math.sin(this.x * 0.01) * 0.3;
 
-    this.frameTimer += deltaTime;
+    this.frameTimer += delta;
     if (this.frameTimer > this.frameInterval) {
       this.frame = (this.frame + 1) % 5;
       this.frameTimer = 0;
