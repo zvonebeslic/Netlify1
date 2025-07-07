@@ -300,6 +300,7 @@ function startWinterEffect() {
 function startSummerEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
+  spawnBirdFlock(); // odmah prvo jato
 
   const ctx = seasonCanvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
