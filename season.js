@@ -602,7 +602,9 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
 // JESEN
   function startAutumnEffect() {
   cancelAllSeasonAnimations();
-  setupSeasonCanvas(); // koristi globalni canvas
+  setupSeasonCanvas();
+
+    ctx = seasonCanvas.getContext('2d');
 
   let width = seasonCanvas.width / dpr;
   let height = seasonCanvas.height / dpr;
