@@ -367,7 +367,7 @@ function drawBirdShape(ctx, frame) {
   // Tijelo - bijeli trbuh
   ctx.beginPath();
   ctx.fillStyle = 'white';
-  ctx.ellipse(0, 0, 3, 1.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, 0, 2.3, 1.1, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // Glava/leđa - crno
@@ -393,8 +393,8 @@ function drawBirdShape(ctx, frame) {
   ctx.rotate(angle);
   ctx.beginPath();
   ctx.moveTo(0, 0);
-  ctx.lineTo(0, -4);
-  ctx.lineTo(1, -2);
+  ctx.lineTo(0, -5.5);
+  ctx.lineTo(1.5, -2.5);
   ctx.closePath();
   ctx.fill();
   ctx.restore();
@@ -405,8 +405,8 @@ function drawBirdShape(ctx, frame) {
   ctx.rotate(angle);
   ctx.beginPath();
   ctx.moveTo(0, 0);
-  ctx.lineTo(0, -4);
-  ctx.lineTo(1, -2);
+  ctx.lineTo(0, -5.5);
+  ctx.lineTo(1.5, -2.5);
   ctx.closePath();
   ctx.fill();
   ctx.restore();
