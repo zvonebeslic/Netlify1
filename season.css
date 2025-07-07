@@ -47,14 +47,15 @@
 #season-toggle.active-season::after {
   content: "";
   position: absolute;
-  top: 70px;
-  left: 15px;
-  width: 30px;
+  top: 50%;
+  left: 50%;
+  width: 32px;
   height: 4px;
   background: red;
-  transform: rotate(45deg);
-  z-index: 999999;
+  transform: translate(-50%, -50%) rotate(45deg);
+  z-index: 99999;
   pointer-events: none;
+  border-radius: 2px;
 }
 
 /* === GLOBAL CANVAS LAYER === */
