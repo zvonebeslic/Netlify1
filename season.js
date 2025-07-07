@@ -600,23 +600,12 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
 }
 
 // JESEN
-function startAutumnEffect() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'season-canvas';
-  Object.assign(canvas.style, {
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    width: '100vw',
-    height: '100vh',
-    zIndex: '99998',
-    pointerEvents: 'none'
-  });
-  document.body.appendChild(canvas);
+  function startAutumnEffect() {
+  cancelAllSeasonAnimations();
+  setupSeasonCanvas(); // koristi globalni canvas
 
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
+  let width = seasonCanvas.width / dpr;
+  let height = seasonCanvas.height / dpr;
 
   const drops = [];
   const dropLayers = 5;
@@ -632,56 +621,56 @@ function startAutumnEffect() {
   let lightningCooldown = 0;
 
   function drawLightning(x, y, depth = 0, angle = Math.PI / 2) {
-  if (depth > 5 || y > height * 0.5) return;
+    if (depth > 5 || y > height * 0.5) return;
 
-  const segmentLength = 20 + Math.random() * 30;
-  const deviation = (Math.random() - 0.5) * Math.PI / 3;
-  const newAngle = angle + deviation;
+    const segmentLength = 20 + Math.random() * 30;
+    const deviation = (Math.random() - 0.5) * Math.PI / 3;
+    const newAngle = angle + deviation;
 
-  const x2 = x + Math.cos(newAngle) * segmentLength;
-  const y2 = y + Math.sin(newAngle) * segmentLength;
+    const x2 = x + Math.cos(newAngle) * segmentLength;
+    const y2 = y + Math.sin(newAngle) * segmentLength;
 
-  ctx.beginPath();
-  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-  ctx.lineWidth = 1.8;
-  ctx.moveTo(x, y);
-  ctx.lineTo(x2, y2);
-  ctx.stroke();
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = 1.8;
+    ctx.moveTo(x, y);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
 
-  if (depth < 2) {
-    const branchCount = 1 + Math.floor(Math.random() * 3);
-    for (let i = 0; i < branchCount; i++) {
-      const branchAngle = newAngle + ((Math.random() < 0.5 ? -1 : 1) * Math.random() * Math.PI / 3);
-      const branchLength = segmentLength * (0.4 + Math.random() * 0.4);
-      const bx = x2 + Math.cos(branchAngle) * branchLength;
-      const by = y2 + Math.sin(branchAngle) * branchLength;
+    if (depth < 2) {
+      const branchCount = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < branchCount; i++) {
+        const branchAngle = newAngle + ((Math.random() < 0.5 ? -1 : 1) * Math.random() * Math.PI / 3);
+        const branchLength = segmentLength * (0.4 + Math.random() * 0.4);
+        const bx = x2 + Math.cos(branchAngle) * branchLength;
+        const by = y2 + Math.sin(branchAngle) * branchLength;
 
-      if (by < height * 0.5) {
-        ctx.beginPath();
-        ctx.moveTo(x2, y2);
-        ctx.lineTo(bx, by);
-        ctx.stroke();
+        if (by < height * 0.5) {
+          ctx.beginPath();
+          ctx.moveTo(x2, y2);
+          ctx.lineTo(bx, by);
+          ctx.stroke();
+        }
       }
+    }
+
+    if (Math.random() < 0.85 && y2 < height * 0.5) {
+      drawLightning(x2, y2, depth + 1, newAngle);
     }
   }
 
-  if (Math.random() < 0.85 && y2 < height * 0.5) {
-    drawLightning(x2, y2, depth + 1, newAngle);
-  }
-}
-  
   function triggerLightning() {
-  lightning = {
-    created: performance.now(),
-    flashes: [
-      { x: Math.random() * width, y: Math.random() * height * 0.1 + 10 }
-    ]
-  };
+    lightning = {
+      created: performance.now(),
+      flashes: [
+        { x: Math.random() * width, y: Math.random() * height * 0.1 + 10 }
+      ]
+    };
 
-  if (Math.random() < 0.2) {
-    lightning.flashes.push({ x: Math.random() * width, y: Math.random() * height * 0.1 + 10 });
+    if (Math.random() < 0.2) {
+      lightning.flashes.push({ x: Math.random() * width, y: Math.random() * height * 0.1 + 10 });
+    }
   }
-}
 
   function createDrop(layer) {
     const config = layerConfigs[layer];
@@ -703,6 +692,8 @@ function startAutumnEffect() {
   function drawRain(timestamp) {
     ctx.clearRect(0, 0, width, height);
 
+    const elapsed = lightning ? timestamp - lightning.created : 0;
+
     // === Munja ===
     if (lightningCooldown <= 0 && Math.random() < 0.002) {
       triggerLightning();
@@ -711,25 +702,17 @@ function startAutumnEffect() {
       lightningCooldown -= 16.66;
     }
 
-if (elapsed < 180) {
-
-function drawRain(timestamp) {
-  ctx.clearRect(0, 0, width, height);
-
-  const elapsed = lightning ? timestamp - lightning.created : 0;
-
-  // === Prikaz munje i bljeska ===
-  if (lightning) {
-    if (elapsed < 180) {
-      lightning.flashes.forEach(p => drawLightning(p.x, p.y));
-    } else if (elapsed < 600) {
-      const alpha = (600 - elapsed) / 420 * 0.25;
-      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-      ctx.fillRect(0, 0, width, height);
-    } else {
-      lightning = null;
+    if (lightning) {
+      if (elapsed < 180) {
+        lightning.flashes.forEach(p => drawLightning(p.x, p.y));
+      } else if (elapsed < 600) {
+        const alpha = (600 - elapsed) / 420 * 0.25;
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fillRect(0, 0, width, height);
+      } else {
+        lightning = null;
+      }
     }
-  }
 
     // === Kapi ===
     dropSpawnTimer++;
@@ -759,8 +742,8 @@ function drawRain(timestamp) {
       }
     });
 
-    requestAnimationFrame(drawRain);
+    autumnAnimationId = requestAnimationFrame(drawRain);
   }
 
-  drawRain();
+  autumnAnimationId = requestAnimationFrame(drawRain);
 }
