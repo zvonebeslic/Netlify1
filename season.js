@@ -808,6 +808,9 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
   const maxDropsPerLayer = [150, 120, 120, 80, 80];
 
   function drawRain(timestamp) {
+    width = seasonCanvas.width / dpr;
+    height = seasonCanvas.height / dpr;
+    
     ctx.clearRect(0, 0, width, height);
 
     const elapsed = lightning ? timestamp - lightning.created : 0;
@@ -854,7 +857,7 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
       ctx.stroke();
 
       drop.y += drop.speed;
-      if (drop.y > height) {
+      if (drop.y > height + 20) {
         drop.y = -20;
         drop.x = Math.random() * width;
       }
