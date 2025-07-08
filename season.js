@@ -483,16 +483,17 @@ if (!this.appeared) {
 }
 
 // Kada počinje fade-out
-if (this.fadeOut && this.life > this.maxLife * 0.75) {
+if (!this.fadeOut && this.y > height + 100) {
   this.fadingOut = true;
 }
-if (!this.fadeOut && this.y > height + 100) {
+
+if (!this.fadingOut && this.life > this.maxLife) {
   this.fadingOut = true;
 }
 
 if (this.fadingOut) {
   const fadeSpeed = 0.00002;
-  this.opacity -= fadeSpeed * Math.min(delta, 40); // clamp delta
+  this.opacity -= fadeSpeed * Math.min(delta, 40);
   if (this.opacity < 0) this.opacity = 0;
 }
 
