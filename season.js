@@ -506,9 +506,13 @@ if (this.fadingOut) {
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
 
-      if (this.opacity <= 0.01 || this.life > this.maxLife) {
+      if (this.life > this.maxLife) {
+      this.fadingOut = true; // samo pokreni nestajanje
+      }
+
+      if (this.opacity <= 0.001) {
       const index = rays.indexOf(this);
-      if (index !== -1) rays.splice(index, 1);
+      if (index !== -1) rays.splice(index, 1); // briši tek kad je stvarno nestala
       }
       }
 
