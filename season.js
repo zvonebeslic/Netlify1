@@ -819,7 +819,7 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
     
     ctx.clearRect(0, 0, width, height);
 
-    ctx.fillStyle = 'rgba(80, 80, 80, 0.15)'; // tamno-siva, prozirna
+    ctx.fillStyle = 'rgba(70, 70, 70, 0.25)'; // tamno-siva, prozirna
     ctx.fillRect(0, 0, width, height);
 
     const elapsed = lightning ? timestamp - lightning.created : 0;
