@@ -364,6 +364,20 @@ function drawBirdShape(ctx, frame) {
   ctx.lineWidth = 0.5;
   ctx.lineJoin = 'round';
 
+  // x, y su koordinate glave, r je radijus
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = '#000'; // crna glava
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);               // vrh kljuna (ispred glave)
+  ctx.lineTo(x + r + r, y - r / 2);   // gornji rub
+  ctx.lineTo(x + r + r, y + r / 2);   // donji rub
+  ctx.closePath();
+  ctx.fillStyle = '#ffcc00'; // žuti kljun
+  ctx.fill();
+
   // Tijelo - bijeli trbuh
   ctx.beginPath();
   ctx.fillStyle = 'white';
