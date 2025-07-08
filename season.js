@@ -521,11 +521,11 @@ function drawBirdShape(ctx, frame) {
       const p4x = endX + normalX * endHalf;
       const p4y = endY + normalY * endHalf;
 
-      const gradient = ctx.createLinearGradient(this.y, 0, endY, 0);
-         gradient.addColorStop(0, `rgba(255,255,220,${this.opacity * 0.8})`);
-         gradient.addColorStop(0.6, `rgba(255,255,220,${this.opacity * 0.3})`);
-         gradient.addColorStop(0.85, `rgba(255,255,220,${this.opacity * 0.1})`);
-         gradient.addColorStop(1, `rgba(255,255,220,0)`);
+      const gradient = ctx.createLinearGradient(0, this.y, 0, endY);
+      gradient.addColorStop(0, `rgba(255,255,220,${Math.min(this.opacity * 0.8 + 0.1, 1)})`);
+      gradient.addColorStop(0.6, `rgba(255,255,220,${Math.min(this.opacity * 0.3 + 0.1, 1)})`);
+      gradient.addColorStop(0.85, `rgba(255,255,220,${Math.min(this.opacity * 0.1 + 0.1, 1)})`);
+      gradient.addColorStop(1, `rgba(255,255,220,0)`); // ostaje 0 – potpuno proziran na dnu
       
       ctx.beginPath();
       ctx.moveTo(p1x, p1y);
