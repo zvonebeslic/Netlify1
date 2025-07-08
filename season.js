@@ -440,7 +440,7 @@ function drawBirdShape(ctx, frame) {
         this.speedX = -0.1;
         this.speedY = 0.12;
         this.opacityMax = 0.05;
-        this.maxLife = 6000 + Math.random() * 2000;
+        this.maxLife = 18000 + Math.random() * 10000;
       } else {
         this.baseWidthStart = (3 + Math.random() * 4) * mm;
         this.baseWidthEnd = (12 + Math.random() * 14) * mm;
@@ -475,7 +475,7 @@ function drawBirdShape(ctx, frame) {
 
       // Fade-in
 if (!this.appeared) {
-  this.opacity += delta * 0.00025;
+  this.opacity += delta * 0.00005;
   if (this.opacity >= this.opacityMax) {
     this.opacity = this.opacityMax;
     this.appeared = true;
@@ -492,7 +492,7 @@ if (!this.fadeOut && this.y > height + 100) {
 
 // Fade-out animacija
 if (this.fadingOut) {
-  this.opacity -= delta * 0.0002;
+  this.opacity -= delta * 0.00003;
   if (this.opacity < 0) this.opacity = 0;
 }
 
@@ -500,8 +500,8 @@ if (this.fadingOut) {
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
 
-      this.x += this.speedX * delta * 0.015;
-      this.y += this.speedY * delta * 0.015;
+      this.x += this.speedX * delta * 0.005;
+      this.y += this.speedY * delta * 0.005;
 
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
