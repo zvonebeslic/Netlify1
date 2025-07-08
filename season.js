@@ -450,8 +450,8 @@ function drawBirdShape(ctx, frame) {
         this.maxLife = 25000 + Math.random() * 15000;
       }
       
-      this.speedX *= 1.3;
-      this.speedY *= 1.3;
+      this.speedX *= 0.4;
+      this.speedY *= 0.4;
 
       
       if (shapeType === 1) {
