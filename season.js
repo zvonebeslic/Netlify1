@@ -376,21 +376,6 @@ function drawBirdShape(ctx, frame) {
   ctx.ellipse(-1, -0.4, 2.5, 1.2, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Glava - crni krug
-  ctx.beginPath();
-  ctx.fillStyle = 'black';
-  ctx.arc(0.8, -0.4, 0.6, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Kljun - žuti trokut
-  ctx.beginPath();
-  ctx.fillStyle = 'yellow';
-  ctx.moveTo(1.4, -0.4);     // Vrh kljuna
-  ctx.lineTo(1.0, -0.2);     // Donji rub
-  ctx.lineTo(1.0, -0.6);     // Gornji rub
-  ctx.closePath();
-  ctx.fill();
-
   // Žuta crta
   ctx.strokeStyle = 'yellow';
   ctx.beginPath();
