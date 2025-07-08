@@ -379,15 +379,15 @@ function drawBirdShape(ctx, frame) {
   // Glava - crni krug
   ctx.beginPath();
   ctx.fillStyle = 'black';
-  ctx.arc(1.5, -0.4, 0.9, 0, Math.PI * 2);
+  ctx.arc(0.8, -0.4, 0.6, 0, Math.PI * 2);
   ctx.fill();
 
-  // Kljun - žuti trokut prema naprijed
+  // Kljun - žuti trokut
   ctx.beginPath();
   ctx.fillStyle = 'yellow';
-  ctx.moveTo(2.4, -0.4);     // Vrh kljuna
-  ctx.lineTo(1.9, -0.2);     // Donji rub
-  ctx.lineTo(1.9, -0.6);     // Gornji rub
+  ctx.moveTo(1.4, -0.4);     // Vrh kljuna
+  ctx.lineTo(1.0, -0.2);     // Donji rub
+  ctx.lineTo(1.0, -0.6);     // Gornji rub
   ctx.closePath();
   ctx.fill();
 
