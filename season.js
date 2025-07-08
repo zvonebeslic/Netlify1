@@ -449,7 +449,11 @@ function drawBirdShape(ctx, frame) {
         this.opacityMax = 0.1;
         this.maxLife = 25000 + Math.random() * 15000;
       }
+      
+      this.speedX *= 1.3;
+      this.speedY *= 1.3;
 
+      
       if (shapeType === 1) {
         this.baseWidthStart *= 1.3;
         this.baseWidthEnd *= 0.9;
@@ -464,23 +468,36 @@ function drawBirdShape(ctx, frame) {
       this.opacity = 0;
       this.appeared = false;
       this.life = 0;
+
+      this.fadeOut = Math.random() < 0.25; // 25% zraka nestaje unutar ekrana (fade)
+      this.fadingOut = false; // kontrola kada počinje fade-out
     }
 
     update(delta, time) {
       this.life += delta;
 
-      if (!this.appeared) {
-        this.opacity += delta * 0.00025;
-        if (this.opacity >= this.opacityMax) {
-          this.opacity = this.opacityMax;
-          this.appeared = true;
-        }
-      }
+      // Fade-in
+if (!this.appeared) {
+  this.opacity += delta * 0.00025;
+  if (this.opacity >= this.opacityMax) {
+    this.opacity = this.opacityMax;
+    this.appeared = true;
+  }
+}
 
-      if (this.life > this.maxLife * 0.75) {
-      this.opacity -= delta * 0.0002;
-      if (this.opacity < 0) this.opacity = 0;
-      }
+// Kada počinje fade-out
+if (this.fadeOut && this.life > this.maxLife * 0.75) {
+  this.fadingOut = true;
+}
+if (!this.fadeOut && this.y > height + 100) {
+  this.fadingOut = true;
+}
+
+// Fade-out animacija
+if (this.fadingOut) {
+  this.opacity -= delta * 0.0002;
+  if (this.opacity < 0) this.opacity = 0;
+}
 
       const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
@@ -492,16 +509,11 @@ function drawBirdShape(ctx, frame) {
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
 
-      const disappeared =
-        this.widthEnd < 0.1 ||
-        endX < -150 || this.x < -150 || endY > height + 200 ||
-        this.life > this.maxLife;
-
-      if (disappeared) {
-        const index = rays.indexOf(this);
-        if (index !== -1) rays.splice(index, 1);
+      if (this.opacity <= 0.01 || this.life > this.maxLife) {
+      const index = rays.indexOf(this);
+      if (index !== -1) rays.splice(index, 1);
       }
-    }
+      }
 
     draw(ctx) {
       if (this.opacity <= 0) return;
