@@ -503,8 +503,8 @@ if (this.fadingOut) {
       this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
 
-      this.x += this.speedX * delta * 0.04;
-      this.y += this.speedY * delta * 0.04;
+      this.x += this.speedX * delta * 0.015;
+      this.y += this.speedY * delta * 0.015;
 
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
