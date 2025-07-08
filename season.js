@@ -490,9 +490,9 @@ if (!this.fadeOut && this.y > height + 100) {
   this.fadingOut = true;
 }
 
-// Fade-out animacija
 if (this.fadingOut) {
-  this.opacity -= delta * 0.00003;
+  const fadeSpeed = 0.00002;
+  this.opacity -= fadeSpeed * Math.min(delta, 40); // clamp delta
   if (this.opacity < 0) this.opacity = 0;
 }
 
