@@ -444,7 +444,7 @@ function drawBirdShape(ctx, frame) {
       } else {
         this.baseWidthStart = (3 + Math.random() * 4) * mm;
         this.baseWidthEnd = (12 + Math.random() * 14) * mm;
-        this.speedX = -0.2. - Math.random() * 0.4;
+        this.speedX = -0.2 - Math.random() * 0.4;
         this.speedY = 2.5 + Math.random() * 2;
         this.opacityMax = 0.1;
         this.maxLife = 25000 + Math.random() * 15000;
