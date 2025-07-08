@@ -428,7 +428,7 @@ function drawBirdShape(ctx, frame) {
   class SunRay {
     constructor(x, isThinFast = false) {
       this.x = x;
-      this.y = -200 - Math.random() * 100;
+      this.y = 0;
       this.length = height * (0.6 + Math.random() * 0.5);
       this.angle = sharedAngle;
 
@@ -483,14 +483,15 @@ if (!this.appeared) {
 }
 
 // Kada počinje fade-out
-if (!this.fadeOut && this.y > height + 100) {
-  this.fadingOut = true;
+if (!this.fadingOut) {
+  if (!this.fadeOut && this.y > height + 100) {
+    this.fadingOut = true;
+  } else if (this.life > this.maxLife) {
+    this.fadingOut = true;
+  }
 }
 
-if (!this.fadingOut && this.life > this.maxLife) {
-  this.fadingOut = true;
-}
-
+// Fade-out animacija
 if (this.fadingOut) {
   const fadeSpeed = 0.00002;
   this.opacity -= fadeSpeed * Math.min(delta, 40);
