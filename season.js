@@ -444,8 +444,8 @@ function drawBirdShape(ctx, frame) {
       } else {
         this.baseWidthStart = (3 + Math.random() * 4) * mm;
         this.baseWidthEnd = (12 + Math.random() * 14) * mm;
-        this.speedX = -0.005 - Math.random() * 0.01;
-        this.speedY = 0.004 + Math.random() * 0.006;
+        this.speedX = -0.2. - Math.random() * 0.4;
+        this.speedY = 2.5 + Math.random() * 2;
         this.opacityMax = 0.1;
         this.maxLife = 25000 + Math.random() * 15000;
       }
@@ -501,7 +501,7 @@ if (this.fadingOut) {
       this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
 
       this.x += this.speedX * delta * 0.005;
-      this.y += this.speedY * delta * 0.005;
+      this.y += this.speedY * delta * 0.01;
 
       const endX = this.x + Math.cos(this.angle) * this.length;
       const endY = this.y + Math.sin(this.angle) * this.length;
