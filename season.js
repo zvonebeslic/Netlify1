@@ -707,8 +707,8 @@ function startAutumnEffect() {
   let lightningCooldown = 0;
 
   function drawLightning(x, y, depth = 0, angle = Math.PI / 2) {
-    if (depth > 5 || y > height * 0.5) return;
-    const segmentLength = (20 + Math.random() * 30) * screenFactor;
+    if (depth > 4 || y > height * 0.5) return;
+    const segmentLength = (13 + Math.random() * 18) * screenFactor;
     const deviation = (Math.random() - 0.5) * Math.PI / 3;
     const newAngle = angle + deviation;
 
@@ -717,7 +717,7 @@ function startAutumnEffect() {
 
     ctx.beginPath();
     ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-    ctx.lineWidth = 1.8 * screenFactor;
+    ctx.lineWidth = 1.7 * screenFactor;
     ctx.moveTo(x, y);
     ctx.lineTo(x2, y2);
     ctx.stroke();
