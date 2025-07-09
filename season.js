@@ -573,8 +573,9 @@ function startSpringEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas(); 
 
-const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
-  
+  const isDesktop = window.innerWidth >= 1024;
+  const baseSize = isDesktop ? window.innerHeight / 1000 : 1;
+
   const dpr = window.devicePixelRatio || 1;
   seasonCanvas.width = window.innerWidth * dpr;
   seasonCanvas.height = window.innerHeight * dpr;
@@ -609,13 +610,13 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
   }
 
   function spawnSeed() {
-    const scale = screenFactor * (1 + Math.random() * 0.6);
+    const scale = baseSize * (1 + Math.random() * 0.6);
     const w = 15 * scale;
     const h = 15 * scale;
 
     const yPos = Math.random() * height;
     const xStart = width + Math.random() * 10;
-    const speed = 0.01 + Math.random() * 0.04;
+    const speed = (0.01 + Math.random() * 0.04) * baseSize;
     const directionAngle = Math.random() * 2 * Math.PI;
 
     seeds.push({
@@ -627,7 +628,7 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
       direction: directionAngle,
       swayOffset: Math.random() * Math.PI * 2,
       swaySpeed: 0.003 + Math.random() * 0.004,
-      swayRange: 8 + Math.random() * 10,
+      swayRange: (8 + Math.random() * 10) * baseSize,
       age: 0
     });
   }
@@ -655,7 +656,6 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
       ctx.drawImage(seedImage, seed.x - seed.width / 2, seed.y - seed.height / 2, seed.width + 1, seed.height + 1);
     });
 
-    // Automatsko uklanjanje sjemenki izvan ekrana
     for (let i = seeds.length - 1; i >= 0; i--) {
       const s = seeds[i];
       if (s.x < -100 || s.x > width + 100 || s.y < -100 || s.y > height + 100) {
@@ -680,6 +680,7 @@ const screenFactor = window.innerWidth > 1024 ? 1.5 : 1; // povećaj za desktop
     springAnimationId = requestAnimationFrame(animateSpring);
   };
 }
+
 
 // JESEN
   function startAutumnEffect() {
