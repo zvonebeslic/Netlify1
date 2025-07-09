@@ -154,11 +154,11 @@ function stopSeasonEffects() {
 
   const snowflakes = [];
   const targetCounts = [
-    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.3] },
-    { count: 120, type: 'crumpled', radius: 0.6 },
-    { count: 100, type: 'ellipse', radius: 0.8 },
-    { count: 40,  type: 'ellipse', radius: 1.0 },
-    { count: 10,  type: 'crumpled', radius: 1.1 }
+    { count: 150, type: 'ellipse', radiusRange: [0.2, 0.7] },
+    { count: 120, type: 'crumpled', radius: 0.4},
+    { count: 100, type: 'ellipse', radius: 0.7},
+    { count: 40,  type: 'ellipse', radius: 0.85 },
+    { count: 10,  type: 'crumpled', radius: 0.9 }
   ];
   let currentCounts = [0, 0, 0, 0, 0];
   let snowSpawnTimer = 0;
@@ -224,7 +224,7 @@ function stopSeasonEffects() {
 
         snowflakes.push({
           x: Math.random() * width,
-          y: Math.random() * (height * 0.1),
+          y: -Math.random() * 30,
           radius,
           speedY: baseSpeed,
           drift: baseDrift,
