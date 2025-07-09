@@ -683,12 +683,13 @@ function startSpringEffect() {
 
 
 // JESEN
-  function startAutumnEffect() {
+function startAutumnEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
 
-    ctx = seasonCanvas.getContext('2d');
+  ctx = seasonCanvas.getContext('2d');
 
+  const screenFactor = window.innerWidth > 1024 ? 1.3 : 1;
   let width = seasonCanvas.width / dpr;
   let height = seasonCanvas.height / dpr;
 
@@ -698,8 +699,8 @@ function startSpringEffect() {
     { count: 150, speed: 8, opacity: 0.15, width: 0.7 },
     { count: 120, speed: 11, opacity: 0.25, width: 1 },
     { count: 120, speed: 12, opacity: 0.35, width: 1.5 },
-    { count: 80, speed: 9, opacity: 0.20, width: 1 },
-    { count: 80, speed: 10, opacity: 0.25, width: 1.2 },
+    { count: 80,  speed: 9,  opacity: 0.20, width: 1 },
+    { count: 80,  speed: 10, opacity: 0.25, width: 1.2 },
   ];
 
   let lightning = null;
@@ -707,8 +708,7 @@ function startSpringEffect() {
 
   function drawLightning(x, y, depth = 0, angle = Math.PI / 2) {
     if (depth > 5 || y > height * 0.5) return;
-
-    const segmentLength = 20 + Math.random() * 30;
+    const segmentLength = (20 + Math.random() * 30) * screenFactor;
     const deviation = (Math.random() - 0.5) * Math.PI / 3;
     const newAngle = angle + deviation;
 
@@ -717,7 +717,7 @@ function startSpringEffect() {
 
     ctx.beginPath();
     ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-    ctx.lineWidth = 1.8;
+    ctx.lineWidth = 1.8 * screenFactor;
     ctx.moveTo(x, y);
     ctx.lineTo(x2, y2);
     ctx.stroke();
@@ -729,7 +729,6 @@ function startSpringEffect() {
         const branchLength = segmentLength * (0.4 + Math.random() * 0.4);
         const bx = x2 + Math.cos(branchAngle) * branchLength;
         const by = y2 + Math.sin(branchAngle) * branchLength;
-
         if (by < height * 0.5) {
           ctx.beginPath();
           ctx.moveTo(x2, y2);
@@ -747,11 +746,8 @@ function startSpringEffect() {
   function triggerLightning() {
     lightning = {
       created: performance.now(),
-      flashes: [
-        { x: Math.random() * width, y: Math.random() * height * 0.1 + 10 }
-      ]
+      flashes: [{ x: Math.random() * width, y: Math.random() * height * 0.1 + 10 }]
     };
-
     if (Math.random() < 0.2) {
       lightning.flashes.push({ x: Math.random() * width, y: Math.random() * height * 0.1 + 10 });
     }
@@ -762,9 +758,9 @@ function startSpringEffect() {
     return {
       x: Math.random() * width + Math.sin(Math.random() * 1000) * 5,
       y: Math.random() * -height * 0.3,
-      length: 3 + Math.random() * 5,
-      speed: config.speed + Math.random() * 1,
-      width: config.width,
+      length: (3 + Math.random() * 5) * screenFactor,
+      speed: (config.speed + Math.random() * 1) * screenFactor,
+      width: config.width * screenFactor,
       opacity: config.opacity,
       layer: layer
     };
@@ -772,20 +768,17 @@ function startSpringEffect() {
 
   let dropSpawnTimer = 0;
   const totalLayers = layerConfigs.length;
-  const maxDropsPerLayer = [150, 120, 120, 80, 80];
+  const maxDropsPerLayer = layerConfigs.map(c => Math.round(c.count * screenFactor));
 
   function drawRain(timestamp) {
     width = seasonCanvas.width / dpr;
     height = seasonCanvas.height / dpr;
-    
     ctx.clearRect(0, 0, width, height);
 
-    ctx.fillStyle = 'rgba(70, 70, 70, 0.25)'; // tamno-siva, prozirna
+    ctx.fillStyle = 'rgba(70, 70, 70, 0.25)';
     ctx.fillRect(0, 0, width, height);
 
     const elapsed = lightning ? timestamp - lightning.created : 0;
-
-    // === Munja ===
     if (lightningCooldown <= 0 && Math.random() < 0.002) {
       triggerLightning();
       lightningCooldown = 5000;
@@ -805,12 +798,10 @@ function startSpringEffect() {
       }
     }
 
-    // === Kapi ===
     dropSpawnTimer++;
     if (dropSpawnTimer >= 2) {
       dropSpawnTimer = 0;
       for (let layer = 0; layer < totalLayers; layer++) {
-        const config = layerConfigs[layer];
         const currentCount = drops.filter(d => d.layer === layer).length;
         if (currentCount < maxDropsPerLayer[layer]) {
           drops.push(createDrop(layer));
@@ -838,3 +829,4 @@ function startSpringEffect() {
 
   autumnAnimationId = requestAnimationFrame(drawRain);
 }
+
