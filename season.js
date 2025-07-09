@@ -81,7 +81,8 @@ let seasonIsRunning = false;
 function initializeSeasonToggle() {
   const toggle = document.getElementById('season-toggle');
   const iconsWrapper = document.getElementById('season-icons');
-
+  const strike = document.getElementById('season-strike');
+  
   document.querySelectorAll('.season-icon').forEach(icon => {
     icon.addEventListener('click', () => {
       const selected = icon.dataset.season;
@@ -94,6 +95,8 @@ function initializeSeasonToggle() {
       document.body.classList.add(`season-${selected}`);
       toggle.classList.add('active-season');
       iconsWrapper.classList.remove('visible');
+
+      if (strike) strike.classList.remove('hidden');
 
       if (selected === 'winter') {
         startWinterEffect();
@@ -113,6 +116,7 @@ function initializeSeasonToggle() {
     if (seasonIsRunning) {
       stopSeasonEffects();
       toggle.classList.remove('active-season');
+      if (strike) strike.classList.add('hidden');
     } else {
       iconsWrapper.classList.toggle('visible');
     }
