@@ -53,7 +53,7 @@
   height: 4px;
   background: red;
   transform: translate(-50%, -50%) rotate(45deg);
-  z-index: 99999;
+  z-index: 999999;
   pointer-events: none;
   border-radius: 2px;
 }
