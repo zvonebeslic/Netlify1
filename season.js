@@ -134,8 +134,7 @@ function stopSeasonEffects() {
 }
 
 // ZIMA
-// === REALISTIC WINTER EFFECT ===
-function startWinterEffect() {
+   function startWinterEffect() {
   cancelAllSeasonAnimations();
   setupSeasonCanvas();
 
@@ -152,6 +151,17 @@ function startWinterEffect() {
   let maxWindStrength = 2.5;
 
   let lastFrameTime = performance.now();
+
+  const snowflakes = [];
+  const targetCounts = [
+    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.3] },
+    { count: 120, type: 'crumpled', radius: 0.6 },
+    { count: 100, type: 'ellipse', radius: 0.8 },
+    { count: 40,  type: 'ellipse', radius: 1.0 },
+    { count: 10,  type: 'crumpled', radius: 1.1 }
+  ];
+  let currentCounts = [0, 0, 0, 0, 0];
+  let snowSpawnTimer = 0;
 
   function updateWind(deltaTime) {
     windTimer += deltaTime;
@@ -183,24 +193,20 @@ function startWinterEffect() {
     windStrength += (targetWind - windStrength) * 0.01;
   }
 
-  const snowflakes = [];
-
-  const targetCounts = [
-    { count: 150, type: 'ellipse', radiusRange: [0.3, 1.3] },
-    { count: 120, type: 'crumpled', radius: 0.6 },
-    { count: 100, type: 'ellipse', radius: 0.8 },
-    { count: 40, type: 'ellipse', radius: 1.0 },
-    { count: 10, type: 'crumpled', radius: 1.1 }
-  ];
-
-  let currentCounts = [0, 0, 0, 0, 0];
-  let snowSpawnTimer = 0;
-
   function spawnSnowflake() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const isDesktop = width >= 1024;
+    const baseSize = isDesktop ? height / 1000 : 1;
+
     for (let i = 0; i < targetCounts.length; i++) {
       if (currentCounts[i] < targetCounts[i].count) {
         const conf = targetCounts[i];
-        let radius = conf.radius || (Math.random() * (conf.radiusRange[1] - conf.radiusRange[0]) + conf.radiusRange[0]);
+
+        let radius = conf.radius
+          ? conf.radius * baseSize
+          : (Math.random() * (conf.radiusRange[1] - conf.radiusRange[0]) + conf.radiusRange[0]) * baseSize;
 
         let points = [];
         if (conf.type === 'crumpled') {
@@ -213,17 +219,21 @@ function startWinterEffect() {
           }
         }
 
+        const baseSpeed = (height / 800) + Math.random() * (height / 1200);
+        const baseDrift = (Math.random() * 2 - 1) * (width / 600);
+
         snowflakes.push({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * (window.innerHeight * 0.1),
+          x: Math.random() * width,
+          y: Math.random() * (height * 0.1),
           radius,
-          speedY: Math.random() * 2 + 2,
-          drift: Math.random() * 2 - 1,
+          speedY: baseSpeed,
+          drift: baseDrift,
           opacity: Math.random() * 0.5 + 0.5,
           type: conf.type,
           alpha: Math.random() * 0.4 + 0.6,
           points
         });
+
         currentCounts[i]++;
         return;
       }
@@ -252,6 +262,7 @@ function startWinterEffect() {
       flake.x += windStrength * flake.speedY * 0.5 * timeScale;
       flake.drift += (Math.random() - 0.5) * 0.05;
       flake.drift = Math.max(-2, Math.min(2, flake.drift));
+      flake.x += flake.drift * timeScale;
 
       if (flake.x > window.innerWidth + 50) {
         flake.x = -20 - Math.random() * 30;
@@ -298,7 +309,8 @@ function startWinterEffect() {
   }
 
   draw();
-}
+}   
+
 
 // LJETO
 function startSummerEffect() {
