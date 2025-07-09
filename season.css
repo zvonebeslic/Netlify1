@@ -44,18 +44,22 @@
   cursor: pointer;
 }
 
-#season-toggle.active-season::after {
-  content: "";
+#season-strike {
   position: absolute;
   top: 50%;
-  left: 50%;
-  width: 32px;
+  left: 6px;
+  width: 33px;
   height: 4px;
-  background: red;
-  transform: translate(-50%, -50%) rotate(45deg);
-  z-index: 999999;
-  pointer-events: none;
+  background-color: red;
+  transform: rotate(45deg) translateY(-50%);
+  transform-origin: center;
+  z-index: 99999;
   border-radius: 2px;
+  pointer-events: none;
+}
+
+.hidden {
+  display: none !important;
 }
 
 /* === GLOBAL CANVAS LAYER === */
