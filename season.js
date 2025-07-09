@@ -158,7 +158,7 @@ function stopSeasonEffects() {
     { count: 120, type: 'crumpled', radius: 0.4},
     { count: 100, type: 'ellipse', radius: 0.7},
     { count: 40,  type: 'ellipse', radius: 0.85 },
-    { count: 10,  type: 'crumpled', radius: 0.8 }
+    { count: 10,  type: 'crumpled', radius: 0.65 }
   ];
   let currentCounts = [0, 0, 0, 0, 0];
   let snowSpawnTimer = 0;
@@ -295,9 +295,10 @@ function stopSeasonEffects() {
           ctx.fillStyle = '#ffffff';
           ctx.fill();
         }
-      } else {
+      } 
+      else {
         ctx.beginPath();
-        ctx.ellipse(0, 0, flake.radius * 3, flake.radius * 2, 0, 0, 2 * Math.PI);
+        ctx.ellipse(0, 0, flake.radius * 2, flake.radius * 1.5, 0, 0, 2 * Math.PI);
         ctx.fillStyle = '#ffffff';
         ctx.fill();
       }
@@ -610,6 +611,8 @@ function startSpringEffect() {
   }
 
   function spawnSeed() {
+    if (seeds.length >= 80) return;
+    
     const scale = baseSize * (1 + Math.random() * 0.6);
     const w = 14 * scale;
     const h = 14 * scale;
