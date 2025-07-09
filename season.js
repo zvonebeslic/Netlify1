@@ -174,8 +174,8 @@ function stopSeasonEffects() {
     const now = Date.now();
     if (!isGustActive && now - lastGustTime > gustCooldown && Math.random() < 0.002) {
       isGustActive = true;
-      gustDuration = Math.random() * 3000 + 4000;
-      targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 2;
+      gustDuration = Math.random() * 5000 + 6000;
+      targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 3;
       gustTimer = 0;
       lastGustTime = now;
     }
