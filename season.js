@@ -611,8 +611,8 @@ function startSpringEffect() {
 
   function spawnSeed() {
     const scale = baseSize * (1 + Math.random() * 0.6);
-    const w = 15 * scale;
-    const h = 15 * scale;
+    const w = 14 * scale;
+    const h = 14 * scale;
 
     const yPos = Math.random() * height;
     const xStart = width + Math.random() * 10;
