@@ -158,7 +158,7 @@ function stopSeasonEffects() {
     { count: 120, type: 'crumpled', radius: 0.4},
     { count: 100, type: 'ellipse', radius: 0.7},
     { count: 40,  type: 'ellipse', radius: 0.85 },
-    { count: 10,  type: 'crumpled', radius: 0.9 }
+    { count: 10,  type: 'crumpled', radius: 0.8 }
   ];
   let currentCounts = [0, 0, 0, 0, 0];
   let snowSpawnTimer = 0;
@@ -174,8 +174,8 @@ function stopSeasonEffects() {
     const now = Date.now();
     if (!isGustActive && now - lastGustTime > gustCooldown && Math.random() < 0.002) {
       isGustActive = true;
-      gustDuration = Math.random() * 5000 + 6000;
-      targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 3;
+      gustDuration = Math.random() * 7000 + 8000;
+      targetWind = (Math.random() < 0.5 ? -1 : 1) * maxWindStrength * 4.5;
       gustTimer = 0;
       lastGustTime = now;
     }
