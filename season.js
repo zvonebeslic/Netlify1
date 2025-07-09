@@ -480,7 +480,7 @@ function startSummerEffect() {
         this.appeared = false;
         this.fadingOut = false;
         this.opacity = 0;
-        this.maxLife = 60000 + Math.random() * 8000;
+        this.maxLife = 15000 + Math.random() * 8000;
         this.pulseOffset = Math.random() * 10000;
         this.x = Math.random() * width;
       }
@@ -492,8 +492,11 @@ function startSummerEffect() {
       const angleX = Math.cos(sharedAngle);
       const angleY = Math.sin(sharedAngle);
 
-      const endX = this.x + angleX * this.length + this.offsetX;
-      const endY = this.y + angleY * this.length;
+      const maxLength = height * 0.9;
+      const actualLength = Math.min(this.length, maxLength);
+
+      const endX = this.x + angleX * actualLength + this.offsetX;
+      const endY = this.y + angleY * actualLength;
       
       const normalX = -angleY;
       const normalY = angleX;
