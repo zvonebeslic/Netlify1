@@ -439,14 +439,14 @@ function startSummerEffect() {
     constructor(x) {
       this.x = x;
       this.y = 0;
-      this.length = height * 1.2;
+      this.length = height * (0.6 + Math.random() * 0.3);
       this.baseWidthTop = 3 * baseMM;
-      this.baseWidthBottom = 14 * baseMM;
+      this.baseWidthBottom = 16 * baseMM;
       this.opacity = 0;
       this.opacityMax = 0.06;
       this.appeared = false;
       this.life = 0;
-      this.maxLife = 60000 + Math.random() * 8000;
+      this.maxLife = 15000 + Math.random() * 8000;
       this.fadingOut = false;
       this.pulseOffset = Math.random() * 10000;
       this.pulseSpeed = 0.00008 + Math.random() * 0.00005;
@@ -469,7 +469,7 @@ function startSummerEffect() {
       }
 
       if (this.fadingOut) {
-        this.opacity -= delta * 0.00002;
+        this.opacity -= delta * 0.000035;
         if (this.opacity < 0) this.opacity = 0;
       }
 
@@ -494,7 +494,7 @@ function startSummerEffect() {
 
       const endX = this.x + angleX * this.length + this.offsetX;
       const endY = this.y + angleY * this.length;
-
+      
       const normalX = -angleY;
       const normalY = angleX;
 
