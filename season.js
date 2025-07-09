@@ -420,134 +420,93 @@ function drawBirdShape(ctx, frame) {
 
   const mm = 3.78;
   const rays = [];
-  const maxVisibleRays = 3;
-  const totalRayLimit = 7;
-  const minSpacing = width / 5;
+  const totalRays = 7;
   const sharedAngle = Math.PI * 0.6;
 
   class SunRay {
-    constructor(x, isThinFast = false) {
+    constructor(x) {
       this.x = x;
       this.y = 0;
-      this.length = height * (0.6 + Math.random() * 0.5);
-      this.angle = sharedAngle;
-
-      const shapeType = Math.floor(Math.random() * 3);
-
-      if (isThinFast) {
-        this.baseWidthStart = (1 + Math.random() * 1.5) * mm;
-        this.baseWidthEnd = (4 + Math.random() * 3) * mm;
-        this.speedX = -0.1;
-        this.speedY = 0.12;
-        this.opacityMax = 0.05;
-        this.maxLife = 18000 + Math.random() * 10000;
-      } else {
-        this.baseWidthStart = (3 + Math.random() * 4) * mm;
-        this.baseWidthEnd = (12 + Math.random() * 14) * mm;
-        this.speedX = -0.2 - Math.random() * 0.4;
-        this.speedY = 2.5 + Math.random() * 2;
-        this.opacityMax = 0.1;
-        this.maxLife = 25000 + Math.random() * 15000;
-      }
-
-      
-      if (shapeType === 1) {
-        this.baseWidthStart *= 1.3;
-        this.baseWidthEnd *= 0.9;
-      } else if (shapeType === 2) {
-        this.baseWidthStart *= 0.8;
-        this.baseWidthEnd *= 1.4;
-      }
-
-      this.pulseOffset = Math.random() * 10000;
-      this.pulseSpeed = 0.00015 + Math.random() * 0.00015;
-
+      this.length = height * 1.2;
+      this.baseWidthTop = 3 * mm;
+      this.baseWidthBottom = 14 * mm;
       this.opacity = 0;
+      this.opacityMax = 0.06;
       this.appeared = false;
       this.life = 0;
-
-      this.fadeOut = Math.random() < 0.25; // 25% zraka nestaje unutar ekrana (fade)
-      this.fadingOut = false; // kontrola kada počinje fade-out
+      this.maxLife = 60000 + Math.random() * 8000; // ~1 min
+      this.fadingOut = false;
+      this.pulseOffset = Math.random() * 10000;
+      this.pulseSpeed = 0.00008 + Math.random() * 0.00005;
+      this.offsetX = 0;
     }
 
     update(delta, time) {
       this.life += delta;
 
       // Fade-in
-if (!this.appeared) {
-  this.opacity += delta * 0.00005;
-  if (this.opacity >= this.opacityMax) {
-    this.opacity = this.opacityMax;
-    this.appeared = true;
-  }
-}
-
-// Kada počinje fade-out
-if (!this.fadingOut) {
-  if (!this.fadeOut && this.y > height + 100) {
-    this.fadingOut = true;
-  } else if (this.life > this.maxLife) {
-    this.fadingOut = true;
-  }
-}
-
-// Fade-out animacija
-if (this.fadingOut) {
-  const fadeSpeed = 0.00002;
-  this.opacity -= fadeSpeed * Math.min(delta, 40);
-  if (this.opacity < 0) this.opacity = 0;
-}
-
-      const pulse = (Math.sin((time + this.pulseOffset) * this.pulseSpeed) + 1) / 2;
-      this.widthStart = this.baseWidthStart * (0.9 + 0.2 * pulse);
-      this.widthEnd = this.baseWidthEnd * (0.8 + 0.4 * pulse);
-
-      this.x += this.speedX * delta * 0.005;
-      this.y += this.speedY * delta * 0.01;
-
-      const endX = this.x + Math.cos(this.angle) * this.length;
-      const endY = this.y + Math.sin(this.angle) * this.length;
-
-      if (this.life > this.maxLife) {
-      this.fadingOut = true; // samo pokreni nestajanje
+      if (!this.appeared) {
+        this.opacity += delta * 0.00005;
+        if (this.opacity >= this.opacityMax) {
+          this.opacity = this.opacityMax;
+          this.appeared = true;
+        }
       }
+
+      // Fade-out
+      if (this.life > this.maxLife) {
+        this.fadingOut = true;
+      }
+
+      if (this.fadingOut) {
+        this.opacity -= delta * 0.00002;
+        if (this.opacity < 0) this.opacity = 0;
+      }
+
+      // Lagano pomicanje
+      this.offsetX = Math.sin((time + this.pulseOffset) * this.pulseSpeed) * 10;
 
       if (this.opacity <= 0.001) {
-      const index = rays.indexOf(this);
-      if (index !== -1) rays.splice(index, 1); // briši tek kad je stvarno nestala
+        this.life = 0;
+        this.appeared = false;
+        this.fadingOut = false;
+        this.opacity = 0;
+        this.maxLife = 60000 + Math.random() * 8000;
+        this.pulseOffset = Math.random() * 10000;
+        this.x = Math.random() * width;
       }
-      }
+    }
 
     draw(ctx) {
       if (this.opacity <= 0) return;
 
-      const angleX = Math.cos(this.angle);
-      const angleY = Math.sin(this.angle);
+      const angleX = Math.cos(sharedAngle);
+      const angleY = Math.sin(sharedAngle);
 
-      const endX = this.x + angleX * this.length;
+      const endX = this.x + angleX * this.length + this.offsetX;
       const endY = this.y + angleY * this.length;
 
       const normalX = -angleY;
       const normalY = angleX;
 
-      const startHalf = this.widthStart / 2;
-      const endHalf = this.widthEnd / 2;
+      const topHalf = this.baseWidthTop / 2;
+      const bottomHalf = this.baseWidthBottom / 2;
 
-      const p1x = this.x + normalX * startHalf;
-      const p1y = this.y + normalY * startHalf;
-      const p2x = this.x - normalX * startHalf;
-      const p2y = this.y - normalY * startHalf;
-      const p3x = endX - normalX * endHalf;
-      const p3y = endY - normalY * endHalf;
-      const p4x = endX + normalX * endHalf;
-      const p4y = endY + normalY * endHalf;
+      const p1x = this.x + normalX * topHalf;
+      const p1y = this.y + normalY * topHalf;
+      const p2x = this.x - normalX * topHalf;
+      const p2y = this.y - normalY * topHalf;
+      const p3x = endX - normalX * bottomHalf;
+      const p3y = endY - normalY * bottomHalf;
+      const p4x = endX + normalX * bottomHalf;
+      const p4y = endY + normalY * bottomHalf;
 
-      const gradient = ctx.createLinearGradient(0, this.y, 0, endY);
-      gradient.addColorStop(0, `rgba(255,255,220,${Math.min(this.opacity * 0.8 + 0.1, 1)})`);
-      gradient.addColorStop(0.6, `rgba(255,255,220,${Math.min(this.opacity * 0.3 + 0.1, 1)})`);
-      gradient.addColorStop(0.85, `rgba(255,255,220,${Math.min(this.opacity * 0.1 + 0.1, 1)})`);
-      gradient.addColorStop(1, `rgba(255,255,220,0)`); // ostaje 0 – potpuno proziran na dnu
-      
+      const gradient = ctx.createLinearGradient(this.x, this.y, endX, endY);
+      gradient.addColorStop(0.0, `rgba(255,255,220,${this.opacity})`);
+      gradient.addColorStop(0.6, `rgba(255,255,200,${this.opacity * 0.4})`);
+      gradient.addColorStop(0.85, `rgba(255,255,200,${this.opacity * 0.2})`);
+      gradient.addColorStop(1.0, `rgba(255,255,200,0)`);
+
       ctx.beginPath();
       ctx.moveTo(p1x, p1y);
       ctx.lineTo(p2x, p2y);
@@ -560,35 +519,10 @@ if (this.fadingOut) {
     }
   }
 
-  function isTooClose(x) {
-    return rays.some(r => Math.abs(r.x - x) < minSpacing);
+  // === Inicijalno 7 zraka ===
+  for (let i = 0; i < totalRays; i++) {
+    rays.push(new SunRay(Math.random() * width));
   }
-
-  function spawnRay(thin = false) {
-    if (rays.length >= totalRayLimit) return;
-    if (rays.filter(r => r.opacity > 0.02).length >= maxVisibleRays) return;
-
-    let attempts = 10;
-    while (attempts--) {
-      const x = Math.random() * width;
-      if (!isTooClose(x)) {
-        rays.push(new SunRay(x, thin));
-        break;
-      }
-    }
-  }
-
-  // === Odmah na početku ===
-  spawnRay();
-  spawnRay();
-
-  setInterval(() => {
-    spawnRay();
-  }, 15000 + Math.random() * 8000);
-
-  setInterval(() => {
-    spawnRay(true);
-  }, 30000 + Math.random() * 12000);
 
   let lastTime = performance.now();
   function animate() {
@@ -598,12 +532,9 @@ if (this.fadingOut) {
     lastTime = now;
 
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = 'rgba(255, 240, 200, 0.05)';
-    ctx.fillRect(0, 0, width, height);
-
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-
+    
     // === ANIMACIJA PTICA ===
   birdSpawnTimer += delta;
   if (birdSpawnTimer > birdSpawnInterval) {
@@ -618,8 +549,9 @@ if (this.fadingOut) {
     if (birds[i].isOffScreen()) birds.splice(i, 1);
   }
 
-    for (const ray of rays) {
-      ray.update(delta, now);
+    const time = now;
+    for (let ray of rays) {
+      ray.update(delta, time);
       ray.draw(ctx);
     }
 
