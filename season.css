@@ -48,7 +48,7 @@
 #season-strike {
   position: absolute;
   top: 50%;
-  left: 6px;
+  left: 50%;
   width: 33px;
   height: 4px;
   background-color: red;
