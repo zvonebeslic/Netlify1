@@ -58,8 +58,8 @@
   pointer-events: none;
 }
 
-.hidden {
-  display: none !important;
+#season-strike.hidden {
+  opacity: 0;
 }
 
 /* === GLOBAL CANVAS LAYER === */
