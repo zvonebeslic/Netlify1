@@ -96,8 +96,6 @@ function initializeSeasonToggle() {
       toggle.classList.add('active-season');
       iconsWrapper.classList.remove('visible');
 
-      if (strike) strike.classList.remove('hidden');
-
       if (selected === 'winter') {
         startWinterEffect();
       } else if (selected === 'spring') {
@@ -107,6 +105,7 @@ function initializeSeasonToggle() {
       } else if (selected === 'autumn') {
         startAutumnEffect();
       }
+      if (strike) strike.classList.remove('hidden');
     });
   });
   
