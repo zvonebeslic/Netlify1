@@ -11,7 +11,7 @@
   width: 33px;
   height: 33px;
   cursor: pointer;
-  position: relative;
+  position: absolute;
   z-index: 99999;
   display: inline-block;
 }
@@ -61,7 +61,7 @@
 }
 
 #season-strike.hidden {
-  display: none;
+  display: none !important;
 }
 
 /* === GLOBAL CANVAS LAYER === */
