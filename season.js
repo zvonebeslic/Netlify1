@@ -386,7 +386,7 @@ function startSummerEffect() {
 
     ctx.beginPath();
     ctx.fillStyle = 'white';
-    ctx.ellipse(0, 0, 2.3, 1.1, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, 1.7, 0.8, 0, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.beginPath();
@@ -396,7 +396,7 @@ function startSummerEffect() {
 
     ctx.beginPath();
     ctx.fillStyle = 'black';
-    ctx.ellipse(-1, -0.4, 2.5, 1.2, 0, 0, Math.PI * 2);
+    ctx.ellipse(-0.8, -0.4, 1.9, 0.9, 0, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.strokeStyle = 'yellow';
@@ -413,8 +413,8 @@ function startSummerEffect() {
     ctx.rotate(angle);
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(0, -5.5);
-    ctx.lineTo(1.5, -2.5);
+    ctx.lineTo(0, -6.2);
+    ctx.lineTo(2.2, -2.5);
     ctx.closePath();
     ctx.fill();
     ctx.restore();
@@ -424,8 +424,8 @@ function startSummerEffect() {
     ctx.rotate(angle);
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(0, -5.5);
-    ctx.lineTo(1.5, -2.5);
+    ctx.lineTo(0, -6.2);
+    ctx.lineTo(2.2, -2.5);
     ctx.closePath();
     ctx.fill();
     ctx.restore();
