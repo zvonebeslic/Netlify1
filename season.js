@@ -83,7 +83,7 @@ function initializeSeasonToggle() {
   const iconsWrapper = document.getElementById('season-icons');
   const strike = document.getElementById('season-strike');
   
-  document.getElementById('.season-icon').forEach(icon => {
+  document.querySelectorAll('.season-icon').forEach(icon => {
     icon.addEventListener('click', () => {
       const selected = icon.dataset.season;
 
