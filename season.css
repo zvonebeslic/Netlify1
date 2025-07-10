@@ -50,7 +50,7 @@
   top: 50%;
   left: 50%;
   width: 33px;
-  height: 4px;
+  height: 8px;
   background-color: red;
   transform: rotate(45deg) translateY(-50%);
   transform-origin: center;
