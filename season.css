@@ -49,13 +49,13 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 33px;
-  height: 6px;
+  width: 25px;
+  height: 4px;
   background-color: red;
   transform: translate(-50%, -60%) rotate(45deg);
   transform-origin: center;
   z-index: 100000;
-  border-radius: 2px;
+  border-radius: 4px;
   pointer-events: none;
 }
 
