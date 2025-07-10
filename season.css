@@ -10,7 +10,7 @@
   width: 33px;
   height: 33px;
   cursor: pointer;
-  position: absolute;
+  position: relative;
   z-index: 99999;
   display: inline-block;
 }
