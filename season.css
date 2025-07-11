@@ -52,7 +52,7 @@
   width: 21px;
   height: 2px;
   background-color: red;
-  transform: translate(-50%, -60%) rotate(45deg);
+  transform: translate(-49%, -58%) rotate(45deg);
   transform-origin: center;
   z-index: 100000;
   border-radius: 4px;
