@@ -47,9 +47,9 @@
 
 #season-strike {
   position: absolute;
-  top: 50%;
+  top: 48%;
   left: 50%;
-  width: 20px;
+  width: 23px;
   height: 2px;
   background-color: red;
   transform: translate(-50%, -60%) rotate(45deg);
