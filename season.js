@@ -404,7 +404,7 @@ function startSummerEffect() {
     ctx.lineTo(1.5, -0.4);
     ctx.stroke();
 
-    const wingAngles = [-0.9, -0.45, 0, 0.45, 0.9];
+    const wingAngles = [-0.75, -0.45, 0, 0.45, 0.75];
     const angle = wingAngles[frame];
 
     ctx.save();
