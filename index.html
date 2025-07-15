@@ -264,6 +264,45 @@ body {
   position: relative;
 }    
 
+  /* === STREVICE SA STRANA CONTENT-BOXA === */
+.side-arrow {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  opacity: 1;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+/* Lijeva strelica (gleda lijevo) */
+.left-arrow {
+  left: -10px; /* pomakni udesno ako želiš da bude više unutar boxa */
+  transform: translateY(-50%) rotate(225deg);
+}
+
+/* Desna strelica (gleda desno) */
+.right-arrow {
+  right: -10px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Hover efekt - poveća strelice zajedno s boxom */
+.content-box:hover .side-arrow {
+  transform: scale(1.2) translateY(-50%);
+}
+
+.content-box:hover .left-arrow {
+  transform: scale(1.2) translateY(-50%) rotate(225deg);
+}
+
+.content-box:hover .right-arrow {
+  transform: scale(1.2) translateY(-50%) rotate(45deg);
+}     
+
 /* === HOVER EFEKT ZA CONTENT BOX === */
 .content-box:hover {
   transform: translateY(-50%) scale(1.02);
@@ -693,6 +732,8 @@ a, button {
        data-btn-en="1Read more here">
       <a href="staze.html" class="content-box-link" aria-label="Istražite planinarske staze">
           <div class="content-box">
+      <div class="side-arrow left-arrow"></div>
+      <div class="side-arrow right-arrow"></div>
       <div class="box-text" data-hr="Istražite planinarske staze" data-en="Explore hiking Trails">
         Istražite planinarske staze
       </div>
@@ -714,6 +755,8 @@ a, button {
        data-btn-en="2Read more here">
     <a href="avantura.html" class="content-box-link" aria-label="krenite u avanturu sa nama">
           <div class="content-box">
+      <div class="side-arrow left-arrow"></div>
+      <div class="side-arrow right-arrow"></div>         
       <div class="box-text" data-hr="Spremni za avanturu?" data-en="Ready for an adventure?">
         Spremni za avanturu?
       </div>
@@ -735,7 +778,9 @@ a, button {
        data-btn-en="3Read more here">
     <a href="webshop.html" class="content-box-link" aria-label="posjetite naš web shop">
           <div class="content-box">
-      <div class="box-text" data-hr="Posjetite naš web-shop" data-en="Visit our web-shop">
+       <div class="side-arrow left-arrow"></div>
+       <div class="side-arrow right-arrow"></div>         
+       <div class="box-text" data-hr="Posjetite naš web-shop" data-en="Visit our web-shop">
         Posjetite naš web-shop
       </div>
      </div>
@@ -756,7 +801,9 @@ a, button {
        data-btn-en="4Read more here">
     <a href="planinarskevijesti.html" class="content-box-link" aria-label="pročitajte najnovije vijesti iz svijeta planinarenja">
           <div class="content-box">
-      <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">
+       <div class="side-arrow left-arrow"></div>
+       <div class="side-arrow right-arrow"></div>         
+       <div class="box-text" data-hr="Najnovije iz svijeta planinarenja" data-en="Latest from the hiking world">
         Najnovije iz svijeta planinarenja
       </div>
      </div>
@@ -777,7 +824,9 @@ a, button {
        data-btn-en="5Read more here">
     <a href="digitalniruksak.html" class="content-box-link" aria-label="tvoj digitalni planinarski ruksak">
           <div class="content-box">
-      <div class="box-text" data-hr="Vaš digitalni planinarski ruksak" data-en="Your digital hiking backpack">
+       <div class="side-arrow left-arrow"></div>
+       <div class="side-arrow right-arrow"></div>         
+       <div class="box-text" data-hr="Vaš digitalni planinarski ruksak" data-en="Your digital hiking backpack">
         Vaš digitalni planinarski ruksak
       </div>
      </div>
@@ -798,6 +847,8 @@ a, button {
        data-btn-en="6Read more here">
     <a href="Kontakt.html" class="content-box-link" aria-label="Kontaktirajte nas i krenite u avanturu">
           <div class="content-box">
+      <div class="side-arrow left-arrow"></div>
+      <div class="side-arrow right-arrow"></div>          
       <div class="box-text" data-hr="Kontaktirajte nas" data-en="Contact us">
         Kontaktirajte nas
       </div>
