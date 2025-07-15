@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digitalni ruksak | Mountain Adventures</title>
+
+  <!-- SEO meta -->
+  <meta name="description" content="Vaš digitalni planinarski pribor – alati, korisne informacije i sigurnosne funkcije za svaki uspon.">
+  <meta name="keywords" content="planinarski dnevnik, ruksak, digitalni alat, sigurnost, planinarenje, gps, lokacija, planine">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="season.css" />
+  <link rel="icon" href="images/favicon.png" />
+</head>
+<body>
+
+  <!-- SEASON TOGGLE -->
+  <div id="season-placeholder"></div>
+
+  <!-- NAVIGACIJA -->
+  <header>
+    <nav class="navbar">
+      <div class="nav-left">
+        <a href="index.html" class="logo"><img src="images/logo.svg" alt="Mountain Adventures" /></a>
+      </div>
+      <div class="nav-center">
+        <div class="search-bar">
+          <input type="text" placeholder="Pretraži" />
+          <img src="images/search.svg" alt="Search" />
+        </div>
+      </div>
+      <div class="nav-right">
+        <img src="images/hr.svg" alt="HR" id="lang-hr" class="lang-flag">
+        <img src="images/en.svg" alt="EN" id="lang-en" class="lang-flag">
+        <div class="hamburger" id="hamburger">
+          <span></span><span></span><span></span>
+        </div>
+        <ul class="hamburger-menu" id="hamburger-menu">
+          <li><a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a></li>
+          <li><a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a></li>
+          <li><a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a></li>
+          <li><a href="webshop.html" data-hr="Web Shop" data-en="Web Shop">Web Shop</a></li>
+          <li><a href="planinarskevijesti.html" data-hr="Vijesti" data-en="News">Vijesti</a></li>
+          <li><a href="digitalniruksak.html" data-hr="Ruksak" data-en="Backpack">Ruksak</a></li>
+          <li><a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="image-section">
+    <img src="images/hero.jpg" alt="Planine" class="background-image" />
+    <div class="overlay"></div>
+  </section>
+
+  <!-- SADRŽAJ -->
+  <main>
+    <!-- Prostor za digitalni ruksak i alate -->
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Mountain Adventures</p>
+  </footer>
+
+  <!-- JS -->
+  <script src="season.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("season.html")
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("season-placeholder").innerHTML = html;
+          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+        });
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
