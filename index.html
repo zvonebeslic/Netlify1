@@ -967,7 +967,25 @@ langToggle.addEventListener('click', () => {
 
   refreshCurrentMarkacija();
 
+  document.querySelectorAll('.section.aktivno')
+    .forEach(section => {
+      section.classList.remove('aktivno');
+    });
 
+  setTimeout(() => {
+    document.querySelectorAll('.section').forEach(section => {
+      const bounding = section.getBoundingClientRect();
+      const inView = bounding.top < window.innerHeight &&
+                     bounding.bottom > 0;
+      if (inView) {
+        section.classList.add('aktivno');
+        refreshCurrentMarkacija();
+      }
+    });
+  }, 50);
+});
+
+      
 // === KLIKOVI OD CONTENT BOXA, ANIMACIJA STRELICA/PLANINA, REFRESH MARKACIJA I REFRESH NA POCETNI IZGLED ===    
   document.querySelectorAll('.content-box-link').forEach(link => {
   const box = link.querySelector('.content-box');
@@ -1026,25 +1044,6 @@ langToggle.addEventListener('click', () => {
     }, 600);
   });
 });
-
-  document.querySelectorAll('.section.aktivno')
-    .forEach(section => {
-      section.classList.remove('aktivno');
-    });
-
-  setTimeout(() => {
-    document.querySelectorAll('.section').forEach(section => {
-      const bounding = section.getBoundingClientRect();
-      const inView = bounding.top < window.innerHeight &&
-                     bounding.bottom > 0;
-      if (inView) {
-        section.classList.add('aktivno');
-        refreshCurrentMarkacija();
-      }
-    });
-  }, 50);
-});
-
 
 // === 3. HAMBURGER MENI ===
 menuToggle.addEventListener('click', () => {
