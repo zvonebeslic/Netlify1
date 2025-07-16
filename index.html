@@ -302,6 +302,20 @@ body {
   transform: scale(1.2) translateY(-50%) rotate(45deg);
 }     
 
+ /* === RESETIRAJ STRELICE KOD KLIKA === */
+.content-box.rotating .side-arrow {
+  transform: translateY(-50%) rotate(0deg) scale(1);
+  transition: transform 0.3s ease;
+}
+
+.content-box.rotating .left-arrow {
+  transform: translateY(-50%) rotate(225deg) scale(1);
+}
+
+.content-box.rotating .right-arrow {
+  transform: translateY(-50%) rotate(45deg) scale(1);
+}   
+
  /* Planinski vrhovi */
 .extra-peak {
   position: absolute;
