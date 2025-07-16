@@ -289,62 +289,43 @@ body {
   transform: translateY(-50%) rotate(135deg);
 }     
 
- /* === RESETIRAJ STRELICE KOD KLIKA === */
-.content-box.rotating .side-arrow {
-  transform: translateY(-50%) rotate(0deg) scale(1);
-  transition: transform 0.3s ease;
-}
-
-.content-box.rotating .left-arrow {
-  transform: translateY(-50%) rotate(-135deg) scale(1);
-}
-
-.content-box.rotating .right-arrow {
-  transform: translateY(-50%) rotate(225deg) scale(1);
-}   
-
  /* Planinski vrhovi */
-.extra-peak {
+.arrow-peak,
+.arrow-peak-big {
   position: absolute;
-  width: 16px;
-  height: 16px;
-  background: white;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  width: 14px;                /* ista širina kao strelica */
+  height: 14px;
+  border: solid #333;
+  border-width: 0 3px 3px 0;  /* isti “kut” strelice */
+  transform: rotate(45deg) scale(0.6);
   opacity: 0;
-  transform: scale(0.6);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  z-index: 2;
+  transition: transform .4s ease, opacity .4s ease;
+  z-index: 1;                 /* ispod glavne strelice */
 }
-.extra-peak.big {
-  transform: scale(0.9);
-}
-.extra-peak.biggest {
-  transform: scale(1.2);
+.arrow-peak-big { transform: rotate(45deg) scale(.9); }
+
+.snow-cap {                   /* bijeli vrh */
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 6px solid white;
+  opacity: 0;
+  transition: opacity .4s ease;
+  z-index: 3;
 }
 
-/* Snježni vrh */
-.extra-peak.biggest::after {
-  content: '';
+.mini-cloud {                 /* mali oblak */
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 45%;
-  background: white;
-  clip-path: polygon(50% 0%, 20% 100%, 80% 100%);
-}
-
-/* Oblak */
-.peak-cloud {
-  position: absolute;
-  width: 22px;
+  width: 18px;
   height: 10px;
   background: white;
-  border-radius: 50% 50% 40% 40%;
+  border-radius: 50%;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 1;
-}     
+  transition: opacity .5s ease;
+  z-index: 0;
+}
 
 /* === HOVER EFEKT ZA CONTENT BOX === */
 .content-box:hover {
@@ -1153,65 +1134,72 @@ document.addEventListener("DOMContentLoaded", function () {
     observer.observe(section);
   });
 
-  // === KLIKOVI OD CONTENT BOXA, ANIMACIJA STRELICA/PLANINA, REFRESH MARKACIJA I REFRESH NA POCETNI IZGLED ===    
+  // === KLIKOVI OD CONTENT BOXA, ANIMACIJA STRELICA/PLANINA I REFRESH NA POCETNI IZGLED ===    
   document.querySelectorAll('.content-box-link').forEach(link => {
-  const box = link.querySelector('.content-box');
+    const box = link.querySelector('.content-box');
 
-  link.addEventListener('click', function (e) {
-    e.preventDefault();
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
 
-    // Efekt pritiska
-    box.classList.add('pressed');
-    setTimeout(() => box.classList.remove('pressed'), 150);
+      box.classList.add('pressed');
+      setTimeout(() => box.classList.remove('pressed'), 150);
 
-    // Strelice rotacija + planine + oblak
-    box.classList.add('rotating');
-    box.querySelectorAll('.extra-peak, .peak-cloud').forEach(el => el.remove());
-
-    const arrows = box.querySelectorAll('.side-arrow');
-
-    arrows.forEach(arrow => {
-      const arrowRect = arrow.getBoundingClientRect();
-      const boxRect = box.getBoundingClientRect();
-      const offsetX = arrowRect.left - boxRect.left;
-
-      const peakMid = document.createElement('div');
-      peakMid.className = 'extra-peak big';
-      peakMid.style.left = `${offsetX}px`;
-      peakMid.style.bottom = `2px`;
-      box.appendChild(peakMid);
-
-      const peakBig = document.createElement('div');
-      peakBig.className = 'extra-peak biggest';
-      peakBig.style.left = `${offsetX - 8}px`;
-      peakBig.style.bottom = `2px`;
-      box.appendChild(peakBig);
-
-      const cloud = document.createElement('div');
-      cloud.className = 'peak-cloud';
-      cloud.style.left = `${offsetX - 6}px`;
-      cloud.style.bottom = `0px`;
-      box.appendChild(cloud);
+      const arrows = box.querySelectorAll('.side-arrow');
+      arrows.forEach(arrow => {
+        animateArrowPeak(arrow); // 🔁 koristi funkciju
+      });
 
       setTimeout(() => {
-        peakMid.style.opacity = 1;
-        peakMid.style.transform = 'scale(1)';
-        peakBig.style.opacity = 1;
-        peakBig.style.transform = 'scale(1.3)';
-      }, 100);
-
-      setTimeout(() => {
-        cloud.style.opacity = 1;
-      }, 250);
+        window.location.href = link.href;
+      }, 600);
     });
-
-    // Redirekcija nakon animacije
-    setTimeout(() => {
-      window.location.href = link.href;
-    }, 600);
   });
 });
-});
+
+// FUNKCIJA ANIMIRAJ STRELICE U CONTENT BOX
+function animateArrowPeak(arrow) {
+  const rect = arrow.getBoundingClientRect();
+  const boxRect = arrow.closest('.content-box').getBoundingClientRect();
+  const offsetX = rect.left - boxRect.left;
+
+  const peak1 = document.createElement('div');
+  peak1.className = 'arrow-peak';
+  peak1.style.left = `${offsetX}px`;
+  peak1.style.bottom = `2px`;
+
+  const peak2 = document.createElement('div');
+  peak2.className = 'arrow-peak-big';
+  peak2.style.left = `${offsetX - 6}px`;
+  peak2.style.bottom = `2px`;
+
+  const snow = document.createElement('div');
+  snow.className = 'snow-cap';
+  snow.style.left = `${offsetX - 3}px`;
+  snow.style.bottom = `14px`;
+
+  const cloud = document.createElement('div');
+  cloud.className = 'mini-cloud';
+  cloud.style.left = `${offsetX - 6}px`;
+  cloud.style.bottom = `20px`;
+
+  const box = arrow.closest('.content-box');
+  box.appendChild(peak1);
+  box.appendChild(peak2);
+  box.appendChild(snow);
+  box.appendChild(cloud);
+
+  setTimeout(() => {
+    peak1.style.opacity = 1;
+    peak1.style.transform = 'scale(1)';
+    peak2.style.opacity = 1;
+    peak2.style.transform = 'scale(1.3)';
+  }, 100);
+
+  setTimeout(() => {
+    snow.style.opacity = 1;
+    cloud.style.opacity = 1;
+  }, 250);
+}
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
 function refreshCurrentMarkacija() {
