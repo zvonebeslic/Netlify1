@@ -986,66 +986,6 @@ langToggle.addEventListener('click', () => {
   }, 50);
 });
 
-      
-// === KLIKOVI OD CONTENT BOXA, ANIMACIJA STRELICA/PLANINA, REFRESH MARKACIJA I REFRESH NA POCETNI IZGLED ===    
-  document.querySelectorAll('.content-box-link').forEach(link => {
-  const box = link.querySelector('.content-box');
-
-  link.addEventListener('click', function (e) {
-    e.preventDefault();
-
-    // Efekt pritiska
-    box.classList.add('pressed');
-    setTimeout(() => box.classList.remove('pressed'), 150);
-
-    // Strelice rotacija + planine + oblak
-    box.classList.add('rotating');
-    box.querySelectorAll('.extra-peak, .peak-cloud').forEach(el => el.remove());
-
-    const arrows = box.querySelectorAll('.side-arrow');
-
-    arrows.forEach(arrow => {
-      const arrowRect = arrow.getBoundingClientRect();
-      const boxRect = box.getBoundingClientRect();
-      const offsetX = arrowRect.left - boxRect.left;
-
-      const peakMid = document.createElement('div');
-      peakMid.className = 'extra-peak big';
-      peakMid.style.left = `${offsetX}px`;
-      peakMid.style.bottom = `2px`;
-      box.appendChild(peakMid);
-
-      const peakBig = document.createElement('div');
-      peakBig.className = 'extra-peak biggest';
-      peakBig.style.left = `${offsetX - 8}px`;
-      peakBig.style.bottom = `2px`;
-      box.appendChild(peakBig);
-
-      const cloud = document.createElement('div');
-      cloud.className = 'peak-cloud';
-      cloud.style.left = `${offsetX - 6}px`;
-      cloud.style.bottom = `0px`;
-      box.appendChild(cloud);
-
-      setTimeout(() => {
-        peakMid.style.opacity = 1;
-        peakMid.style.transform = 'scale(1)';
-        peakBig.style.opacity = 1;
-        peakBig.style.transform = 'scale(1.3)';
-      }, 100);
-
-      setTimeout(() => {
-        cloud.style.opacity = 1;
-      }, 250);
-    });
-
-    // Redirekcija nakon animacije
-    setTimeout(() => {
-      window.location.href = link.href;
-    }, 600);
-  });
-});
-
 // === 3. HAMBURGER MENI ===
 menuToggle.addEventListener('click', () => {
   menu.classList.toggle('open');
@@ -1214,6 +1154,66 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   });
 
+  // === KLIKOVI OD CONTENT BOXA, ANIMACIJA STRELICA/PLANINA, REFRESH MARKACIJA I REFRESH NA POCETNI IZGLED ===    
+  document.querySelectorAll('.content-box-link').forEach(link => {
+  const box = link.querySelector('.content-box');
+
+  link.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    // Efekt pritiska
+    box.classList.add('pressed');
+    setTimeout(() => box.classList.remove('pressed'), 150);
+
+    // Strelice rotacija + planine + oblak
+    box.classList.add('rotating');
+    box.querySelectorAll('.extra-peak, .peak-cloud').forEach(el => el.remove());
+
+    const arrows = box.querySelectorAll('.side-arrow');
+
+    arrows.forEach(arrow => {
+      const arrowRect = arrow.getBoundingClientRect();
+      const boxRect = box.getBoundingClientRect();
+      const offsetX = arrowRect.left - boxRect.left;
+
+      const peakMid = document.createElement('div');
+      peakMid.className = 'extra-peak big';
+      peakMid.style.left = `${offsetX}px`;
+      peakMid.style.bottom = `2px`;
+      box.appendChild(peakMid);
+
+      const peakBig = document.createElement('div');
+      peakBig.className = 'extra-peak biggest';
+      peakBig.style.left = `${offsetX - 8}px`;
+      peakBig.style.bottom = `2px`;
+      box.appendChild(peakBig);
+
+      const cloud = document.createElement('div');
+      cloud.className = 'peak-cloud';
+      cloud.style.left = `${offsetX - 6}px`;
+      cloud.style.bottom = `0px`;
+      box.appendChild(cloud);
+
+      setTimeout(() => {
+        peakMid.style.opacity = 1;
+        peakMid.style.transform = 'scale(1)';
+        peakBig.style.opacity = 1;
+        peakBig.style.transform = 'scale(1.3)';
+      }, 100);
+
+      setTimeout(() => {
+        cloud.style.opacity = 1;
+      }, 250);
+    });
+
+    // Redirekcija nakon animacije
+    setTimeout(() => {
+      window.location.href = link.href;
+    }, 600);
+  });
+});
+
+      
 // === 8. REFRESH MARKACIJA MANUALNO ===
 function refreshCurrentMarkacija() {
   const current = document.querySelector('.section.aktivno');
