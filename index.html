@@ -295,14 +295,14 @@ body {
   position: absolute;
   width: 14px;                /* ista širina kao strelica */
   height: 14px;
-  border: solid #333;
+  border: solid #444;
   border-width: 0 3px 3px 0;  /* isti “kut” strelice */
-  transform: rotate(45deg) scale(0.6);
-  opacity: 0;
+  transform: rotate(135deg) scale(0.6);
+  opacity: 0.6;
   transition: transform .4s ease, opacity .4s ease;
   z-index: 1;                 /* ispod glavne strelice */
 }
-.arrow-peak-big { transform: rotate(45deg) scale(.9); }
+.arrow-peak-big { transform: rotate(135deg) scale(.9); }
 
 .snow-cap {                   /* bijeli vrh */
   position: absolute;
@@ -311,7 +311,7 @@ body {
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-bottom: 6px solid white;
-  opacity: 0;
+  opacity: 0.6;
   transition: opacity .4s ease;
   z-index: 3;
 }
@@ -322,7 +322,7 @@ body {
   height: 10px;
   background: white;
   border-radius: 50%;
-  opacity: 0;
+  opacity: 0.6;
   transition: opacity .5s ease;
   z-index: 0;
 }
