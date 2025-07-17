@@ -296,18 +296,21 @@ body {
   position: absolute;
   border: solid #444;
   border-width: 0 2px 2px 0;
-  transform: rotate(225deg) scale(0.5) translateY(0);
+  transform: scale(0.5) translateY(0);
+  transform-origin: bottom center;
   opacity: 0;
   transition: all 0.4s ease;
   pointer-events: none;
 }
 
+/* Manja strelica */
 .arrow-peak {
   width: 14px;
   height: 14px;
   z-index: 1;
 }
 
+/* Veća strelica */
 .arrow-peak-big {
   width: 18px;
   height: 18px;
@@ -323,6 +326,7 @@ body {
   background: white;
   border-radius: 50% 50% 0 0;
   transform: scale(0.5) translateY(0);
+  transform-origin: bottom center;
   opacity: 0;
   transition: all 0.4s ease;
   z-index: 0;
@@ -337,17 +341,22 @@ body {
   background: #ddd;
   border-radius: 10px;
   transform: scale(0.5) translateY(0);
+  transform-origin: bottom center;
   opacity: 0;
   transition: all 0.4s ease;
   z-index: 0;
   pointer-events: none;
 }
 
-/* === POZICIONIRANJE ZA DESNE VARIJANTE === */
-.arrow-peak.right-peak,
-.arrow-peak-big.right-peak {
+/* === DESNA STRANA – POZICIJE === */
+.arrow-peak.right-peak {
   right: 18px;
   top: 50%;
+}
+
+.arrow-peak-big.right-peak {
+  right: 16px; /* bliže sredini jer je šira */
+  top: 48%;    /* malo više da se poravna s manjom */
 }
 
 .snow-cap.right-cap {
@@ -360,11 +369,15 @@ body {
   top: 60%;
 }
 
-/* === POZICIONIRANJE ZA LIJEVE VARIJANTE === */
-.arrow-peak.left-peak,
-.arrow-peak-big.left-peak {
+/* === LIJEVA STRANA – POZICIJE === */
+.arrow-peak.left-peak {
   left: 18px;
   top: 50%;
+}
+
+.arrow-peak-big.left-peak {
+  left: 16px;
+  top: 48%;
 }
 
 .snow-cap.left-cap {
@@ -1179,11 +1192,16 @@ window.addEventListener('pageshow', () => {
     el.classList.remove('pressed', 'rotating');
   });
 
-  document.querySelectorAll('.extra-peak, .peak-cloud').forEach(el => {
+  document.querySelectorAll('.side-arrow').forEach(arrow => {
+    arrow.classList.remove('clicked');
+  });
+
+  document.querySelectorAll(
+    '.extra-peak, .peak-cloud, .arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud'
+  ).forEach(el => {
     el.remove();
   });
 });
-
 
 // === 7. MARKACIJE + SEZONSKE ANIMACIJE ===
 document.addEventListener("DOMContentLoaded", function () {
