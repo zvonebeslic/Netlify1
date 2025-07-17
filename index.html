@@ -340,21 +340,59 @@ body {
   z-index: 3;
 }
 
-/* === POZICIJE DESNE STRANE === */
-.right-arrow .arrow-peak       { right: 18px; top: 50%; }
-.right-arrow .arrow-peak-big   { right: 16px; top: 48%; }
-.right-arrow .snow-cap         { right: 21px; top: 46%; }
-.right-arrow .mini-cloud       { right: 25px; top: 60%; }
+/* === DESNA STRELICA === */
+.right-arrow .arrow-peak {
+  top: 0;
+  left: 50%;
+  transform: translateX(-45%) translateY(0) scale(0.5);
+}
 
-/* === POZICIJE LIJEVE STRANE === */
-.left-arrow .arrow-peak        { left: 18px; top: 50%; }
-.left-arrow .arrow-peak-big    { left: 16px; top: 48%; }
-.left-arrow .snow-cap          { left: 21px; top: 46%; }
-.left-arrow .mini-cloud        { left: 25px; top: 60%; }
+.right-arrow .arrow-peak-big {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-55%) translateY(0) scale(0.5);
+}
+
+.right-arrow .snow-cap {
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0) scale(0.5);
+}
+
+.right-arrow .mini-cloud {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0) scale(0.5);
+}
+
+/* === LIJEVA STRELICA === */
+.left-arrow .arrow-peak {
+  top: 0;
+  left: 50%;
+  transform: translateX(-45%) translateY(0) scale(0.5);
+}
+
+.left-arrow .arrow-peak-big {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-55%) translateY(0) scale(0.5);
+}
+
+.left-arrow .snow-cap {
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0) scale(0.5);
+}
+
+.left-arrow .mini-cloud {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0) scale(0.5);
+}
 
 /* === ROTACIJA GLAVNE STRELICE NA KLIK === */
 .side-arrow {
-  transition: transform 0.3s ease;
+  transition: transform 0.25s ease;
   pointer-events: none;
 }
 
@@ -368,11 +406,11 @@ body {
 
 /* === ANIMIRANO POJAVLJIVANJE DODATAKA === */
 .side-arrow.clicked .arrow-peak {
-  transform: scale(1) translate(-42%, -12px); /* -50% + 5px desno */
+  transform: scale(1) translate(-44%, -12px); /* -50% + 5px desno */
   opacity: 0.6;
 }
 .side-arrow.clicked .arrow-peak-big {
-  transform: scale(1.2) translate(-58%, -12px); /* -50% - 5px lijevo */
+  transform: scale(1.2) translate(-47%, -12px); /* -50% - 5px lijevo */
   opacity: 0.6;
 }
 .side-arrow.clicked .snow-cap,
