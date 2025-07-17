@@ -289,13 +289,12 @@ body {
   transform: translateY(-50%) rotate(135deg);
 }     
 
- /* === ZAJEDNIČKI STILOVI ZA SVE ELEMENTE === */
-/* === SREDNJA STRELICA === */
+  /* === DODATNE STRELICE, SNIJEG I OBLAK === */
 .arrow-peak,
-.arrow-peak-big {
+.arrow-peak-big,
+.snow-cap,
+.mini-cloud {
   position: absolute;
-  border: solid #444;
-  border-width: 0 2px 2px 0;
   transform: scale(0.5) translateY(0);
   transform-origin: bottom center;
   opacity: 0;
@@ -303,14 +302,19 @@ body {
   pointer-events: none;
 }
 
-/* Manja strelica */
+/* === STRELICE === */
+.arrow-peak,
+.arrow-peak-big {
+  border: solid #444;
+}
+
 .arrow-peak {
   width: 14px;
   height: 14px;
+  border-width: 0 2px 2px 0;
   z-index: 1;
 }
 
-/* Veća strelica */
 .arrow-peak-big {
   width: 18px;
   height: 18px;
@@ -320,94 +324,61 @@ body {
 
 /* === SNIJEG NA VRHU === */
 .snow-cap {
-  position: absolute;
   width: 16px;
   height: 10px;
   background: white;
   border-radius: 50% 50% 0 0;
-  transform: scale(0.5) translateY(0);
-  transform-origin: bottom center;
-  opacity: 0;
-  transition: all 0.4s ease;
   z-index: 0;
-  pointer-events: none;
 }
 
 /* === OBLAK === */
 .mini-cloud {
-  position: absolute;
   width: 10px;
   height: 4px;
   background: #ddd;
   border-radius: 10px;
-  transform: scale(0.5) translateY(0);
-  transform-origin: bottom center;
-  opacity: 0;
-  transition: all 0.4s ease;
   z-index: 0;
-  pointer-events: none;
 }
 
-/* === DESNA STRANA – POZICIJE === */
-.arrow-peak.right-peak {
-  right: 18px;
-  top: 50%;
-}
+/* === POZICIJE DESNE STRANE === */
+.right-arrow .arrow-peak       { right: 18px; top: 50%; }
+.right-arrow .arrow-peak-big   { right: 16px; top: 48%; }
+.right-arrow .snow-cap         { right: 21px; top: 46%; }
+.right-arrow .mini-cloud       { right: 25px; top: 60%; }
 
-.arrow-peak-big.right-peak {
-  right: 16px; /* bliže sredini jer je šira */
-  top: 48%;    /* malo više da se poravna s manjom */
-}
+/* === POZICIJE LIJEVE STRANE === */
+.left-arrow .arrow-peak        { left: 18px; top: 50%; }
+.left-arrow .arrow-peak-big    { left: 16px; top: 48%; }
+.left-arrow .snow-cap          { left: 21px; top: 46%; }
+.left-arrow .mini-cloud        { left: 25px; top: 60%; }
 
-.snow-cap.right-cap {
-  right: 21px;
-  top: 46%;
-}
-
-.mini-cloud.right-cloud {
-  right: 25px;
-  top: 60%;
-}
-
-/* === LIJEVA STRANA – POZICIJE === */
-.arrow-peak.left-peak {
-  left: 18px;
-  top: 50%;
-}
-
-.arrow-peak-big.left-peak {
-  left: 16px;
-  top: 48%;
-}
-
-.snow-cap.left-cap {
-  left: 21px;
-  top: 46%;
-}
-
-.mini-cloud.left-cloud {
-  left: 25px;
-  top: 60%;
-}
-
-/* === SIDE ARROWS === */
+/* === ROTACIJA GLAVNE STRELICE NA KLIK === */
 .side-arrow {
   transition: transform 0.4s ease;
   pointer-events: none;
 }
 
 .left-arrow.clicked {
-  transform: translateY(-50%) rotate(-135deg); /* ⬆️ */
+  transform: translateY(-50%) rotate(-135deg); /* iz ➡️ u ⬆️ */
 }
 
 .right-arrow.clicked {
-  transform: translateY(-50%) rotate(225deg);  /* ⬆️ */
+  transform: translateY(-50%) rotate(225deg);  /* iz ➡️ u ⬆️ */
 }
 
-/* === ZA RESETIRANJE === */
+/* === ANIMIRANO POJAVLJIVANJE DODATAKA === */
+.side-arrow.clicked .arrow-peak,
+.side-arrow.clicked .arrow-peak-big,
+.side-arrow.clicked .snow-cap,
+.side-arrow.clicked .mini-cloud {
+  transform: scale(1) translateY(-12px);
+  opacity: 0.6;
+}
+
+/* === RESET ZA JS === */
 .hidden {
   display: none !important;
-}
+}    
 
 /* === HOVER EFEKT ZA CONTENT BOX === */
 .content-box:hover {
@@ -1293,63 +1264,64 @@ document.querySelectorAll('.content-box-link').forEach(link => {
   const box = link.querySelector('.content-box');
 
   link.addEventListener('click', function (e) {
-    e.preventDefault();
+    e.preventDefault(); // Ako želiš spriječiti odmah odlazak s linka
 
-    // Efekt pritiska
+    // === RESETIRAJ SVE PRVO ===
+    document.querySelectorAll('.pressed, .rotating').forEach(el => {
+      el.classList.remove('pressed', 'rotating');
+    });
+
+    document.querySelectorAll('.side-arrow').forEach(arrow => {
+      arrow.classList.remove('clicked');
+    });
+
+    document.querySelectorAll(
+      '.extra-peak, .peak-cloud, .arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud'
+    ).forEach(el => {
+      el.remove();
+    });
+
+    // === EFEKT PRITISKA I ROTACIJE ===
     box.classList.add('pressed');
+    box.classList.add('rotating');
     setTimeout(() => box.classList.remove('pressed'), 150);
 
-    // RESET – ukloni sve prethodne animirane dodatke i klase
-    document.querySelectorAll('.side-arrow').forEach(arrow => arrow.classList.remove('clicked'));
-    document.querySelectorAll('.arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud')
-      .forEach(el => el.remove());
-
-    // ROTACIJA SIDE STRELICA U ⬆️
+    // === DODAJ DODATKE U SVE STRELICE UNUTAR TOG BOXA ===
     const arrows = box.querySelectorAll('.side-arrow');
     arrows.forEach(arrow => {
       arrow.classList.add('clicked');
+
+      const additions = ['arrow-peak', 'arrow-peak-big', 'snow-cap', 'mini-cloud'];
+      additions.forEach(cls => {
+        const el = document.createElement('div');
+        el.classList.add(cls);
+        arrow.appendChild(el);
+      });
     });
 
-    // POZOVI ANIMACIJU STRELICA/PLANINE/OBLAKA
-    arrows.forEach(arrow => {
-      animateArrowPeak(arrow);
-    });
-
-    // PRIJEĐI NA PODSTRANICU NAKON KRATKE PAUZE
+    // === NAKON KRATKOG VREMENA, OTVORI LINK (ako treba) ===
     setTimeout(() => {
-      window.location.href = link.href;
-    }, 800);
+      const href = link.getAttribute('href');
+      if (href) window.location.href = href;
+    }, 800); // dovoljno da se animacije prikažu
   });
 });
 });
       
 // FUNKCIJA ANIMIRAJ STRELICE U CONTENT BOX
 function animateArrowPeak(arrow) {
-  const isLeft = arrow.classList.contains('left-arrow');
-  const box = arrow.closest('.content-box');
+  // Resetiraj prethodne dodatke unutar ove strelice
+  arrow.querySelectorAll('.arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud').forEach(el => el.remove());
 
-  // Ukloni stare dodatke
-  box.querySelectorAll('.arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud').forEach(el => el.remove());
-
-  // Helper funkcija za dodavanje elemenata
-  function addEl(className, delay, translate = -14) {
+  // Dodaj elemente direktno unutar strelice
+  ['arrow-peak', 'arrow-peak-big', 'snow-cap', 'mini-cloud'].forEach(cls => {
     const el = document.createElement('div');
-    el.className = className;
-    el.style.opacity = '0';
-    el.style.transform = 'scale(0.5) translateY(0)';
-    el.style.transition = 'all 0.4s ease';
-    box.appendChild(el);
-    setTimeout(() => {
-      el.style.opacity = '1';
-      el.style.transform = `scale(1) translateY(${translate}px)`;
-    }, delay);
-  }
+    el.className = cls;
+    arrow.appendChild(el);
+  });
 
-  // Dodaj sve potrebne elemente s vremenskim odgodama
-  addEl(`arrow-peak ${isLeft ? 'left-peak' : 'right-peak'}`, 50, -10);
-  addEl(`arrow-peak-big ${isLeft ? 'left-peak' : 'right-peak'}`, 150, -14);
-  addEl(`snow-cap ${isLeft ? 'left-cap' : 'right-cap'}`, 300, -10);
-  addEl(`mini-cloud ${isLeft ? 'left-cloud' : 'right-cloud'}`, 350, -10);
+  // Aktiviraj .clicked za animaciju
+  arrow.classList.add('clicked');
 }
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
