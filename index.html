@@ -368,11 +368,11 @@ body {
 
 /* === ANIMIRANO POJAVLJIVANJE DODATAKA === */
 .side-arrow.clicked .arrow-peak {
-  transform: scale(1) translate(-45%, -12px); /* -50% + 5px desno */
+  transform: scale(1) translate(-42%, -12px); /* -50% + 5px desno */
   opacity: 0.6;
 }
 .side-arrow.clicked .arrow-peak-big {
-  transform: scale(1) translate(-55%, -12px); /* -50% - 5px lijevo */
+  transform: scale(1.2) translate(-58%, -12px); /* -50% - 5px lijevo */
   opacity: 0.6;
 }
 .side-arrow.clicked .snow-cap,
@@ -1327,7 +1327,9 @@ function animateArrowPeak(arrow) {
   });
 
   // Aktiviraj .clicked za animaciju
+  setTimeout(() => {
   arrow.classList.add('clicked');
+}, 250);
 }
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
