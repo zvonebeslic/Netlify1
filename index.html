@@ -298,7 +298,7 @@ body {
   transform: scale(0.5) translateY(0);
   transform-origin: bottom center;
   opacity: 0;
-  transition: all 0.4s ease;
+  transition: all 0.6s ease;
   pointer-events: none;
 }
 
@@ -312,14 +312,14 @@ body {
   width: 14px;
   height: 14px;
   border-width: 0 2px 2px 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 .arrow-peak-big {
   width: 18px;
   height: 18px;
   border-width: 0 3px 3px 0;
-  z-index: 2;
+  z-index: 1;
 }
 
 /* === SNIJEG NA VRHU === */
@@ -337,7 +337,7 @@ body {
   height: 4px;
   background: #ddd;
   border-radius: 10px;
-  z-index: 0;
+  z-index: 3;
 }
 
 /* === POZICIJE DESNE STRANE === */
@@ -354,7 +354,7 @@ body {
 
 /* === ROTACIJA GLAVNE STRELICE NA KLIK === */
 .side-arrow {
-  transition: transform 0.4s ease;
+  transition: transform 0.3s ease;
   pointer-events: none;
 }
 
@@ -367,11 +367,17 @@ body {
 }
 
 /* === ANIMIRANO POJAVLJIVANJE DODATAKA === */
-.side-arrow.clicked .arrow-peak,
-.side-arrow.clicked .arrow-peak-big,
+.side-arrow.clicked .arrow-peak {
+  transform: scale(1) translate(-45%, -12px); /* -50% + 5px desno */
+  opacity: 0.6;
+}
+.side-arrow.clicked .arrow-peak-big {
+  transform: scale(1) translate(-55%, -12px); /* -50% - 5px lijevo */
+  opacity: 0.6;
+}
 .side-arrow.clicked .snow-cap,
 .side-arrow.clicked .mini-cloud {
-  transform: scale(1) translateY(-12px);
+  transform: scale(1) translate(-50%, -12px);
   opacity: 0.6;
 }
 
