@@ -406,15 +406,29 @@ body {
 
 /* === ANIMIRANO POJAVLJIVANJE DODATAKA === */
 .side-arrow.clicked .arrow-peak {
-  transform: scale(1) translate(-44%, -12px); /* -50% + 5px desno */
+  top: 0;
+  left: 50%;
+  transform: scale(1) translate(-44%, -12px);
   opacity: 0.6;
 }
+
 .side-arrow.clicked .arrow-peak-big {
-  transform: scale(1.2) translate(-47%, -12px); /* -50% - 5px lijevo */
+  top: -6px;
+  left: 50%;
+  transform: scale(1.2) translate(-47%, -12px);
   opacity: 0.6;
 }
-.side-arrow.clicked .snow-cap,
+
+.side-arrow.clicked .snow-cap {
+  top: -10px;
+  left: 50%;
+  transform: scale(1) translate(-50%, -12px);
+  opacity: 0.6;
+}
+
 .side-arrow.clicked .mini-cloud {
+  top: 14px;
+  left: 50%;
   transform: scale(1) translate(-50%, -12px);
   opacity: 0.6;
 }
