@@ -295,11 +295,7 @@ body {
 .snow-cap,
 .mini-cloud {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transform-origin: bottom center;
-  opacity: 0;
+  opacity: 0.6;
   transition: all 0.6s ease;
   pointer-events: none;
 }
@@ -359,22 +355,22 @@ body {
 /* === POJAVLJIVANJE DODATAKA === */
 .side-arrow.clicked .arrow-peak {
   transform: scale(1) translate(-54%, -46%);
-  opacity: 0.6;
+  transform-origin: bottom-center;
 }
 
 .side-arrow.clicked .arrow-peak-big {
   transform: scale(1.2) translate(-47%, -46%);
-  opacity: 0.6;
+  transform-origin: bottom-center;
 }
 
 .side-arrow.clicked .snow-cap {
   transform: scale(1) translate(-50%, -160%);
-  opacity: 0.6;
+  transform-origin: bottom-center;
 }
 
 .side-arrow.clicked .mini-cloud {
   transform: scale(1) translate(-50%, 50%);
-  opacity: 0.6;
+  transform-origin: bottom-center;
 }
 
 /* === RESET ZA JS === */
