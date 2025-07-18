@@ -295,7 +295,9 @@ body {
 .snow-cap,
 .mini-cloud {
   position: absolute;
-  transform: scale(0.5) translateY(0);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   transform-origin: bottom center;
   opacity: 0;
   transition: all 0.6s ease;
@@ -340,54 +342,46 @@ body {
   z-index: 3;
 }
 
-/* === ROTACIJA GLAVNE STRELICE NA KLIK === */
+/* === ROTACIJA GLAVNIH STRELICA === */
 .side-arrow {
   transition: transform 0.3s ease;
   pointer-events: none;
 }
 
 .left-arrow.clicked {
-  transform: translateY(-50%) rotate(-135deg); /* iz ➡️ u ⬆️ */
+  transform: translateY(-50%) rotate(-135deg);
 }
 
 .right-arrow.clicked {
-  transform: translateY(-50%) rotate(225deg);  /* iz ➡️ u ⬆️ */
+  transform: translateY(-50%) rotate(225deg);
 }
 
-/* === ANIMIRANO POJAVLJIVANJE DODATAKA === */
+/* === POJAVLJIVANJE DODATAKA === */
 .side-arrow.clicked .arrow-peak {
-  top: 46%;
-  left: 50%;
   transform: scale(1) translate(-54%, -46%);
   opacity: 0.6;
 }
 
 .side-arrow.clicked .arrow-peak-big {
-  top: 46%;
-  left: 50%;
   transform: scale(1.2) translate(-47%, -46%);
   opacity: 0.6;
 }
 
 .side-arrow.clicked .snow-cap {
-  top: -10px;
-  left: 50%;
-  transform: scale(1) translate(-50%, -50%);
+  transform: scale(1) translate(-50%, -160%);
   opacity: 0.6;
 }
 
 .side-arrow.clicked .mini-cloud {
-  top: 14px;
-  left: 50%;
-  transform: scale(1) translate(-50%, -50%);
+  transform: scale(1) translate(-50%, 50%);
   opacity: 0.6;
 }
 
 /* === RESET ZA JS === */
 .hidden {
   display: none !important;
-}    
-
+}
+      
 /* === HOVER EFEKT ZA CONTENT BOX === */
 .content-box:hover {
   transform: translateY(-50%) scale(1.02);
