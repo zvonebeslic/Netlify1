@@ -121,19 +121,16 @@ function initializeSeasonToggle() {
     }
   });
   document.addEventListener('click', function (e) {
-  const toggle = document.getElementById('season-toggle');
-  const icons = document.getElementById('season-icons');
+    const isOpen = iconsWrapper.classList.contains('visible');
 
-  const isOpen = iconsWrapper.classList.contains('visible');
-
-  if (
-    isOpen &&
-    !toggle.contains(e.target) &&
-    !icons.contains(e.target)
-  ) {
-    iconsWrapper.classList.remove('visible');
-  }
-});
+    if (
+      isOpen &&
+      !toggle.contains(e.target) &&
+      !iconsWrapper.contains(e.target)
+    ) {
+      iconsWrapper.classList.remove('visible');
+    }
+  });
 }
 
 function stopSeasonEffects() {
