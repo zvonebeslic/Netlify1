@@ -289,20 +289,24 @@ body {
   transform: translateY(-50%) rotate(135deg);
 }     
 
-  /* === DODATNE STRELICE, SNIJEG I OBLAK === */
+  /* === DODATNE STRELICE, SNIJEG, CRTE I OBLAK === */
 .arrow-peak,
 .arrow-peak-big,
 .snow-cap,
-.mini-cloud {
+.mini-cloud,
+.extra-line,
+.extra-line-two {
   position: absolute;
   opacity: 0.6;
   transition: all 0.6s ease;
   pointer-events: none;
 }
 
-/* === STRELICE === */
+/* === STRELICE I CRTE=== */
 .arrow-peak,
-.arrow-peak-big {
+.arrow-peak-big,
+.extra-line,
+.extra-line-two {
 border-style: solid;
 border-color: #444;
 }
@@ -320,6 +324,16 @@ border-color: #444;
   border-width: 0 3px 3px 0;
   z-index: 1;
 }
+
+.extra-line {
+  width: 10px;
+  height: 3px;
+  transform: rotate(-45deg);
+
+.extra-line-two {
+  width: 10px;
+  height: 3px;
+  transform: rotate(45deg);
 
 /* === SNIJEG NA VRHU === */
 .snow-cap {
@@ -363,6 +377,16 @@ border-color: #444;
   transform: translate(10%, 60%);
   transform-origin: bottom-center;
 }
+
+ .side-arrow.clicked .extra-line {
+  transform: translate(-50%, 50%);
+  transform-origin: bottom-center;
+}
+
+.side-arrow.clicked .extra-line-two {
+  transform: translate(-50%, 50%);
+  transform-origin: bottom-center;
+}     
 
 .side-arrow.clicked .snow-cap {
   transform: translate(-50%, -50%);
@@ -1101,7 +1125,7 @@ window.addEventListener('pageshow', () => {
   });
 
   document.querySelectorAll(
-    '.extra-peak, .peak-cloud, .arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud'
+    ' .arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
   ).forEach(el => {
     el.remove();
   });
@@ -1209,7 +1233,7 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     });
 
     document.querySelectorAll(
-      '.extra-peak, .peak-cloud, .arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud'
+      ' .arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
     ).forEach(el => {
       el.remove();
     });
@@ -1243,9 +1267,9 @@ document.querySelectorAll('.content-box-link').forEach(link => {
       
 // FUNKCIJA ANIMIRAJ STRELICE U CONTENT BOX
 function animateArrowPeak(arrow) {
-  arrow.querySelectorAll('.arrow-peak, .arrow-peak-big, .snow-cap, .mini-cloud').forEach(el => el.remove());
+  arrow.querySelectorAll('.arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud').forEach(el => el.remove());
 
-  ['arrow-peak', 'arrow-peak-big', 'snow-cap', 'mini-cloud'].forEach(cls => {
+  ['arrow-peak', 'arrow-peak-big', 'extra-line', 'extra-line-two', 'snow-cap', 'mini-cloud'].forEach(cls => {
     const el = document.createElement('div');
     el.className = cls;
     arrow.appendChild(el);
