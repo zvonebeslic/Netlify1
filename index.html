@@ -370,35 +370,65 @@ border-color: #444;
 }
 
 /* === POJAVLJIVANJE DODATAKA === */
-.side-arrow.clicked .arrow-peak {
+.side-arrow.clicked.right-arrow .arrow-peak {
   transform: translate(-45%, 75%);
   transform-origin: bottom-center;
 }
 
-.side-arrow.clicked .arrow-peak-big {
+.side-arrow.clicked,right-arrow .arrow-peak-big {
   transform: translate(20%, 30%);
   transform-origin: bottom-center;
 }
 
- .side-arrow.clicked .extra-line {
+ .side-arrow.clicked.right-arrow .extra-line {
   transform: translate(-60%, 40%);
   transform-origin: bottom-center;
 }
 
-.side-arrow.clicked .extra-line-two {
+.side-arrow.clicked.right-arrow .extra-line-two {
   transform: translate(-40%, 60%);
   transform-origin: bottom-center;
 }     
 
-.side-arrow.clicked .snow-cap {
+.side-arrow.clicked.right-arrow .snow-cap {
   transform: translate(-50%, -50%);
   transform-origin: bottom-center;
 }
 
-.side-arrow.clicked .mini-cloud {
+.side-arrow.clicked.right-arrow .mini-cloud {
   transform: translate(-50%, 50%);
   transform-origin: bottom-center;
 }
+
+ .side-arrow.clicked.left-arrow .arrow-peak {
+  transform: translate(-45%, 75%);
+  transform-origin: bottom-center;
+}
+
+.side-arrow.clicked.left-arrow .arrow-peak-big {
+  transform: translate(20%, 30%);
+  transform-origin: bottom-center;
+}
+
+ .side-arrow.clicked.left-arrow .extra-line {
+  transform: translate(-60%, 40%);
+  transform-origin: bottom-center;
+}
+
+.side-arrow.clicked.left-arrow .extra-line-two {
+  transform: translate(-40%, 60%);
+  transform-origin: bottom-center;
+}     
+
+.side-arrow.clicked.left-arrow .snow-cap {
+  transform: translate(-50%, -50%);
+  transform-origin: bottom-center;
+}
+
+.side-arrow.clicked.left-arrow .mini-cloud {
+  transform: translate(-50%, 50%);
+  transform-origin: bottom-center;
+}     
 
 /* === RESET ZA JS === */
 .hidden {
