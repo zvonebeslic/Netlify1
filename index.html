@@ -401,12 +401,12 @@ border-color: #444;
 }
 
  .side-arrow.clicked.left-arrow .arrow-peak {
-  transform: translate(-45%, 75%);
+  transform: translate(-45%, -125%);
   transform-origin: bottom-center;
 }
 
 .side-arrow.clicked.left-arrow .arrow-peak-big {
-  transform: translate(20%, 30%);
+  transform: translate(20%, -120%);
   transform-origin: bottom-center;
 }
 
@@ -1302,7 +1302,7 @@ function animateArrowPeak(arrow) {
 
   setTimeout(() => {
     arrow.classList.add('clicked');
-  }, 600);
+  }, 350);
 }
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
