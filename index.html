@@ -1127,7 +1127,7 @@ window.addEventListener('pageshow', () => {
   });
 
   document.querySelectorAll(
-    ' .arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
+    '.arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
   ).forEach(el => {
     el.remove();
   });
@@ -1235,7 +1235,7 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     });
 
     document.querySelectorAll(
-      ' .arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
+      '.arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
     ).forEach(el => {
       el.remove();
     });
@@ -1250,7 +1250,7 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     arrows.forEach(arrow => {
       arrow.classList.add('clicked');
 
-      const additions = ['arrow-peak', 'arrow-peak-big', 'snow-cap', 'mini-cloud'];
+      const additions = ['arrow-peak', 'arrow-peak-big', 'extra-line', 'extra-line-two', 'snow-cap', 'mini-cloud'];
       additions.forEach(cls => {
         const el = document.createElement('div');
         el.classList.add(cls);
