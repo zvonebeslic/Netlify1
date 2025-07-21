@@ -1248,15 +1248,8 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     // === DODAJ DODATKE U SVE STRELICE UNUTAR TOG BOXA ===
     const arrows = box.querySelectorAll('.side-arrow');
     arrows.forEach(arrow => {
-      arrow.classList.add('clicked');
-
-      const additions = ['arrow-peak', 'arrow-peak-big', 'extra-line', 'extra-line-two', 'snow-cap', 'mini-cloud'];
-      additions.forEach(cls => {
-        const el = document.createElement('div');
-        el.classList.add(cls);
-        arrow.appendChild(el);
-      });
-    });
+  animateArrowPeak(arrow);
+});
 
     // === NAKON KRATKOG VREMENA, OTVORI LINK (ako treba) ===
     setTimeout(() => {
@@ -1279,7 +1272,7 @@ function animateArrowPeak(arrow) {
 
   setTimeout(() => {
     arrow.classList.add('clicked');
-  }, 250);
+  }, 600);
 }
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
