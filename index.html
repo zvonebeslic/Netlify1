@@ -1044,6 +1044,8 @@ const observer = new IntersectionObserver(entries => {
       : entry.target.classList.remove('visible');  
   });  
 }, { threshold: 0.52 });  
+
+sections.forEach(section => observer.observe(section));
       
       
 // === 5. BACK TO TOP GUMB ===
