@@ -337,25 +337,25 @@ border: solid #000;
 .side-arrow.clicked.right-arrow .arrow-peak {
   transform: translate(11px, -6px);
   transform-origin: bottom center;
-  transition-deley: 0.2s;    
+  transition-delay: 0.2s;    
 }
 
 .side-arrow.clicked.right-arrow .arrow-peak-big {
   transform: translate(3px, 8px);
   transform-origin: bottom center;
-  transition-deley: 0.3s;
+  transition-delay: 0.3s;
 }
 
  .side-arrow.clicked.left-arrow .arrow-peak {
   transform: translate(-6px, 11px);
   transform-origin: bottom center;
-  transition-deley: 0.2s;
+  transition-delay: 0.2s;
 }
 
 .side-arrow.clicked.left-arrow .arrow-peak-big {
   transform: translate(8px, 3px);
   transform-origin: bottom center;
-  transition-deley: 0.3s;
+  transition-delay: 0.3s;
 }
 
 /* === RESET ZA JS === */
@@ -692,7 +692,6 @@ a, button {
 }    
       
 </style>
-</head>
             
 <body>
       
@@ -742,7 +741,7 @@ a, button {
       
   <!-- === SEKCIJE (parallax) === -->
   <section id="section1" class="section image-section"
-       role="Region"
+       role="region"
        aria-label="uvodna sekcija web stranice Mountain Adventures"
        style="background-image: url('images/planinarske-staze-balkana-cvrsnica-hiking-trails-balkan.jpg'); background-size: cover; background-position: center; height: 100vh; position: relative;"
        data-title-hr="Tko smo mi?"
@@ -1220,7 +1219,7 @@ document.querySelectorAll('.content-box-link').forEach(link => {
       
 // FUNKCIJA ANIMIRAJ STRELICE U CONTENT BOX
 function animateArrowPeak(arrow) {
-  arrow.querySelectorAll('.arrow-peak, .arrow-peak-big).forEach(el => el.remove());
+  arrow.querySelectorAll('.arrow-peak, .arrow-peak-big').forEach(el => el.remove());
 
   ['arrow-peak', 'arrow-peak-big'].forEach(cls => {
     const el = document.createElement('div');
