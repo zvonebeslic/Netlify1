@@ -291,11 +291,7 @@ body {
 
   /* === DODATNE STRELICE, SNIJEG, CRTE I OBLAK === */
 .arrow-peak,
-.arrow-peak-big,
-.snow-cap,
-.mini-cloud,
-.extra-line,
-.extra-line-two {
+.arrow-peak-big {
   position: absolute;
   opacity: 1;
   transition: all 0.4s ease;
@@ -321,36 +317,6 @@ border: solid #000;
   height: 17px;
   border-width: 0 3px 3px 0;
   z-index: 4;
-}
-
-.extra-line {
-  width: 14px;
-  height: 3px;
-  background: #000;
-}
-      
-.extra-line-two {
-  width: 12px;
-  height: 3px;
-  background: #000;
-}
-      
-/* === SNIJEG NA VRHU === */
-.snow-cap {
-  width: 8px;
-  height: 4px;
-  background: white;
-  border-radius: 50% 50% 0 0;
-  z-index: 0;
-}
-
-/* === OBLAK === */
-.mini-cloud {
-  width: 7px;
-  height: 4px;
-  background: #ddd;
-  border-radius: 3px;
-  z-index: 3;
 }
 
 /* === ROTACIJA GLAVNIH STRELICA === */
@@ -383,21 +349,6 @@ border: solid #000;
   transform-origin: bottom center;
 }
 
-.side-arrow.clicked.right-arrow .extra-line-two {
-  transform: translate(-10px, -10px) rotate(-180deg);
-  transform-origin: bottom center;
-}     
-
-.side-arrow.clicked.right-arrow .snow-cap {
-  transform: translate(-50%, -50%);
-  transform-origin: bottom center;
-}
-
-.side-arrow.clicked.right-arrow .mini-cloud {
-  transform: translate(-50%, 50%);
-  transform-origin: bottom center;
-}
-
  .side-arrow.clicked.left-arrow .arrow-peak {
   transform: translate(-6px, 11px);
   transform-origin: bottom center;
@@ -407,26 +358,6 @@ border: solid #000;
   transform: translate(8px, 3px);
   transform-origin: bottom center;
 }
-
- .side-arrow.clicked.left-arrow .extra-line {
-  transform: translate(-20px, 8px) rotate(90deg);
-  transform-origin: bottom center;
-}
-
-.side-arrow.clicked.left-arrow .extra-line-two {
-  transform: translate(5px, -10px) rotate(180deg);
-  transform-origin: bottom center;
-}     
-
-.side-arrow.clicked.left-arrow .snow-cap {
-  transform: translate(50%, -50%);
-  transform-origin: bottom center;
-}
-
-.side-arrow.clicked.left-arrow .mini-cloud {
-  transform: translate(50%, 50%);
-  transform-origin: bottom center;
-}     
 
 /* === RESET ZA JS === */
 .hidden {
@@ -1155,7 +1086,7 @@ window.addEventListener('pageshow', () => {
   });
 
   document.querySelectorAll(
-    '.arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
+    '.arrow-peak, .arrow-peak-big'
   ).forEach(el => {
     el.remove();
   });
@@ -1263,7 +1194,7 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     });
 
     document.querySelectorAll(
-      '.arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud'
+      '.arrow-peak, .arrow-peak-big'
     ).forEach(el => {
       el.remove();
     });
@@ -1283,16 +1214,16 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     setTimeout(() => {
       const href = link.getAttribute('href');
       if (href) window.location.href = href;
-    }, 800); // dovoljno da se animacije prikažu
+    }, 700); // dovoljno da se animacije prikažu
   });
 });
 });
       
 // FUNKCIJA ANIMIRAJ STRELICE U CONTENT BOX
 function animateArrowPeak(arrow) {
-  arrow.querySelectorAll('.arrow-peak, .arrow-peak-big, .extra-line, .extra-line-two, .snow-cap, .mini-cloud').forEach(el => el.remove());
+  arrow.querySelectorAll('.arrow-peak, .arrow-peak-big).forEach(el => el.remove());
 
-  ['arrow-peak', 'arrow-peak-big', 'extra-line', 'extra-line-two', 'snow-cap', 'mini-cloud'].forEach(cls => {
+  ['arrow-peak', 'arrow-peak-big'].forEach(cls => {
     const el = document.createElement('div');
     el.className = cls;
     arrow.appendChild(el);
