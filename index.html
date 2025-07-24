@@ -1212,7 +1212,7 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     setTimeout(() => {
       const href = link.getAttribute('href');
       if (href) window.location.href = href;
-    }, 800); // dovoljno da se animacije prikažu
+    }, 900); // dovoljno da se animacije prikažu
   });
 });
 });
@@ -1233,8 +1233,8 @@ function animateArrowPeak(arrow) {
     // Nakon još 150ms (ukupno 350ms), dodaj klasu za animaciju
     setTimeout(() => {
       arrow.classList.add('clicked');
-    }, 150);
-  }, 200);
+    }, 250);
+  }, 300);
 }
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
