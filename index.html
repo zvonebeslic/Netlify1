@@ -1043,36 +1043,8 @@ const observer = new IntersectionObserver(entries => {
       ? entry.target.classList.add('visible')  
       : entry.target.classList.remove('visible');  
   });  
-}, { threshold: 0.5 });  
-  
-sections.forEach(section => observer.observe(section));
-
-// === Aktivna sekcija: ona najbliža centru ekrana ===
-function updateActiveSection() {
-  let closestSection = null;
-  let closestDistance = Infinity;
-  const viewportCenter = window.innerHeight / 2;
-
-  sections.forEach(section => {
-    const rect = section.getBoundingClientRect();
-    const sectionCenter = rect.top + rect.height / 2;
-    const distance = Math.abs(sectionCenter - viewportCenter);
-
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestSection = section;
-    }
-  });
-
-  sections.forEach(section => section.classList.remove('aktivno'));
-  if (closestSection) closestSection.classList.add('aktivno');
-}
-
-// === Pokreni kad se skrola i odmah na učitavanju
-window.addEventListener('scroll', () => {
-  requestAnimationFrame(updateActiveSection);
-});
-window.addEventListener('load', updateActiveSection);
+}, { threshold: 0.52 });  
+      
       
 // === 5. BACK TO TOP GUMB ===
 window.addEventListener('scroll', () => {
