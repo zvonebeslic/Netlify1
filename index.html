@@ -294,7 +294,6 @@ body {
 .arrow-peak-big {
   position: absolute;
   opacity: 1;
-  transition: all 0.4s ease;
   pointer-events: none;
   z-index: 4;
 }
@@ -321,7 +320,7 @@ border: solid #000;
 
 /* === ROTACIJA GLAVNIH STRELICA === */
 .side-arrow {
-  transition: transform 0.2s ease;
+  transition: transform 0.15s ease;
   pointer-events: none;
 }
 
@@ -337,25 +336,25 @@ border: solid #000;
 .side-arrow.clicked.right-arrow .arrow-peak {
   transform: translate(12px, -6px);
   transform-origin: bottom center;
-  transition-delay: 0.2s;    
+  transition-delay: 0.15s;    
 }
 
 .side-arrow.clicked.right-arrow .arrow-peak-big {
   transform: translate(3px, 9px);
   transform-origin: bottom center;
-  transition-delay: 0.3s;
+  transition-delay: 0.2s;
 }
 
  .side-arrow.clicked.left-arrow .arrow-peak {
   transform: translate(-6px, 12px);
   transform-origin: bottom center;
-  transition-delay: 0.2s;
+  transition-delay: 0.15s;
 }
 
 .side-arrow.clicked.left-arrow .arrow-peak-big {
   transform: translate(9px, 3px);
   transform-origin: bottom center;
-  transition-delay: 0.3s;
+  transition-delay: 0.2s;
 }
 
 /* === RESET ZA JS === */
@@ -1233,8 +1232,8 @@ function animateArrowPeak(arrow) {
     // Nakon još 150ms (ukupno 350ms), dodaj klasu za animaciju
     setTimeout(() => {
       arrow.classList.add('clicked');
-    }, 250);
-  }, 300);
+    }, 200);
+  }, 250);
 }
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
