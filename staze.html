@@ -540,6 +540,42 @@ document.querySelectorAll('.menu-overlay a').forEach(link => {
   });
 });
 
+// === 4. BACK TO TOP GUMB ===
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+  const windowHeight = window.innerHeight;
+
+  backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+  backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
+    ? `${(scrollY + windowHeight - footerTop) + 60}px`
+    : '30px';
+});
+
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+
+// === 5. EFEKT PRITISKA I LINK ===
+document.querySelectorAll(
+  ' .lang-flag'
+).forEach(el => {
+  el.addEventListener('click', e => {
+    const link = el.querySelector('a');
+    const href = link ? link.getAttribute('href') : null;
+
+    if (href) {
+      e.preventDefault();
+      el.classList.add('pressed');
+
+      setTimeout(() => {
+        el.classList.remove('pressed');
+        window.location.href = href;
+      }, 150);
+    }
+  });
+});  
   
     document.addEventListener("DOMContentLoaded", () => {
       const savedSeason = localStorage.getItem("activeSeason");
