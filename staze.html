@@ -485,116 +485,114 @@ footer {
 <script src="season.js"></script>
       
 <script>
-// === 1. DEFINICIJE ELEMENTA ===
-const langToggle = document.getElementById('language-toggle');
-const searchInput = document.getElementById('search');
-const menuToggle = document.getElementById('menu-toggle');
-const menu = document.getElementById('menu');
-const backToTopBtn = document.getElementById('backToTop');
-const footer = document.getElementById('footer');
-let currentLang = 'hr';
+  // === 1. DEFINICIJE ELEMENTA ===
+  const langToggle = document.getElementById('language-toggle');
+  const searchInput = document.getElementById('search');
+  const menuToggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('menu');
+  const backToTopBtn = document.getElementById('backToTop');
+  const footer = document.getElementById('footer');
+  let currentLang = 'hr';
 
+  // === 2. JEZIČNI TOGGLE I PREVODI ===
+  langToggle.addEventListener('click', () => {
+    currentLang = currentLang === 'hr' ? 'en' : 'hr';
+    document.documentElement.lang = currentLang;
+    langToggle.src = currentLang === 'hr'
+      ? 'images/flag-uk.svg'
+      : 'images/flag-hr.svg';
+    searchInput.placeholder = currentLang === 'hr'
+      ? 'Pretraži...'
+      : 'Search...';
 
-// === 2. JEZIČNI TOGGLE I PREVODI ===
-langToggle.addEventListener('click', () => {
-  currentLang = currentLang === 'hr' ? 'en' : 'hr';
-  document.documentElement.lang = currentLang;
-  langToggle.src = currentLang === 'hr'
-    ? 'images/flag-uk.svg'
-    : 'images/flag-hr.svg';
-  searchInput.placeholder = currentLang === 'hr'
-    ? 'Pretraži...'
-    : 'Search...';
+    document.querySelectorAll('[data-hr]').forEach(el => {
+      const htmlContent = el.getAttribute(`data-${currentLang}`);
+      htmlContent.includes('<')
+        ? el.innerHTML = htmlContent
+        : el.textContent = htmlContent;
+    });
 
-  document.querySelectorAll('[data-hr]').forEach(el => {
-  const htmlContent = el.getAttribute(`data-${currentLang}`);
-  if (htmlContent.includes('<')) {
-    el.innerHTML = htmlContent;
-  } else {
-    el.textContent = htmlContent;
+    document.querySelectorAll('.menu-overlay a').forEach(link => {
+      link.textContent = link.getAttribute(`data-${currentLang}`);
+    });
+  });
+
+  // === 3. HAMBURGER MENI ===
+  menuToggle.addEventListener('click', () => {
+    menu.classList.toggle('open');
+  });
+
+  window.addEventListener('click', e => {
+    if (
+      !menu.contains(e.target) &&
+      !menuToggle.contains(e.target) &&
+      e.target.id !== 'language-toggle'
+    ) {
+      menu.classList.remove('open');
     }
   });
 
   document.querySelectorAll('.menu-overlay a').forEach(link => {
-    link.textContent = link.getAttribute(`data-${currentLang}`);
-  });
-
-// === 3. HAMBURGER MENI ===
-menuToggle.addEventListener('click', () => {
-  menu.classList.toggle('open');
-});
-
-window.addEventListener('click', e => {
-  if (
-    !menu.contains(e.target) &&
-    !menuToggle.contains(e.target) &&
-    e.target.id !== 'language-toggle'
-  ) {
-    menu.classList.remove('open');
-  }
-});
-
-document.querySelectorAll('.menu-overlay a').forEach(link => {
-  link.addEventListener('click', () => {
-    menu.classList.remove('open');
-  });
-});
-
-// === 4. BACK TO TOP GUMB ===
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-  const windowHeight = window.innerHeight;
-
-  backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
-  backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
-    ? `${(scrollY + windowHeight - footerTop) + 60}px`
-    : '30px';
-});
-
-backToTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-
-// === 5. EFEKT PRITISKA I LINK ===
-document.querySelectorAll(
-  ' .lang-flag'
-).forEach(el => {
-  el.addEventListener('click', e => {
-    const link = el.querySelector('a');
-    const href = link ? link.getAttribute('href') : null;
-
-    if (href) {
-      e.preventDefault();
-      el.classList.add('pressed');
-
-      setTimeout(() => {
-        el.classList.remove('pressed');
-        window.location.href = href;
-      }, 150);
-    }
-  });
-});  
-  
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedSeason = localStorage.getItem("activeSeason");
-      if (savedSeason) {
-        setTimeout(() => {
-          if (savedSeason === "winter") startWinterEffect(true);
-          else if (savedSeason === "summer") startSummerEffect(true);
-          else if (savedSeason === "spring") startSpringEffect(true);
-          else if (savedSeason === "autumn") startAutumnEffect(true);
-        }, 10000); // nakon 10 sekundi nastavlja sezonu
-      }
-
-      fetch("season.html")
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("season-placeholder").innerHTML = html;
-          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
-        });
+    link.addEventListener('click', () => {
+      menu.classList.remove('open');
     });
+  });
+
+  // === 4. BACK TO TOP GUMB ===
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+    const windowHeight = window.innerHeight;
+
+    backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+    backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
+      ? `${(scrollY + windowHeight - footerTop) + 60}px`
+      : '30px';
+  });
+
+  backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // === 5. EFEKT PRITISKA NA ZASTAVICU (ako vodi na link)
+  document.querySelectorAll('.lang-flag').forEach(el => {
+    el.addEventListener('click', e => {
+      const link = el.querySelector('a');
+      const href = link ? link.getAttribute('href') : null;
+
+      if (href) {
+        e.preventDefault();
+        el.classList.add('pressed');
+
+        setTimeout(() => {
+          el.classList.remove('pressed');
+          window.location.href = href;
+        }, 150);
+      }
+    });
+  });
+
+  // === 6. SEASON HTML I EFEKTI (dinamički dio)
+  document.addEventListener("DOMContentLoaded", () => {
+    // === A) Ako postoji spremljena sezona, pokreni je nakon 10s
+    const savedSeason = localStorage.getItem("activeSeason");
+    if (savedSeason) {
+      setTimeout(() => {
+        if (savedSeason === "winter") startWinterEffect(true);
+        else if (savedSeason === "summer") startSummerEffect(true);
+        else if (savedSeason === "spring") startSpringEffect(true);
+        else if (savedSeason === "autumn") startAutumnEffect(true);
+      }, 10000);
+    }
+
+    // === B) Učitaj season.html i inicijaliziraj
+    fetch("season.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("season-placeholder").innerHTML = html;
+        if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+      });
+  });
 </script>
   
 </body>
