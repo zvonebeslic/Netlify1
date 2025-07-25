@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planinarske staze | Mountain Adventures</title>
@@ -8,6 +9,9 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="season.css" />
   <link rel="icon" href="images/favicon.png" />
+  
+<head/>
+  
   <style>
        /* === OSNOVNI RESET I GLOBALNA PRAVILA === */
 * {
@@ -233,39 +237,41 @@ body {
       background-color: #26594f;
     }
   </style>
-</head>
+  
 <body>
   <div id="season-placeholder"></div>
 
-  <header>
-    <nav class="navbar">
-      <div class="nav-left">
-        <a href="index.html" class="logo"><img src="images/logo.svg" alt="Mountain Adventures" /></a>
-      </div>
-      <div class="nav-center">
-        <div class="search-bar">
-          <input type="text" placeholder="Pretraži" />
-          <img src="images/search.svg" alt="Search" />
+    <!-- === NAVIGACIJA (gore) === -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
+    </div>
+    <div class="navbar-center">
+      <div class="search-container">
+        <div class="search-wrapper">
+          <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration" />
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
+          <img src="images/search.svg" alt="ikona za tražilicu">
         </div>
       </div>
-      <div class="nav-right">
-        <img src="images/hr.svg" alt="HR" id="lang-hr" class="lang-flag">
-        <img src="images/en.svg" alt="EN" id="lang-en" class="lang-flag">
-        <div class="hamburger" id="hamburger">
-          <span></span><span></span><span></span>
-        </div>
-        <ul class="hamburger-menu" id="hamburger-menu">
-          <li><a href="index.html">Naslovna</a></li>
-          <li><a href="staze.html">Staze</a></li>
-          <li><a href="avantura.html">Avantura</a></li>
-          <li><a href="webshop.html">Web Shop</a></li>
-          <li><a href="planinarskevijesti.html">Vijesti</a></li>
-          <li><a href="digitalniruksak.html">Ruksak</a></li>
-          <li><a href="kontakt.html">Kontakt</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+    </div>
+    <div class="navbar-right" id="menu-toggle">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
+  </div>
+
+  <!-- === HAMBURGER MENI === -->
+  <div class="menu-overlay" id="menu">
+    <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="#webshop" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="#about" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>
+    <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
 
   <section class="image-section" style="background-image: url('images/hero.jpg'); height: 90vh;">
     <div class="overlay"></div>
