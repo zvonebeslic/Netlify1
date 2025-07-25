@@ -494,6 +494,28 @@ const backToTopBtn = document.getElementById('backToTop');
 const footer = document.getElementById('footer');
 let currentLang = 'hr';
 
+langToggle.addEventListener('click', () => {
+  currentLang = currentLang === 'hr' ? 'en' : 'hr';
+  document.documentElement.lang = currentLang;
+  langToggle.src = currentLang === 'hr'
+    ? 'images/flag-uk.svg'
+    : 'images/flag-hr.svg';
+  searchInput.placeholder = currentLang === 'hr'
+    ? 'Pretraži...'
+    : 'Search...';
+
+  document.querySelectorAll('[data-hr]').forEach(el => {
+  const htmlContent = el.getAttribute(`data-${currentLang}`);
+  if (htmlContent.includes('<')) {
+    el.innerHTML = htmlContent;
+  } else {
+    el.textContent = htmlContent;
+    }
+  });
+
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    link.textContent = link.getAttribute(`data-${currentLang}`);
+  });
   
     document.addEventListener("DOMContentLoaded", () => {
       const savedSeason = localStorage.getItem("activeSeason");
