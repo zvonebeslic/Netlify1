@@ -4,24 +4,145 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planinarske staze | Mountain Adventures</title>
-
-  <!-- SEO meta -->
-  <meta name="description" content="Istraži najljepše planinarske staze Balkana. Detaljni opisi, slike i korisne informacije.">
-  <meta name="keywords" content="planinarenje, staze, Balkan, Velebit, Prokletije, Triglav, Sutjeska, Paklenica">
-
-  <!-- CSS i stilovi -->
+  <meta name="description" content="Istraži najljepše planinarske staze Balkana. Filtriraj po težini, trajanju, udaljenosti, planini i više.">
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="season.css" />
-
-  <!-- Ikona -->
   <link rel="icon" href="images/favicon.png" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
+      color: #222;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-left .logo img {
+      height: 40px;
+    }
+    .nav-center .search-bar {
+      display: flex;
+      align-items: center;
+      background: #eee;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+    }
+    .search-bar input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 1rem;
+    }
+    .search-bar img {
+      height: 18px;
+      margin-left: 0.5rem;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .lang-flag {
+      width: 24px;
+      cursor: pointer;
+    }
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 4px;
+    }
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: #333;
+    }
+    .hamburger-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 10px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 5px;
+      list-style: none;
+      padding: 1rem;
+    }
+    .hamburger-menu li {
+      margin-bottom: 0.5rem;
+    }
+    .hamburger-menu li a {
+      color: #333;
+      text-decoration: none;
+    }
+    .section {
+      padding: 3rem 1.5rem;
+    }
+    .trail-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    .trail-card {
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background-color: #fafafa;
+      transition: transform 0.2s ease;
+    }
+    .trail-card:hover {
+      transform: scale(1.02);
+    }
+    .trail-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .trail-card div {
+      padding: 1rem;
+    }
+    .trail-card h3 {
+      margin-top: 0;
+    }
+    #trail-filter-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1rem 0 2rem;
+    }
+    #trail-filter-form select,
+    #trail-filter-form button {
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      border: 1px solid #888;
+      font-size: 1rem;
+    }
+    #trail-filter-form button {
+      background-color: #35776a;
+      color: #fff;
+      cursor: pointer;
+    }
+    #trail-filter-form button:hover {
+      background-color: #26594f;
+    }
+  </style>
 </head>
 <body>
-
-  <!-- SEASON TOGGLE PLACEHOLDER -->
   <div id="season-placeholder"></div>
 
-  <!-- NAVBAR (isti kao na index.html) -->
   <header>
     <nav class="navbar">
       <div class="nav-left">
@@ -40,39 +161,82 @@
           <span></span><span></span><span></span>
         </div>
         <ul class="hamburger-menu" id="hamburger-menu">
-          <li><a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a></li>
-          <li><a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a></li>
-          <li><a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a></li>
-          <li><a href="webshop.html" data-hr="Web Shop" data-en="Web Shop">Web Shop</a></li>
-          <li><a href="planinarskevijesti.html" data-hr="Vijesti" data-en="News">Vijesti</a></li>
-          <li><a href="digitalniruksak.html" data-hr="Ruksak" data-en="Backpack">Ruksak</a></li>
-          <li><a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a></li>
+          <li><a href="index.html">Naslovna</a></li>
+          <li><a href="staze.html">Staze</a></li>
+          <li><a href="avantura.html">Avantura</a></li>
+          <li><a href="webshop.html">Web Shop</a></li>
+          <li><a href="planinarskevijesti.html">Vijesti</a></li>
+          <li><a href="digitalniruksak.html">Ruksak</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
         </ul>
       </div>
     </nav>
   </header>
 
-  <!-- HERO SEKCIJA sa slikom kao u index.html -->
-  <section class="image-section">
-    <img src="images/hero.jpg" alt="Planine" class="background-image" />
+  <section class="image-section" style="background-image: url('images/hero.jpg'); height: 90vh;">
     <div class="overlay"></div>
   </section>
 
-  <!-- PRAZNI GLAVNI SADRŽAJ -->
   <main>
-    <!-- Ovdje ćeš kasnije dodati sadržaj stranice -->
+    <section style="background-color: #f8f8f8; text-align: center;">
+      <h1>Istraži planinarske staze Balkana</h1>
+      <p>Filtriraj i pronađi savršenu rutu prema težini, planini, trajanju ili tvojoj lokaciji.</p>
+    </section>
+
+    <section style="background-color: #e3ecec;">
+      <h2 style="text-align: center;">Filtriraj staze</h2>
+      <form id="trail-filter-form">
+        <select><option selected disabled>Odaberi planinu</option><option>Velebit</option><option>Triglav</option><option>Prokletije</option></select>
+        <select><option selected disabled>Težina</option><option>Lagana</option><option>Srednja</option><option>Teška</option></select>
+        <select><option selected disabled>Trajanje hoda</option><option>&lt;2h</option><option>2–5h</option><option>&gt;5h</option></select>
+        <select><option selected disabled>Udaljenost</option><option>&lt;10 km</option><option>10–30 km</option><option>&gt;30 km</option></select>
+        <button type="submit">Primijeni filtre</button>
+      </form>
+    </section>
+
+    <section class="trail-list">
+      <article class="trail-card">
+        <img src="images/velebit.jpg" alt="Velebit">
+        <div>
+          <h3>Premužićeva staza</h3>
+          <p><strong>Planina:</strong> Velebit</p>
+          <p><strong>Težina:</strong> Srednja</p>
+          <p><strong>Trajanje:</strong> 5h</p>
+          <p><strong>Udaljenost:</strong> 15 km</p>
+          <a href="#">Detalji &rarr;</a>
+        </div>
+      </article>
+      <article class="trail-card">
+        <img src="images/triglav.jpg" alt="Triglav">
+        <div>
+          <h3>Uspon na Triglav</h3>
+          <p><strong>Planina:</strong> Triglav</p>
+          <p><strong>Težina:</strong> Teška</p>
+          <p><strong>Trajanje:</strong> 8h</p>
+          <p><strong>Udaljenost:</strong> 12 km</p>
+          <a href="#">Detalji &rarr;</a>
+        </div>
+      </article>
+    </section>
   </main>
 
-  <!-- FOOTER (možeš dodati isti kao index ako želiš) -->
-  <footer>
+  <footer style="text-align: center; padding: 2rem; background-color: #f0f0f0;">
     <p>&copy; 2025 Mountain Adventures</p>
   </footer>
 
-  <!-- JS -->
   <script src="season.js"></script>
   <script>
-    // Učitaj season toggle izvanjski
     document.addEventListener("DOMContentLoaded", () => {
+      const savedSeason = localStorage.getItem("activeSeason");
+      if (savedSeason) {
+        setTimeout(() => {
+          if (savedSeason === "winter") startWinterEffect(true);
+          else if (savedSeason === "summer") startSummerEffect(true);
+          else if (savedSeason === "spring") startSpringEffect(true);
+          else if (savedSeason === "autumn") startAutumnEffect(true);
+        }, 10000); // nakon 10 sekundi nastavlja sezonu
+      }
+
       fetch("season.html")
         .then(res => res.text())
         .then(html => {
