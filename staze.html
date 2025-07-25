@@ -329,6 +329,18 @@ footer {
   opacity: 1;
   transform: scale(1.1);
 }
+
+ /* === OPĆI EFEKT PRITISKA (UNIVERZALNA KLASA .pressed) === */
+.pressed {
+  transform: scale(0.97);
+  transition: transform 0.15s ease;
+}
+
+/* === UNUTARNJI SLOJ I TEKST (KUTIJA SADRŽAJA) === */
+.content-box {
+  overflow: hidden;
+  position: relative; /* ili absolute ako već pozicioniraš sekcije */
+}   
     
   </style>
   
