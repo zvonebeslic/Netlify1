@@ -494,6 +494,8 @@ const backToTopBtn = document.getElementById('backToTop');
 const footer = document.getElementById('footer');
 let currentLang = 'hr';
 
+
+// === 2. JEZIČNI TOGGLE I PREVODI ===
 langToggle.addEventListener('click', () => {
   currentLang = currentLang === 'hr' ? 'en' : 'hr';
   document.documentElement.lang = currentLang;
@@ -516,6 +518,28 @@ langToggle.addEventListener('click', () => {
   document.querySelectorAll('.menu-overlay a').forEach(link => {
     link.textContent = link.getAttribute(`data-${currentLang}`);
   });
+
+// === 3. HAMBURGER MENI ===
+menuToggle.addEventListener('click', () => {
+  menu.classList.toggle('open');
+});
+
+window.addEventListener('click', e => {
+  if (
+    !menu.contains(e.target) &&
+    !menuToggle.contains(e.target) &&
+    e.target.id !== 'language-toggle'
+  ) {
+    menu.classList.remove('open');
+  }
+});
+
+document.querySelectorAll('.menu-overlay a').forEach(link => {
+  link.addEventListener('click', () => {
+    menu.classList.remove('open');
+  });
+});
+
   
     document.addEventListener("DOMContentLoaded", () => {
       const savedSeason = localStorage.getItem("activeSeason");
