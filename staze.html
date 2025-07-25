@@ -341,6 +341,25 @@ footer {
   overflow: hidden;
   position: relative; /* ili absolute ako već pozicioniraš sekcije */
 }   
+
+ /* === DODATNI INTERAKTIVNI ELEMENTI: ZASTAVICE, IKONE, GUMBI === */
+.lang-flag {
+  transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
+  cursor: pointer;
+  transform-origin: center center;
+}
+
+/* === HOVER EFEKT ZA GORENJE ELEMENTE === */
+.lang-flag:hover {
+  filter: brightness(1.1);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+      
+/* === SPRIJEČAVANJE ŠIRENJA VAN EKRANA === */
+  html, body {
+  overflow-x: hidden !important;
+}       
     
   </style>
   
