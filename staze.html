@@ -9,81 +9,175 @@
   <link rel="stylesheet" href="season.css" />
   <link rel="icon" href="images/favicon.png" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #fff;
-      color: #222;
-    }
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      background: #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .nav-left .logo img {
-      height: 40px;
-    }
-    .nav-center .search-bar {
-      display: flex;
-      align-items: center;
-      background: #eee;
-      padding: 0.3rem 1rem;
-      border-radius: 20px;
-    }
-    .search-bar input {
-      border: none;
-      background: transparent;
-      outline: none;
-      font-size: 1rem;
-    }
-    .search-bar img {
-      height: 18px;
-      margin-left: 0.5rem;
-    }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .lang-flag {
-      width: 24px;
-      cursor: pointer;
-    }
-    .hamburger {
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      gap: 4px;
-    }
-    .hamburger span {
-      width: 24px;
-      height: 2px;
-      background: #333;
-    }
-    .hamburger-menu {
-      display: none;
-      position: absolute;
-      top: 60px;
-      right: 10px;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      border-radius: 5px;
-      list-style: none;
-      padding: 1rem;
-    }
-    .hamburger-menu li {
-      margin-bottom: 0.5rem;
-    }
-    .hamburger-menu li a {
-      color: #333;
-      text-decoration: none;
-    }
+       /* === OSNOVNI RESET I GLOBALNA PRAVILA === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: #000;
+}
+
+/* === NAVIGACIJA / GORNJI IZBORNIK === */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  z-index: 1000;
+}
+
+/* === ZASTAVICA (tooltip na hover) === */
+.navbar-left img {
+  height: 16px;
+  width: 24px;
+  cursor: pointer;
+  position: relative;
+}
+
+.navbar-left img:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: #fff;
+  color: #000;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  top: 30px;
+  left: 0;
+  white-space: nowrap;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+
+/* === TRAŽILICA (CENTAR) === */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+  transform: translateY(12px);
+}
+
+.search-container {
+  width: 250px;
+  position: relative;
+  padding-top: 10px;
+  z-index: 1;
+}
+
+.search-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 30px; /* ili 55px ako dodaješ prostor za sliku */
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  padding: 0 15px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  border-radius: 20px;
+}
+
+/* === UKRASNA PLANINA IZNAD TRAŽILICE === */
+.search-top-decoration {
+  position: absolute;
+  top: -212.7px;
+  left: 108px;
+  width: 1600%;
+  height: 30px;
+  object-fit: cover;
+  display: block;
+  z-index: -10;
+  transform: scale(19);
+  transform-origin: top center;
+  pointer-events: none;
+}
+      
+/* === UNUTARNJI INPUT POLJE === */
+.mountain-search {
+  width: 100%;
+  padding: 14px 40px 8px 12px;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: #333;
+  outline: none;
+}
+
+/* === IKONA UNUTAR TRAŽILICE === */
+.search-wrapper img {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  width: 19px;
+  height: 19px;
+  pointer-events: none;
+}
+
+/* === DESNA STRANA (HAMBURGER IKONA) === */
+.navbar-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.navbar-right:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.burger-line {
+  width: 26px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+/* === MENI KOJI SE OTVARA === */
+.menu-overlay {
+  position: fixed;
+  top: 70px;
+  right: 0;
+  width: 35vw;
+  background-color: rgba(17, 17, 17, 0.95);
+  color: white;
+  padding: 20px;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 9999;
+}
+
+.menu-overlay.open {
+  display: flex;
+}
+
+.menu-overlay a {
+  margin: 10px 0;
+  text-decoration: none;
+  color: white;
+  font-size: 1.1em;
+}
+    
     .section {
       padding: 3rem 1.5rem;
     }
