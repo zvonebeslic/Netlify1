@@ -338,25 +338,25 @@ border: solid #000;
 .side-arrow.clicked.right-arrow .arrow-peak {
   transform: translate(12px, -6px);
   transform-origin: bottom center;
-  transition-delay: 0.25s;    
+  transition-delay: 0.15s;    
 }
 
 .side-arrow.clicked.right-arrow .arrow-peak-big {
   transform: translate(3px, 8px);
   transform-origin: bottom center;
-  transition-delay: 0.3s;
+  transition-delay: 0.2s;
 }
 
  .side-arrow.clicked.left-arrow .arrow-peak {
   transform: translate(-6px, 12px);
   transform-origin: bottom center;
-  transition-delay: 0.25s;
+  transition-delay: 0.15s;
 }
 
 .side-arrow.clicked.left-arrow .arrow-peak-big {
   transform: translate(8px, 3px);
   transform-origin: bottom center;
-  transition-delay: 0.3s;
+  transition-delay: 0.2s;
 }
 
 /* === RESET ZA JS === */
@@ -1246,8 +1246,8 @@ function animateArrowPeak(arrow) {
     // Nakon još 150ms (ukupno 350ms), dodaj klasu za animaciju
     setTimeout(() => {
       arrow.classList.add('clicked');
-    }, 300);
-  }, 300);
+    }, 400);
+  }, 400);
 }
       
 // === 8. REFRESH MARKACIJA MANUALNO ===
