@@ -644,17 +644,19 @@ to {
 /* === PREVIEW WRAPPER KOJI SADRŽI SVE 3 SLIKE + KONOP I KARABINER === */
 .blog-preview-wrapper {
   position: absolute;
-  bottom: 70px;
-  left: -55%;
+  bottom: 90px; /* ili 70px ako želiš niže */
+  left: 50%;
   transform: translateX(-50%);
-  width: 60%;
-  height: 15%;
+  width: 80%; /* ili 60% za uže na desktopu */
+  height: auto;
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
   gap: 17px;
   background: transparent !important;
   pointer-events: none;
   will-change: transform, opacity;
-  z-index: 6;
+  z-index: 10; /* MORA biti veći od markacija (5) i blog-bubble (4) */
   opacity: 0;
   transition: opacity 0.6s ease;
 }
