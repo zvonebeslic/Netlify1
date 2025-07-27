@@ -215,7 +215,26 @@ body {
 }
     
 .section {
-  padding: 3rem 1.5rem;
+  height: 50vh;
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 1s ease, opacity 1s ease;
+}
+
+/* === SEKCIJA KOJA JE VIDLJIVA U VIEWPORTU === */
+.section.visible {
+  opacity: 1;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+/* === SEKCIJE KOJE NISU U FOKUSU === */
+.section:not(.visible) {
+  opacity: 0.4;
+  transform: scale(1);
 }
     
 .trail-list {
