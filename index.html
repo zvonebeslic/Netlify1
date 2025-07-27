@@ -698,7 +698,7 @@ to {
   top: -36px;
   left: 0;
   width: 100%;
-  height: 20px;
+  height: 10px;
   z-index: 4;
   pointer-events: none;
   background: transparent !important;
@@ -1266,11 +1266,11 @@ document.addEventListener("DOMContentLoaded", function () {
         ropeSVG.setAttribute("class", "blog-rope-svg");
         ropeSVG.setAttribute("viewBox", "0 0 300 40");
         ropeSVG.setAttribute("width", "100%");
-        ropeSVG.setAttribute("height", "40");
+        ropeSVG.setAttribute("height", "10");
         ropeSVG.setAttribute("preserveAspectRatio", "none");
 
         const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        ropePath.setAttribute("d", "M10,25 Q150,35 290,25");
+        ropePath.setAttribute("d", "M10,8 Q75,0 150,8 T290,8");
         ropePath.setAttribute("stroke", "#804000");
         ropePath.setAttribute("stroke-width", "3");
         ropePath.setAttribute("fill", "none");
@@ -1475,15 +1475,15 @@ function refreshCurrentMarkacija() {
   const previewWrapper = document.createElement('div');
   previewWrapper.className = 'blog-preview-wrapper';
 
-//  const ropeSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  const ropeSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   ropeSVG.setAttribute("class", "blog-rope-svg");
   ropeSVG.setAttribute("viewBox", "0 0 300 40");
   ropeSVG.setAttribute("width", "100%");
-  ropeSVG.setAttribute("height", "40");
+  ropeSVG.setAttribute("height", "10");
   ropeSVG.setAttribute("preserveAspectRatio", "none");
 
- // const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  ropePath.setAttribute("d", "M10,30 Q75,0 150,30 T290,30");
+  const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  ropePath.setAttribute("d", "M10,8 Q75,0 150,8 T290,8");
   ropePath.setAttribute("stroke", "#804000");
   ropePath.setAttribute("stroke-width", "3");
   ropePath.setAttribute("fill", "none");
