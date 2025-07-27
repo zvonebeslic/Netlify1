@@ -644,12 +644,10 @@ to {
 /* === PREVIEW WRAPPER KOJI SADRŽI SVE 3 SLIKE + KONOP I KARABINER === */
 .blog-preview-wrapper {
   position: absolute;
-  bottom: 120px;
+  bottom: 50px;
   left: 50%;
   width: 100%;
   height: 50px;
-  transform: translateX(-50%) translateY(10px) scale(0.9);
-  opacity: 0;
   display: flex;
   gap: 15px;
   background: transparent !important;
@@ -657,7 +655,7 @@ to {
 }
 
 .blog-preview-wrapper.visible {
-  opacity: 1;
+  opacity: 0;
 }
 
 /* === POJEDINAČNI OKVIR ZA SLIKU === */
