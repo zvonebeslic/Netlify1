@@ -700,7 +700,7 @@ to {
 /* === KONOP KOJI POVEZUJE SVE KARABINERE === */
 .blog-rope-svg {
   position: absolute;
-  top: -4px;
+  top: -3px;
   left: 0;
   width: 100%;
   height: 10px;
@@ -1500,7 +1500,7 @@ function refreshCurrentMarkacija() {
 
         // Slike s karabinerima
         for (let i = 1; i <= 3; i++) {
-          const imgSrc = target.dataset[`img${i}`];
+          const imgSrc = current.dataset[`img${i}`];
           if (!imgSrc) continue;
 
           const frame = document.createElement('div');
