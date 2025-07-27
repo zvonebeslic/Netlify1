@@ -641,9 +641,70 @@ to {
   filter: brightness(1);
 }
 
-/* === SEASONCHANGE IKONA I PADAJUĆE IKONE GODIŠNJIH DOBA === */
+/* === PREVIEW WRAPPER KOJI SADRŽI SVE 3 SLIKE + KONOP I KARABINER === */
+.blog-preview-wrapper {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px) scale(0.9);
+  opacity: 0;
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+  transition: all 0.6s ease;
+}
 
-     
+.blog-preview-wrapper.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* === POJEDINAČNI OKVIR ZA SLIKU === */
+.blog-preview-frame {
+  width: 90px;
+  position: relative;
+  opacity: 1;
+  transition: transform 0.4s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* === SLIKA UNUTAR OKVIRA === */
+.blog-preview-frame img {
+  width: 100%;
+  border-radius: 6px;
+  border: 2px solid white;
+  object-fit: cover;
+  clip-path: polygon(5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%, 0 5%);
+}
+
+/* === SVG KARABINER IZNAD SLIKE === */
+.blog-frame-decoration {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  z-index: 10;
+  opacity: 0.9;
+}
+
+/* === KONOP KOJI POVEZUJE SVE KARABINERE === */
+.blog-rope-svg {
+  position: absolute;
+  top: -36px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* === OPCIONALNI HOVER EFEKT NA SLIKE === */
+.blog-preview-frame img:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
 
 /* === UKLANJANJE PLAVOG EFEKTA NA DODIR (MOBITELI) === */
 a, button {
@@ -791,7 +852,11 @@ a, button {
        data-text-en="1Meet the team and the values behind Mountain Adventures."
        data-link="1About"
        data-btn-hr="1Pročitaj više ovdje"
-       data-btn-en="1Read more here">
+       data-btn-en="1Read more here"
+       data-img1="images/blogovi/triglav1.jpg"
+       data-img2="images/blogovi/triglav2.jpg"
+       data-img3="images/blogovi/triglav3.jpg">
+        
     <a href="staze.html" class="content-box-link" aria-label="Istražite planinarske staze">
           <div class="content-box">
       <div class="side-arrow left-arrow"> </div>
@@ -816,7 +881,11 @@ a, button {
        data-text-en="2Meet the team and the values behind Mountain Adventures."
        data-link="2About"
        data-btn-hr="2Pročitaj više ovdje"
-       data-btn-en="2Read more here">
+       data-btn-en="2Read more here"
+       data-img1="images/blogovi/triglav1.jpg"
+       data-img2="images/blogovi/triglav2.jpg"
+       data-img3="images/blogovi/triglav3.jpg">
+        
     <a href="avantura.html" class="content-box-link" aria-label="krenite u avanturu sa nama">
           <div class="content-box">
       <div class="side-arrow left-arrow"> </div>
@@ -841,7 +910,11 @@ a, button {
        data-text-en="3Meet the team and the values behind Mountain Adventures."
        data-link="3About"
        data-btn-hr="3Pročitaj više ovdje"
-       data-btn-en="3Read more here">
+       data-btn-en="3Read more here"
+       data-img1="images/blogovi/triglav1.jpg"
+       data-img2="images/blogovi/triglav2.jpg"
+       data-img3="images/blogovi/triglav3.jpg">
+        
     <a href="webshop.html" class="content-box-link" aria-label="posjetite naš web shop">
           <div class="content-box">
        <div class="side-arrow left-arrow"> </div>
@@ -866,7 +939,11 @@ a, button {
        data-text-en="4Meet the team and the values behind Mountain Adventures."
        data-link="4About"
        data-btn-hr="4Pročitaj više ovdje"
-       data-btn-en="4Read more here">
+       data-btn-en="4Read more here"
+       data-img1="images/blogovi/triglav1.jpg"
+       data-img2="images/blogovi/triglav2.jpg"
+       data-img3="images/blogovi/triglav3.jpg">
+        
     <a href="planinarskevijesti.html" class="content-box-link" aria-label="pročitajte najnovije vijesti iz svijeta planinarenja">
           <div class="content-box">
        <div class="side-arrow left-arrow"> </div>
@@ -891,7 +968,11 @@ a, button {
        data-text-en="5Meet the team and the values behind Mountain Adventures."
        data-link="5About"
        data-btn-hr="5Pročitaj više ovdje"
-       data-btn-en="5Read more here">
+       data-btn-en="5Read more here"
+       data-img1="images/blogovi/triglav1.jpg"
+       data-img2="images/blogovi/triglav2.jpg"
+       data-img3="images/blogovi/triglav3.jpg">
+        
     <a href="digitalniruksak.html" class="content-box-link" aria-label="tvoj digitalni planinarski ruksak">
           <div class="content-box">
        <div class="side-arrow left-arrow"> </div>
@@ -916,7 +997,11 @@ a, button {
        data-text-en="6Meet the team and the values behind Mountain Adventures."
        data-link="6About"
        data-btn-hr="6Pročitaj više ovdje"
-       data-btn-en="6Read more here">
+       data-btn-en="6Read more here"
+       data-img1="images/blogovi/triglav1.jpg"
+       data-img2="images/blogovi/triglav2.jpg"
+       data-img3="images/blogovi/triglav3.jpg">
+        
     <a href="kontakt.html" class="content-box-link" aria-label="Kontaktirajte nas i krenite u avanturu">
           <div class="content-box">
        <div class="side-arrow left-arrow"> </div>
@@ -1141,7 +1226,7 @@ document.addEventListener("DOMContentLoaded", function () {
           svg.appendChild(crveni);
           target.appendChild(svg);
 
-          // BLOG BUBBLE
+          // BLOG BUBBLE, TEXT I GUMB
           const bubble = document.createElement("div");
           bubble.classList.add("blog-bubble");
 
@@ -1167,18 +1252,79 @@ document.addEventListener("DOMContentLoaded", function () {
           gumb.onclick = () => window.location.href = link;
           target.appendChild(gumb);
 
+
+        // === 3 SLIKE + KARABINERI + KONOP ===
+        const previewWrapper = document.createElement('div');
+        previewWrapper.className = 'blog-preview-wrapper';
+
+        // SVG konop
+        const ropeSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        ropeSVG.setAttribute("class", "blog-rope-svg");
+        ropeSVG.setAttribute("viewBox", "0 0 300 40");
+        ropeSVG.setAttribute("width", "100%");
+        ropeSVG.setAttribute("height", "40");
+        ropeSVG.setAttribute("preserveAspectRatio", "none");
+
+        const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        ropePath.setAttribute("d", "M10,30 Q75,0 150,30 T290,30");
+        ropePath.setAttribute("stroke", "#804000");
+        ropePath.setAttribute("stroke-width", "3");
+        ropePath.setAttribute("fill", "none");
+        ropePath.setAttribute("stroke-linecap", "round");
+        ropePath.setAttribute("stroke-dasharray", "4 2");
+        ropeSVG.appendChild(ropePath);
+        previewWrapper.appendChild(ropeSVG);
+
+        // Slike s karabinerima
+        for (let i = 1; i <= 3; i++) {
+          const imgSrc = target.dataset[`img${i}`];
+          if (!imgSrc) continue;
+
+          const frame = document.createElement('div');
+          frame.className = 'blog-preview-frame';
+          frame.style.transform = `translateY(10px) rotate(${[-3, 2, 5][i - 1]}deg) scale(0.9)`;
+
+          // SVG karabiner
+          const karabiner = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          karabiner.setAttribute("class", "blog-frame-decoration");
+          karabiner.setAttribute("viewBox", "0 0 64 64");
+          karabiner.setAttribute("width", "18");
+          karabiner.setAttribute("height", "18");
+
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("fill", "#444");
+          path.setAttribute("d", "M32 2c-3.1 0-6 1.3-8.1 3.5L10.5 19c-4.7 4.7-4.7 12.3 0 17l5.7 5.7c1.6 1.6 4.1 1.6 5.7 0s1.6-4.1 0-5.7l-5.7-5.7c-1.6-1.6-1.6-4.1 0-5.7l13.4-13.4c0.8-0.8 2-1.3 3.2-1.3s2.3 0.5 3.2 1.3l13.4 13.4c1.6 1.6 1.6 4.1 0 5.7l-5.7 5.7c-1.6 1.6-1.6 4.1 0 5.7s4.1 1.6 5.7 0l5.7-5.7c4.7-4.7 4.7-12.3 0-17L40.1 5.5C38 3.3 35.1 2 32 2z");
+          karabiner.appendChild(path);
+          frame.appendChild(karabiner);
+
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.alt = `Slika ${i}`;
+          frame.appendChild(img);
+
+          previewWrapper.appendChild(frame);
+        }
+
+          target.appendChild(previewWrapper);
+
+              
           setTimeout(() => bubble.classList.add('show'), 1600);
           setTimeout(() => tekst.classList.add('show'), 2000);
           setTimeout(() => gumb.classList.add('show'), 2600);
+          setTimeout(() => previewWrapper.classList.add('show'), 2600);
         }
-      } else {
+      }
+      
+      else {
         target.classList.remove('aktivno');
         const svg = target.querySelector('.markacija');
         const bubble = target.querySelector('.blog-bubble');
         const gumb = target.querySelector('.markacija-btn');
+        const previews = target.querySelector('.blog-preview-wrapper');
         if (svg) svg.remove();
         if (bubble) bubble.remove();
         if (gumb) gumb.remove();
+        if (previews) previews.remove();
       }
     });
   }, { threshold: 0.1 });
@@ -1255,9 +1401,11 @@ function refreshCurrentMarkacija() {
   const current = document.querySelector('.section.aktivno');
   if (!current) return;
 
-  current.querySelectorAll('.markacija, .blog-bubble, .markacija-btn')
+  // Obriši sve prethodne elemente
+  current.querySelectorAll('.markacija, .blog-bubble, .markacija-btn, .blog-preview-wrapper')
     .forEach(el => el.remove());
 
+  // SVG markacija
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("class", "markacija");
   svg.setAttribute("viewBox", "0 0 100 100");
@@ -1281,8 +1429,10 @@ function refreshCurrentMarkacija() {
   svg.appendChild(crveni);
   current.appendChild(svg);
 
+  // BLOG BUBBLE
   const bubble = document.createElement("div");
   bubble.classList.add("blog-bubble");
+
   const tekst = document.createElement("div");
   tekst.classList.add("blog-text");
 
@@ -1300,15 +1450,69 @@ function refreshCurrentMarkacija() {
   bubble.appendChild(tekst);
   current.appendChild(bubble);
 
+  // PREVIEW WRAPPER: slike + karabineri + konop
+  const previewWrapper = document.createElement('div');
+  previewWrapper.className = 'blog-preview-wrapper';
+
+  const ropeSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  ropeSVG.setAttribute("class", "blog-rope-svg");
+  ropeSVG.setAttribute("viewBox", "0 0 300 40");
+  ropeSVG.setAttribute("width", "100%");
+  ropeSVG.setAttribute("height", "40");
+  ropeSVG.setAttribute("preserveAspectRatio", "none");
+
+  const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  ropePath.setAttribute("d", "M10,30 Q75,0 150,30 T290,30");
+  ropePath.setAttribute("stroke", "#804000");
+  ropePath.setAttribute("stroke-width", "3");
+  ropePath.setAttribute("fill", "none");
+  ropePath.setAttribute("stroke-linecap", "round");
+  ropePath.setAttribute("stroke-dasharray", "4 2");
+  ropeSVG.appendChild(ropePath);
+  previewWrapper.appendChild(ropeSVG);
+
+  for (let i = 1; i <= 3; i++) {
+    const imgSrc = current.dataset[`img${i}`];
+    if (!imgSrc) continue;
+
+    const frame = document.createElement('div');
+    frame.className = 'blog-preview-frame';
+
+    // SVG karabiner
+    const karabiner = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    karabiner.setAttribute("class", "blog-frame-decoration");
+    karabiner.setAttribute("viewBox", "0 0 64 64");
+    karabiner.setAttribute("width", "18");
+    karabiner.setAttribute("height", "18");
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("fill", "#444");
+    path.setAttribute("d", "M32 2c-3.1 0-6 1.3-8.1 3.5L10.5 19c-4.7 4.7-4.7 12.3 0 17l5.7 5.7c1.6 1.6 4.1 1.6 5.7 0s1.6-4.1 0-5.7l-5.7-5.7c-1.6-1.6-1.6-4.1 0-5.7l13.4-13.4c0.8-0.8 2-1.3 3.2-1.3s2.3 0.5 3.2 1.3l13.4 13.4c1.6 1.6 1.6 4.1 0 5.7l-5.7 5.7c-1.6 1.6-1.6 4.1 0 5.7s4.1 1.6 5.7 0l5.7-5.7c4.7-4.7 4.7-12.3 0-17L40.1 5.5C38 3.3 35.1 2 32 2z");
+    karabiner.appendChild(path);
+    frame.appendChild(karabiner);
+
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.alt = `Slika ${i}`;
+    frame.appendChild(img);
+
+    previewWrapper.appendChild(frame);
+  }
+
+  current.appendChild(previewWrapper);
+
+  // GUMB
   const gumb = document.createElement("button");
   gumb.classList.add("markacija-btn");
   gumb.textContent = btnText;
   gumb.onclick = () => window.location.href = link;
   current.appendChild(gumb);
 
+  // ANIMACIJE (usinkronizirane)
   setTimeout(() => bubble.classList.add('show'), 1600);
   setTimeout(() => tekst.classList.add('show'), 2000);
   setTimeout(() => gumb.classList.add('show'), 2600);
+  setTimeout(() => previewWrapper.classList.add('show'), 2600);
 }
 </script>
    
