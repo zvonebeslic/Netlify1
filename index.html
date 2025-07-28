@@ -1268,7 +1268,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const previewWrapper = document.createElement('div');
         previewWrapper.className = 'blog-preview-wrapper';
 
-        // SVG konop
         const ropeSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         ropeSVG.setAttribute("class", "blog-rope-svg");
         ropeSVG.setAttribute("viewBox", "0 0 300 40");
@@ -1276,16 +1275,48 @@ document.addEventListener("DOMContentLoaded", function () {
         ropeSVG.setAttribute("height", "10");
         ropeSVG.setAttribute("preserveAspectRatio", "none");
 
+        // === DEFINIRAJ UZORAK KONOPA (PATTERN) ===
+        const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+        const pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
+        pattern.setAttribute("id", "ropePattern");
+        pattern.setAttribute("patternUnits", "userSpaceOnUse");
+        pattern.setAttribute("width", "8");
+        pattern.setAttribute("height", "8");
+
+        const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line1.setAttribute("x1", "0");
+        line1.setAttribute("y1", "0");
+        line1.setAttribute("x2", "8");
+        line1.setAttribute("y2", "8");
+        line1.setAttribute("stroke", "#d2b48c");
+        line1.setAttribute("stroke-width", "1.5");
+
+        const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line2.setAttribute("x1", "0");
+        line2.setAttribute("y1", "8");
+        line2.setAttribute("x2", "8");
+        line2.setAttribute("y2", "0");
+        line2.setAttribute("stroke", "#8b4513");
+        line2.setAttribute("stroke-width", "1.5");
+
+        pattern.appendChild(line1);
+        pattern.appendChild(line2);
+        defs.appendChild(pattern);
+        ropeSVG.appendChild(defs);
+
+        // === KONOP ===
         const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
         ropePath.setAttribute("d", "M10,8 Q75,0 150,8 T290,8");
-        ropePath.setAttribute("stroke", "#804000");
+        ropePath.setAttribute("stroke", "url(#ropePattern)");
         ropePath.setAttribute("stroke-width", "7");
         ropePath.setAttribute("fill", "none");
         ropePath.setAttribute("stroke-linecap", "round");
-        ropePath.setAttribute("stroke-dasharray", "4 2");
+        ropePath.setAttribute("stroke-dasharray", "4 2"); // možeš i maknuti ako ne želiš isprekidano
+
         ropeSVG.appendChild(ropePath);
         previewWrapper.appendChild(ropeSVG);
-
+              
         // Slike s karabinerima
         for (let i = 1; i <= 3; i++) {
           const imgSrc = target.dataset[`img${i}`];
@@ -1482,23 +1513,54 @@ function refreshCurrentMarkacija() {
         const previewWrapper = document.createElement('div');
         previewWrapper.className = 'blog-preview-wrapper';
 
-        // SVG konop
         const ropeSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        ropeSVG.setAttribute("class", "blog-rope-svg");
-        ropeSVG.setAttribute("viewBox", "0 0 300 40");
-        ropeSVG.setAttribute("width", "100%");
-        ropeSVG.setAttribute("height", "10");
-        ropeSVG.setAttribute("preserveAspectRatio", "none");
+ropeSVG.setAttribute("class", "blog-rope-svg");
+ropeSVG.setAttribute("viewBox", "0 0 300 40");
+ropeSVG.setAttribute("width", "100%");
+ropeSVG.setAttribute("height", "10");
+ropeSVG.setAttribute("preserveAspectRatio", "none");
 
-        const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        ropePath.setAttribute("d", "M10,8 Q75,0 150,8 T290,8");
-        ropePath.setAttribute("stroke", "#804000");
-        ropePath.setAttribute("stroke-width", "7");
-        ropePath.setAttribute("fill", "none");
-        ropePath.setAttribute("stroke-linecap", "round");
-        ropePath.setAttribute("stroke-dasharray", "4 2");
-        ropeSVG.appendChild(ropePath);
-        previewWrapper.appendChild(ropeSVG);
+// === DEFINIRAJ UZORAK KONOPA (PATTERN) ===
+const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+const pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
+pattern.setAttribute("id", "ropePattern");
+pattern.setAttribute("patternUnits", "userSpaceOnUse");
+pattern.setAttribute("width", "8");
+pattern.setAttribute("height", "8");
+
+const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+line1.setAttribute("x1", "0");
+line1.setAttribute("y1", "0");
+line1.setAttribute("x2", "8");
+line1.setAttribute("y2", "8");
+line1.setAttribute("stroke", "#d2b48c");
+line1.setAttribute("stroke-width", "1.5");
+
+const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+line2.setAttribute("x1", "0");
+line2.setAttribute("y1", "8");
+line2.setAttribute("x2", "8");
+line2.setAttribute("y2", "0");
+line2.setAttribute("stroke", "#8b4513");
+line2.setAttribute("stroke-width", "1.5");
+
+pattern.appendChild(line1);
+pattern.appendChild(line2);
+defs.appendChild(pattern);
+ropeSVG.appendChild(defs);
+
+// === KONOP ===
+const ropePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+ropePath.setAttribute("d", "M10,8 Q75,0 150,8 T290,8");
+ropePath.setAttribute("stroke", "url(#ropePattern)");
+ropePath.setAttribute("stroke-width", "7");
+ropePath.setAttribute("fill", "none");
+ropePath.setAttribute("stroke-linecap", "round");
+ropePath.setAttribute("stroke-dasharray", "4 2"); // možeš i maknuti ako ne želiš isprekidano
+
+ropeSVG.appendChild(ropePath);
+previewWrapper.appendChild(ropeSVG);
 
         // Slike s karabinerima
         for (let i = 1; i <= 3; i++) {
