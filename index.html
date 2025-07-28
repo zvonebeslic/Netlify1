@@ -714,6 +714,35 @@ to {
   transition: transform 0.3s ease;
 }
 
+ /* === UVEĆANA SLIKA BEZ ZAMRAČENJA === */
+.image-modal-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  opacity: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.image-modal-overlay.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.image-modal-overlay img {
+  width: 230px;
+  height: 190px;
+  object-fit: cover;
+  border: 3px solid white;
+  border-radius: 10px;
+  clip-path: polygon(0% 0, 95% 0, 100% 0%, 100% 95%, 95% 100%, 0% 100%, 0 95%, 0 0%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  cursor: zoom-out;
+}     
+
 /* === UKLANJANJE PLAVOG EFEKTA NA DODIR (MOBITELI) === */
 a, button {
   -webkit-tap-highlight-color: transparent;
@@ -1359,6 +1388,38 @@ document.addEventListener("DOMContentLoaded", function () {
           const img = document.createElement('img');
           img.src = imgSrc;
           img.alt = `Slika ${i}`;
+
+          
+// kod za povećanje slike
+img.addEventListener('click', () => {
+  const overlay = document.createElement('div');
+  overlay.className = 'image-modal-overlay';
+
+  const enlargedImg = document.createElement('img');
+  enlargedImg.src = imgSrc;
+  enlargedImg.alt = img.alt || '';
+
+  overlay.appendChild(enlargedImg);
+  document.body.appendChild(overlay);
+
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
+  });
+
+  overlay.addEventListener('click', () => {
+    overlay.classList.remove('show');
+    setTimeout(() => overlay.remove(), 300);
+  });
+
+  document.addEventListener('keydown', function escListener(e) {
+    if (e.key === "Escape") {
+      overlay.classList.remove('show');
+      setTimeout(() => overlay.remove(), 300);
+      document.removeEventListener('keydown', escListener);
+    }
+  });
+});
+              
           frame.appendChild(img);
 
           previewWrapper.appendChild(frame);
