@@ -668,7 +668,7 @@ to {
 .blog-preview-frame {
   width: 65px;
   height: 55px;
-  position: relative;
+  position: absolute;
   opacity: 1;
   transition: transform 0.4s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
@@ -680,6 +680,7 @@ to {
   height: 55px;
   border: 2px solid white;
   object-fit: cover;
+  position: absolute;
   clip-path: polygon(0% 0, 95% 0, 100% 0%, 100% 95%, 95% 100%, 0% 100%, 0 95%, 0 0%);
   transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
   cursor: pointer;
@@ -691,7 +692,7 @@ to {
   top: -100px;
   left: 8px;
   transform: scale(1.05);
-  z-index: 999;
+  z-index: 7;
   position: absolute;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   border: 3px solid white;
