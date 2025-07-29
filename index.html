@@ -686,18 +686,22 @@ to {
   clip-path: polygon(0% 0, 95% 0, 100% 0%, 100% 95%, 95% 100%, 0% 100%, 0 95%, 0 0%);
   transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
   cursor: pointer;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 /* === POVEĆANA SLIKA === */
 .blog-preview-frame img.clicked {
-  width: 230px;
-  height: 190px;
-  top: -100px;
+  width: auto;
+  height: auto;
+  max-width: 90vw;
+  max-height: 75vh;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) scale(1.05);
-  position: absolute;
+  transform: translate(-50%, -50%) scale(1.05);
+  position: fixed;
   z-index: 9999;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   border: 3px solid white;
   border-radius: 10px;
   object-fit: contain;
