@@ -682,6 +682,19 @@ to {
   border: 2px solid white;
   object-fit: cover;
   clip-path: polygon(0% 0, 95% 0, 100% 0%, 100% 95%, 95% 100%, 0% 100%, 0 95%, 0 0%);
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+  cursor: pointer;
+}
+
+.blog-preview-frame img.clicked {
+  width: 230px;
+  height: 190px;
+  transform: scale(1.05);
+  z-index: 999;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 3px solid white;
+  border-radius: 10px;
 }
 
 /* === SVG KARABINER IZNAD SLIKE === */
@@ -713,35 +726,6 @@ to {
   transform: scale(1.05);
   transition: transform 0.3s ease;
 }
-
- /* === UVEĆANA SLIKA BEZ ZAMRAČENJA === */
-.image-modal-overlay {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.7);
-  opacity: 0;
-  z-index: 9999;
-  pointer-events: none;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.image-modal-overlay.show {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-  pointer-events: auto;
-}
-
-.image-modal-overlay img {
-  width: 230px;
-  height: 190px;
-  object-fit: cover;
-  border: 3px solid white;
-  border-radius: 10px;
-  clip-path: polygon(0% 0, 95% 0, 100% 0%, 100% 95%, 95% 100%, 0% 100%, 0 95%, 0 0%);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  cursor: zoom-out;
-}     
 
 /* === UKLANJANJE PLAVOG EFEKTA NA DODIR (MOBITELI) === */
 a, button {
@@ -1388,40 +1372,21 @@ document.addEventListener("DOMContentLoaded", function () {
           const img = document.createElement('img');
           img.src = imgSrc;
           img.alt = `Slika ${i}`;
-
-          
-// kod za povećanje slike
-img.addEventListener('click', () => {
-  const overlay = document.createElement('div');
-  overlay.className = 'image-modal-overlay';
-
-  const enlargedImg = document.createElement('img');
-  enlargedImg.src = imgSrc;
-  enlargedImg.alt = img.alt || '';
-
-  overlay.appendChild(enlargedImg);
-  document.body.appendChild(overlay);
-
-  requestAnimationFrame(() => {
-    overlay.classList.add('show');
-  });
-
-  overlay.addEventListener('click', () => {
-    overlay.classList.remove('show');
-    setTimeout(() => overlay.remove(), 300);
-  });
-
-  document.addEventListener('keydown', function escListener(e) {
-    if (e.key === "Escape") {
-      overlay.classList.remove('show');
-      setTimeout(() => overlay.remove(), 300);
-      document.removeEventListener('keydown', escListener);
-    }
-  });
-});
-              
           frame.appendChild(img);
 
+// === 2. KLIK ZA POVEĆANJE SLIKE (ZOOM) ===
+img.addEventListener('click', function (e) {
+  e.stopPropagation(); // spriječi automatsko zatvaranje
+
+  // Zatvori sve druge slike koje su otvorene
+  document.querySelectorAll('.blog-preview-frame img.clicked').forEach(otherImg => {
+    if (otherImg !== img) otherImg.classList.remove('clicked');
+  });
+
+  // Otvori ili zatvori trenutnu sliku
+  img.classList.toggle('clicked');
+});
+              
           previewWrapper.appendChild(frame);
         }
 
@@ -1494,6 +1459,14 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     }, 900); // dovoljno da se animacije prikažu
   });
 });
+   // FUNKCIJA ZA ZATVARANJE SLIKA   
+     document.addEventListener('click', function (e) {
+  if (!e.target.closest('.blog-preview-frame img')) {
+    document.querySelectorAll('.blog-preview-frame img.clicked').forEach(img => {
+      img.classList.remove('clicked');
+    });
+  }
+});       
 });
       
 // FUNKCIJA ANIMIRAJ STRELICE U CONTENT BOX
@@ -1667,6 +1640,19 @@ previewWrapper.appendChild(ropeSVG);
           img.alt = `Slika ${i}`;
           frame.appendChild(img);
 
+// === 2. KLIK ZA POVEĆANJE SLIKE (ZOOM) ===
+img.addEventListener('click', function (e) {
+  e.stopPropagation(); // spriječi automatsko zatvaranje
+
+  // Zatvori sve druge slike koje su otvorene
+  document.querySelectorAll('.blog-preview-frame img.clicked').forEach(otherImg => {
+    if (otherImg !== img) otherImg.classList.remove('clicked');
+  });
+
+  // Otvori ili zatvori trenutnu sliku
+  img.classList.toggle('clicked');
+});    
+
           previewWrapper.appendChild(frame);
         }
 
@@ -1684,6 +1670,16 @@ previewWrapper.appendChild(ropeSVG);
   setTimeout(() => tekst.classList.add('visible'), 2000);
   setTimeout(() => gumb.classList.add('visible'), 2600);
   setTimeout(() => previewWrapper.classList.add('visible'), 2600);
+
+
+   // FUNKCIJA ZA ZATVARANJE SLIKA   
+  document.addEventListener('click', function (e) {
+  if (!e.target.closest('.blog-preview-frame img')) {
+    document.querySelectorAll('.blog-preview-frame img.clicked').forEach(img => {
+      img.classList.remove('clicked');
+    });
+  }
+});
 }
 </script>
    
