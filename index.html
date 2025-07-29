@@ -1459,6 +1459,7 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     }, 900); // dovoljno da se animacije prikažu
   });
 });
+});
    // FUNKCIJA ZA ZATVARANJE SLIKA   
      document.addEventListener('click', function (e) {
   if (!e.target.closest('.blog-preview-frame img')) {
@@ -1467,7 +1468,6 @@ document.querySelectorAll('.content-box-link').forEach(link => {
     });
   }
 });       
-});
       
 // FUNKCIJA ANIMIRAJ STRELICE U CONTENT BOX
 function animateArrowPeak(arrow) {
@@ -1670,17 +1670,8 @@ img.addEventListener('click', function (e) {
   setTimeout(() => tekst.classList.add('visible'), 2000);
   setTimeout(() => gumb.classList.add('visible'), 2600);
   setTimeout(() => previewWrapper.classList.add('visible'), 2600);
-
-
-   // FUNKCIJA ZA ZATVARANJE SLIKA   
-  document.addEventListener('click', function (e) {
-  if (!e.target.closest('.blog-preview-frame img')) {
-    document.querySelectorAll('.blog-preview-frame img.clicked').forEach(img => {
-      img.classList.remove('clicked');
-    });
-  }
-});
 }
+      
 </script>
    
 </body>
