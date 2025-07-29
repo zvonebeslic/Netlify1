@@ -692,21 +692,20 @@ to {
 
 /* === POVEĆANA SLIKA === */
 .blog-preview-frame img.clicked {
-  position: fixed;
-  top: 130%;
-  left: 40%;
-  transform: translate(-50%, -50%) scale(1.05);
-  max-width: 90vw;
-  max-height: 75vh;
-  width: auto;
-  height: auto;
-  z-index: 99999; /* veće od svega, i markacija, i navbara */
+  position: absolute;
+  top: -110px;
+  left: 50%;
+  transform: translateX(-50%) scale(1.25);
+  width: 230px;
+  height: 190px;
+  z-index: 20;
   border: 3px solid white;
   border-radius: 10px;
+  object-fit: cover;
   background-color: white;
-  object-fit: contain;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   cursor: zoom-out;
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
 /* === SVG KARABINER IZNAD SLIKE === */
