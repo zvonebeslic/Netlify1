@@ -645,14 +645,15 @@ to {
 .blog-preview-wrapper {
   position: absolute;
   bottom: 128px;
+  left: 50%;
   transform: translateX(-50%);
-  width: 120%;
-  max-width: 120vw;
-  height: auto;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   gap: 17px;
+  width: auto;
+  max-width: 100vw;
+  height: auto;
   background: transparent !important;
   will-change: transform, opacity;
   z-index: 10; /* iznad markacija i blog-bubble */
@@ -668,7 +669,6 @@ to {
 .blog-preview-frame {
   width: 70px;
   height: 55px;
-  transform: translateX(-50%);
   position: relative;
   overflow: visible;
   z-index: 1;
@@ -681,10 +681,15 @@ to {
 .blog-preview-frame img {
   width: 54px;
   height: 64px;
-  transform: translateX(-50%);    
-  border: 2px solid white;
   position: absolute;
+  top: 0;
+  left: 0;
+  transform: none;
+  border: 2px solid white;
   z-index: 1;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
   clip-path: polygon(
     4% 0%, 96% 0%,
     100% 4%, 100% 96%,
@@ -692,18 +697,14 @@ to {
     0% 96%, 0% 4%
   );
   transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
-  cursor: pointer;
-  object-fit: cover;
-  border-radius: 4px;
-  left: 50%;
 }
 
 /* === POVEĆANA SLIKA === */
 .blog-preview-frame img.clicked {
-  position: absolute;
-  top: -223px;
+  position: fixed;
+  top: 50%;
   left: 50%;
-  transform: translateX(-100%) scale(1.25);
+  transform: translate(-50%, -50%) scale(1.25);
   width: 190px;
   height: 222px;
   z-index: 20;
@@ -733,6 +734,7 @@ to {
 .blog-rope-svg {
   position: absolute;
   top: -3px;
+  left: 50%;
   transform: translateX(-50%);
   width: 110%;
   height: 10px;
@@ -740,6 +742,7 @@ to {
   pointer-events: none;
   background: transparent !important;
 }
+
       
 /* === OPCIONALNI HOVER EFEKT NA SLIKE === */
 .blog-preview-frame img:hover {
