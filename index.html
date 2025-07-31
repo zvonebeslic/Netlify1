@@ -645,10 +645,9 @@ to {
 .blog-preview-wrapper {
   position: absolute;
   bottom: 128px;
-  left: 50%;
-  transform: translateX(-100%);
-  width: 100%;
-  max-width: 100vw;
+  transform: translateX(-50%);
+  width: 120%;
+  max-width: 120vw;
   height: auto;
   display: flex;
   justify-content: center;
@@ -669,8 +668,7 @@ to {
 .blog-preview-frame {
   width: 70px;
   height: 55px;
-  left: 50%;
-  transform: translateX(-100%);
+  transform: translateX(-50%);
   position: relative;
   overflow: visible;
   z-index: 1;
@@ -683,8 +681,7 @@ to {
 .blog-preview-frame img {
   width: 54px;
   height: 64px;
-  left: 50%;
-  transform: translateX(-100%);    
+  transform: translateX(-50%);    
   border: 2px solid white;
   position: absolute;
   z-index: 1;
@@ -698,12 +695,14 @@ to {
   cursor: pointer;
   object-fit: cover;
   border-radius: 4px;
+  left: 50%;
 }
 
 /* === POVEĆANA SLIKA === */
 .blog-preview-frame img.clicked {
   position: absolute;
-  top: -233px;
+  top: -223px;
+  left: 50%;
   transform: translateX(-100%) scale(1.25);
   width: 190px;
   height: 222px;
@@ -717,13 +716,13 @@ to {
   clip-path: none !important;
   transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
-      
+
 /* === SVG KARABINER IZNAD SLIKE === */
 .blog-frame-decoration {
   position: absolute;
   top: -16px;
-  left: 50%;
-  transform: translateX(-100%);
+  right: 5%;
+  transform: translateX(-50%);
   width: 18px;
   height: 18px;
   z-index: 2;
@@ -734,7 +733,8 @@ to {
 .blog-rope-svg {
   position: absolute;
   top: -3px;
-  width: 120%;
+  transform: translateX(-50%);
+  width: 110%;
   height: 10px;
   z-index: 0;
   pointer-events: none;
