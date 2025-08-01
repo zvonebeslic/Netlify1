@@ -701,7 +701,10 @@ to {
 
 /* === SLIKA NAKON KLIKA (POVEĆANA) === */
 .blog-preview-frame img.clicked {
-  transform: translate(-50%, -400px) scale(1.25);
+  position: fixed; /* važna promjena: izdvoji sliku iz wrappera */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.25);
   width: 190px;
   height: 222px;
   border: 3px solid white;
@@ -710,7 +713,7 @@ to {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   cursor: zoom-out;
   clip-path: none !important;
-  z-index: 25;
+  z-index: 9999; /* sigurno iznad svega */
 }
 
 /* === SVG KARABINER IZNAD SLIKE === */
