@@ -643,7 +643,7 @@ to {
 
 /* === PREVIEW WRAPPER KOJI SADRŽI SVE 3 SLIKE + KONOP I KARABINER === */
 .blog-preview-wrapper {
-  position: absolute;
+  position: relative;
   bottom: 128px;
   left: 50%;
   transform: translateX(-50%);
@@ -666,7 +666,7 @@ to {
 }
 
 .blog-preview-frame {
-  position: relative;
+  position: absolute;
   width: 54px;
   height: 64px;
   overflow: visible;
@@ -697,7 +697,7 @@ to {
 }
 
 .blog-preview-frame img.clicked {
-  position: fixed;
+  position: absolute;
   top: -380%; 
   left: 50%;
   transform: translate(-100px, -50%) scale(1.25);
