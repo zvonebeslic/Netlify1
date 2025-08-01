@@ -1358,7 +1358,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const frame = document.createElement('div');
           frame.className = 'blog-preview-frame';
-          frame.style.transform = `translateY(10px) rotate(${[-3, 2, 5][i - 1]}deg) scale(0.9)`;
+          const yOffset = [10, 10, 12]; // samo treća slika (i=3) ide 12px dolje
+          const angles = [-3, 2, 5];
+          frame.style.transform = `translateY(${yOffset[i - 1]}px) rotate(${angles[i - 1]}deg) scale(0.9)`;
 
           // SVG karabiner
           const karabiner = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -1624,8 +1626,10 @@ previewWrapper.appendChild(ropeSVG);
 
           const frame = document.createElement('div');
           frame.className = 'blog-preview-frame';
-          frame.style.transform = `translateY(10px) rotate(${[-3, 2, 5][i - 1]}deg) scale(0.9)`;
-
+          const yOffset = [10, 10, 12]; // samo treća slika (i=3) ide 12px dolje
+          const angles = [-3, 2, 5];
+          frame.style.transform = `translateY(${yOffset[i - 1]}px) rotate(${angles[i - 1]}deg) scale(0.9)`;
+         
           // SVG karabiner
           const karabiner = document.createElementNS("http://www.w3.org/2000/svg", "svg");
           karabiner.setAttribute("viewBox", "0 0 64 64");
