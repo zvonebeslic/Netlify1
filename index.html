@@ -669,8 +669,8 @@ to {
 /* === POJEDINAČNI OKVIR ZA SLIKU === */
 .blog-preview-frame {
   position: relative; /* sada roditelj za sliku i karabiner */
-  width: 200px;
-  height: 200px;
+  width: 54px;
+  height: 64px;
   overflow: visible;
   z-index: 3;
   transition: transform 0.4s ease;
@@ -679,7 +679,7 @@ to {
 
 /* === SLIKA UNUTAR OKVIRA === */
 .blog-preview-frame img {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   width: 54px;
@@ -702,7 +702,7 @@ to {
 /* === SLIKA NAKON KLIKA (POVEĆANA) === */
 .blog-preview-frame img.clicked {
   position: fixed; /* važna promjena: izdvoji sliku iz wrappera */
-  top: 50%;
+  top: -100%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1.25);
   width: 190px;
