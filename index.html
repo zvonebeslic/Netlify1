@@ -643,16 +643,17 @@ to {
 
 /* === PREVIEW WRAPPER KOJI SADRŽI SVE 3 SLIKE + KONOP I KARABINER === */
 .blog-preview-wrapper {
-  position: relative;
+  position: absolute; /* ili fixed ako treba ostati u viewportu */
+  bottom: 128px; /* visina ovisi o visini blog-bubblea + 10px razmaka */
   left: 50%;
-  transform: translate(-50%, 50%);
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: flex-start;
   gap: 17px;
   overflow: visible;
-  width: auto;
-  height: auto;
+  width: 100%;
+  max-width: 100vw;
   background: transparent !important;
   will-change: transform, opacity;
   z-index: 10;
