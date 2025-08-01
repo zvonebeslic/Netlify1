@@ -1369,9 +1369,9 @@ document.addEventListener("DOMContentLoaded", function () {
           karabiner.setAttribute("height", "18");
           karabiner.setAttribute("class", "blog-frame-decoration");
 
-          const karabinerYOffset = [-2, 0, -4];
-          karabiner.style.transform = `translate(-0%, ${karabinerYOffset[i - 1]}px)`;
-                        
+          const karabinerYOffset = [-2, -1, -5];
+          karabiner.style.transform = `translateY(${karabinerYOffset[i - 1]}px)`;
+          
           // Glavni okvir
           const pathBody = document.createElementNS("http://www.w3.org/2000/svg", "path");
           pathBody.setAttribute("d", "M18 4 C10 12, 10 52, 20 60 C40 72, 54 54, 46 42 L40 32");
