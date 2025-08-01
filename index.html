@@ -644,9 +644,8 @@ to {
 /* === PREVIEW WRAPPER KOJI SADRŽI SVE 3 SLIKE + KONOP I KARABINER === */
 .blog-preview-wrapper {
   position: relative;
-  bottom: 128px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -669,7 +668,8 @@ to {
   position: absolute;
   width: 54px;
   height: 64px;
-  overflow: visible;
+  left: 50%;
+  transform: translate(-50%, -50%);    
   z-index: 3;
   transition: transform 0.4s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
@@ -677,11 +677,10 @@ to {
 
 .blog-preview-frame img {
   position: absolute;
-  top: 53%;
-  left: 50%;
   width: 54px;
   height: 64px;
-  transform: translate(-100, -50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
   border: 2px solid white;
   object-fit: cover;
   border-radius: 4px;
@@ -698,9 +697,8 @@ to {
 
 .blog-preview-frame img.clicked {
   position: absolute;
-  top: -380%; 
   left: 50%;
-  transform: translate(-100px, -50%) scale(1.25);
+  transform: translate(-50%, -50%) scale(1.25);
   width: 190px;
   height: 222px;
   box-sizing: border-box;
@@ -716,9 +714,8 @@ to {
 /* === SVG KARABINER IZNAD SLIKE === */
 .blog-frame-decoration {
   position: absolute;
-  top: -18px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: 18px;
   height: 18px;
   z-index: 4;
@@ -728,9 +725,8 @@ to {
 /* === KONOP KOJI POVEZUJE SVE KARABINERE === */
 .blog-rope-svg {
   position: absolute;
-  top: -23px; /* malo iznad karabinera */
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: 110%;
   height: 10px;
   z-index: 0;
