@@ -719,7 +719,7 @@ to {
 .blog-frame-decoration {
   position: absolute;
   top: 11px;
-  left: 2%;
+  left: -15%;
   transform: translateX(-170%);
   width: 18px;
   height: 18px;
@@ -1357,7 +1357,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const frame = document.createElement('div');
           frame.className = 'blog-preview-frame';
-          const yOffset = [10, 10, 15]; // samo treća slika (i=3) ide 12px dolje
+          const yOffset = [10, 12, 15]; // samo treća slika (i=3) ide 12px dolje
           const angles = [-3, 2, 5];
           frame.style.transform = `translateY(${yOffset[i - 1]}px) rotate(${angles[i - 1]}deg) scale(0.9)`;
 
@@ -1628,7 +1628,7 @@ previewWrapper.appendChild(ropeSVG);
 
           const frame = document.createElement('div');
           frame.className = 'blog-preview-frame';
-          const yOffset = [10, 10, 15]; // samo treća slika (i=3) ide 12px dolje
+          const yOffset = [10, 12, 15]; // samo treća slika (i=3) ide 12px dolje
           const angles = [-3, 2, 5];
           frame.style.transform = `translateY(${yOffset[i - 1]}px) rotate(${angles[i - 1]}deg) scale(0.9)`;
          
@@ -1640,8 +1640,8 @@ previewWrapper.appendChild(ropeSVG);
           karabiner.setAttribute("class", "blog-frame-decoration");
 
           const karabinerYOffset = [-3, 0, -3];
-          karabiner.style.transform = `translate(-50%, ${karabinerYOffset[i - 1]}px)`;
-     
+          karabiner.style.transform = `translateY(${karabinerYOffset[i - 1]}px)`;
+          
           // Glavni okvir
           const pathBody = document.createElementNS("http://www.w3.org/2000/svg", "path");
           pathBody.setAttribute("d", "M18 4 C10 12, 10 52, 20 60 C40 72, 54 54, 46 42 L40 32");
