@@ -1,82 +1,633 @@
 <!DOCTYPE html>
 <html lang="hr">
-<head>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Planinarske vijesti | Mountain Adventures</title>
+  <title>Mountain Adventures</title>
+  
+  <!-- SEO opisi na Hrv i Engl -->
+  <meta name="description" lang="hr" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu. Planinarske staze Velebita. Planinarske staze Nacionalni park Paklenica. Planinarske staze Nacionalni park Triglav. Planinarske staze Nacionalni park Sutjeska. Planinarske staze Nacionalni park Prokletije. Planinarske staze Nacionalni park Durmitor. Planinarske staze Nacionalni park Biogradska gora. Planinarske staze Nacionalni park Plitvička jezera. Planinarske staze Nacionalni park Sjeverni Velebit. Planinarske staze Nacionalni park Risnjak. Planinarske staze Nacionalni park Tara. Planinarske staze Nacionalni park Kopaonik. Planinarske staze Nacionalni park Đerdap. Planinarske staze Nacionalni park Mavrovo. Planinarske staze Nacionalni park Galicica. Planinarske staze Nacionalni park Pelister. Planinarske staze Julijske Alpe. Planinarske staze Nacionalni park Logarska dolina. Planinarske staze Park prirode Blidinje. Planinarske staze Prenj. Planinarske staze Park prirode Biokovo. Planinarske staze Komovi. Planinarske staze Rila. Planinarske staze Čvrsnica. Planinarske staze Hrvatske,Planinarske staze Bosne i Hercegovine,Planinarske staze Albanije,Planinarske staze Slovenije,Planinarske staze Makedonije,Planonarske staze Crne Gore i Planinarske staze Srbije.">
+  <meta name="description" lang="en" content="Explore the hiking trails of the Balkans. Detailed descriptions of hiking trails. Hiking gear. GPS tracks for hiking. Inspiring and educational hiking stories. Your mountain world in one place. Hiking trails on Velebit. Hiking trails in Paklenica National Park. Hiking trails in Triglav National Park. Hiking trails in Sutjeska National Park. Hiking trails on Prokletije. Hiking trails in Durmitor National Park. Hiking trails in Biogradska Gora National Park. Hiking trails in Plitvice Lakes National Park. Hiking trails in Northern Velebit National Park. Hiking trails in Risnjak National Park. Hiking trails in Tara National Park. Hiking trails in Kopaonik National Park. Hiking trails in Đerdap National Park. Hiking trails in Mavrovo National Park. Hiking trails in Galicica National Park. Hiking trails in Pelister National Park. Hiking trails in the Julian Alps. Hiking trails in Logarska Dolina National Park. Hiking trails in Blidinje Nature Park. Hiking trails on Prenj. Hiking trails in Biokovo Nature Park. Hiking trails on Komovi. Hiking trails on Rila. Hiking trails on Čvrsnica. Hiking trails in Croatia. Hiking trails in Bosnia and Herzegovina. Hiking trails in Albania. Hiking trails in Slovenia. Hiking trails in Macedonia. Hiking trails in Montenegro. Hiking trails in Serbia.">    
 
-  <!-- SEO meta -->
-  <meta name="description" content="Najnovije vijesti iz planinarskog svijeta. Događaji, upozorenja, novosti i zanimljivosti.">
-  <meta name="keywords" content="planinarenje, vijesti, planine, novosti, događaji, upozorenja, Balkan">
+  
+  <!-- === Kodovi da google prepoznaje SEO za oba jezika === -->
+  <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/" />
+  <link rel="alternate" hreflang="en" href="https://tvojadomena.com/" />
+  
+  <!-- === OPEN GRAPH (HR + EN/linkovi za dijeljenje) === -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tvojadomena.com/">
+  <meta property="og:image" content="https://tvojadomena.com/images/cover.jpg">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="season.css" />
-  <link rel="icon" href="images/favicon.png" />
-</head>
+  <meta property="og:title" content="Mountain Adventures – Planinarske staze Balkana">
+  <meta property="og:description" content="Planinarske staze, GPS tragovi, planinarska oprema i inspirativne priče. Istraži Velebit, Durmitor, Prokletije i druge planine Balkana.">
+
+  <meta property="og:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails">
+  <meta property="og:description" lang="en" content="Hiking trails, GPS tracks, hiking gear and inspiring stories. Explore Velebit, Durmitor, Prokletije and other Balkan mountains.">
+
+  <!-- === TWITTER CARDS (HR + EN) === -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://tvojadomena.com/images/cover.jpg">
+
+  <meta name="twitter:title" content="Mountain Adventures – Planinarske staze Balkana">
+  <meta name="twitter:description" content="Planinarske staze, GPS tragovi, planinarska oprema i inspirativne priče. Istraži Velebit, Durmitor, Prokletije i druge planine Balkana.">
+
+  <meta name="twitter:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails">
+  <meta name="twitter:description" lang="en" content="Hiking trails, GPS tracks, hiking gear and inspiring stories. Explore Velebit, Durmitor, Prokletije and other Balkan mountains.">
+
+  <!-- === Ikona za spremanje sadrzaja na mobitele === -->
+  <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml">
+      
+  <!-- === Link za fontove u naslovnoj slici === -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- === SEASON STILOVI === -->
+<link rel="stylesheet" href="season.css" />    
+
+  </head>
+
+  <style>
+       /* === OSNOVNI RESET I GLOBALNA PRAVILA === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: #000;
+}
+
+/* === NAVIGACIJA / GORNJI IZBORNIK === */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  z-index: 1000;
+}
+
+/* === ZASTAVICA (tooltip na hover) === */
+.navbar-left img {
+  height: 16px;
+  width: 24px;
+  cursor: pointer;
+  position: relative;
+}
+
+.navbar-left img:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: #fff;
+  color: #000;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  top: 30px;
+  left: 0;
+  white-space: nowrap;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+
+/* === TRAŽILICA (CENTAR) === */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+  transform: translateY(12px);
+}
+
+.search-container {
+  width: 250px;
+  position: relative;
+  padding-top: 10px;
+  z-index: 1;
+}
+
+.search-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 30px; /* ili 55px ako dodaješ prostor za sliku */
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  padding: 0 15px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  border-radius: 20px;
+}
+
+/* === UKRASNA PLANINA IZNAD TRAŽILICE === */
+.search-top-decoration {
+  position: absolute;
+  top: -212.7px;
+  left: 108px;
+  width: 1600%;
+  height: 30px;
+  object-fit: cover;
+  display: block;
+  z-index: -10;
+  transform: scale(19);
+  transform-origin: top center;
+  pointer-events: none;
+}
+      
+/* === UNUTARNJI INPUT POLJE === */
+.mountain-search {
+  width: 100%;
+  padding: 14px 40px 8px 12px;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: #333;
+  outline: none;
+}
+
+/* === IKONA UNUTAR TRAŽILICE === */
+.search-wrapper img {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  width: 19px;
+  height: 19px;
+  pointer-events: none;
+}
+
+/* === DESNA STRANA (HAMBURGER IKONA) === */
+.navbar-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.navbar-right:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.burger-line {
+  width: 26px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+/* === MENI KOJI SE OTVARA === */
+.menu-overlay {
+  position: fixed;
+  top: 70px;
+  right: 0;
+  width: 35vw;
+  background-color: rgba(17, 17, 17, 0.95);
+  color: white;
+  padding: 20px;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 9999;
+}
+
+.menu-overlay.open {
+  display: flex;
+}
+
+.menu-overlay a {
+  margin: 10px 0;
+  text-decoration: none;
+  color: white;
+  font-size: 1.1em;
+}
+    
+.section {
+  height: 50vh;
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 1s ease, opacity 1s ease;
+}
+
+/* === SEKCIJA KOJA JE VIDLJIVA U VIEWPORTU === */
+.section.visible {
+  opacity: 1;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+/* === SEKCIJE KOJE NISU U FOKUSU === */
+.section:not(.visible) {
+  opacity: 0.4;
+  transform: scale(1);
+}
+    
+.trail-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+    
+.trail-card {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: #fafafa;  
+  transition: transform 0.2s ease;
+}
+    
+.trail-card:hover {
+  transform: scale(1.02);
+}
+    
+.trail-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+    
+.trail-card div {
+  padding: 1rem;
+}
+    
+.trail-card h3 {
+  margin-top: 0;
+}
+   
+#trail-filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0 2rem;
+}
+    
+#trail-filter-form select,
+#trail-filter-form button {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: 1px solid #888;
+  font-size: 1rem;
+}
+    
+#trail-filter-form button {
+  background-color: #35776a;
+  color: #fff;
+  cursor: pointer;
+}
+    
+#trail-filter-form button:hover {
+  background-color: #26594f;
+}
+
+   /* === GUMB "NA VRH STRANICE" (BACK TO TOP) === */
+#backToTop {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  outline: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+#backToTop:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%) scale(1.1);
+}
+
+#backToTop svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* === FOOTER === */
+footer {
+  background: #111;
+  color: #ccc;
+  text-align: center;
+  padding: 20px 10px;
+  font-size: 14px;
+  position: relative;
+  margin-top: 60px;
+}
+
+.footer-icons {
+  margin: 10px 0;
+}
+
+.footer-icons svg {
+  width: 32px;
+  height: 32px;
+  margin: 0 10px;
+  vertical-align: middle;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.footer-icons svg:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+ /* === OPĆI EFEKT PRITISKA (UNIVERZALNA KLASA .pressed) === */
+.pressed {
+  transform: scale(0.97);
+  transition: transform 0.15s ease;
+}
+
+/* === UNUTARNJI SLOJ I TEKST (KUTIJA SADRŽAJA) === */
+.content-box {
+  overflow: hidden;
+  position: relative; /* ili absolute ako već pozicioniraš sekcije */
+}   
+
+ /* === DODATNI INTERAKTIVNI ELEMENTI: ZASTAVICE, IKONE, GUMBI === */
+.lang-flag {
+  transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
+  cursor: pointer;
+  transform-origin: center center;
+}
+
+/* === HOVER EFEKT ZA GORENJE ELEMENTE === */
+.lang-flag:hover {
+  filter: brightness(1.1);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+      
+/* === SPRIJEČAVANJE ŠIRENJA VAN EKRANA === */
+  html, body {
+  overflow-x: hidden !important;
+}       
+    
+  </style>
+  
 <body>
-
-  <!-- SEASON TOGGLE -->
   <div id="season-placeholder"></div>
 
-  <!-- NAVIGACIJA -->
-  <header>
-    <nav class="navbar">
-      <div class="nav-left">
-        <a href="index.html" class="logo"><img src="images/logo.svg" alt="Mountain Adventures" /></a>
-      </div>
-      <div class="nav-center">
-        <div class="search-bar">
-          <input type="text" placeholder="Pretraži" />
-          <img src="images/search.svg" alt="Search" />
+    <!-- === NAVIGACIJA (gore) === -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
+    </div>
+    <div class="navbar-center">
+      <div class="search-container">
+        <div class="search-wrapper">
+          <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration" />
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
+          <img src="images/search.svg" alt="ikona za tražilicu">
         </div>
       </div>
-      <div class="nav-right">
-        <img src="images/hr.svg" alt="HR" id="lang-hr" class="lang-flag">
-        <img src="images/en.svg" alt="EN" id="lang-en" class="lang-flag">
-        <div class="hamburger" id="hamburger">
-          <span></span><span></span><span></span>
-        </div>
-        <ul class="hamburger-menu" id="hamburger-menu">
-          <li><a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a></li>
-          <li><a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a></li>
-          <li><a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a></li>
-          <li><a href="webshop.html" data-hr="Web Shop" data-en="Web Shop">Web Shop</a></li>
-          <li><a href="planinarskevijesti.html" data-hr="Vijesti" data-en="News">Vijesti</a></li>
-          <li><a href="digitalniruksak.html" data-hr="Ruksak" data-en="Backpack">Ruksak</a></li>
-          <li><a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+    </div>
+    <div class="navbar-right" id="menu-toggle">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
+  </div>
 
-  <!-- HERO -->
-  <section class="image-section">
-    <img src="images/hero.jpg" alt="Planine" class="background-image" />
+  <!-- === HAMBURGER MENI === -->
+  <div class="menu-overlay" id="menu">
+    <a href="#section1" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="#section2" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="#section5" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="#webshop" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="#blog" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="#about" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>
+    <a href="#section7" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
+
+  <section class="image-section" style="background-image: url('images/hero.jpg'); height: 50vh;">
     <div class="overlay"></div>
   </section>
 
-  <!-- SADRŽAJ -->
   <main>
-    <!-- Prostor za planinarske vijesti -->
+    <section style="background-color: #f8f8f8; text-align: center;">
+      <h1>Istraži planinarske staze Balkana</h1>
+      <p>Filtriraj i pronađi savršenu rutu prema težini, planini, trajanju ili tvojoj lokaciji.</p>
+    </section>
+
+    <section style="background-color: #e3ecec;">
+      <h2 style="text-align: center;">Filtriraj staze</h2>
+      <form id="trail-filter-form">
+        <select><option selected disabled>Odaberi planinu</option><option>Velebit</option><option>Triglav</option><option>Prokletije</option></select>
+        <select><option selected disabled>Težina</option><option>Lagana</option><option>Srednja</option><option>Teška</option></select>
+        <select><option selected disabled>Trajanje hoda</option><option>&lt;2h</option><option>2–5h</option><option>&gt;5h</option></select>
+        <select><option selected disabled>Udaljenost</option><option>&lt;10 km</option><option>10–30 km</option><option>&gt;30 km</option></select>
+        <button type="submit">Primijeni filtre</button>
+      </form>
+    </section>
+
+    <section class="trail-list">
+      <article class="trail-card">
+        <img src="images/velebit.jpg" alt="Velebit">
+        <div>
+          <h3>Premužićeva staza</h3>
+          <p><strong>Planina:</strong> Velebit</p>
+          <p><strong>Težina:</strong> Srednja</p>
+          <p><strong>Trajanje:</strong> 5h</p>
+          <p><strong>Udaljenost:</strong> 15 km</p>
+          <a href="#">Detalji &rarr;</a>
+        </div>
+      </article>
+      <article class="trail-card">
+        <img src="images/triglav.jpg" alt="Triglav">
+        <div>
+          <h3>Uspon na Triglav</h3>
+          <p><strong>Planina:</strong> Triglav</p>
+          <p><strong>Težina:</strong> Teška</p>
+          <p><strong>Trajanje:</strong> 8h</p>
+          <p><strong>Udaljenost:</strong> 12 km</p>
+          <a href="#">Detalji &rarr;</a>
+        </div>
+      </article>
+    </section>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Mountain Adventures</p>
+       <!-- === GUMB: VRATI NA VRH STRANICE === -->
+  <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <!-- === FOOTER === -->
+  <footer id="footer">
+    <div class="footer-icons">
+      <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Link za Instagram">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
+        </svg>
+      </a>
+      <a href="mailto:mountainadventures1717@gmail.com" aria-label="Link za Email">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </a>
+    </div>
+    © Mountain Adventures. All rights reserved.
   </footer>
 
-  <!-- JS -->
-  <script src="season.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch("season.html")
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("season-placeholder").innerHTML = html;
-          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
-        });
+<script src="season.js"></script>
+      
+<script>
+  // === 1. DEFINICIJE ELEMENTA ===
+  const langToggle = document.getElementById('language-toggle');
+  const searchInput = document.getElementById('search');
+  const menuToggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('menu');
+  const backToTopBtn = document.getElementById('backToTop');
+  const footer = document.getElementById('footer');
+  let currentLang = 'hr';
+
+  // === 2. JEZIČNI TOGGLE I PREVODI ===
+  langToggle.addEventListener('click', () => {
+    currentLang = currentLang === 'hr' ? 'en' : 'hr';
+    document.documentElement.lang = currentLang;
+    langToggle.src = currentLang === 'hr'
+      ? 'images/flag-uk.svg'
+      : 'images/flag-hr.svg';
+    searchInput.placeholder = currentLang === 'hr'
+      ? 'Pretraži...'
+      : 'Search...';
+
+    document.querySelectorAll('[data-hr]').forEach(el => {
+      const htmlContent = el.getAttribute(`data-${currentLang}`);
+      htmlContent.includes('<')
+        ? el.innerHTML = htmlContent
+        : el.textContent = htmlContent;
     });
-  </script>
-  <script src="script.js"></script>
+
+    document.querySelectorAll('.menu-overlay a').forEach(link => {
+      link.textContent = link.getAttribute(`data-${currentLang}`);
+    });
+  });
+
+  // === 3. HAMBURGER MENI ===
+  menuToggle.addEventListener('click', () => {
+    menu.classList.toggle('open');
+  });
+
+  window.addEventListener('click', e => {
+    if (
+      !menu.contains(e.target) &&
+      !menuToggle.contains(e.target) &&
+      e.target.id !== 'language-toggle'
+    ) {
+      menu.classList.remove('open');
+    }
+  });
+
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.remove('open');
+    });
+  });
+
+  // === 4. PARALLAX SEKCIJE ===
+const sections = document.querySelectorAll('.section');  
+const observer = new IntersectionObserver(entries => {  
+  entries.forEach(entry => {  
+    entry.isIntersecting  
+      ? entry.target.classList.add('visible')  
+      : entry.target.classList.remove('visible');  
+  });  
+}, { threshold: 0.52 });  
+
+sections.forEach(section => observer.observe(section));
+      
+
+  // === 5. BACK TO TOP GUMB ===
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+    const windowHeight = window.innerHeight;
+
+    backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+    backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
+      ? `${(scrollY + windowHeight - footerTop) + 60}px`
+      : '30px';
+  });
+
+  backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // === 6. EFEKT PRITISKA NA ZASTAVICU (ako vodi na link)
+  document.querySelectorAll('.lang-flag').forEach(el => {
+    el.addEventListener('click', e => {
+      const link = el.querySelector('a');
+      const href = link ? link.getAttribute('href') : null;
+
+      if (href) {
+        e.preventDefault();
+        el.classList.add('pressed');
+
+        setTimeout(() => {
+          el.classList.remove('pressed');
+          window.location.href = href;
+        }, 150);
+      }
+    });
+  });
+
+  // === 7. SEASON HTML I EFEKTI (dinamički dio)
+  document.addEventListener("DOMContentLoaded", () => {
+    // === A) Ako postoji spremljena sezona, pokreni je nakon 10s
+    const savedSeason = localStorage.getItem("activeSeason");
+    if (savedSeason) {
+      setTimeout(() => {
+        if (savedSeason === "winter") startWinterEffect(true);
+        else if (savedSeason === "summer") startSummerEffect(true);
+        else if (savedSeason === "spring") startSpringEffect(true);
+        else if (savedSeason === "autumn") startAutumnEffect(true);
+      }, 10000);
+    }
+
+    // === B) Učitaj season.html i inicijaliziraj
+    fetch("season.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("season-placeholder").innerHTML = html;
+        if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+      });
+  });
+</script>
+  
 </body>
 </html>
