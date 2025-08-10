@@ -8,11 +8,10 @@
   <meta name="description" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu. Planinarske staze Velebita. Planinarske staze Nacionalni park Paklenica. Planinarske staze Nacionalni park Triglav. Planinarske staze Nacionalni park Sutjeska. Planinarske staze Nacionalni park Prokletije. Planinarske staze Nacionalni park Durmitor. Planinarske staze Nacionalni park Biogradska gora. Planinarske staze Nacionalni park Plitvička jezera. Planinarske staze Nacionalni park Sjeverni Velebit. Planinarske staze Nacionalni park Risnjak. Planinarske staze Nacionalni park Tara. Planinarske staze Nacionalni park Kopaonik. Planinarske staze Nacionalni park Đerdap. Planinarske staze Nacionalni park Mavrovo. Planinarske staze Nacionalni park Galicica. Planinarske staze Nacionalni park Pelister. Planinarske staze Julijske Alpe. Planinarske staze Nacionalni park Logarska dolina. Planinarske staze Park prirode Blidinje. Planinarske staze Prenj. Planinarske staze Park prirode Biokovo. Planinarske staze Komovi. Planinarske staze Rila. Planinarske staze Čvrsnica. Planinarske staze Hrvatske,Planinarske staze Bosne i Hercegovine,Planinarske staze Albanije,Planinarske staze Slovenije,Planinarske staze Makedonije,Planonarske staze Crne Gore i Planinarske staze Srbije.">
   
   <!-- === Kodovi da google prepoznaje SEO za oba jezika === -->
-  <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/index.html">
-  <link rel="alternate" hreflang="en" href="https://tvojadomena.com/index-en.html">
-  <link rel="alternate" hreflang="x-default" href="https://tvojadomena.com/index.html">
-      
-  <link rel="canonical" href="https://tvojadomena.com/index.html">
+  <link id="canon" rel="canonical" href="">
+  <link id="alt-hr" rel="alternate" hreflang="hr" href="">
+  <link id="alt-en" rel="alternate" hreflang="en" href="">
+  <link id="alt-x"  rel="alternate" hreflang="x-default" href="">
       
   <!-- === OPEN GRAPH (HR + EN/linkovi za dijeljenje) === -->
   <meta property="og:type" content="website">
@@ -1105,49 +1104,132 @@ const footer = document.getElementById('footer');
 let currentLang = 'hr';
 
 
-// === 2. JEZIČNI TOGGLE I PREVODI ===
-langToggle.addEventListener('click', () => {
-  currentLang = currentLang === 'hr' ? 'en' : 'hr';
-  document.documentElement.lang = currentLang;
-  langToggle.src = currentLang === 'hr'
-    ? 'images/flag-uk.svg'
-    : 'images/flag-hr.svg';
-  searchInput.placeholder = currentLang === 'hr'
-    ? 'Pretraži...'
-    : 'Search...';
+// === 2. JEZIČNI TOGGLE I PREVODI ==
+// === 2.1) POMOĆNE FUNKCIJE ZA URL/HEAD ===
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+function setParam(name, value) {
+  const u = new URL(window.location.href);
+  if (value === null) u.searchParams.delete(name);
+  else u.searchParams.set(name, value);
+  return u;
+}
+function updateHeadLinksForLang(lang) {
+  const base  = window.location.origin + window.location.pathname;
+  const canon = document.getElementById('canon');
+  const altHr = document.getElementById('alt-hr');
+  const altEn = document.getElementById('alt-en');
+  const altX  = document.getElementById('alt-x');
 
+  if (canon) canon.href = `${base}?lang=${lang}`;
+  if (altHr) altHr.href = `${base}?lang=hr`;
+  if (altEn) altEn.href = `${base}?lang=en`;
+  if (altX)  altX.href  = base; // x-default bez parametra
+}
+function rewriteInternalLinks(lang) {
+  document.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    const external = href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:');
+    const isFile = /\.(jpg|jpeg|png|svg|webp|gif|pdf)$/i.test(href);
+    if (external || isFile) return;
+
+    const url = new URL(href, window.location.origin);
+    url.searchParams.set('lang', lang);
+    a.setAttribute('href', url.pathname + url.search + url.hash);
+  });
+}
+
+// === 3) PRIMJENA JEZIKA NA UI ===
+function applyLanguage(lang) {
+  // <html lang>, zastavica, placeholder
+  document.documentElement.lang = lang;
+  if (langToggle) {
+    langToggle.src = (lang === 'hr') ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+    langToggle.alt = (lang === 'hr') ? 'Promijeni na engleski' : 'Switch to Croatian';
+    langToggle.setAttribute('data-tooltip', (lang === 'hr') ? 'Promijeni jezik' : 'Change language');
+  }
+  if (searchInput) {
+    searchInput.placeholder = (lang === 'hr') ? 'Pretraži...' : 'Search...';
+  }
+
+  // tekstovi s data-atributima
   document.querySelectorAll('[data-hr]').forEach(el => {
-  const htmlContent = el.getAttribute(`data-${currentLang}`);
-  if (htmlContent.includes('<')) {
-    el.innerHTML = htmlContent;
-  } else {
-    el.textContent = htmlContent;
-    }
+    const htmlContent = el.getAttribute(`data-${lang}`);
+    if (!htmlContent) return;
+    if (htmlContent.includes('<')) el.innerHTML = htmlContent;
+    else el.textContent = htmlContent;
   });
 
+  // menu overlay linkovi
   document.querySelectorAll('.menu-overlay a').forEach(link => {
-    link.textContent = link.getAttribute(`data-${currentLang}`);
+    const txt = link.getAttribute(`data-${lang}`);
+    if (txt) link.textContent = txt;
   });
 
-  refreshCurrentMarkacija();
+  // head linkovi (po želji, vidi napomenu gore)
+  updateHeadLinksForLang(lang);
 
-  document.querySelectorAll('.section.aktivno')
-    .forEach(section => {
-      section.classList.remove('aktivno');
-    });
+  // ?lang= na interne linkove
+  rewriteInternalLinks(lang);
+}
 
+// === 4) POSTAVLJANJE I SPREMANJE JEZIKA (+ markacije) ===
+function setLanguage(lang) {
+  if (lang !== 'hr' && lang !== 'en') lang = 'hr';
+  currentLang = lang;
+  localStorage.setItem('preferredLang', lang);
+
+  // ažuriraj URL bez reloada
+  const url = setParam('lang', lang);
+  window.history.replaceState({}, '', url);
+
+  // primijeni na UI
+  applyLanguage(lang);
+
+  // osvježi markacije i vidljive sekcije (isto kao ranije)
+  if (typeof refreshCurrentMarkacija === 'function') {
+    refreshCurrentMarkacija();
+  }
+  document.querySelectorAll('.section.aktivno').forEach(section => {
+    section.classList.remove('aktivno');
+  });
   setTimeout(() => {
     document.querySelectorAll('.section').forEach(section => {
-      const bounding = section.getBoundingClientRect();
-      const inView = bounding.top < window.innerHeight &&
-                     bounding.bottom > 0;
+      const r = section.getBoundingClientRect();
+      const inView = r.top < window.innerHeight && r.bottom > 0;
       if (inView) {
         section.classList.add('aktivno');
-        refreshCurrentMarkacija();
+        if (typeof refreshCurrentMarkacija === 'function') {
+          refreshCurrentMarkacija();
+        }
       }
     });
   }, 50);
-});
+}
+
+// === 5) INIT NA LOAD ===
+(function initLanguage() {
+  const urlLang = (getParam('lang') || '').toLowerCase();
+  const stored  = (localStorage.getItem('preferredLang') || '').toLowerCase();
+  currentLang   = (urlLang === 'hr' || urlLang === 'en') ? urlLang
+                : (stored  === 'hr' || stored  === 'en') ? stored
+                : 'hr';
+
+  if (!urlLang) {
+    const url = setParam('lang', currentLang);
+    window.history.replaceState({}, '', url);
+  }
+  applyLanguage(currentLang);
+})();
+
+// === 6) TOGGLE KLIK NA ZASTAVICU ===
+if (langToggle) {
+  langToggle.addEventListener('click', () => {
+    setLanguage(currentLang === 'hr' ? 'en' : 'hr');
+  });
+}
 
 // === 3. HAMBURGER MENI ===
 menuToggle.addEventListener('click', () => {
