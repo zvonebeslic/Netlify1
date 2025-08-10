@@ -1105,144 +1105,68 @@ let currentLang = 'hr';
 
 
 // === 2. JEZIČNI TOGGLE I PREVODI ==
-// === 2.1) POMOĆNE FUNKCIJE ZA URL/HEAD ===
-function getParam(name) {
-  return new URLSearchParams(window.location.search).get(name);
-}
-function setParam(name, value) {
+// toggle hr/en
+currentLang = currentLang === 'hr' ? 'en' : 'hr';
+
+// 1) spremi izbor
+try { localStorage.setItem('preferredLang', currentLang); } catch(e) {}
+
+// 2) ažuriraj URL bez reloada (uvijek eksplicitno ?lang=)
+(function updateUrlParam() {
   const u = new URL(window.location.href);
-  if (value === null) u.searchParams.delete(name);
-  else u.searchParams.set(name, value);
-  return u;
-}
-function updateHeadLinksForLang(lang) {
-  const base  = window.location.origin + window.location.pathname;
-  const canon = document.getElementById('canon');
-  const altHr = document.getElementById('alt-hr');
-  const altEn = document.getElementById('alt-en');
-  const altX  = document.getElementById('alt-x');
-
-  if (canon) canon.href = `${base}?lang=${lang}`;
-  if (altHr) altHr.href = `${base}?lang=hr`;
-  if (altEn) altEn.href = `${base}?lang=en`;
-  if (altX)  altX.href  = base; // x-default bez parametra
-}
-function rewriteInternalLinks(lang) {
-  document.querySelectorAll('a[href]').forEach(a => {
-    const href = a.getAttribute('href');
-    if (!href) return;
-    const external = href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:');
-    const isFile = /\.(jpg|jpeg|png|svg|webp|gif|pdf)$/i.test(href);
-    if (external || isFile) return;
-
-    const url = new URL(href, window.location.origin);
-    url.searchParams.set('lang', lang);
-    a.setAttribute('href', url.pathname + url.search + url.hash);
-  });
-}
-
-  // === (NOVO) META DESCRIPTION po jeziku ===
-function updateDescriptionForLang(lang) {
-  const d = document.getElementById('meta-desc');
-  if (!d) return;
-  if (lang === 'en') {
-    d.content = "Explore the hiking trails of the Balkans. Detailed descriptions of hiking trails. Hiking gear. GPS tracks for hiking. Inspiring and educational hiking stories. Your mountain world in one place. Hiking trails on Velebit. Hiking trails in Paklenica National Park. Hiking trails in Triglav National Park. Hiking trails in Sutjeska National Park. Hiking trails on Prokletije. Hiking trails in Durmitor National Park. Hiking trails in Biogradska Gora National Park. Hiking trails in Plitvice Lakes National Park. Hiking trails in Northern Velebit National Park. Hiking trails in Risnjak National Park. Hiking trails in Tara National Park. Hiking trails in Kopaonik National Park. Hiking trails in Đerdap National Park. Hiking trails in Mavrovo National Park. Hiking trails in Galicica National Park. Hiking trails in Pelister National Park. Hiking trails in the Julian Alps. Hiking trails in Logarska Dolina National Park. Hiking trails in Blidinje Nature Park. Hiking trails on Prenj. Hiking trails in Biokovo Nature Park. Hiking trails on Komovi. Hiking trails on Rila. Hiking trails on Čvrsnica. Hiking trails in Croatia. Hiking trails in Bosnia and Herzegovina. Hiking trails in Albania. Hiking trails in Slovenia. Hiking trails in Macedonia. Hiking trails in Montenegro. Hiking trails in Serbia.";
-  } else {
-    d.content = "Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu. Planinarske staze Velebita. Planinarske staze Nacionalni park Paklenica. Planinarske staze Nacionalni park Triglav. Planinarske staze Nacionalni park Sutjeska. Planinarske staze Nacionalni park Prokletije. Planinarske staze Nacionalni park Durmitor. Planinarske staze Nacionalni park Biogradska gora. Planinarske staze Nacionalni park Plitvička jezera. Planinarske staze Nacionalni park Sjeverni Velebit. Planinarske staze Nacionalni park Risnjak. Planinarske staze Nacionalni park Tara. Planinarske staze Nacionalni park Kopaonik. Planinarske staze Nacionalni park Đerdap. Planinarske staze Nacionalni park Mavrovo. Planinarske staze Nacionalni park Galicica. Planinarske staze Nacionalni park Pelister. Planinarske staze Julijske Alpe. Planinarske staze Nacionalni park Logarska dolina. Planinarske staze Park prirode Blidinje. Planinarske staze Prenj. Planinarske staze Park prirode Biokovo. Planinarske staze Komovi. Planinarske staze Rila. Planinarske staze Čvrsnica. Planinarske staze Hrvatske,Planinarske staze Bosne i Hercegovine,Planinarske staze Albanije,Planinarske staze Slovenije,Planinarske staze Makedonije,Planonarske staze Crne Gore i Planinarske staze Srbije.";
-  }
-}
-      
-// === 3) PRIMJENA JEZIKA NA UI ===
-function applyLanguage(lang) {
-  // <html lang>, zastavica, placeholder
-  document.documentElement.lang = lang;
-  if (langToggle) {
-    langToggle.src = (lang === 'hr') ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-    langToggle.alt = (lang === 'hr') ? 'Promijeni na engleski' : 'Switch to Croatian';
-    langToggle.setAttribute('data-tooltip', (lang === 'hr') ? 'Promijeni jezik' : 'Change language');
-  }
-  if (searchInput) {
-    searchInput.placeholder = (lang === 'hr') ? 'Pretraži...' : 'Search...';
-  }
-
-  // tekstovi s data-atributima
-  document.querySelectorAll('[data-hr]').forEach(el => {
-    const htmlContent = el.getAttribute(`data-${lang}`);
-    if (!htmlContent) return;
-    if (htmlContent.includes('<')) el.innerHTML = htmlContent;
-    else el.textContent = htmlContent;
-  });
-
-  // menu overlay linkovi
-  document.querySelectorAll('.menu-overlay a').forEach(link => {
-    const txt = link.getAttribute(`data-${lang}`);
-    if (txt) link.textContent = txt;
-  });
-
-  updateDescriptionForLang(lang)
-      
-  // head linkovi (po želji, vidi napomenu gore)
-  updateHeadLinksForLang(lang);
-
-  // ?lang= na interne linkove
-  rewriteInternalLinks(lang);
-}
-
-// === 4) POSTAVLJANJE I SPREMANJE JEZIKA (+ markacije) ===
-function setLanguage(lang) {
-  if (lang !== 'hr' && lang !== 'en') lang = 'hr';
-  currentLang = lang;
-  localStorage.setItem('preferredLang', lang);
-
-  // ažuriraj URL bez reloada
-  const url = setParam('lang', lang);
-  window.history.replaceState({}, '', url);
-
-  // primijeni na UI
-  applyLanguage(lang);
-
-  // osvježi markacije i vidljive sekcije (isto kao ranije)
-  if (typeof refreshCurrentMarkacija === 'function') {
-    refreshCurrentMarkacija();
-  }
-  document.querySelectorAll('.section.aktivno').forEach(section => {
-    section.classList.remove('aktivno');
-  });
-  setTimeout(() => {
-    document.querySelectorAll('.section').forEach(section => {
-      const r = section.getBoundingClientRect();
-      const inView = r.top < window.innerHeight && r.bottom > 0;
-      if (inView) {
-        section.classList.add('aktivno');
-        if (typeof refreshCurrentMarkacija === 'function') {
-          refreshCurrentMarkacija();
-        }
-      }
-    });
-  }, 50);
-}
-
-// === 5) INIT NA LOAD ===
-(function initLanguage() {
-  const urlLang = (getParam('lang') || '').toLowerCase();
-  const stored  = (localStorage.getItem('preferredLang') || '').toLowerCase();
-  currentLang   = (urlLang === 'hr' || urlLang === 'en') ? urlLang
-                : (stored  === 'hr' || stored  === 'en') ? stored
-                : 'hr';
-
-  if (!urlLang) {
-    const url = setParam('lang', currentLang);
-    window.history.replaceState({}, '', url);
-  }
-  applyLanguage(currentLang);
+  u.searchParams.set('lang', currentLang);
+  window.history.replaceState({}, '', u.toString());
 })();
 
-// === 6) TOGGLE KLIK NA ZASTAVICU ===
-if (langToggle) {
-  langToggle.addEventListener('click', () => {
-    setLanguage(currentLang === 'hr' ? 'en' : 'hr');
-  });
+// 3) <html lang>, zastavica, placeholder
+document.documentElement.lang = currentLang;
+
+if (typeof langToggle !== 'undefined' && langToggle) {
+  langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+  langToggle.alt = currentLang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+  langToggle.setAttribute('data-tooltip', currentLang === 'hr' ? 'Promijeni jezik' : 'Change language');
 }
+
+if (typeof searchInput !== 'undefined' && searchInput) {
+  searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
+}
+
+// 4) prepiši sve elemente s data-hr / data-en
+document.querySelectorAll('[data-hr]').forEach(el => {
+  const htmlContent = el.getAttribute(`data-${currentLang}`);
+  if (htmlContent == null) return;
+  if (htmlContent.includes('<')) el.innerHTML = htmlContent;
+  else el.textContent = htmlContent;
+});
+
+// 5) menu overlay linkovi (ako ih ima)
+document.querySelectorAll('.menu-overlay a').forEach(link => {
+  const txt = link.getAttribute(`data-${currentLang}`);
+  if (txt != null) link.textContent = txt;
+});
+
+// 6) markacije ako postoje
+if (typeof refreshCurrentMarkacija === 'function') {
+  try { refreshCurrentMarkacija(); } catch(e) {}
+}
+
+// 7) reset + ponovno označi vidljive sekcije i osvježi markacije
+document.querySelectorAll('.section.aktivno').forEach(section => {
+  section.classList.remove('aktivno');
+});
+
+setTimeout(() => {
+  document.querySelectorAll('.section').forEach(section => {
+    const r = section.getBoundingClientRect();
+    const inView = r.top < window.innerHeight && r.bottom > 0;
+    if (inView) {
+      section.classList.add('aktivno');
+      if (typeof refreshCurrentMarkacija === 'function') {
+        try { refreshCurrentMarkacija(); } catch(e) {}
+      }
+    }
+  });
+}, 50);
 
 // === 3. HAMBURGER MENI ===
 menuToggle.addEventListener('click', () => {
