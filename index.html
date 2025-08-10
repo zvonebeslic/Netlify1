@@ -1105,68 +1105,82 @@ let currentLang = 'hr';
 
 
 // === 2. JEZIČNI TOGGLE I PREVODI ==
-// toggle hr/en
-currentLang = currentLang === 'hr' ? 'en' : 'hr';
+<script>
+// === 2. JEZIČNI TOGGLE I PREVODI ===
 
-// 1) spremi izbor
-try { localStorage.setItem('preferredLang', currentLang); } catch(e) {}
-
-// 2) ažuriraj URL bez reloada (uvijek eksplicitno ?lang=)
-(function updateUrlParam() {
-  const u = new URL(window.location.href);
-  u.searchParams.set('lang', currentLang);
-  window.history.replaceState({}, '', u.toString());
-})();
-
-// 3) <html lang>, zastavica, placeholder
-document.documentElement.lang = currentLang;
-
-if (typeof langToggle !== 'undefined' && langToggle) {
-  langToggle.src = currentLang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-  langToggle.alt = currentLang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
-  langToggle.setAttribute('data-tooltip', currentLang === 'hr' ? 'Promijeni jezik' : 'Change language');
+// helper: početni jezik (URL ?lang > localStorage > 'hr')
+function getInitialLang() {
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  if (urlLang === 'hr' || urlLang === 'en') return urlLang;
+  try {
+    const saved = localStorage.getItem('preferredLang');
+    if (saved === 'hr' || saved === 'en') return saved;
+  } catch(e) {}
+  return 'hr';
 }
 
-if (typeof searchInput !== 'undefined' && searchInput) {
-  searchInput.placeholder = currentLang === 'hr' ? 'Pretraži...' : 'Search...';
-}
+function applyLanguage(lang) {
+  // 1) spremi i URL
+  try { localStorage.setItem('preferredLang', lang); } catch(e) {}
+  const u = new URL(location.href);
+  u.searchParams.set('lang', lang);
+  history.replaceState({}, '', u.toString());
 
-// 4) prepiši sve elemente s data-hr / data-en
-document.querySelectorAll('[data-hr]').forEach(el => {
-  const htmlContent = el.getAttribute(`data-${currentLang}`);
-  if (htmlContent == null) return;
-  if (htmlContent.includes('<')) el.innerHTML = htmlContent;
-  else el.textContent = htmlContent;
-});
+  // 2) <html lang>, zastavica, tooltip, placeholder
+  document.documentElement.lang = lang;
 
-// 5) menu overlay linkovi (ako ih ima)
-document.querySelectorAll('.menu-overlay a').forEach(link => {
-  const txt = link.getAttribute(`data-${currentLang}`);
-  if (txt != null) link.textContent = txt;
-});
+  if (langToggle) {
+    langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+    langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+    langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
+  }
 
-// 6) markacije ako postoje
-if (typeof refreshCurrentMarkacija === 'function') {
-  try { refreshCurrentMarkacija(); } catch(e) {}
-}
+  if (searchInput) {
+    searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
+  }
 
-// 7) reset + ponovno označi vidljive sekcije i osvježi markacije
-document.querySelectorAll('.section.aktivno').forEach(section => {
-  section.classList.remove('aktivno');
-});
-
-setTimeout(() => {
-  document.querySelectorAll('.section').forEach(section => {
-    const r = section.getBoundingClientRect();
-    const inView = r.top < window.innerHeight && r.bottom > 0;
-    if (inView) {
-      section.classList.add('aktivno');
-      if (typeof refreshCurrentMarkacija === 'function') {
-        try { refreshCurrentMarkacija(); } catch(e) {}
-      }
-    }
+  // 3) prepiši sve elemente s data-hr / data-en
+  document.querySelectorAll('[data-hr]').forEach(el => {
+    const htmlContent = el.getAttribute(`data-${lang}`);
+    if (htmlContent == null) return;
+    if (htmlContent.includes('<')) el.innerHTML = htmlContent;
+    else el.textContent = htmlContent;
   });
-}, 50);
+
+  // 4) linkovi u meniju
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    const txt = link.getAttribute(`data-${lang}`);
+    if (txt != null) link.textContent = txt;
+  });
+
+  // 5) refresh markacije na vidljivim sekcijama
+  document.querySelectorAll('.section.aktivno').forEach(s => s.classList.remove('aktivno'));
+  setTimeout(() => {
+    document.querySelectorAll('.section').forEach(section => {
+      const r = section.getBoundingClientRect();
+      const inView = r.top < window.innerHeight && r.bottom > 0;
+      if (inView) {
+        section.classList.add('aktivno');
+        if (typeof refreshCurrentMarkacija === 'function') {
+          try { refreshCurrentMarkacija(); } catch(e) {}
+        }
+      }
+    });
+  }, 50);
+}
+
+// globalna var za trenutno stanje
+let currentLang = getInitialLang();
+applyLanguage(currentLang);
+
+// klik na zastavu — stvarni toggle
+if (langToggle) {
+  langToggle.addEventListener('click', () => {
+    currentLang = currentLang === 'hr' ? 'en' : 'hr';
+    applyLanguage(currentLang);
+  });
+}
+</script>
 
 // === 3. HAMBURGER MENI ===
 menuToggle.addEventListener('click', () => {
