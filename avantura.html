@@ -513,30 +513,67 @@ footer {
   const menu = document.getElementById('menu');
   const backToTopBtn = document.getElementById('backToTop');
   const footer = document.getElementById('footer');
-  let currentLang = 'hr';
+
 
   // === 2. JEZIČNI TOGGLE I PREVODI ===
+  
+// helper: početni jezik (URL ?lang > localStorage > 'hr')
+function getInitialLang() {
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  if (urlLang === 'hr' || urlLang === 'en') return urlLang;
+  try {
+    const saved = localStorage.getItem('preferredLang');
+    if (saved === 'hr' || saved === 'en') return saved;
+  } catch(e) {}
+  return 'hr';
+}
+
+function applyLanguage(lang) {
+  // 1) spremi i URL
+  try { localStorage.setItem('preferredLang', lang); } catch(e) {}
+  const u = new URL(location.href);
+  u.searchParams.set('lang', lang);
+  history.replaceState({}, '', u.toString());
+
+  // 2) <html lang>, zastavica, tooltip, placeholder
+  document.documentElement.lang = lang;
+
+  if (langToggle) {
+    langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+    langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+    langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
+  }
+
+  if (searchInput) {
+    searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
+  }
+
+  // 3) prepiši sve elemente s data-hr / data-en
+  document.querySelectorAll('[data-hr]').forEach(el => {
+    const htmlContent = el.getAttribute(`data-${lang}`);
+    if (htmlContent == null) return;
+    if (htmlContent.includes('<')) el.innerHTML = htmlContent;
+    else el.textContent = htmlContent;
+  });
+
+  // 4) linkovi u meniju
+  document.querySelectorAll('.menu-overlay a').forEach(link => {
+    const txt = link.getAttribute(`data-${lang}`);
+    if (txt != null) link.textContent = txt;
+  });
+}
+
+// globalna var za trenutno stanje
+let currentLang = getInitialLang();
+applyLanguage(currentLang);
+
+// klik na zastavu — stvarni toggle
+if (langToggle) {
   langToggle.addEventListener('click', () => {
     currentLang = currentLang === 'hr' ? 'en' : 'hr';
-    document.documentElement.lang = currentLang;
-    langToggle.src = currentLang === 'hr'
-      ? 'images/flag-uk.svg'
-      : 'images/flag-hr.svg';
-    searchInput.placeholder = currentLang === 'hr'
-      ? 'Pretraži...'
-      : 'Search...';
-
-    document.querySelectorAll('[data-hr]').forEach(el => {
-      const htmlContent = el.getAttribute(`data-${currentLang}`);
-      htmlContent.includes('<')
-        ? el.innerHTML = htmlContent
-        : el.textContent = htmlContent;
-    });
-
-    document.querySelectorAll('.menu-overlay a').forEach(link => {
-      link.textContent = link.getAttribute(`data-${currentLang}`);
-    });
+    applyLanguage(currentLang);
   });
+}
 
   // === 3. HAMBURGER MENI ===
   menuToggle.addEventListener('click', () => {
