@@ -5,13 +5,16 @@
   <title>Mountain Adventures</title>
   
   <!-- SEO opisi na Hrv i Engl -->
-   <meta name="description" lang="en" content="Explore the hiking trails of the Balkans. Detailed descriptions of hiking trails. Hiking gear. GPS tracks for hiking. Inspiring and educational hiking stories. Your mountain world in one place. Hiking trails on Velebit. Hiking trails in Paklenica National Park. Hiking trails in Triglav National Park. Hiking trails in Sutjeska National Park. Hiking trails on Prokletije. Hiking trails in Durmitor National Park. Hiking trails in Biogradska Gora National Park. Hiking trails in Plitvice Lakes National Park. Hiking trails in Northern Velebit National Park. Hiking trails in Risnjak National Park. Hiking trails in Tara National Park. Hiking trails in Kopaonik National Park. Hiking trails in Đerdap National Park. Hiking trails in Mavrovo National Park. Hiking trails in Galicica National Park. Hiking trails in Pelister National Park. Hiking trails in the Julian Alps. Hiking trails in Logarska Dolina National Park. Hiking trails in Blidinje Nature Park. Hiking trails on Prenj. Hiking trails in Biokovo Nature Park. Hiking trails on Komovi. Hiking trails on Rila. Hiking trails on Čvrsnica. Hiking trails in Croatia. Hiking trails in Bosnia and Herzegovina. Hiking trails in Albania. Hiking trails in Slovenia. Hiking trails in Macedonia. Hiking trails in Montenegro. Hiking trails in Serbia.">    
+   <meta name="description" content="Explore the hiking trails of the Balkans. Detailed descriptions of hiking trails. Hiking gear. GPS tracks for hiking. Inspiring and educational hiking stories. Your mountain world in one place. Hiking trails on Velebit. Hiking trails in Paklenica National Park. Hiking trails in Triglav National Park. Hiking trails in Sutjeska National Park. Hiking trails on Prokletije. Hiking trails in Durmitor National Park. Hiking trails in Biogradska Gora National Park. Hiking trails in Plitvice Lakes National Park. Hiking trails in Northern Velebit National Park. Hiking trails in Risnjak National Park. Hiking trails in Tara National Park. Hiking trails in Kopaonik National Park. Hiking trails in Đerdap National Park. Hiking trails in Mavrovo National Park. Hiking trails in Galicica National Park. Hiking trails in Pelister National Park. Hiking trails in the Julian Alps. Hiking trails in Logarska Dolina National Park. Hiking trails in Blidinje Nature Park. Hiking trails on Prenj. Hiking trails in Biokovo Nature Park. Hiking trails on Komovi. Hiking trails on Rila. Hiking trails on Čvrsnica. Hiking trails in Croatia. Hiking trails in Bosnia and Herzegovina. Hiking trails in Albania. Hiking trails in Slovenia. Hiking trails in Macedonia. Hiking trails in Montenegro. Hiking trails in Serbia.">    
 
   
   <!-- === Kodovi da google prepoznaje SEO za oba jezika === -->
-  <link rel="alternate" hreflang="hr" href="https://tvoj-domena.com/index-hr.html">
-  <link rel="alternate" hreflang="en" href="https://tvoj-domena.com/index-en.html">
-  
+  <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/index-hr.html">
+  <link rel="alternate" hreflang="en" href="https://tvojadomena.com/index-en.html">
+  <link rel="alternate" hreflang="x-default" href="https://tvojadomena.com/index-hr.html">
+
+  <link rel="canonical" href="https://tvojadomena.com/index-en.html">
+      
   <!-- === OPEN GRAPH (HR + EN/linkovi za dijeljenje) === -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tvojadomena.com/">
@@ -800,8 +803,13 @@ a, button {
   <!-- === NAVIGACIJA (gore) === -->
   <div class="navbar">
     <div class="navbar-left">
-      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
-    </div>
+  <a href="index-hr.html" aria-label="Switch to Croatian">
+    <img src="images/flag-hr.svg" 
+         alt="Croatian flag" 
+         class="lang-flag" 
+         data-tooltip="Switch to Croatian">
+  </a>
+</div>
     <div class="navbar-center">
       <div class="search-container">
         <div class="search-wrapper">
