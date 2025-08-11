@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="hr">
   
-  <head>
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mountain Adventures</title>
@@ -45,8 +45,6 @@
   <!-- === SEASON STILOVI === -->
   <link rel="stylesheet" href="season.css" />   
       
-</head>
-
   <style>
        /* === OSNOVNI RESET I GLOBALNA PRAVILA === */
 * {
@@ -389,16 +387,40 @@ footer {
 }
       
 /* === SPRIJEČAVANJE ŠIRENJA VAN EKRANA === */
-  html, body {
+html, body {
   overflow-x: hidden !important;
-}       
-    
+}
+
+/* === FILTER UI (NOVO) === */
+.filters { padding: 12px; background: rgba(255,255,255,.7); border-radius: 12px; backdrop-filter: blur(6px); margin: 16px; }
+.filter-row { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); margin-bottom: 10px; }
+.filters label, .filters fieldset { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.difficulty { border: 1px solid #cfd8dc; border-radius: 10px; padding: 10px; background: #fff; }
+.difficulty legend { padding: 0 6px; font-weight: 600; }
+.difficulty .mode { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.difficulty .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+#applyFilters, #clearFilters { padding: 10px 14px; border-radius: 8px; border: 1px solid #888; font-weight: 600; background: #35776a; color: #fff; cursor: pointer; }
+#clearFilters { background: #6b7b83; }
+#applyFilters:hover, #clearFilters:hover { filter: brightness(1.05); }
+
+/* === BADGEOVI NA KARTICAMA (NOVO) === */
+.badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.badge { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #f0f2f4; }
+.badge.km { background: #e7f3ff; }
+.badge.elev { background: #eaf9ec; }
+.badge.poi { background: #f6eefc; }
+.badge.very-easy { color:#0b6; }
+.badge.easy { color:#2a8; }
+.badge.medium { color:#c90; }
+.badge.hard { color:#d55; }
+.badge.extreme { color:#b00; }
   </style>
+</head>
   
 <body>
   <div id="season-placeholder"></div>
 
-    <!-- === NAVIGACIJA (gore) === -->
+  <!-- === NAVIGACIJA (gore) === -->
   <div class="navbar">
     <div class="navbar-left">
       <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
@@ -420,7 +442,7 @@ footer {
   </div>
 
   <!-- === HAMBURGER MENI === -->
-    <div class="menu-overlay" id="menu">
+  <div class="menu-overlay" id="menu">
     <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
     <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
     <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
@@ -440,44 +462,129 @@ footer {
       <p>Filtriraj i pronađi savršenu rutu prema težini, planini, trajanju ili tvojoj lokaciji.</p>
     </section>
 
+    <!-- === FILTRI (NOVO) === -->
     <section style="background-color: #e3ecec;">
       <h2 style="text-align: center;">Filtriraj staze</h2>
-      <form id="trail-filter-form">
-        <select><option selected disabled>Odaberi planinu</option><option>Velebit</option><option>Triglav</option><option>Prokletije</option></select>
-        <select><option selected disabled>Težina</option><option>Lagana</option><option>Srednja</option><option>Teška</option></select>
-        <select><option selected disabled>Trajanje hoda</option><option>&lt;2h</option><option>2–5h</option><option>&gt;5h</option></select>
-        <select><option selected disabled>Udaljenost</option><option>&lt;10 km</option><option>10–30 km</option><option>&gt;30 km</option></select>
-        <button type="submit">Primijeni filtre</button>
-      </form>
+
+      <section id="trail-filters" class="filters">
+        <div class="filter-row">
+          <label>
+            Planina/Područje
+            <select id="areaSelect">
+              <option value="">Sve lokacije</option>
+              <option>Triglav</option>
+              <option>Velebit</option>
+              <option>Begunjščica</option>
+              <option>Klekovača</option>
+              <option>Sljeme</option>
+              <option>Medvednica</option>
+              <option>Dinara</option>
+              <option>Oštrovača</option>
+              <option>Šator</option>
+              <option>Kozara</option>
+              <option>Ivanščica</option>
+              <option>Kamešnica</option>
+              <option>Cincar</option>
+              <option>Vranica</option>
+              <option>Matinski Vis</option>
+              <option>Zavelim</option>
+              <option>Golija</option>
+              <option>Stožer</option>
+              <option>Ljubuša</option>
+              <option>Tušnica</option>
+              <option>Svilaja</option>
+              <option>Biokovo</option>
+              <option>Mosor</option>
+              <option>Raduša</option>
+              <option>Vran</option>
+              <option>Čvrsnica</option>
+              <option>Čabulja</option>
+              <option>Prenj</option>
+              <option>Crvanj</option>
+              <option>Matokit</option>
+              <option>Velež</option>
+              <option>Visočica</option>
+              <option>Bjelašnica</option>
+              <option>Treskavica</option>
+              <option>Zelengora</option>
+              <option>Volujak</option>
+              <option>Maglić</option>
+              <option>Lelija</option>
+              <option>Durmitor</option>
+              <option>Komovi</option>
+              <option>Prokletije</option>
+              <option>Šar planina</option>
+              <option>Otok Pag</option>
+              <option>Poluotok Pelješac</option>
+              <option>Šipovo</option>
+              <option>Otok Hvar</option>
+              <option>Otok Brač</option>
+              <option>Kanjon Badnjevice</option>
+              <option>Oštrc</option>
+            </select>
+          </label>
+
+          <label>
+            Udaljenost od mene
+            <select id="radiusSelect" title="Zatražit će se tvoja lokacija pri prvom odabiru">
+              <option value="">Bez ograničenja</option>
+              <option value="100">Do 100 km</option>
+              <option value="200">Do 200 km</option>
+              <option value="300">Do 300 km</option>
+              <option value="400">Do 400 km</option>
+              <option value="500">Do 500 km</option>
+            </select>
+          </label>
+
+          <label>
+            Trajanje (hodanje)
+            <select id="durationBucket">
+              <option value="">Bilo koje</option>
+              <option value="3">Do 3 h</option>
+              <option value="5">Do 5 h</option>
+              <option value="8">Do 8 h</option>
+              <option value="10">Do 10 h</option>
+              <option value=">10">Preko 10 h</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="difficulty">
+          <legend>Težina</legend>
+          <div class="mode">
+            <label><input type="checkbox" id="modeKm" checked> po km</label>
+            <label><input type="checkbox" id="modeElev" checked> po usponu</label>
+            <select id="difficultyLogic" title="Kombiniraj po km/uspon">
+              <option value="any" selected>Poklopi bilo koju</option>
+              <option value="all">Poklopi obje</option>
+            </select>
+          </div>
+          <div class="chips">
+            <label><input type="checkbox" class="diff-chip" value="very-easy"> Jako lako</label>
+            <label><input type="checkbox" class="diff-chip" value="easy"> Lako</label>
+            <label><input type="checkbox" class="diff-chip" value="medium" checked> Srednje teško</label>
+            <label><input type="checkbox" class="diff-chip" value="hard"> Jako teško</label>
+            <label><input type="checkbox" class="diff-chip" value="extreme"> Ekstremno</label>
+          </div>
+        </fieldset>
+
+        <div class="filter-row">
+          <label style="grid-column: 1 / -1;">
+            Tražilica odredišta (vrh/mjesto)
+            <input id="poiSearch" type="search" placeholder="npr. Hajdučka Vrata">
+          </label>
+
+          <button id="applyFilters" type="button">Primijeni</button>
+          <button id="clearFilters" type="button">Reset</button>
+        </div>
+      </section>
     </section>
 
-    <section class="trail-list">
-      <article class="trail-card">
-        <img src="images/velebit.jpg" alt="Velebit">
-        <div>
-          <h3>Premužićeva staza</h3>
-          <p><strong>Planina:</strong> Velebit</p>
-          <p><strong>Težina:</strong> Srednja</p>
-          <p><strong>Trajanje:</strong> 5h</p>
-          <p><strong>Udaljenost:</strong> 15 km</p>
-          <a href="#">Detalji &rarr;</a>
-        </div>
-      </article>
-      <article class="trail-card">
-        <img src="images/triglav.jpg" alt="Triglav">
-        <div>
-          <h3>Uspon na Triglav</h3>
-          <p><strong>Planina:</strong> Triglav</p>
-          <p><strong>Težina:</strong> Teška</p>
-          <p><strong>Trajanje:</strong> 8h</p>
-          <p><strong>Udaljenost:</strong> 12 km</p>
-          <a href="#">Detalji &rarr;</a>
-        </div>
-      </article>
-    </section>
+    <!-- === LISTA STAZA (renderira se JS-om) === -->
+    <section class="trail-list" id="trail-list"></section>
   </main>
 
-       <!-- === GUMB: VRATI NA VRH STRANICE === -->
+  <!-- === GUMB: VRATI NA VRH STRANICE === -->
   <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="18 15 12 9 6 15"></polyline>
@@ -504,9 +611,9 @@ footer {
     © Mountain Adventures. All rights reserved.
   </footer>
 
-<script src="season.js"></script>
+  <script src="season.js"></script>
       
-<script>
+  <script>
   // === 1. DEFINICIJE ELEMENTA ===
   const langToggle = document.getElementById('language-toggle');
   const searchInput = document.getElementById('search');
@@ -515,100 +622,72 @@ footer {
   const backToTopBtn = document.getElementById('backToTop');
   const footer = document.getElementById('footer');
 
-
   // === 2. JEZIČNI TOGGLE I PREVODI ===
-  
-// helper: početni jezik (URL ?lang > localStorage > 'hr')
-function getInitialLang() {
-  const urlLang = new URLSearchParams(location.search).get('lang');
-  if (urlLang === 'hr' || urlLang === 'en') return urlLang;
-  try {
-    const saved = localStorage.getItem('preferredLang');
-    if (saved === 'hr' || saved === 'en') return saved;
-  } catch(e) {}
-  return 'hr';
-}
+  function getInitialLang() {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (urlLang === 'hr' || urlLang === 'en') return urlLang;
+    try {
+      const saved = localStorage.getItem('preferredLang');
+      if (saved === 'hr' || saved === 'en') return saved;
+    } catch(e) {}
+    return 'hr';
+  }
+  function applyLanguage(lang) {
+    try { localStorage.setItem('preferredLang', lang); } catch(e) {}
+    const u = new URL(location.href);
+    u.searchParams.set('lang', lang);
+    history.replaceState({}, '', u.toString());
+    document.documentElement.lang = lang;
 
-function applyLanguage(lang) {
-  // 1) spremi i URL
-  try { localStorage.setItem('preferredLang', lang); } catch(e) {}
-  const u = new URL(location.href);
-  u.searchParams.set('lang', lang);
-  history.replaceState({}, '', u.toString());
-
-  // 2) <html lang>, zastavica, tooltip, placeholder
-  document.documentElement.lang = lang;
-
+    if (langToggle) {
+      langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+      langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+      langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
+    }
+    if (searchInput) {
+      searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
+    }
+    document.querySelectorAll('[data-hr]').forEach(el => {
+      const htmlContent = el.getAttribute(`data-${lang}`);
+      if (htmlContent == null) return;
+      if (htmlContent.includes('<')) el.innerHTML = htmlContent;
+      else el.textContent = htmlContent;
+    });
+    document.querySelectorAll('.menu-overlay a').forEach(link => {
+      const txt = link.getAttribute(`data-${lang}`);
+      if (txt != null) link.textContent = txt;
+    });
+  }
+  let currentLang = getInitialLang();
+  applyLanguage(currentLang);
   if (langToggle) {
-    langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-    langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
-    langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
+    langToggle.addEventListener('click', () => {
+      currentLang = currentLang === 'hr' ? 'en' : 'hr';
+      applyLanguage(currentLang);
+    });
   }
-
-  if (searchInput) {
-    searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
-  }
-
-  // 3) prepiši sve elemente s data-hr / data-en
-  document.querySelectorAll('[data-hr]').forEach(el => {
-    const htmlContent = el.getAttribute(`data-${lang}`);
-    if (htmlContent == null) return;
-    if (htmlContent.includes('<')) el.innerHTML = htmlContent;
-    else el.textContent = htmlContent;
-  });
-
-  // 4) linkovi u meniju
-  document.querySelectorAll('.menu-overlay a').forEach(link => {
-    const txt = link.getAttribute(`data-${lang}`);
-    if (txt != null) link.textContent = txt;
-  });
-}
-
-// globalna var za trenutno stanje
-let currentLang = getInitialLang();
-applyLanguage(currentLang);
-
-// klik na zastavu — stvarni toggle
-if (langToggle) {
-  langToggle.addEventListener('click', () => {
-    currentLang = currentLang === 'hr' ? 'en' : 'hr';
-    applyLanguage(currentLang);
-  });
-}
 
   // === 3. HAMBURGER MENI ===
   menuToggle.addEventListener('click', () => {
     menu.classList.toggle('open');
   });
-
   window.addEventListener('click', e => {
-    if (
-      !menu.contains(e.target) &&
-      !menuToggle.contains(e.target) &&
-      e.target.id !== 'language-toggle'
-    ) {
+    if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') {
       menu.classList.remove('open');
     }
   });
-
   document.querySelectorAll('.menu-overlay a').forEach(link => {
-    link.addEventListener('click', () => {
-      menu.classList.remove('open');
-    });
+    link.addEventListener('click', () => { menu.classList.remove('open'); });
   });
 
   // === 4. PARALLAX SEKCIJE ===
-const sections = document.querySelectorAll('.section');  
-const observer = new IntersectionObserver(entries => {  
-  entries.forEach(entry => {  
-    entry.isIntersecting  
-      ? entry.target.classList.add('visible')  
-      : entry.target.classList.remove('visible');  
-  });  
-}, { threshold: 0.52 });  
-
-sections.forEach(section => observer.observe(section));
-      
+  const sections = document.querySelectorAll('.section');  
+  const observer = new IntersectionObserver(entries => {  
+    entries.forEach(entry => {  
+      entry.isIntersecting ? entry.target.classList.add('visible') : entry.target.classList.remove('visible');  
+    });  
+  }, { threshold: 0.52 });  
+  sections.forEach(section => observer.observe(section));
 
   // === 5. BACK TO TOP GUMB ===
   window.addEventListener('scroll', () => {
@@ -621,21 +700,18 @@ sections.forEach(section => observer.observe(section));
       ? `${(scrollY + windowHeight - footerTop) + 60}px`
       : '30px';
   });
-
   backToTopBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // === 6. EFEKT PRITISKA NA ZASTAVICU (ako vodi na link)
+  // === 6. EFEKT PRITISKA NA ZASTAVICU ===
   document.querySelectorAll('.lang-flag').forEach(el => {
     el.addEventListener('click', e => {
       const link = el.querySelector('a');
       const href = link ? link.getAttribute('href') : null;
-
       if (href) {
         e.preventDefault();
         el.classList.add('pressed');
-
         setTimeout(() => {
           el.classList.remove('pressed');
           window.location.href = href;
@@ -646,7 +722,6 @@ sections.forEach(section => observer.observe(section));
 
   // === 7. SEASON HTML I EFEKTI (dinamički dio)
   document.addEventListener("DOMContentLoaded", () => {
-    // === A) Ako postoji spremljena sezona, pokreni je nakon 10s
     const savedSeason = localStorage.getItem("activeSeason");
     if (savedSeason) {
       setTimeout(() => {
@@ -656,8 +731,6 @@ sections.forEach(section => observer.observe(section));
         else if (savedSeason === "autumn") startAutumnEffect(true);
       }, 10000);
     }
-
-    // === B) Učitaj season.html i inicijaliziraj
     fetch("season.html")
       .then(res => res.text())
       .then(html => {
@@ -665,7 +738,198 @@ sections.forEach(section => observer.observe(section));
         if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
       });
   });
-</script>
-  
+
+  /* === TRAILS + FILTER LOGIKA (NOVO) === */
+
+  // Demo podaci — u praksi učitaj iz JSON-a/CMS-a. Bitno: startLat/startLon + destinations[].
+  const TRAILS = [
+    { id:1, name:"Premužićeva staza", area:"Velebit", mountain:"Velebit",
+      distanceKm: 9, elevationM: 180, durationH: 3.5,
+      startLat: 44.737, startLon: 15.028, destinations:["Zavižan","Rossijevo sklonište"] },
+
+    { id:2, name:"Uspon na Triglav", area:"Triglav", mountain:"Triglav",
+      distanceKm: 12, elevationM: 1100, durationH: 8,
+      startLat: 46.379, startLon: 13.836, destinations:["Triglav"] },
+
+    { id:3, name:"Hajdučka Vrata", area:"Čvrsnica", mountain:"Čvrsnica",
+      distanceKm: 15, elevationM: 950, durationH: 7.5,
+      startLat: 43.540, startLon: 17.561, destinations:["Hajdučka Vrata"] },
+
+    { id:4, name:"Maja Jezerce", area:"Prokletije", mountain:"Prokletije",
+      distanceKm: 22, elevationM: 1700, durationH: 11,
+      startLat: 42.441, startLon: 19.812, destinations:["Maja Jezerce"] }
+  ];
+
+  // Klasifikacija težine po km i usponu
+  const DIFF_LABELS = {
+    "very-easy":"Jako lako","easy":"Lako","medium":"Srednje teško","hard":"Jako teško","extreme":"Ekstremno"
+  };
+  function classifyByKm(km){
+    if (km <= 6) return "very-easy";
+    if (km <= 10) return "easy";
+    if (km <= 16) return "medium";
+    if (km <= 20) return "hard";
+    return "extreme";
+  }
+  function classifyByElev(m){
+    if (m <= 200) return "very-easy";
+    if (m <= 500) return "easy";
+    if (m <= 1000) return "medium";
+    if (m <= 1500) return "hard";
+    return "extreme";
+  }
+
+  // Geolokacija + Haversine
+  let userLocation = null; // {lat, lon}
+  function ensureGeolocationOnce() {
+    return new Promise((resolve) => {
+      if (userLocation) return resolve(userLocation);
+      if (!('geolocation' in navigator)) return resolve(null);
+      navigator.geolocation.getCurrentPosition(
+        pos => { userLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude }; resolve(userLocation); },
+        _err => resolve(null),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      );
+    });
+  }
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371; const toRad = d => d*Math.PI/180;
+    const dLat = toRad(lat2-lat1), dLon = toRad(lon2-lon1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+
+  // Pomoćno
+  function norm(s){
+    return (s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  }
+  function badgeEl(text, classes=[]) {
+    const span = document.createElement('span');
+    span.className = ['badge', ...classes].join(' ');
+    span.textContent = text;
+    return span;
+  }
+
+  // Render liste
+  function renderTrails(list) {
+    const host = document.getElementById('trail-list');
+    host.innerHTML = '';
+    if (!list.length) { host.innerHTML = '<p style="color:#fff; text-align:center;">Nema rezultata za odabrane filtere.</p>'; return; }
+
+    list.forEach(t => {
+      const kmDiff = classifyByKm(t.distanceKm);
+      const elevDiff = classifyByElev(t.elevationM);
+
+      let distanceInfo = '';
+      if (userLocation && Number.isFinite(t.startLat) && Number.isFinite(t.startLon)) {
+        const d = haversineKm(userLocation.lat, userLocation.lon, t.startLat, t.startLon);
+        distanceInfo = ` • ${d.toFixed(0)} km od tebe`;
+      }
+
+      const card = document.createElement('article');
+      card.className = 'trail-card';
+      card.innerHTML = `
+        <img src="images/hero.jpg" alt="${t.area}">
+        <div>
+          <h3>${t.name}</h3>
+          <p><strong>Planina/Područje:</strong> ${t.area}${distanceInfo}</p>
+          <p><strong>Trajanje:</strong> ${t.durationH} h</p>
+          <p><strong>Udaljenost:</strong> ${t.distanceKm} km • <strong>Uspon:</strong> ${t.elevationM} m</p>
+          <div class="badges"></div>
+          <a href="#" style="display:inline-block; margin-top:8px;">Detalji &rarr;</a>
+        </div>
+      `;
+      const badges = card.querySelector('.badges');
+      badges.appendChild(badgeEl(`Težina (km): ${DIFF_LABELS[kmDiff]}`, ['km', kmDiff]));
+      badges.appendChild(badgeEl(`Težina (uspon): ${DIFF_LABELS[elevDiff]}`, ['elev', elevDiff]));
+      if (t.destinations?.length) { badges.appendChild(badgeEl(`Odredišta: ${t.destinations.join(', ')}`, ['poi'])); }
+
+      host.appendChild(card);
+    });
+  }
+
+  // Filtriranje
+  async function applyTrailFilters() {
+    const selArea = document.getElementById('areaSelect').value.trim();
+    const radiusVal = document.getElementById('radiusSelect').value;
+    const durationBucket = document.getElementById('durationBucket').value;
+    const poiQuery = norm(document.getElementById('poiSearch').value);
+
+    const modeKm = document.getElementById('modeKm').checked;
+    const modeElev = document.getElementById('modeElev').checked;
+    const logic = document.getElementById('difficultyLogic').value; // any | all
+    const selectedDiffs = [...document.querySelectorAll('.diff-chip:checked')].map(i=>i.value);
+    const diffActive = selectedDiffs.length > 0 && (modeKm || modeElev);
+
+    if (radiusVal && !userLocation) await ensureGeolocationOnce();
+    const maxDistance = radiusVal ? parseInt(radiusVal,10) : null;
+
+    const filtered = TRAILS.filter(t => {
+      // Planina/Područje
+      if (selArea && t.area !== selArea) return false;
+
+      // Udaljenost od mene
+      if (maxDistance && userLocation) {
+        if (!(Number.isFinite(t.startLat) && Number.isFinite(t.startLon))) return false;
+        const d = haversineKm(userLocation.lat, userLocation.lon, t.startLat, t.startLon);
+        if (d > maxDistance) return false;
+      }
+
+      // Trajanje (bucket)
+      if (durationBucket) {
+        if (durationBucket === '>10') { if (!(t.durationH > 10)) return false; }
+        else { if (!(t.durationH <= Number(durationBucket))) return false; }
+      }
+
+      // Mini tražilica odredišta (vrh/mjesto)
+      if (poiQuery) {
+        const hay = [t.name, t.area, t.mountain, ...(t.destinations||[])].map(norm).join('|');
+        if (!hay.includes(poiQuery)) return false;
+      }
+
+      // Težina
+      if (diffActive) {
+        const kmDiff = classifyByKm(t.distanceKm);
+        const elevDiff = classifyByElev(t.elevationM);
+        const kmMatch = modeKm ? selectedDiffs.includes(kmDiff) : null;
+        const elevMatch = modeElev ? selectedDiffs.includes(elevDiff) : null;
+
+        if (modeKm && modeElev) return (logic === 'all') ? (kmMatch && elevMatch) : (kmMatch || elevMatch);
+        if (modeKm) return kmMatch;
+        if (modeElev) return elevMatch;
+      }
+
+      return true;
+    });
+
+    renderTrails(filtered);
+  }
+
+  function clearTrailFilters() {
+    document.getElementById('areaSelect').value = '';
+    document.getElementById('radiusSelect').value = '';
+    document.getElementById('durationBucket').value = '';
+    document.getElementById('poiSearch').value = '';
+    document.getElementById('modeKm').checked = true;
+    document.getElementById('modeElev').checked = true;
+    document.getElementById('difficultyLogic').value = 'any';
+    document.querySelectorAll('.diff-chip').forEach(i => i.checked = false);
+    renderTrails(TRAILS);
+  }
+
+  // Init vezivanja
+  document.addEventListener('DOMContentLoaded', () => {
+    renderTrails(TRAILS);
+
+    const radius = document.getElementById('radiusSelect');
+    let asked = false;
+    radius.addEventListener('focus', async () => { if (!asked) { asked = true; await ensureGeolocationOnce(); }});
+    radius.addEventListener('change', applyTrailFilters);
+
+    document.getElementById('applyFilters').addEventListener('click', applyTrailFilters);
+    document.getElementById('clearFilters').addEventListener('click', clearTrailFilters);
+    document.getElementById('poiSearch').addEventListener('keydown', e => { if (e.key === 'Enter') applyTrailFilters(); });
+  });
+  </script>
 </body>
 </html>
