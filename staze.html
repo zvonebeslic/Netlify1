@@ -766,10 +766,10 @@
               </label>  
               <label>  
                 Način mjerenja  
-                <select id="distanceMode">  
-                  <option value="air" selected>Zračna linija (preporučeno)</option>  
-                  <option value="drive">Vožnja autom (beta)</option>  
-                </select>  
+                <select id="distanceMode" disabled title="Trenutno dostupna samo zračna linija">
+                <option value="air" selected>Zračna linija (aktivno)</option>
+                <option value="drive" disabled>Vožnja autom (uskoro)</option>
+                </select>
               </label>  
               <p style="margin-top:6px; color:var(--muted); font-size:12px;">  
                 Napomena: vožnja autom je procjena i može odstupati — planinarske staze često nisu cestovno dostupne do samog starta.  
@@ -1282,7 +1282,7 @@
         destinations: ["Begunjščica"],  
         tags: ["Roblekov dom"],  
         description: "Strmiji uspon s panoramama Gorenjske.",  
-        gpx: "/gps/begunjscica-vrh.gpx
+        gpx: "/gps/begunjscica-vrh.gpx",
         thumbnail: "images/thumbnails/begunjscica-vrh.jpg"
       },
       {
@@ -2196,7 +2196,7 @@
       }
 
       if (filterState.radius) {
-        const modeTxt = filterState.distanceMode === 'drive' ? 'vožnja (beta)' : 'zračna linija';
+        const modeTxt = 'zračna linija';
         addChip(`Do ${filterState.radius} km • ${modeTxt}`, () => {
           filterState.radius = "";
           document.getElementById('radiusSelect').value = "";
