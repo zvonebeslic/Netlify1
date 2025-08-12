@@ -1687,6 +1687,18 @@ async function runFiltering() {
 
     document.querySelectorAll('.filter-tile.active').forEach(el => el.classList.remove('active'));
     tileEl.classList.add('active');
+
+    // 🔹 NOVO: ako je otvoren filter za udaljenost, zatraži lokaciju SAMO JEDNOM
+if (tileId === 'tileRadius') {
+  ensureGeolocationOnce().then(loc => {
+    if (!loc) {
+      const note = document.createElement('p');
+      note.style.cssText = 'margin-top:6px;color:var(--muted);font-size:12px';
+      note.textContent = 'Nisam uspio dobiti lokaciju. Provjeri dopuštenje za lokaciju ili uključi GPS.';
+      contentWrap.appendChild(note);
+    }
+  });
+}
   }
 
   document.getElementById('ctaGrid').addEventListener('click', (e) => {
