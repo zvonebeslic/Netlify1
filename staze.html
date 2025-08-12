@@ -316,18 +316,22 @@
     }
 
     .filter-tile {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      min-height: 44px;
-      background: #12221b;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform .12s ease, background .12s ease;
-    }
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  min-height: 36px;
+  background: #12221b;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform .12s ease, background .12s ease;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: normal;
+  text-align: left;
+}
 
     .filter-tile:hover {
       transform: translateY(-1px);
@@ -339,7 +343,7 @@
     }
 
     .mountain-icon {
-      width: 28px;
+      width: 16px;
       height: 18px;
     }
 
@@ -355,8 +359,8 @@
 
     .tile-title {
       margin: 0;
-      font-weight: 700;
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 12px;
     }
 
     /* izvorni popoveri: držimo ih skrivenima (sadržaj se seli u dock) */
@@ -367,7 +371,7 @@
     .tile-pop .chips label,
     .tile-pop label,
     .tile-pop select {
-      font-size: 13px;
+      font-size: 10px;
     }
 
     .tile-pop .mode {
@@ -432,14 +436,15 @@
     }
 
     .filters select,
-    .filters input[type="search"] {
-      background: #0f1714;
-      color: #eaf2ee;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 12px;
-      outline: none;
-    }
+.filters input[type="search"] {
+  background: #0f1714;
+  color: #eaf2ee;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  outline: none;
+  font-size: 12px;
+}
 
     .filters select:focus,
     .filters input[type="search"]:focus {
@@ -714,7 +719,7 @@
 .filters-left .cta-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 6px;
 }
 
 /* gumbi/tileovi – malo kompaktniji za mobitel */
