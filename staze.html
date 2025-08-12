@@ -1506,55 +1506,74 @@ async function runFiltering() {
   renderActiveChips();
 }
 
-/* ---------------------------------------------------------
-   #10.11 DOCK PONAŠANJE
-   --------------------------------------------------------- */
-const filtersDock = document.getElementById('filtersDock');
-const dockInner   = filtersDock.querySelector('.filters-dock-inner');
-let dockedTileId  = null;
+  /* ---------------------------------------------------------
+     #10.11 DOCK PONAŠANJE (jedan otvoren u isto vrijeme)
+     --------------------------------------------------------- */
+  const filtersDock = document.getElementById('filtersDock');
+  const dockInner   = filtersDock.querySelector('.filters-dock-inner');
+  let dockedTileId  = null; // npr. "tileDiff"
 
-function closeDock() {
-  if (!dockedTileId) return;
-  const content = dockInner.firstElementChild;
-  if (content) {
+  function closeDock() {
+    if (!dockedTileId) return;
     const orig = document.getElementById(dockedTileId);
-    if (orig) orig.appendChild(content);
+    const contentBox = dockInner.querySelector('.dock-content');
+    // premjesti SAMO originalne kontrole natrag u izvorni tile-pop
+    if (orig && contentBox) {
+      while (contentBox.firstChild) orig.appendChild(contentBox.firstChild);
+    }
+    dockInner.innerHTML = '';
+    filtersDock.classList.remove('active');
+    dockedTileId = null;
+    document.querySelectorAll('.filter-tile.active').forEach(el => el.classList.remove('active'));
   }
-  filtersDock.classList.remove('active');
-  dockInner.innerHTML = '';
-  dockedTileId = null;
-  document.querySelectorAll('.filter-tile.active').forEach(el=>el.classList.remove('active'));
-}
-function openDockFor(tileId, tileEl) {
-  if (dockedTileId === tileId) { closeDock(); return; }
-  closeDock();
-  const src = document.getElementById(tileId);
-  if (!src) return;
-  const box = document.createElement('div');
-  const title = document.createElement('div');
-  title.className = 'dock-title';
-  title.textContent = tileEl.querySelector('.tile-title')?.textContent || 'Filter';
-  const x = document.createElement('button');
-  x.type = 'button';
-  x.className = 'dock-close';
-  x.title = 'Zatvori';
-  x.textContent = '×';
-  x.addEventListener('click', closeDock);
-  box.appendChild(title);
-  while (src.firstChild) box.appendChild(src.firstChild);
-  dockInner.appendChild(box);
-  filtersDock.classList.add('active');
-  dockedTileId = tileId;
-  document.querySelectorAll('.filter-tile.active').forEach(el=>el.classList.remove('active'));
-  tileEl.classList.add('active');
-}
-document.getElementById('ctaGrid').addEventListener('click', (e) => {
-  const tile = e.target.closest('.filter-tile');
-  if (!tile) return;
-  const targetId = tile.getAttribute('aria-controls');
-  if (!targetId) return;
-  openDockFor(targetId, tile);
-});
+
+  function openDockFor(tileId, tileEl) {
+    if (dockedTileId === tileId) { closeDock(); return; }
+    closeDock();
+
+    const src = document.getElementById(tileId);
+    if (!src) return;
+
+    // kreiraj box i jasno odvoji naslov/x od pravog sadržaja (.dock-content)
+    const box = document.createElement('div');
+    const title = document.createElement('div');
+    title.className = 'dock-title';
+    title.textContent = tileEl.querySelector('.tile-title')?.textContent || 'Filter';
+
+    const x = document.createElement('button');
+    x.type = 'button';
+    x.className = 'dock-close';
+    x.title = 'Zatvori';
+    x.textContent = '×';
+    x.addEventListener('click', closeDock);
+
+    const contentWrap = document.createElement('div');
+    contentWrap.className = 'dock-content';
+
+    // iz izvornog tile-pop elementa premjesti SVE njegove djece u .dock-content
+    while (src.firstChild) contentWrap.appendChild(src.firstChild);
+
+    box.appendChild(title);
+    box.appendChild(x);
+    box.appendChild(contentWrap);
+
+    dockInner.innerHTML = ''; // sigurnost: nema duplikata
+    dockInner.appendChild(box);
+    filtersDock.classList.add('active');
+    dockedTileId = tileId;
+
+    document.querySelectorAll('.filter-tile.active').forEach(el => el.classList.remove('active'));
+    tileEl.classList.add('active');
+  }
+
+  document.getElementById('ctaGrid').addEventListener('click', (e) => {
+    const tile = e.target.closest('.filter-tile');
+    if (!tile) return;
+    const targetId = tile.getAttribute('aria-controls');
+    if (!targetId) return;
+    openDockFor(targetId, tile);
+  });
+
 
 /* ---------------------------------------------------------
    #10.12 BRZI RESET I KOMBINIRANI PANEL
