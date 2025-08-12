@@ -676,6 +676,112 @@
       margin: 0 10px;
       opacity: .85;
     }
+
+     /* =========================
+   SPLIT LAYOUT: mobitel
+   (lijevo: gumbi, desno: dock)
+   ========================= */
+.filters-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 50% / 50% */
+  gap: 12px;
+  align-items: start;
+}
+
+/* lijevi stupac = samo gumbi/tile-ovi */
+.filters-left {
+  display: block;
+}
+
+/* desni stupac = dock */
+.filters-right {
+  display: block;
+}
+
+/* make it look like dvije odvojene kolone u istoj kartici */
+.filters-left,
+.filters-right {
+  max-height: 60vh;          /* da sve stane u ekran */
+  overflow: auto;            /* scroll unutar kolone */
+  padding-right: 4px;        /* da scrollbar ne reže sadržaj */
+}
+
+/* tanki vertikalni razdjelnik između kolona (vizualno suptilno) */
+.filters-left { border-right: 1px solid var(--line); padding-right: 10px; }
+.filters-right { padding-left: 4px; }
+
+/* cta-grid u lijevom stupcu: jedan ispod drugog na uskom ekranu */
+.filters-left .cta-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+/* gumbi/tileovi – malo kompaktniji za mobitel */
+.filters-left .filter-tile {
+  min-height: 42px;
+  padding: 10px 12px;
+}
+
+/* dock izgleda punije i čitljivije u desnoj koloni */
+.filters-right .filters-dock {
+  display: block;                  /* dock je uvijek "mjesto" s okvirom */
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0f1814;
+  padding: 10px;
+}
+
+/* kad je prazan, neka bude diskretan */
+.filters-right .filters-dock:empty,
+.filters-right .filters-dock .filters-dock-inner:empty {
+  min-height: 120px;
+  display: block;
+  background: linear-gradient(180deg, #0f1814, #0e1714);
+  border: 1px dashed rgba(255,255,255,0.08);
+  border-radius: 10px;
+}
+
+/* naslov unutar docka */
+.filters-right .dock-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  opacity: .9;
+}
+
+/* Close gumb u docku – malo veći target za mobitel */
+.filters-right .dock-close {
+  width: 36px;
+  height: 36px;
+  top: -6px;
+  right: -6px;
+}
+
+/* sitni tweak placeholder teksta u docku */
+.filters-right .filters-dock p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* ====== šira mobitelska/tablet širina (ako želiš zadržati split i na većem) ====== */
+@media (min-width: 600px) {
+  .filters-left .cta-grid {
+    grid-template-columns: 1fr;   /* i dalje jedan stupac za dosljednost */
+  }
+}
+
+/* ====== vrlo uski ekrani (opcija): složi vertikalno ako baš zatreba ====== */
+/* Ako želiš da na ekstremno uskim ekranima ipak idu jedan ispod drugog,
+   odkomentiraj ovaj blok:
+
+@media (max-width: 360px) {
+  .filters-split { grid-template-columns: 1fr; }
+  .filters-left { border-right: 0; padding-right: 0; }
+  .filters-right { padding-left: 0; margin-top: 8px; }
+}
+*/
+    
   </style>
 </head>
 <body>
@@ -733,26 +839,23 @@
          #05 CTA FILTERI (kompaktni + DOCK panel)
          ========================================================= -->
     <section class="filters-cta">
-      <div class="cta-card">
-        <div class="cta-title">
-          <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 20h18L12 4 3 20z"></path>
-            <path d="M12 4l4 7-2 1-2-4-3 6"></path>
-          </svg>
-          <span>Upotrijebi filter kako bi pronašao svoju idealnu planinarsku turu</span>
-          <button id="quickReset" type="button" title="Brzi reset svih filtera">Reset</button>
-        </div>
+  <div class="cta-card">
+    <div class="cta-title">
+      <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 20h18L12 4 3 20z"></path>
+        <path d="M12 4l4 7-2 1-2-4-3 6"></path>
+      </svg>
+      <span>Upotrijebi filter kako bi pronašao svoju idealnu planinarsku turu</span>
+      <button id="quickReset" type="button" title="Brzi reset svih filtera">Reset</button>
+    </div>
 
-        <!-- DOCK: ovdje se prikazuje točno jedan filter bez preklapanja -->
-        <div id="filtersDock" class="filters-dock" aria-live="polite">
-          <div class="filters-dock-inner">
-            <!-- ispunjava JS -->
-          </div>
-        </div>
-
+    <!-- SPLIT layout: lijevo tile-ovi, desno dock -->
+    <div class="filters-split">
+      <!-- Lijeva kolona: gumbi/tile-ovi -->
+      <div class="filters-left">
         <div id="ctaGrid" class="cta-grid">
           <!-- =====================================================
-               ##05.1 TEŽINA STAZE — sadržaj se seli u DOCK
+               ## TEŽINA STAZE — sadržaj se seli u DOCK
                ===================================================== -->
           <div class="filter-tile" data-tile="diff" aria-controls="tileDiff">
             <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -779,7 +882,7 @@
           </div>
 
           <!-- =====================================================
-               ##05.2 UDALJENOST — sadržaj se seli u DOCK
+               ## UDALJENOST — sadržaj se seli u DOCK
                ===================================================== -->
           <div class="filter-tile" data-tile="radius" aria-controls="tileRadius">
             <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -812,7 +915,7 @@
           </div>
 
           <!-- =====================================================
-               ##05.3 PLANINA / PODRUČJE — sadržaj se seli u DOCK
+               ## PLANINA / PODRUČJE — sadržaj se seli u DOCK
                ===================================================== -->
           <div class="filter-tile" data-tile="area" aria-controls="tileArea">
             <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -830,7 +933,7 @@
           </div>
 
           <!-- =====================================================
-               ##05.4 VRIJEME HODANJA — sadržaj se seli u DOCK
+               ## VRIJEME HODANJA — sadržaj se seli u DOCK
                ===================================================== -->
           <div class="filter-tile" data-tile="duration" aria-controls="tileDuration">
             <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -852,16 +955,27 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- CTA tekst + gumb za kombinirane filtre -->
-        <p style="text-align:center;margin:8px 0 6px;color:var(--muted);font-size:14px">
-          Odaberi najbolje za sebe. <strong>Kombiniraj filtre</strong> i otkrij stazu iz snova.
-        </p>
-        <div style="display:flex;justify-content:center">
-          <button id="toggleCombo" class="combo-toggle" type="button">Kombiniraj filtre</button>
+      <!-- Desna kolona: dock -->
+      <div class="filters-right">
+        <div id="filtersDock" class="filters-dock" aria-live="polite">
+          <div class="filters-dock-inner">
+            <!-- JS će ovdje umetati opcije nakon klika na filter -->
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+
+    <!-- CTA tekst + gumb za kombinirane filtre -->
+    <p style="text-align:center;margin:8px 0 6px;color:var(--muted);font-size:14px">
+      Odaberi najbolje za sebe. <strong>Kombiniraj filtre</strong> i otkrij stazu iz snova.
+    </p>
+    <div style="display:flex;justify-content:center">
+      <button id="toggleCombo" class="combo-toggle" type="button">Kombiniraj filtre</button>
+    </div>
+  </div>
+</section>
 
     <!-- =========================================================
          #06 KOMBINIRANI FILTERI (svi zajedno)
