@@ -1,2517 +1,1219 @@
-<!DOCTYPE html>  
-<html lang="hr">  
-<head>  
-  <!-- =========================================================  
-       #01 META / ASSETI  
-       ========================================================= -->  
-  <meta charset="UTF-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-  <title>Mountain Adventures — Staze</title>  
-  <meta name="description" content="Istraži planinarske staze Balkana. Filtriraj po težini (km/nadmorska), planini/području, trajanju i udaljenosti od tvoje lokacije. GPX tragovi i sažeti opisi." />  
-  <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />  
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />  
-  <link rel="stylesheet" href="season.css" />  
-  
-  <!-- =========================================================  
-       #02 STILOVI (čitko: svaki red u svom retku)  
-       ========================================================= -->  
-  <style>  
-    :root {  
-      --bg: #0b1110;  
-      --ink: #e8f1ed;  
-      --muted: #b7c7c0;  
-      --panel: #0f1a15;  
-      --panel-2: #0e1714;  
-      --line: rgba(255, 255, 255, 0.10);  
-      --brand: #2e7d5b;  
-      --brand-2: #3d9c73;  
-      --chip: #16231d;  
-    }  
-  
-    * {  
-      box-sizing: border-box;  
-      margin: 0;  
-      padding: 0;  
-    }  
-  
-    html,  
-    body {  
-      overflow-x: hidden;  
-    }  
-  
-    body {  
-      font-family: Montserrat, Arial, sans-serif;  
-      background: var(--bg);  
-      color: var(--ink);  
-      scroll-behavior: smooth;  
-    }  
-  
-    a {  
-      color: #9fe1c5;  
-      text-decoration: none;  
-    }  
-  
-    .container {  
-      max-width: 1150px;  
-      margin: 0 auto;  
-      padding: 0 14px;  
-    }  
-  
-    /* =========================================================  
-       #03 NAVBAR / MENI  
-       ========================================================= */  
-    .navbar {  
-      position: fixed;  
-      top: 0;  
-      left: 0;  
-      right: 0;  
-      height: 70px;  
-      display: flex;  
-      align-items: center;  
-      justify-content: space-between;  
-      padding: 0 15px;  
-      z-index: 1000;  
-      background: rgba(0, 0, 0, 0.55);  
-      backdrop-filter: blur(8px);  
-      border-bottom: 1px solid var(--line);  
-    }  
-  
-    .navbar-left img {  
-      height: 16px;  
-      width: 24px;  
-      cursor: pointer;  
-      position: relative;  
-    }  
-  
-    .navbar-left img:hover::after {  
-      content: attr(data-tooltip);  
-      position: absolute;  
-      top: 30px;  
-      left: 0;  
-      background: #ffffff;  
-      color: #000000;  
-      padding: 4px 8px;  
-      border-radius: 5px;  
-      font-size: 12px;  
-      white-space: nowrap;  
-      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);  
-    }  
-  
-    .navbar-center {  
-      flex: 1;  
-      display: flex;  
-      justify-content: center;  
-      transform: translateY(12px);  
-    }  
-  
-    .search-container {  
-      width: 260px;  
-      position: relative;  
-      padding-top: 10px;  
-    }  
-  
-    .search-wrapper {  
-      position: relative;  
-      height: 34px;  
-      background: #ffffff;  
-      color: #222222;  
-      border-radius: 22px;  
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);  
-      display: flex;  
-      align-items: center;  
-      padding: 0 14px;  
-    }  
-  
-    .search-top-decoration {  
-      position: absolute;  
-      top: -212px;  
-      left: 108px;  
-      width: 1600%;  
-      height: 30px;  
-      object-fit: cover;  
-      z-index: -10;  
-      transform: scale(19);  
-      transform-origin: top center;  
-      pointer-events: none;  
-    }  
-  
-    .mountain-search {  
-      flex: 1;  
-      border: none;  
-      background: transparent;  
-      outline: none;  
-      font-size: 14px;  
-      padding: 0 8px;  
-    }  
-  
-    .search-wrapper img[alt="ikona za tražilicu"] {  
-      position: absolute;  
-      right: 12px;  
-      bottom: 7px;  
-      width: 19px;  
-      height: 19px;  
-      pointer-events: none;  
-    }  
-  
-    .navbar-right {  
-      display: flex;  
-      flex-direction: column;  
-      gap: 5px;  
-      padding: 8px;  
-      border: 1px solid rgba(255, 255, 255, 0.35);  
-      border-radius: 8px;  
-      cursor: pointer;  
-      background: rgba(255, 255, 255, 0.05);  
-    }  
-  
-    .burger-line {  
-      width: 26px;  
-      height: 3px;  
-      background: #ffffff;  
-      border-radius: 2px;  
-    }  
-  
-    .menu-overlay {  
-      position: fixed;  
-      top: 70px;  
-      right: 0;  
-      width: 72vw;  
-      max-width: 360px;  
-      display: none;  
-      flex-direction: column;  
-      background: rgba(15, 25, 20, 0.96);  
-      backdrop-filter: blur(10px);  
-      border-left: 1px solid var(--line);  
-      padding: 18px;  
-      z-index: 9999;  
-    }  
-  
-    .menu-overlay.open {  
-      display: flex;  
-    }  
-  
-    .menu-overlay a {  
-      color: #ffffff;  
-      margin: 10px 0;  
-    }  
-  
-    /* =========================================================  
-       #04 HERO + NASLOV  
-       ========================================================= */  
-    .image-section {  
-      height: 50vh;  
-      position: relative;  
-      background: url('images/hero.jpg') center / cover no-repeat;  
-    }  
-  
-    .overlay {  
-      position: absolute;  
-      inset: 0;  
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));  
-    }  
-  
-    main .header {  
-      background: linear-gradient(180deg, #101b16, #0e1814);  
-      text-align: center;  
-      padding: 38px 16px;  
-      border-bottom: 1px solid var(--line);  
-    }  
-  
-    main .header p {  
-      color: var(--muted);  
-      margin-top: 8px;  
-    }  
-  
-    /* =========================================================  
-       #05 CTA FILTERI (kompaktni gumbi + popoveri)  
-       ========================================================= */  
-    .filters-cta {  
-      margin: 22px auto;  
-    }  
-  
-    .cta-card {  
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));  
-      border: 1px solid var(--line);  
-      border-radius: 16px;  
-      z-index: 1001;
-      padding: 16px;  
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);  
-    }  
-  
-    .cta-title {  
-      font-weight: 700;  
-      letter-spacing: 0.2px;  
-      display: flex;  
-      align-items: center;  
-      gap: 10px;  
-      margin-bottom: 10px;  
-    }  
-  
-    .cta-grid {  
-      display: grid;  
-      gap: 12px;  
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));  
-    }  
-  
-    .filter-tile {  
-      position: relative;  
-      display: inline-flex;  
-      align-items: center;  
-      gap: 8px;  
-      padding: 10px 12px;  
-      min-height: 44px;  
-      background: #12221b;  
-      border: 1px solid var(--line);  
-      border-radius: 10px;  
-      cursor: pointer;  
-      transition: transform 0.12s ease, background 0.12s ease;  
-    }  
-  
-    .filter-tile:hover {  
-      transform: translateY(-1px);  
-      background: #152820;  
-    }  
-  
-    .mountain-icon {  
-      width: 28px;  
-      height: 18px;  
-    }  
-  
-    .mountain-icon path {  
-      stroke: currentColor;  
-      stroke-width: 1.4;  
-      fill: none;  
-    }  
-  
-    .mountain-top {  
-      display: none;  
-    }  
-  
-    .tile-title {  
-      margin: 0;  
-      font-weight: 700;  
-      font-size: 14px;  
-    }  
-  
-    .tile-desc {  
-      display: none;  
-    }  
-  
-    .tile-pop {  
-      position: absolute;  
-      top: calc(100% + 8px);  
-      left: 0;  
-      width: 340px;  
-      max-width: 92vw;  
-      display: none;  
-      z-index: 9999;  
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));  
-      border: 1px solid var(--line);  
-      border-radius: 12px;  
-      padding: 10px;  
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);  
-    }  
-  
-    .tile-pop::before {  
-      content: "";  
-      position: absolute;  
-      top: -8px;  
-      left: 16px;  
-      width: 0;  
-      height: 0;  
-      border-left: 8px solid transparent;  
-      border-right: 8px solid transparent;  
-      border-bottom: 8px solid var(--panel);  
-    }  
-  
-    .tile-pop.open {  
-      display: block;  
-    }  
-  
-    .tile-pop .chips label,  
-    .tile-pop label,  
-    .tile-pop select {  
-      font-size: 13px;  
-    }  
-  
-    .tile-pop .mode {  
-      gap: 10px;  
-      display: flex;  
-      align-items: center;  
-      flex-wrap: wrap;  
-      margin-bottom: 6px;  
-    }  
-  
-    .tile-pop .btn {  
-      display: none;  
-    }  
-  
-    /* =========================================================  
-       #06 KOMBINIRANI FILTERI  
-       ========================================================= */  
-    .combo-wrap {  
-      margin: 18px auto;  
-    }  
-  
-    .combo-toggle {  
-      border: 1px solid var(--line);  
-      border-radius: 10px;  
-      padding: 10px 14px;  
-      background: linear-gradient(180deg, var(--brand), var(--brand-2));  
-      color: #ffffff;  
-      font-weight: 700;  
-      cursor: pointer;  
-    }  
-  
-    .filters {  
-      margin-top: 12px;  
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));  
-      border: 1px solid var(--line);  
-      border-radius: 16px;  
-      padding: 14px 14px 8px;  
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);  
-    }  
-  
-    .filters .title {  
-      display: flex;  
-      align-items: center;  
-      gap: 10px;  
-      margin: 4px 4px 12px;  
-      font-weight: 700;  
-    }  
-  
-    .filter-row {  
-      display: grid;  
-      gap: 10px;  
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));  
-      margin-bottom: 10px;  
-    }  
-  
-    .filters label,  
-    .filters fieldset {  
-      display: flex;  
-      flex-direction: column;  
-      gap: 6px;  
-      font-size: 14px;  
-    }  
-  
-    .filters select,  
-    .filters input[type="search"] {  
-      background: #0f1714;  
-      color: #eaf2ee;  
-      border: 1px solid var(--line);  
-      border-radius: 10px;  
-      padding: 10px 12px;  
-      outline: none;  
-    }  
-  
-    .filters select:focus,  
-    .filters input[type="search"]:focus {  
-      border-color: rgba(61, 156, 115, 0.7);  
-    }  
-  
-    fieldset.difficulty {  
-      border: 1px solid var(--line);  
-      border-radius: 12px;  
-      padding: 10px;  
-      background: #0e1814;  
-    }  
-  
-    .difficulty legend {  
-      padding: 0 6px;  
-      font-weight: 700;  
-    }  
-  
-    .difficulty .mode {  
-      display: flex;  
-      align-items: center;  
-      gap: 12px;  
-      margin-bottom: 8px;  
-      flex-wrap: wrap;  
-    }  
-  
-    .difficulty .chips {  
-      display: flex;  
-      flex-wrap: wrap;  
-      gap: 10px;  
-    }  
-  
-    .filters .actions {  
-      display: flex;  
-      gap: 10px;  
-      flex-wrap: wrap;  
-      margin-top: 6px;  
-    }  
-  
-    .btn {  
-      border: 1px solid var(--line);  
-      border-radius: 10px;  
-      padding: 10px 14px;  
-      background: linear-gradient(180deg, var(--brand), var(--brand-2));  
-      color: #ffffff;  
-      cursor: pointer;  
-      font-weight: 700;  
-    }  
-  
-    .btn.secondary {  
-      background: #24342d;  
-      color: #d9ebe4;  
-    }  
-  
-    /* =========================================================  
-       #07 AKTIVNI FILTERI (ČIPOVI)  
-       ========================================================= */  
-    .active-chips {  
-      display: flex;  
-      flex-wrap: wrap;  
-      gap: 8px;  
-      align-items: center;  
-      margin: 12px auto 0 auto;  
-      padding: 0 4px;  
-    }  
-  
-    .chip {  
-      display: inline-flex;  
-      align-items: center;  
-      gap: 6px;  
-      padding: 6px 10px;  
-      background: #1a2a23;  
-      border: 1px solid var(--line);  
-      border-radius: 999px;  
-      font-size: 13px;  
-      color: #dff4ea;  
-    }  
-  
-    .chip button {  
-      appearance: none;  
-      border: none;  
-      background: transparent;  
-      color: #dff4ea;  
-      cursor: pointer;  
-      font-size: 14px;  
-      line-height: 1;  
-      padding: 0;  
-    }  
-  
-    /* =========================================================  
-       #08 LISTA STAZA  
-       ========================================================= */  
-    .trail-list {  
-      display: flex;  
-      flex-wrap: wrap;  
-      gap: 18px;  
-      justify-content: center;  
-      margin: 22px auto;  
-    }  
-  
-    .trail-card {  
-      width: 310px;  
-      background: #0f1a15;  
-      border: 1px solid var(--line);  
-      border-radius: 12px;  
-      overflow: hidden;  
-      transition: transform 0.15s ease, box-shadow 0.15s ease;  
-    }  
-  
-    .trail-card:hover {  
-      transform: translateY(-2px);  
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);  
-    }  
-  
-    .trail-card img {  
-      width: 100%;  
-      height: 170px;  
-      object-fit: cover;  
-      background: #0e1714;  
-    }  
-  
-    .trail-card div {  
-      padding: 12px;  
-    }  
-  
-    .trail-card h3 {  
-      margin: 0 0 6px 0;  
-    }  
-  
-    .trail-card p {  
-      color: #cfe1d9;  
-      margin: 4px 0;  
-    }  
-  
-    .info-line {  
-      display: flex;  
-      align-items: center;  
-      gap: 8px;  
-      flex-wrap: wrap;  
-      font-size: 14px;  
-    }  
-  
-    .info-line svg {  
-      width: 16px;  
-      height: 16px;  
-    }  
-  
-    .badges {  
-      display: flex;  
-      gap: 6px;  
-      margin-top: 6px;  
-      flex-wrap: wrap;  
-    }  
-  
-    .badge {  
-      font-size: 12px;  
-      padding: 4px 8px;  
-      border-radius: 999px;  
-      background: #1a2a23;  
-      border: 1px solid var(--line);  
-    }  
-  
-    .badge.km {  
-      background: #112a38;  
-    }  
-  
-    .badge.elev {  
-      background: #142b1a;  
-    }  
-  
-    .badge.poi {  
-      background: #2a2136;  
-    }  
-  
-    .badge.very-easy {  
-      color: #38d39f;  
-    }  
-  
-    .badge.easy {  
-      color: #6be6bd;  
-    }  
-  
-    .badge.medium {  
-      color: #f3c969;  
-    }  
-  
-    .badge.hard {  
-      color: #f28b82;  
-    }  
-  
-    .badge.extreme {  
-      color: #ff6b6b;  
-    }  
-  
-    /* =========================================================  
-       #09 FOOTER / BACK TO TOP  
-       ========================================================= */  
-    #backToTop {  
-      position: fixed;  
-      bottom: 22px;  
-      left: 50%;  
-      transform: translateX(-50%);  
-      z-index: 9999;  
-      background: rgba(255, 255, 255, 0.15);  
-      backdrop-filter: blur(12px);  
-      color: #ffffff;  
-      border: 1px solid rgba(255, 255, 255, 0.25);  
-      width: 48px;  
-      height: 48px;  
-      border-radius: 50%;  
-      display: none;  
-      align-items: center;  
-      justify-content: center;  
-    }  
-  
-    footer {  
-      background: #0e1714;  
-      color: #bcd0c7;  
-      text-align: center;  
-      padding: 20px 10px;  
-      margin-top: 40px;  
-      border-top: 1px solid var(--line);  
-    }  
-  
-    .footer-icons svg {  
-      width: 32px;  
-      height: 32px;  
-      margin: 0 10px;  
-      opacity: 0.85;  
-    }  
-  </style>  
-</head>  
-<body>  
-  <!-- =========================================================  
-       #03A NAVBAR / JEZIK / MENI  
-       ========================================================= -->  
-  <div class="navbar">  
-    <div class="navbar-left">  
-      <img id="language-toggle" src="images/flag-uk.svg" alt="promjena jezika na engleski" data-tooltip="Promijeni jezik" />  
-    </div>  
-    <div class="navbar-center">  
-      <div class="search-container">  
-        <div class="search-wrapper">  
-          <img class="search-top-decoration" src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" />  
-          <input id="search" class="mountain-search" type="text" placeholder="Pretraži..." />  
-          <img src="images/search.svg" alt="ikona za tražilicu" />  
-        </div>  
-      </div>  
-    </div>  
-    <div id="menu-toggle" class="navbar-right">  
-      <div class="burger-line"></div>  
-      <div class="burger-line"></div>  
-      <div class="burger-line"></div>  
-    </div>  
-  </div>  
-  
-  <div id="menu" class="menu-overlay">  
-    <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>  
-    <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>  
-    <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>  
-    <a href="webshop.html" data-hr="Web shop" data-en="Web Shop">Web shop</a>  
-    <a href="planinarskevijesti.html" data-hr="Blog" data-en="Blog">Blog</a>  
-    <a href="digitalniruksak.html" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>  
-    <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>  
-  </div>  
-  
-  <!-- =========================================================  
-       #04A HERO + NASLOV  
-       ========================================================= -->  
-  <section class="image-section">  
-    <div class="overlay"></div>  
-  </section>  
-  
-  <main class="container">  
-    <section class="header">  
-      <h1>Istraži planinarske staze Balkana</h1>  
-      <p>Pronađi svoju turu prema težini (km/nadmorska), planini/području, vremenu hodanja ili udaljenosti od tvoje lokacije.</p>  
-    </section>  
-  
-    <!-- =========================================================  
-         #05 CTA FILTERI (kompaktni + popover)  
-         ========================================================= -->  
-    <section class="filters-cta">  
-      <div class="cta-card">  
-        <div class="cta-title">  
-          <svg class="mountain-icon" viewBox="0 0 24 24">  
-            <path d="M3 20h18L12 4 3 20z"></path>  
-            <path d="M12 4l4 7-2 1-2-4-3 6"></path>  
-          </svg>  
-          <span>Upotrijebi filter kako bi pronašao svoju idealnu planinarsku turu</span>  
-        </div>  
-  
-        <div id="ctaGrid" class="cta-grid">  
-          <!-- =====================================================  
-               ##05.1 TEŽINA STAZE (km i/ili n/mv) — popover  
-               ===================================================== -->  
-          <div class="filter-tile" data-tile="diff">  
-            <svg class="mountain-icon" viewBox="0 0 24 24">  
-              <path d="M3 20h18L12 4 3 20z"></path>  
-            </svg>  
-            <div class="tile-title">Težina staze</div>  
-            <div id="tileDiff" class="tile-pop">  
-              <div class="mode">  
-                <label>  
-                  <input id="modeKm" type="checkbox" checked />  
-                  po kilometrima hodanja  
-                </label>  
-                <label>  
-                  <input id="modeElev" type="checkbox" checked />  
-                  po prijeđenoj nadmorskoj visini  
-                </label>  
-                <select id="difficultyLogic" title="Kombinacija pravila">  
-                  <option value="any" selected>Poklopi bilo koju</option>  
-                  <option value="all">Poklopi obje</option>  
-                </select>  
-              </div>  
-              <div class="chips">  
-                <label>  
-                  <input class="diff-chip" type="checkbox" value="very-easy" />  
-                  Jako lako  
-                </label>  
-                <label>  
-                  <input class="diff-chip" type="checkbox" value="easy" />  
-                  Lako  
-                </label>  
-                <label>  
-                  <input class="diff-chip" type="checkbox" value="medium" checked />  
-                  Srednje teško  
-                </label>  
-                <label>  
-                  <input class="diff-chip" type="checkbox" value="hard" />  
-                  Jako teško  
-                </label>  
-                <label>  
-                  <input class="diff-chip" type="checkbox" value="extreme" />  
-                  Ekstremno  
-                </label>  
-              </div>  
-            </div>  
-          </div>  
-  
-          <!-- =====================================================  
-               ##05.2 UDALJENOST OD TEBE — popover  
-               ===================================================== -->  
-          <div class="filter-tile" data-tile="radius">  
-            <svg class="mountain-icon" viewBox="0 0 24 24">  
-              <path d="M3 20h18L12 4 3 20z"></path>  
-            </svg>  
-            <div class="tile-title">Udaljenost staze od vaše trenutne lokacije</div>  
-            <div id="tileRadius" class="tile-pop">  
-              <label>  
-                Odaberi radijus  
-                <select id="radiusSelect">  
-                  <option value="">Bez ograničenja</option>  
-                  <option value="100">Do 100 km</option>  
-                  <option value="200">Do 200 km</option>  
-                  <option value="300">Do 300 km</option>  
-                  <option value="400">Do 400 km</option>  
-                  <option value="500">Do 500 km</option>  
-                </select>  
-              </label>  
-              <label>  
-                Način mjerenja  
-                <select id="distanceMode" disabled title="Trenutno dostupna samo zračna linija">
-                <option value="air" selected>Zračna linija (aktivno)</option>
-                <option value="drive" disabled>Vožnja autom (uskoro)</option>
+Da — evo kompletan, očišćen i označen staze.html s traženim doradama (docked filter-panel bez preklapanja, “reset” opcija, 2 kartice u redu, novi znak za jednosmjernu turu, manji hero naslov/tekst te sekcije spremne za pozadinske slike/video). Sve iz tvoje verzije je sačuvano – ništa nisam skraćivao ni izbacivao.
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <!-- =========================================================
+       #01 META / ASSETI
+       ========================================================= -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mountain Adventures — Staze</title>
+  <meta name="description" content="Istraži planinarske staze Balkana. Filtriraj po težini (km/nadmorska), planini/području, trajanju i udaljenosti od tvoje lokacije. GPX tragovi i sažeti opisi." />
+  <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="season.css" />
+
+  <!-- =========================================================
+       #02 STILOVI (čitko: svaki red u svom retku)
+       ========================================================= -->
+  <style>
+    :root{
+      --bg:#0b1110;
+      --ink:#e8f1ed;
+      --muted:#b7c7c0;
+      --panel:#0f1a15;
+      --panel-2:#0e1714;
+      --line:rgba(255,255,255,0.10);
+      --brand:#2e7d5b;
+      --brand-2:#3d9c73;
+      --chip:#16231d;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    html,body{overflow-x:hidden}
+
+    body{
+      font-family:Montserrat,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      scroll-behavior:smooth;
+    }
+
+    a{color:#9fe1c5;text-decoration:none}
+
+    .container{max-width:1150px;margin:0 auto;padding:0 14px}
+
+    /* =========================================================
+       #03 NAVBAR / MENI
+       ========================================================= */
+    .navbar{
+      position:fixed;top:0;left:0;right:0;height:70px;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 15px;z-index:1000;background:rgba(0,0,0,.55);
+      backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+    }
+    .navbar-left img{height:16px;width:24px;cursor:pointer;position:relative}
+    .navbar-left img:hover::after{
+      content:attr(data-tooltip);position:absolute;top:30px;left:0;
+      background:#fff;color:#000;padding:4px 8px;border-radius:5px;
+      font-size:12px;white-space:nowrap;box-shadow:0 0 6px rgba(0,0,0,.2);
+    }
+    .navbar-center{flex:1;display:flex;justify-content:center;transform:translateY(12px)}
+    .search-container{width:260px;position:relative;padding-top:10px}
+    .search-wrapper{
+      position:relative;height:34px;background:#fff;color:#222;border-radius:22px;
+      box-shadow:0 3px 8px rgba(0,0,0,.3);display:flex;align-items:center;padding:0 14px;
+    }
+    .search-top-decoration{
+      position:absolute;top:-212px;left:108px;width:1600%;height:30px;
+      object-fit:cover;z-index:-10;transform:scale(19);transform-origin:top center;pointer-events:none;
+    }
+    .mountain-search{flex:1;border:0;background:transparent;outline:0;font-size:14px;padding:0 8px}
+    .search-wrapper img[alt="ikona za tražilicu"]{
+      position:absolute;right:12px;bottom:7px;width:19px;height:19px;pointer-events:none;
+    }
+    .navbar-right{
+      display:flex;flex-direction:column;gap:5px;padding:8px;border:1px solid rgba(255,255,255,.35);
+      border-radius:8px;cursor:pointer;background:rgba(255,255,255,.05);
+    }
+    .burger-line{width:26px;height:3px;background:#fff;border-radius:2px}
+    .menu-overlay{
+      position:fixed;top:70px;right:0;width:72vw;max-width:360px;display:none;flex-direction:column;
+      background:rgba(15,25,20,.96);backdrop-filter:blur(10px);border-left:1px solid var(--line);
+      padding:18px;z-index:9999;
+    }
+    .menu-overlay.open{display:flex}
+    .menu-overlay a{color:#fff;margin:10px 0}
+
+    /* =========================================================
+       #04 HERO + NASLOV (dvije velike sekcije / bandovi)
+       ========================================================= */
+    .image-section{
+      height:50vh;position:relative;background:url('images/hero.jpg') center/cover no-repeat;
+    }
+    .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.55))}
+
+    /* band 1: naslov/opis (manje) */
+    main .header{
+      background:linear-gradient(180deg,#101b16,#0e1814);
+      text-align:center;padding:26px 16px;border-bottom:1px solid var(--line);
+    }
+    main .header h1{font-size:clamp(20px,3.2vw,28px);letter-spacing:.2px}
+    main .header p{color:var(--muted);margin-top:8px;font-size:clamp(13px,2vw,15px)}
+
+    /* =========================================================
+       #05 CTA FILTERI (kompaktni gumbi + dock panel)
+       ========================================================= */
+    .filters-cta{margin:22px auto}
+    .cta-card{
+      background:linear-gradient(180deg,var(--panel),var(--panel-2));
+      border:1px solid var(--line);border-radius:16px;z-index:1001;padding:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,.25);
+    }
+    .cta-title{font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+
+    /* brzi reset */
+    #quickReset{
+      margin-left:auto;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+      background:#24342d;color:#d9ebe4;cursor:pointer;font-weight:700;font-size:13px;
+    }
+
+    /* dock panel u koji "ulijeću" pojedini filteri */
+    .filters-dock{display:none;margin:8px 0 12px;border:1px solid var(--line);border-radius:12px;background:#0f1814;padding:10px}
+    .filters-dock.active{display:block}
+    .filters-dock-inner{position:relative}
+    .dock-close{
+      position:absolute;top:-6px;right:-6px;transform:translate(0,-100%);
+      background:#24342d;color:#d9ebe4;border:1px solid var(--line);border-radius:999px;
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;
+    }
+    .dock-title{font-weight:700;margin-bottom:8px;opacity:.9}
+
+    .cta-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .filter-tile{
+      position:relative;display:inline-flex;align-items:center;gap:8px;padding:10px 12px;min-height:44px;
+      background:#12221b;border:1px solid var(--line);border-radius:10px;cursor:pointer;
+      transition:transform .12s ease, background .12s ease;
+    }
+    .filter-tile:hover{transform:translateY(-1px);background:#152820}
+    .filter-tile.active{outline:2px solid rgba(61,156,115,.5)}
+
+    .mountain-icon{width:28px;height:18px}
+    .mountain-icon path{stroke:currentColor;stroke-width:1.4;fill:none}
+    .mountain-top{display:none}
+    .tile-title{margin:0;font-weight:700;font-size:14px}
+
+    /* izvorni popoveri: držimo ih skrivenima (sadržaj se seli u dock) */
+    .tile-pop{display:none}
+    .tile-pop .chips label, .tile-pop label, .tile-pop select{font-size:13px}
+    .tile-pop .mode{gap:10px;display:flex;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+    .tile-pop .btn{display:none}
+
+    /* =========================================================
+       #06 KOMBINIRANI FILTERI
+       ========================================================= */
+    .combo-wrap{margin:18px auto}
+    .combo-toggle{
+      border:1px solid var(--line);border-radius:10px;padding:10px 14px;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;font-weight:700;cursor:pointer;
+    }
+    .filters{
+      margin-top:12px;background:linear-gradient(180deg,var(--panel),var(--panel-2));
+      border:1px solid var(--line);border-radius:16px;padding:14px 14px 8px;box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    .filters .title{display:flex;align-items:center;gap:10px;margin:4px 4px 12px;font-weight:700}
+    .filter-row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:10px}
+    .filters label, .filters fieldset{display:flex;flex-direction:column;gap:6px;font-size:14px}
+    .filters select, .filters input[type="search"]{
+      background:#0f1714;color:#eaf2ee;border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;
+    }
+    .filters select:focus, .filters input[type="search"]:focus{border-color:rgba(61,156,115,.7)}
+
+    fieldset.difficulty{border:1px solid var(--line);border-radius:12px;padding:10px;background:#0e1814}
+    .difficulty legend{padding:0 6px;font-weight:700}
+    .difficulty .mode{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+    .difficulty .chips{display:flex;flex-wrap:wrap;gap:10px}
+    .filters .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .btn{
+      border:1px solid var(--line);border-radius:10px;padding:10px 14px;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;cursor:pointer;font-weight:700;
+    }
+    .btn.secondary{background:#24342d;color:#d9ebe4}
+
+    /* =========================================================
+       #07 AKTIVNI FILTERI (ČIPOVI)
+       ========================================================= */
+    .active-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px auto 0;padding:0 4px}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:#1a2a23;
+      border:1px solid var(--line);border-radius:999px;font-size:13px;color:#dff4ea;
+    }
+    .chip button{appearance:none;border:0;background:transparent;color:#dff4ea;cursor:pointer;font-size:14px;line-height:1;padding:0}
+
+    /* =========================================================
+       #08 LISTA STAZA
+       ========================================================= */
+    .trail-list{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;justify-content:center;margin:22px auto;
+    }
+    @media (max-width:760px){.trail-list{grid-template-columns:1fr}}
+
+    .trail-card{
+      width:100%;background:#0f1a15;border:1px solid var(--line);border-radius:12px;
+      overflow:hidden;transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .trail-card:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.25)}
+    .trail-card img{width:100%;height:170px;object-fit:cover;background:#0e1714}
+    .trail-card div{padding:12px}
+    .trail-card h3{margin:0 0 6px 0}
+    .trail-card p{color:#cfe1d9;margin:4px 0}
+    .info-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px}
+    .info-line svg{width:16px;height:16px}
+    .badges{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+    .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#1a2a23;border:1px solid var(--line)}
+    .badge.km{background:#112a38}
+    .badge.elev{background:#142b1a}
+    .badge.poi{background:#2a2136}
+    .badge.very-easy{color:#38d39f}
+    .badge.easy{color:#6be6bd}
+    .badge.medium{color:#f3c969}
+    .badge.hard{color:#f28b82}
+    .badge.extreme{color:#ff6b6b}
+
+    /* =========================================================
+       #09 FOOTER / BACK TO TOP
+       ========================================================= */
+    #backToTop{
+      position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:9999;
+      background:rgba(255,255,255,.15);backdrop-filter:blur(12px);color:#fff;border:1px solid rgba(255,255,255,.25);
+      width:48px;height:48px;border-radius:50%;display:none;align-items:center;justify-content:center;
+    }
+    footer{
+      background:#0e1714;color:#bcd0c7;text-align:center;padding:20px 10px;margin-top:40px;border-top:1px solid var(--line);
+    }
+    .footer-icons svg{width:32px;height:32px;margin:0 10px;opacity:.85}
+  </style>
+</head>
+<body>
+  <!-- nevidljivi placeholder da fetch("season.html") ne baca grešku -->
+  <div id="season-placeholder" style="display:none"></div>
+
+  <!-- =========================================================
+       #03A NAVBAR / JEZIK / MENI
+       ========================================================= -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <img id="language-toggle" src="images/flag-uk.svg" alt="promjena jezika na engleski" data-tooltip="Promijeni jezik" />
+    </div>
+    <div class="navbar-center">
+      <div class="search-container">
+        <div class="search-wrapper">
+          <img class="search-top-decoration" src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" />
+          <input id="search" class="mountain-search" type="text" placeholder="Pretraži..." />
+          <img src="images/search.svg" alt="ikona za tražilicu" />
+        </div>
+      </div>
+    </div>
+    <div id="menu-toggle" class="navbar-right">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
+  </div>
+
+  <div id="menu" class="menu-overlay">
+    <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="webshop.html" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="planinarskevijesti.html" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="digitalniruksak.html" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>
+    <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
+
+  <!-- =========================================================
+       #04A HERO + NASLOV (band 0: hero)
+       ========================================================= -->
+  <section class="image-section">
+    <div class="overlay"></div>
+  </section>
+
+  <main class="container">
+    <!-- band 1: naslov + opis -->
+    <section class="header">
+      <h1>Istraži planinarske staze Balkana</h1>
+      <p>Pronađi svoju turu prema težini (km/nadmorska), planini/području, vremenu hodanja ili udaljenosti od tvoje lokacije.</p>
+    </section>
+
+    <!-- =========================================================
+         #05 CTA FILTERI (kompaktni + DOCK panel)
+         ========================================================= -->
+    <section class="filters-cta">
+      <div class="cta-card">
+        <div class="cta-title">
+          <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 20h18L12 4 3 20z"></path>
+            <path d="M12 4l4 7-2 1-2-4-3 6"></path>
+          </svg>
+          <span>Upotrijebi filter kako bi pronašao svoju idealnu planinarsku turu</span>
+          <button id="quickReset" type="button" title="Brzi reset svih filtera">Reset</button>
+        </div>
+
+        <!-- DOCK: ovdje se prikazuje točno jedan filter bez preklapanja -->
+        <div id="filtersDock" class="filters-dock" aria-live="polite">
+          <div class="filters-dock-inner">
+            <!-- ispunjava JS -->
+          </div>
+        </div>
+
+        <div id="ctaGrid" class="cta-grid">
+          <!-- =====================================================
+               ##05.1 TEŽINA STAZE — sadržaj se seli u DOCK
+               ===================================================== -->
+          <div class="filter-tile" data-tile="diff" aria-controls="tileDiff">
+            <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 20h18L12 4 3 20z"></path>
+            </svg>
+            <div class="tile-title">Težina staze</div>
+            <div id="tileDiff" class="tile-pop" aria-hidden="true">
+              <div class="mode">
+                <label><input id="modeKm" type="checkbox" checked /> po kilometrima hodanja</label>
+                <label><input id="modeElev" type="checkbox" checked /> po prijeđenoj nadmorskoj visini</label>
+                <select id="difficultyLogic" title="Kombinacija pravila">
+                  <option value="any" selected>Poklopi bilo koju</option>
+                  <option value="all">Poklopi obje</option>
                 </select>
-              </label>  
-              <p style="margin-top:6px; color:var(--muted); font-size:12px;">  
-                Napomena: vožnja autom je procjena i može odstupati — planinarske staze često nisu cestovno dostupne do samog starta.  
-              </p>  
-            </div>  
-          </div>  
-  
-          <!-- =====================================================  
-               ##05.3 PLANINA / PODRUČJE — popover  
-               ===================================================== -->  
-          <div class="filter-tile" data-tile="area">  
-            <svg class="mountain-icon" viewBox="0 0 24 24">  
-              <path d="M3 20h18L12 4 3 20z"></path>  
-            </svg>  
-            <div class="tile-title">Planina/Područje</div>  
-            <div id="tileArea" class="tile-pop">  
-              <label>  
-                Odaberi lokaciju  
-                <select id="areaSelect">  
-                  <option value="">Sve lokacije</option>  
-                </select>  
-              </label>  
-            </div>  
-          </div>  
-  
-          <!-- =====================================================  
-               ##05.4 VRIJEME HODANJA — popover  
-               ===================================================== -->  
-          <div class="filter-tile" data-tile="duration">  
-            <svg class="mountain-icon" viewBox="0 0 24 24">  
-              <path d="M3 20h18L12 4 3 20z"></path>  
-            </svg>  
-            <div class="tile-title">Vrijeme hodanja</div>  
-            <div id="tileDuration" class="tile-pop">  
-              <label>  
-                Odaberi trajanje  
-                <select id="durationBucket">  
-                  <option value="">Bilo koje</option>  
-                  <option value="3">Do 3 h</option>  
-                  <option value="5">Do 5 h</option>  
-                  <option value="8">Do 8 h</option>  
-                  <option value="10">Do 10 h</option>  
-                  <option value=">10">Preko 10 h</option>  
-                </select>  
-              </label>  
-            </div>  
-          </div>  
-        </div>  
-  
-        <!-- =====================================================  
-             CTA TEKST ZA KOMBINIRANE FILTERE  
-             ===================================================== -->  
-        <p style="text-align:center; margin:8px 0 6px 0; color:var(--muted); font-size:14px;">  
-          Odaberi najbolje za sebe. <strong>Kombiniraj filtre</strong> i otkrij stazu iz snova.  
-        </p>  
-  
-        <div style="display:flex; justify-content:center;">  
-          <button id="toggleCombo" class="combo-toggle" type="button">Kombiniraj filtre</button>  
-        </div>  
-      </div>  
-    </section>  
-  
-    <!-- =========================================================  
-         #06 KOMBINIRANI FILTERI (svi zajedno)  
-         ========================================================= -->  
-    <section id="comboWrap" class="combo-wrap" style="display:none">  
-      <div class="filters">  
-        <div class="title">  
-          <svg class="mountain-icon" viewBox="0 0 24 24">  
-            <path d="M3 20h18L12 4 3 20z"></path>  
-            <path d="M12 4l4 7-2 1-2-4-3 6"></path>  
-          </svg>  
-          <span>Odaberi najbolje za sebe — kombiniraj filtre i otkrij stazu iz snova</span>  
-        </div>  
-  
-        <div class="filter-row">  
-          <label>  
-            Planina/Područje  
-            <select id="areaSelectCombo">  
-              <option value="">Sve lokacije</option>  
-            </select>  
-          </label>  
-  
-          <label>  
-            Udaljenost od mene  
-            <select id="radiusSelectCombo">  
-              <option value="">Bez ograničenja</option>  
-              <option value="100">Do 100 km</option>  
-              <option value="200">Do 200 km</option>  
-              <option value="300">Do 300 km</option>  
-              <option value="400">Do 400 km</option>  
-              <option value="500">Do 500 km</option>  
-            </select>  
-          </label>  
-  
-          <label>  
-            Način mjerenja udaljenosti  
-            <select id="distanceModeCombo">  
-              <option value="air" selected>Zračna linija (preporučeno)</option>  
-              <option value="drive">Vožnja autom (beta)</option>  
-            </select>  
-          </label>  
-  
-          <label>  
-            Vrijeme hodanja  
-            <select id="durationBucketCombo">  
-              <option value="">Bilo koje</option>  
-              <option value="3">Do 3 h</option>  
-              <option value="5">Do 5 h</option>  
-              <option value="8">Do 8 h</option>  
-              <option value="10">Do 10 h</option>  
-              <option value=">10">Preko 10 h</option>  
-            </select>  
-          </label>  
-        </div>  
-  
-        <fieldset class="difficulty">  
-          <legend>Težina staze</legend>  
-          <div class="mode">  
-            <label>  
-              <input id="modeKmCombo" type="checkbox" checked />  
-              po kilometrima hodanja  
-            </label>  
-            <label>  
-              <input id="modeElevCombo" type="checkbox" checked />  
-              po prijeđenoj nadmorskoj visini  
-            </label>  
-            <select id="difficultyLogicCombo">  
-              <option value="any" selected>Poklopi bilo koju</option>  
-              <option value="all">Poklopi obje</option>  
-            </select>  
-          </div>  
-          <div class="chips">  
-            <label>  
-              <input class="diff-chip-combo" type="checkbox" value="very-easy" />  
-              Jako lako  
-            </label>  
-            <label>  
-              <input class="diff-chip-combo" type="checkbox" value="easy" />  
-              Lako  
-            </label>  
-            <label>  
-              <input class="diff-chip-combo" type="checkbox" value="medium" checked />  
-              Srednje teško  
-            </label>  
-            <label>  
-              <input class="diff-chip-combo" type="checkbox" value="hard" />  
-              Jako teško  
-            </label>  
-            <label>  
-              <input class="diff-chip-combo" type="checkbox" value="extreme" />  
-              Ekstremno  
-            </label>  
-          </div>  
-        </fieldset>  
-  
-        <div class="filter-row">  
-          <label style="grid-column:1 / -1">  
-            Tražilica odredišta (vrh/mjesto)  
-            <input id="poiSearchCombo" type="search" placeholder="npr. Hajdučka Vrata, Kredarica, Aljažev stup" />  
-          </label>  
-  
-          <div class="actions">  
-            <button id="applyFilters" class="btn" type="button">Primijeni</button>  
-            <button id="clearFilters" class="btn secondary" type="button">Reset</button>  
-          </div>  
-        </div>  
-      </div>  
-    </section>  
-  
-    <!-- =========================================================  
-         #07 AKTIVNI FILTERI (ČIPOVI)  
-         ========================================================= -->  
-    <section id="activeChips" class="active-chips"></section>  
-  
-    <!-- =========================================================  
-         #08 LISTA STAZA (rendera JS)  
-         ========================================================= -->  
-    <section id="trail-list" class="trail-list"></section>  
-  </main>  
-  
-  <!-- =========================================================  
-       #09 FOOTER + BACK TO TOP  
-       ========================================================= -->  
-  <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">  
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  
-      <polyline points="18 15 12 9 6 15"></polyline>  
-    </svg>  
-  </button>  
-  
-  <footer id="footer" class="container">  
-    <div class="footer-icons">  
-      <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Instagram">  
-        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">  
-          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>  
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>  
-          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>  
-        </svg>  
-      </a>  
-      <a href="mailto:mountainadventures1717@gmail.com" aria-label="Email">  
-        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">  
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>  
-          <polyline points="22,6 12,13 2,6"></polyline>  
-        </svg>  
-      </a>  
-    </div>  
-    © Mountain Adventures. All rights reserved.  
-  </footer>  
-  
-  <!-- =========================================================  
-       #10 SCRIPTS  
-       ========================================================= -->  
-  <script src="season.js"></script>  
-  <script>  
-    /* ---------------------------------------------------------  
-       #10.1 NAV / JEZIK / MENI / TOP BTN  
-       --------------------------------------------------------- */  
-    const langToggle = document.getElementById('language-toggle');  
-    const searchInput = document.getElementById('search');  
-    const menuToggle = document.getElementById('menu-toggle');  
-    const menu = document.getElementById('menu');  
-    const backToTopBtn = document.getElementById('backToTop');  
-    const footer = document.getElementById('footer');  
-  
-    function getInitialLang() {  
-      const urlLang = new URLSearchParams(location.search).get('lang');  
-      if (['hr', 'en'].includes(urlLang)) return urlLang;  
-      try { const s = localStorage.getItem('preferredLang'); if (['hr', 'en'].includes(s)) return s; } catch (e) {}  
-      return 'hr';  
-    }  
-  
-    function applyLanguage(lang) {  
-      try { localStorage.setItem('preferredLang', lang); } catch (e) {}  
-      const u = new URL(location.href);  
-      u.searchParams.set('lang', lang);  
-      history.replaceState({}, '', u.toString());  
-      document.documentElement.lang = lang;  
-  
-      if (langToggle) {  
-        langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';  
-        langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';  
-        langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');  
-      }  
-  
-      if (searchInput) {  
-        searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';  
-      }  
-  
-      document.querySelectorAll('[data-hr]').forEach(el => {  
-        const v = el.getAttribute(`data-${lang}`);  
-        if (v == null) return;  
-        if (v.includes('<')) el.innerHTML = v;  
-        else el.textContent = v;  
-      });  
-  
-      document.querySelectorAll('.menu-overlay a').forEach(a => {  
-        const v = a.getAttribute(`data-${lang}`);  
-        if (v != null) a.textContent = v;  
-      });  
-    }  
-  
-    let currentLang = getInitialLang();  
-    applyLanguage(currentLang);  
-  
-    if (langToggle) {  
-      langToggle.addEventListener('click', () => {  
-        currentLang = currentLang === 'hr' ? 'en' : 'hr';  
-        applyLanguage(currentLang);  
-      });  
-    }  
-  
-    menuToggle.addEventListener('click', () => {  
-      menu.classList.toggle('open');  
-    });  
-  
-    window.addEventListener('click', (e) => {  
-      if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') {  
-        menu.classList.remove('open');  
-      }  
-    });  
-  
-    document.querySelectorAll('.menu-overlay a').forEach(l => {  
-      l.addEventListener('click', () => {  
-        menu.classList.remove('open');  
-      });  
-    });  
-  
-    window.addEventListener('scroll', () => {  
-      const y = window.scrollY;  
-      const footerTop = footer.getBoundingClientRect().top + window.scrollY;  
-      const h = window.innerHeight;  
-      backToTopBtn.style.display = y > 300 ? 'flex' : 'none';  
-      backToTopBtn.style.bottom = (y + h > footerTop) ? `${(y + h - footerTop) + 60}px` : '30px';  
-    });  
-  
-    backToTopBtn.addEventListener('click', () => {  
-      window.scrollTo({ top: 0, behavior: 'smooth' });  
-    });  
-  
-    document.addEventListener("DOMContentLoaded", () => {  
-      const s = localStorage.getItem("activeSeason");  
-      if (s) {  
-        setTimeout(() => {  
-          if (s === "winter") startWinterEffect(true);  
-          else if (s === "summer") startSummerEffect(true);  
-          else if (s === "spring") startSpringEffect(true);  
-          else if (s === "autumn") startAutumnEffect(true);  
-        }, 10000);  
-      }  
-      fetch("season.html")  
-        .then(r => r.text())  
-        .then(html => {  
-          document.getElementById("season-placeholder").innerHTML = html;  
-          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();  
-        });  
-    });  
-  
-    /* ---------------------------------------------------------  
-       #10.2 TEŽINSKE KATEGORIJE + POMOĆNE  
-       --------------------------------------------------------- */  
-    const DIFF_LABELS = {  
-      "very-easy": "Jako lako",  
-      "easy": "Lako",  
-      "medium": "Srednje teško",  
-      "hard": "Jako teško",  
-      "extreme": "Ekstremno"  
-    };  
-  
-    function classifyByKm(km) {  
-      if (km <= 6) return "very-easy";  
-      if (km <= 10) return "easy";  
-      if (km <= 16) return "medium";  
-      if (km <= 20) return "hard";  
-      return "extreme";  
-    }  
-  
-    function classifyByElev(m) {  
-      if (m <= 200) return "very-easy";  
-      if (m <= 500) return "easy";  
-      if (m <= 1000) return "medium";  
-      if (m <= 1500) return "hard";  
-      return "extreme";  
-    }  
-  
-    function norm(s) {  
-      return (s || "").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");  
-    }  
-  
-    function badgeEl(text, classes = []) {  
-      const s = document.createElement('span');  
-      s.className = ['badge', ...classes].join(' ');  
-      s.textContent = text;  
-      return s;  
-    }  
-  
-    function scrollToResults() {  
-      const list = document.getElementById('trail-list');  
-      if (list) {  
-        list.scrollIntoView({ behavior: 'smooth', block: 'start' });  
-      }  
-    }  
-  
-    /* ---------------------------------------------------------  
-       #10.3 GEOLOKACIJA + UDALJENOSTI  
-       --------------------------------------------------------- */  
-    let userLocation = null;  
-  
-    function ensureGeolocationOnce() {  
-      return new Promise((res) => {  
-        if (userLocation) return res(userLocation);  
-        if (!('geolocation' in navigator)) return res(null);  
-        navigator.geolocation.getCurrentPosition(  
-          (pos) => {  
-            userLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude };  
-            res(userLocation);  
-          },  
-          (_) => res(null),  
-          { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }  
-        );  
-      });  
-    }  
-  
-    function haversineKm(lat1, lon1, lat2, lon2) {  
-      const R = 6371;  
-      const toRad = d => d * Math.PI / 180;  
-      const dLat = toRad(lat2 - lat1);  
-      const dLon = toRad(lon2 - lon1);  
-      const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;  
-      return 2 * R * Math.asin(Math.sqrt(a));  
-    }  
-  
-    async function drivingDistanceKm(origin, dest) {  
-      // TODO: Spoji ovdje na API (Google Directions / OpenRouteService / Mapbox)  
-      // Primjer: vrati null ako nema API-ja, a u filteru koristi fallback na zračnu liniju.  
-      return null;  
-    }  
-  
-    /* ---------------------------------------------------------  
-       #10.4 POPIS PLANINA / PODRUČJA  
-       --------------------------------------------------------- */  
-    const AREAS = [  
-      "Triglav",  
-      "Velebit",  
-      "Begunjščica",  
-      "Klekovača",  
-      "Sljeme",  
-      "Medvednica",  
-      "Dinara",  
-      "Oštrovača",  
-      "Šator",  
-      "Kozara",  
-      "Ivanščica",  
-      "Kamešnica",  
-      "Cincar",  
-      "Vranica",  
-      "Matinski Vis",  
-      "Zavelim",  
-      "Golija",  
-      "Stožer",  
-      "Ljubuša",  
-      "Tušnica",  
-      "Svilaja",  
-      "Biokovo",  
-      "Mosor",  
-      "Raduša",  
-      "Vran",  
-      "Čvrsnica",  
-      "Čabulja",  
-      "Prenj",  
-      "Crvanj",  
-      "Matokit",  
-      "Velež",  
-      "Visočica",  
-      "Bjelašnica",  
-      "Treskavica",  
-      "Zelengora",  
-      "Volujak",  
-      "Maglić",  
-      "Lelija",  
-      "Durmitor",  
-      "Komovi",  
-      "Prokletije",  
-      "Šar planina",  
-      "Otok Pag",  
-      "Poluotok Pelješac",  
-      "Šipovo",  
-      "Otok Hvar",  
-      "Otok Brač",  
-      "Kanjon Badnjevice",  
-      "Oštrc"  
-    ];  
-  
-    /* ---------------------------------------------------------  
-       #10.5 PODACI O TURAMA (jedna ispod druge, thumbnail placeholder)  
-       Polja:  
-       id, slug, name, area, mountain, distanceKm, elevationM,  
-       durationH, startLat, startLon, routeType, destinations[],  
-       tags[], description, gpx, thumbnail  
-       routeType: "Kružna" | "Povratna (isti put)" | "Jednosmjerna"  
-       --------------------------------------------------------- */  
-    const TRAILS = [  
-      {  
-        id: 1,  
-        slug: "triglav-planika",  
-        name: "Uspon na Triglav",  
-        area: "Triglav",  
-        mountain: "Triglav",  
-        distanceKm: 12,  
-        elevationM: 1100,  
-        durationH: 8,  
-        startLat: 46.379,  
-        startLon: 13.836,  
-        routeType: "Povratna (isti put)",  
-        destinations: ["Triglav"],  
-        tags: ["Kredarica", "Planika", "Aljažev stup", "Dom Planika"],  
-        description: "Klasični uspon preko Planike/Praga. Izloženiji dijelovi osigurani sajlama.",  
-        gpx: "/gps/triglav-planika.gpx",  
-        thumbnail: "images/thumbnails/triglav-planika.jpg"  
-      },  
-      {  
-        id: 2,  
-        slug: "velebit-premuziceva",  
-        name: "Premužićeva staza (dio)",  
-        area: "Velebit",  
-        mountain: "Velebit",  
-        distanceKm: 9,  
-        elevationM: 180,  
-        durationH: 3.5,  
-        startLat: 44.737,  
-        startLon: 15.028,  
-        routeType: "Povratna (isti put)",  
-        destinations: ["Zavižan"],  
-        tags: ["Rossijevo sklonište", "Alan"],  
-        description: "Lagani kameni put kroz srca sjevernog Velebita.",  
-        gpx: "/gps/velebit-premuziceva.gpx",  
-        thumbnail: "images/thumbnails/velebit-premuziceva.jpg"  
-      },  
-      {  
-        id: 3,  
-        slug: "begunjscica-vrh",  
-        name: "Begunjščica vrh",  
-        area: "Begunjščica",  
-        mountain: "Begunjščica",  
-        distanceKm: 10,  
-        elevationM: 900,  
-        durationH: 6,  
-        startLat: 46.400,  
-        startLon: 14.200,  
-        routeType: "Povratna (isti put)",  
-        destinations: ["Begunjščica"],  
-        tags: ["Roblekov dom"],  
-        description: "Strmiji uspon s panoramama Gorenjske.",  
-        gpx: "/gps/begunjscica-vrh.gpx",
-        thumbnail: "images/thumbnails/begunjscica-vrh.jpg"
-      },
-      {
-        id: 4,
-        slug: "klekovaca-greben",
-        name: "Klekovača greben",
-        area: "Klekovača",
-        mountain: "Klekovača",
-        distanceKm: 13,
-        elevationM: 850,
-        durationH: 6.5,
-        startLat: 44.150,
-        startLon: 16.450,
-        routeType: "Kružna",
-        destinations: ["Klekovača"],
-        tags: ["Greben Klekovače", "Bukove šume"],
-        description: "Grebenom kroz bukove šume do kamenih vrhova.",
-        gpx: "/gps/klekovaca-greben.gpx",
-        thumbnail: "images/thumbnails/klekovaca-greben.jpg"
-      },
-      {
-        id: 5,
-        slug: "sljeme-tomislavac",
-        name: "Sljeme preko Tomislavca",
-        area: "Sljeme",
-        mountain: "Medvednica",
-        distanceKm: 9,
-        elevationM: 650,
-        durationH: 4.2,
-        startLat: 45.860,
-        startLon: 15.950,
-        routeType: "Povratna (isti put)",
-        destinations: ["Sljeme"],
-        tags: ["Tomislavac", "Medvedgrad", "Grafičar"],
-        description: "Popularna gradska klasika uz šumske staze.",
-        gpx: "/gps/sljeme-tomislavac.gpx",
-        thumbnail: "images/thumbnails/sljeme-tomislavac.jpg"
-      },
-      {
-        id: 6,
-        slug: "medvednica-hunjka",
-        name: "Medvednica – Hunjka krug",
-        area: "Medvednica",
-        mountain: "Medvednica",
-        distanceKm: 8.5,
-        elevationM: 400,
-        durationH: 3.5,
-        startLat: 45.920,
-        startLon: 15.970,
-        routeType: "Kružna",
-        destinations: ["Hunjka"],
-        tags: ["Puntijarka", "Sljeme"],
-        description: "Lagani krug po vršnim šumama Medvednice.",
-        gpx: "/gps/medvednica-hunjka.gpx",
-        thumbnail: "images/thumbnails/medvednica-hunjka.jpg"
-      },
-      {
-        id: 7,
-        slug: "dinara-sinjal",
-        name: "Sinjal (Dinara)",
-        area: "Dinara",
-        mountain: "Dinara",
-        distanceKm: 18,
-        elevationM: 1200,
-        durationH: 8,
-        startLat: 44.060,
-        startLon: 16.440,
-        routeType: "Povratna (isti put)",
-        destinations: ["Sinjal"],
-        tags: ["Najviši vrh RH", "Glavaš", "Martinova košara"],
-        description: "Najviši vrh RH preko planinskih pašnjaka.",
-        gpx: "/gps/dinara-sinjal.gpx",
-        thumbnail: "images/thumbnails/dinara-sinjal.jpg"
-      },
-      {
-        id: 8,
-        slug: "ostrovaca-uspon",
-        name: "Oštrovača uspon",
-        area: "Oštrovača",
-        mountain: "Oštrovača",
-        distanceKm: 7.5,
-        elevationM: 520,
-        durationH: 3.2,
-        startLat: 44.350,
-        startLon: 15.900,
-        routeType: "Povratna (isti put)",
-        destinations: ["Oštrovača"],
-        tags: ["Vidikovac", "Krš"],
-        description: "Kratka ali oštrija dionica do vidikovca.",
-        gpx: "/gps/ostrovaca-uspon.gpx",
-        thumbnail: "images/thumbnails/ostrovaca-uspon.jpg"
-      },
-      {
-        id: 9,
-        slug: "sator-jezero-vrh",
-        name: "Planina Šator – jezero i vrh",
-        area: "Šator",
-        mountain: "Šator",
-        distanceKm: 13,
-        elevationM: 780,
-        durationH: 6,
-        startLat: 44.160,
-        startLon: 16.700,
-        routeType: "Kružna",
-        destinations: ["Šatorsko jezero"],
-        tags: ["Šator planina", "Vidikovci"],
-        description: "Pješačenje oko jezera i uspon na vrh.",
-        gpx: "/gps/sator-jezero-vrh.gpx",
-        thumbnail: "images/thumbnails/sator-jezero-vrh.jpg"
-      },
-      {
-        id: 10,
-        slug: "kozara-mrakovica",
-        name: "Mrakovica – greben",
-        area: "Kozara",
-        mountain: "Kozara",
-        distanceKm: 11,
-        elevationM: 500,
-        durationH: 4.5,
-        startLat: 45.020,
-        startLon: 16.830,
-        routeType: "Kružna",
-        destinations: ["Mrakovica"],
-        tags: ["Spomenik", "Tjesnaci"],
-        description: "Grebenom Kozare kroz borove i vidikovce.",
-        gpx: "/gps/kozara-mrakovica.gpx",
-        thumbnail: "images/thumbnails/kozara-mrakovica.jpg"
-      },
-      {
-        id: 11,
-        slug: "ivanscica-vrh",
-        name: "Ivanščica vrh",
-        area: "Ivanščica",
-        mountain: "Ivanščica",
-        distanceKm: 10.5,
-        elevationM: 700,
-        durationH: 5,
-        startLat: 46.150,
-        startLon: 16.100,
-        routeType: "Povratna (isti put)",
-        destinations: ["Ivanščica"],
-        tags: ["TV toranj", "Juras"],
-        description: "Uspon do TV tornja, pogledi na Zagorje.",
-        gpx: "/gps/ivanscica-vrh.gpx",
-        thumbnail: "images/thumbnails/ivanscica-vrh.jpg"
-      },
-      {
-        id: 12,
-        slug: "kamesnica-konj",
-        name: "Kamešnica – Konj",
-        area: "Kamešnica",
-        mountain: "Kamešnica",
-        distanceKm: 12.5,
-        elevationM: 900,
-        durationH: 6,
-        startLat: 43.740,
-        startLon: 16.730,
-        routeType: "Povratna (isti put)",
-        destinations: ["Konj"],
-        tags: ["Pešino vrilo", "Greben Kamešnice"],
-        description: "Kameniti putovi i široki pogledi.",
-        gpx: "/gps/kamesnica-konj.gpx",
-        thumbnail: "images/thumbnails/kamesnica-konj.jpg"
-      },
-      {
-        id: 13,
-        slug: "cincar-vrh",
-        name: "Cincar vrh",
-        area: "Cincar",
-        mountain: "Cincar",
-        distanceKm: 14,
-        elevationM: 800,
-        durationH: 6.5,
-        startLat: 43.910,
-        startLon: 17.000,
-        routeType: "Povratna (isti put)",
-        destinations: ["Cincar"],
-        tags: ["Livno", "Visoravan"],
-        description: "Visoravan Livanjskog polja s kamenim vrhom.",
-        gpx: "/gps/cincar-vrh.gpx",
-        thumbnail: "images/thumbnails/cincar-vrh.jpg"
-      },
-      {
-        id: 14,
-        slug: "vranica-nadkrstac",
-        name: "Nadkrstac – Vranica",
-        area: "Vranica",
-        mountain: "Vranica",
-        distanceKm: 16,
-        elevationM: 900,
-        durationH: 7,
-        startLat: 43.980,
-        startLon: 17.620,
-        routeType: "Kružna",
-        destinations: ["Nadkrstac"],
-        tags: ["Zlatne kupole", "Prokoško jezero"],
-        description: "Zlatne kupole i travnati grebeni Vranice.",
-        gpx: "/gps/vranica-nadkrstac.gpx",
-        thumbnail: "images/thumbnails/vranica-nadkrstac.jpg"
-      },
-      {
-        id: 15,
-        slug: "matinski-vis",
-        name: "Matinski Vis uspon",
-        area: "Matinski Vis",
-        mountain: "Matinski Vis",
-        distanceKm: 8.2,
-        elevationM: 520,
-        durationH: 3.5,
-        startLat: 43.420,
-        startLon: 17.410,
-        routeType: "Povratna (isti put)",
-        destinations: ["Matinski Vis"],
-        tags: ["Matin grad", "Pogledi"],
-        description: "Kratka, ugodna ruta s pogledima.",
-        gpx: "/gps/matinski-vis.gpx",
-        thumbnail: "images/thumbnails/matinski-vis.jpg"
-      },
-      {
-        id: 16,
-        slug: "zavelim-vrh",
-        name: "Zavelim vrh",
-        area: "Zavelim",
-        mountain: "Zavelim",
-        distanceKm: 9.5,
-        elevationM: 600,
-        durationH: 4,
-        startLat: 43.400,
-        startLon: 17.270,
-        routeType: "Povratna (isti put)",
-        destinations: ["Zavelim"],
-        tags: ["Imotska krajina", "Kameniti prijevoj"],
-        description: "Kameniti prijevoji iznad Imotske krajine.",
-        gpx: "/gps/zavelim-vrh.gpx",
-        thumbnail: "images/thumbnails/zavelim-vrh.jpg"
-      },
-      {
-        id: 17,
-        slug: "golija-greben",
-        name: "Golija greben",
-        area: "Golija",
-        mountain: "Golija",
-        distanceKm: 13.5,
-        elevationM: 780,
-        durationH: 6,
-        startLat: 43.330,
-        startLon: 20.200,
-        routeType: "Kružna",
-        destinations: ["Golija"],
-        tags: ["Biosfera", "NP Golija"],
-        description: "Put kroz guste šume i travnate vrhove.",
-        gpx: "/gps/golija-greben.gpx",
-        thumbnail: "images/thumbnails/golija-greben.jpg"
-      },
-      {
-        id: 18,
-        slug: "stozer-vrh",
-        name: "Stožer vrh",
-        area: "Stožer",
-        mountain: "Stožer",
-        distanceKm: 10,
-        elevationM: 700,
-        durationH: 5,
-        startLat: 43.870,
-        startLon: 17.400,
-        routeType: "Povratna (isti put)",
-        destinations: ["Stožer"],
-        tags: ["Kupres", "Skijalište"],
-        description: "Planina iznad Kupresa s otvorenim vidicima.",
-        gpx: "/gps/stozer-vrh.gpx",
-        thumbnail: "images/thumbnails/stozer-vrh.jpg"
-      },
-      {
-        id: 19,
-        slug: "ljubusa-prijevoj",
-        name: "Ljubuša prijevoj",
-        area: "Ljubuša",
-        mountain: "Ljubuša",
-        distanceKm: 12,
-        elevationM: 500,
-        durationH: 5,
-        startLat: 43.790,
-        startLon: 17.430,
-        routeType: "Kružna",
-        destinations: ["Ljubuša"],
-        tags: ["Pašnjaci", "Kupreško"],
-        description: "Valoviti pašnjaci i blagi usponi.",
-        gpx: "/gps/ljubusa-prijevoj.gpx",
-        thumbnail: "images/thumbnails/ljubusa-prijevoj.jpg"
-      },
-      {
-        id: 20,
-        slug: "tusnica-greben",
-        name: "Tušnica greben",
-        area: "Tušnica",
-        mountain: "Tušnica",
-        distanceKm: 11.5,
-        elevationM: 640,
-        durationH: 5,
-        startLat: 43.740,
-        startLon: 17.010,
-        routeType: "Kružna",
-        destinations: ["Tušnica"],
-        tags: ["Livno", "Greben Tušnice"],
-        description: "Greben s pogledom na Livno.",
-        gpx: "/gps/tusnica-greben.gpx",
-        thumbnail: "images/thumbnails/tusnica-greben.jpg"
-      },
-      {
-        id: 21,
-        slug: "svilaja-bat",
-        name: "Svilaja – Bat",
-        area: "Svilaja",
-        mountain: "Svilaja",
-        distanceKm: 12.8,
-        elevationM: 880,
-        durationH: 6,
-        startLat: 43.700,
-        startLon: 16.490,
-        routeType: "Povratna (isti put)",
-        destinations: ["Bat"],
-        tags: ["Lećevića", "Zečje polje"],
-        description: "Kameniti vrhovi nad Dalmatinskom zagorom.",
-        gpx: "/gps/svilaja-bat.gpx",
-        thumbnail: "images/thumbnails/svilaja-bat.jpg"
-      },
-      {
-        id: 22,
-        slug: "biokovo-sveti-jure",
-        name: "Sveti Jure",
-        area: "Biokovo",
-        mountain: "Biokovo",
-        distanceKm: 8,
-        elevationM: 700,
-        durationH: 4.5,
-        startLat: 43.352,
-        startLon: 17.059,
-        routeType: "Povratna (isti put)",
-        destinations: ["Sveti Jure"],
-        tags: ["Biokovo Skywalk", "Ravni"],
-        description: "Krov Dalmacije s nevjerojatnim pogledima.",
-        gpx: "/gps/biokovo-sv-jure.gpx",
-        thumbnail: "images/thumbnails/biokovo-sveti-jure.jpg"
-      },
-      {
-        id: 23,
-        slug: "mosor-vickov-stup",
-        name: "Vickov stup krug",
-        area: "Mosor",
-        mountain: "Mosor",
-        distanceKm: 10,
-        elevationM: 820,
-        durationH: 5.5,
-        startLat: 43.520,
-        startLon: 16.620,
-        routeType: "Kružna",
-        destinations: ["Vickov stup"],
-        tags: ["Umberto Girometta", "Žlijeb"],
-        description: "Kružna staza po Mosoru, krševit teren.",
-        gpx: "/gps/mosor-vickov-stup.gpx",
-        thumbnail: "images/thumbnails/mosor-vickov-stup.jpg"
-      },
-      {
-        id: 24,
-        slug: "radusa-idovac",
-        name: "Raduša Idovac",
-        area: "Raduša",
-        mountain: "Raduša",
-        distanceKm: 14.5,
-        elevationM: 900,
-        durationH: 7,
-        startLat: 43.850,
-        startLon: 17.360,
-        routeType: "Povratna (isti put)",
-        destinations: ["Idovac"],
-        tags: ["Blidinje", "Raduša greben"],
-        description: "Prostrani travnjaci i grebeni.",
-        gpx: "/gps/radusa-idovac.gpx",
-        thumbnail: "images/thumbnails/radusa-idovac.jpg"
-      },
-      {
-        id: 25,
-        slug: "vran-veliki",
-        name: "Vran – Veliki Vran",
-        area: "Vran",
-        mountain: "Vran",
-        distanceKm: 12.2,
-        elevationM: 950,
-        durationH: 6,
-        startLat: 43.630,
-        startLon: 17.400,
-        routeType: "Povratna (isti put)",
-        destinations: ["Veliki Vran"],
-        tags: ["Masna Luka", "Blidinje"],
-        description: "Staza iznad Blidinjskog jezera.",
-        gpx: "/gps/vran-veliki.gpx",
-        thumbnail: "images/thumbnails/vran-veliki.jpg"
-      },
-      {
-        id: 26,
-        slug: "cvrsnica-hajducka-vrata",
-        name: "Hajdučka Vrata",
-        area: "Čvrsnica",
-        mountain: "Čvrsnica",
-        distanceKm: 15,
-        elevationM: 950,
-        durationH: 7.5,
-        startLat: 43.540,
-        startLon: 17.561,
-        routeType: "Povratna (isti put)",
-        destinations: ["Hajdučka Vrata"],
-        tags: ["Vidikovac", "Široka poljana", "Plato"],
-        description: "Kultno kameno ‘vrata’, zahtjevniji uspon.",
-        gpx: "/gps/cvrsnica-hajducka-vrata.gpx",
-        thumbnail: "images/thumbnails/cvrsnica-hajducka-vrata.jpg"
-      },
-      {
-        id: 27,
-        slug: "cabulja-vlajna",
-        name: "Čabulja – Velika Vlajna",
-        area: "Čabulja",
-        mountain: "Čabulja",
-        distanceKm: 11.5,
-        elevationM: 780,
-        durationH: 5.5,
-        startLat: 43.430,
-        startLon: 17.710,
-        routeType: "Povratna (isti put)",
-        destinations: ["Velika Vlajna"],
-        tags: ["Mostar", "Kamenjar"],
-        description: "Kamenjar iznad Mostara.",
-        gpx: "/gps/cabulja-vlajna.gpx",
-        thumbnail: "images/thumbnails/cabulja-vlajna.jpg"
-      },
-      {
-        id: 28,
-        slug: "prenj-zelena-glava",
-        name: "Prenj – Zelena glava",
-        area: "Prenj",
-        mountain: "Prenj",
-        distanceKm: 14,
-        elevationM: 1200,
-        durationH: 8,
-        startLat: 43.520,
-        startLon: 17.940,
-        routeType: "Povratna (isti put)",
-        destinations: ["Zelena glava"],
-        tags: ["Bijele vode", "Tisovica"],
-        description: "Alpski karakter i oštri grebeni.",
-        gpx: "/gps/prenj-zelena-glava.gpx",
-        thumbnail: "images/thumbnails/prenj-zelena-glava.jpg"
-      },
-      {
-        id: 29,
-        slug: "crvanj-vrh",
-        name: "Crvanj vrh",
-        area: "Crvanj",
-        mountain: "Crvanj",
-        distanceKm: 12,
-        elevationM: 850,
-        durationH: 6,
-        startLat: 43.430,
-        startLon: 18.080,
-        routeType: "Povratna (isti put)",
-        destinations: ["Crvanj"],
-        tags: ["Nevesinje", "Planinski pašnjaci"],
-        description: "Tiša planina s lijepim vizurama.",
-        gpx: "/gps/crvanj-vrh.gpx",
-        thumbnail: "images/thumbnails/crvanj-vrh.jpg"
-      },
-      {
-        id: 30,
-        slug: "matokit-sv-rok",
-        name: "Matokit – Sveti Rok",
-        area: "Matokit",
-        mountain: "Matokit",
-        distanceKm: 7.8,
-        elevationM: 620,
-        durationH: 3.8,
-        startLat: 43.280,
-        startLon: 17.000,
-        routeType: "Povratna (isti put)",
-        destinations: ["Sveti Rok"],
-        tags: ["Vrgorac", "Strm uspon"],
-        description: "Iznad Vrgorca, kratko i strmo.",
-        gpx: "/gps/matokit-sv-rok.gpx",
-        thumbnail: "images/thumbnails/matokit-sv-rok.jpg"
-      },
-      {
-        id: 31,
-        slug: "velez-botin",
-        name: "Velež – Botin",
-        area: "Velež",
-        mountain: "Velež",
-        distanceKm: 10.5,
-        elevationM: 850,
-        durationH: 5.5,
-        startLat: 43.310,
-        startLon: 17.990,
-        routeType: "Povratna (isti put)",
-        destinations: ["Botin"],
-        tags: ["Podvelež", "Mostar"],
-        description: "Surovi kamen i snažni pogledi.",
-        gpx: "/gps/velez-botin.gpx",
-        thumbnail: "images/thumbnails/velez-botin.jpg"
-      },
-      {
-        id: 32,
-        slug: "visocica-vito",
-        name: "Visočica – Vito",
-        area: "Visočica",
-        mountain: "Visočica",
-        distanceKm: 13,
-        elevationM: 900,
-        durationH: 6.5,
-        startLat: 43.670,
-        startLon: 18.090,
-        routeType: "Povratna (isti put)",
-        destinations: ["Vito"],
-        tags: ["Rakitnica", "Grebenska staza"],
-        description: "Greben iznad kanjona Rakitnice.",
-        gpx: "/gps/visocica-vito.gpx",
-        thumbnail: "images/thumbnails/visocica-vito.jpg"
-      },
-      {
-        id: 33,
-        slug: "bjelasnica-vrh",
-        name: "Bjelašnica vrh",
-        area: "Bjelašnica",
-        mountain: "Bjelašnica",
-        distanceKm: 9.5,
-        elevationM: 700,
-        durationH: 4.5,
-        startLat: 43.710,
-        startLon: 18.260,
-        routeType: "Povratna (isti put)",
-        destinations: ["Bjelašnica"],
-        tags: ["Opservatorij", "Ivan planina"],
-        description: "Otvoreni platoi i vjetar na vrhu.",
-        gpx: "/gps/bjelasnica-vrh.gpx",
-        thumbnail: "images/thumbnails/bjelasnica-vrh.jpg"
-      },
-      {
-        id: 34,
-        slug: "treskavica-turov",
-        name: "Treskavica – Turov",
-        area: "Treskavica",
-        mountain: "Treskavica",
-        distanceKm: 15.5,
-        elevationM: 1000,
-        durationH: 7.5,
-        startLat: 43.600,
-        startLon: 18.350,
-        routeType: "Povratna (isti put)",
-        destinations: ["Turov"],
-        tags: ["Veliko jezero", "Crno jezero"],
-        description: "Divlja planina s jezerima.",
-        gpx: "/gps/treskavica-turov.gpx",
-        thumbnail: "images/thumbnails/treskavica-turov.jpg"
-      },
-      {
-        id: 35,
-        slug: "zelengora-orlovacko",
-        name: "Zelengora – Orlovačko jezero",
-        area: "Zelengora",
-        mountain: "Zelengora",
-        distanceKm: 12,
-        elevationM: 500,
-        durationH: 5,
-        startLat: 43.300,
-        startLon: 18.720,
-        routeType: "Kružna",
-        destinations: ["Orlovačko jezero"],
-        tags: ["Sutjeska", "Jezera Zelengore"],
-        description: "Lagani usponi i kristalna jezera.",
-        gpx: "/gps/zelengora-orlovacko.gpx",
-        thumbnail: "images/thumbnails/zelengora-orlovacko.jpg"
-      },
-      {
-        id: 36,
-        slug: "volujak-greben",
-        name: "Volujak greben",
-        area: "Volujak",
-        mountain: "Volujak",
-        distanceKm: 14.5,
-        elevationM: 1100,
-        durationH: 8,
-        startLat: 43.250,
-        startLon: 18.690,
-        routeType: "Povratna (isti put)",
-        destinations: ["Volujak"],
-        tags: ["Perućica", "Greben"],
-        description: "Dugi grebeni iznad Perućice.",
-        gpx: "/gps/volujak-greben.gpx",
-        thumbnail: "images/thumbnails/volujak-greben.jpg"
-      },
-      {
-        id: 37,
-        slug: "maglic-bih",
-        name: "Maglić BiH vrh",
-        area: "Maglić",
-        mountain: "Maglić",
-        distanceKm: 13,
-        elevationM: 1200,
-        durationH: 7.5,
-        startLat: 43.310,
-        startLon: 18.740,
-        routeType: "Povratna (isti put)",
-        destinations: ["Maglić"],
-        tags: ["Trnovačko jezero", "Sutjeska NP"],
-        description: "Najviši vrh BiH, krševit teren.",
-        gpx: "/gps/maglic-bih.gpx",
-        thumbnail: "images/thumbnails/maglic-bih.jpg"
-      },
-      {
-        id: 38,
-        slug: "lelija-velika",
-        name: "Lelija – Velika Lelija",
-        area: "Lelija",
-        mountain: "Lelija",
-        distanceKm: 12.2,
-        elevationM: 820,
-        durationH: 6,
-        startLat: 43.380,
-        startLon: 18.550,
-        routeType: "Povratna (isti put)",
-        destinations: ["Velika Lelija"],
-        tags: ["Prašuma Perućica", "Tisina"],
-        description: "Mirna planina s travnatim vršnim dijelom.",
-        gpx: "/gps/lelija-velika.gpx",
-        thumbnail: "images/thumbnails/lelija-velika.jpg"
-      },
-      {
-        id: 39,
-        slug: "durmitor-bobotov",
-        name: "Bobotov kuk",
-        area: "Durmitor",
-        mountain: "Durmitor",
-        distanceKm: 11.5,
-        elevationM: 1000,
-        durationH: 6.5,
-        startLat: 43.114,
-        startLon: 19.054,
-        routeType: "Povratna (isti put)",
-        destinations: ["Bobotov kuk"],
-        tags: ["Žabljak", "Škrčka jezera"],
-        description: "Najpoznatiji durmitorski uspon.",
-        gpx: "/gps/durmitor-bobotov.gpx",
-        thumbnail: "images/thumbnails/durmitor-bobotov.jpg"
-      },
-      {
-        id: 40,
-        slug: "komovi-vasojeviski",
-        name: "Komovi – Vasojevićki",
-        area: "Komovi",
-        mountain: "Komovi",
-        distanceKm: 7,
-        elevationM: 620,
-        durationH: 3.5,
-        startLat: 42.710,
-        startLon: 19.610,
-        routeType: "Povratna (isti put)",
-        destinations: ["Kom Vasojevićki"],
-        tags: ["Planinski dom", "Alpski teren"],
-        description: "Strmiji, ali kratak vršni uspon.",
-        gpx: "/gps/komovi-vasojeviski.gpx",
-        thumbnail: "images/thumbnails/komovi-vasojeviski.jpg"
-      },
-      {
-        id: 41,
-        slug: "prokletije-jezerce",
-        name: "Maja Jezerce",
-        area: "Prokletije",
-        mountain: "Prokletije",
-        distanceKm: 22,
-        elevationM: 1700,
-        durationH: 11,
-        startLat: 42.441,
-        startLon: 19.812,
-        routeType: "Povratna (isti put)",
-        destinations: ["Maja Jezerce"],
-        tags: ["Theth", "Valbona", "Alpski"],
-        description: "Zahtjevna alpska tura Prokletija.",
-        gpx: "/gps/prokletije-jezerce.gpx",
-        thumbnail: "images/thumbnails/prokletije-jezerce.jpg"
-      },
-      {
-        id: 42,
-        slug: "sar-titov-vrh",
-        name: "Titov vrh",
-        area: "Šar planina",
-        mountain: "Šar planina",
-        distanceKm: 16,
-        elevationM: 1200,
-        durationH: 8.5,
-        startLat: 42.000,
-        startLon: 20.750,
-        routeType: "Povratna (isti put)",
-        destinations: ["Titov vrh"],
-        tags: ["Koritnik", "Šara"],
-        description: "Dugi uspon do najvišeg vrha Šare.",
-        gpx: "/gps/sar-titov-vrh.gpx",
-        thumbnail: "images/thumbnails/sar-titov-vrh.jpg"
-      },
-      {
-        id: 43,
-        slug: "pag-sv-vid",
-        name: "Otok Pag – Sveti Vid",
-        area: "Otok Pag",
-        mountain: "Otok Pag",
-        distanceKm: 6.5,
-        elevationM: 220,
-        durationH: 2.5,
-        startLat: 44.500,
-        startLon: 14.990,
-        routeType: "Povratna (isti put)",
-        destinations: ["Sveti Vid"],
-        tags: ["Paški zaljev", "Pag vidikovac"],
-        description: "Kameniti otok i pogled na Paški zaljev.",
-        gpx: "/gps/pag-sv-vid.gpx",
-        thumbnail: "images/thumbnails/pag-sv-vid.jpg"
-      },
-      {
-        id: 44,
-        slug: "peljesac-sv-ilija",
-        name: "Sveti Ilija",
-        area: "Poluotok Pelješac",
-        mountain: "Poluotok Pelješac",
-        distanceKm: 11.8,
-        elevationM: 900,
-        durationH: 6,
-        startLat: 42.970,
-        startLon: 17.160,
-        routeType: "Povratna (isti put)",
-        destinations: ["Sveti Ilija"],
-        tags: ["Orebić", "Pelješka panorama"],
-        description: "Impresivni vidici na Korčulu i Neretvu.",
-        gpx: "/gps/peljesac-sv-ilija.gpx",
-        thumbnail: "images/thumbnails/peljesac-sv-ilija.jpg"
-      },
-      {
-        id: 45,
-        slug: "sipovo-janj",
-        name: "Šipovo – Janj",
-        area: "Šipovo",
-        mountain: "Šipovo",
-        distanceKm: 8.8,
-        elevationM: 300,
-        durationH: 3.2,
-        startLat: 44.280,
-        startLon: 17.080,
-        routeType: "Kružna",
-        destinations: ["Janj"],
-        tags: ["Janj rijeka", "Šume Šipova"],
-        description: "Šume i izvori rijeke Janj.",
-        gpx: "/gps/sipovo-janj.gpx",
-        thumbnail: "images/thumbnails/sipovo-janj.jpg"
-      },
-      {
-        id: 46,
-        slug: "hvar-sv-nikola",
-        name: "Otok Hvar – Sv. Nikola",
-        area: "Otok Hvar",
-        mountain: "Otok Hvar",
-        distanceKm: 10.2,
-        elevationM: 650,
-        durationH: 5,
-        startLat: 43.180,
-        startLon: 16.630,
-        routeType: "Povratna (isti put)",
-        destinations: ["Sveti Nikola"],
-        tags: ["Hvar vrh", "Vidikovac"],
-        description: "Najviši vrh Hvara, miris borova.",
-        gpx: "/gps/hvar-sv-nikola.gpx",
-        thumbnail: "images/thumbnails/hvar-sv-nikola.jpg"
-      },
-      {
-        id: 47,
-        slug: "brac-vidova-gora",
-        name: "Otok Brač – Vidova gora",
-        area: "Otok Brač",
-        mountain: "Otok Brač",
-        distanceKm: 7.5,
-        elevationM: 420,
-        durationH: 3.2,
-        startLat: 43.300,
-        startLon: 16.650,
-        routeType: "Povratna (isti put)",
-        destinations: ["Vidova gora"],
-        tags: ["Zlatni rat", "Supetar"],
-        description: "Pogled na Zlatni rat i Hvar.",
-        gpx: "/gps/brac-vidova-gora.gpx",
-        thumbnail: "images/thumbnails/brac-vidova-gora.jpg"
-      },
-      {
-        id: 48,
-        slug: "badnjevice-kanjon",
-        name: "Kanjon Badnjevice staza",
-        area: "Kanjon Badnjevice",
-        mountain: "Kanjon Badnjevice",
-        distanceKm: 6.8,
-        elevationM: 260,
-        durationH: 2.8,
-        startLat: 43.440,
-        startLon: 17.480,
-        routeType: "Kružna",
-        destinations: ["Badnjevice"],
-        tags: ["Kanjon", "Mostina"],
-        description: "Kroz kanjon uz stijene i vodu.",
-        gpx: "/gps/badnjevice-kanjon.gpx",
-        thumbnail: "images/thumbnails/badnjevice-kanjon.jpg"
-      },
-      {
-        id: 49,
-        slug: "ostrc-vrh",
-        name: "Oštrc vrh",
-        area: "Oštrc",
-        mountain: "Oštrc",
-        distanceKm: 8.4,
-        elevationM: 520,
-        durationH: 3.6,
-        startLat: 45.730,
-        startLon: 15.500,
-        routeType: "Povratna (isti put)",
-        destinations: ["Oštrc"],
-        tags: ["Samoborsko gorje", "Japetić"],
-        description: "Samoborsko gorje – kratko i slatko.",
-        gpx: "/gps/ostrc-vrh.gpx",
-        thumbnail: "images/thumbnails/ostrc-vrh.jpg"
+              </div>
+              <div class="chips">
+                <label><input class="diff-chip" type="checkbox" value="very-easy" /> Jako lako</label>
+                <label><input class="diff-chip" type="checkbox" value="easy" /> Lako</label>
+                <label><input class="diff-chip" type="checkbox" value="medium" checked /> Srednje teško</label>
+                <label><input class="diff-chip" type="checkbox" value="hard" /> Jako teško</label>
+                <label><input class="diff-chip" type="checkbox" value="extreme" /> Ekstremno</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- =====================================================
+               ##05.2 UDALJENOST — sadržaj se seli u DOCK
+               ===================================================== -->
+          <div class="filter-tile" data-tile="radius" aria-controls="tileRadius">
+            <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 20h18L12 4 3 20z"></path>
+            </svg>
+            <div class="tile-title">Udaljenost staze od vaše trenutne lokacije</div>
+            <div id="tileRadius" class="tile-pop" aria-hidden="true">
+              <label>
+                Odaberi radijus
+                <select id="radiusSelect">
+                  <option value="">Bez ograničenja</option>
+                  <option value="100">Do 100 km</option>
+                  <option value="200">Do 200 km</option>
+                  <option value="300">Do 300 km</option>
+                  <option value="400">Do 400 km</option>
+                  <option value="500">Do 500 km</option>
+                </select>
+              </label>
+              <label>
+                Način mjerenja
+                <select id="distanceMode" disabled title="Trenutno dostupna samo zračna linija">
+                  <option value="air" selected>Zračna linija (aktivno)</option>
+                  <option value="drive" disabled>Vožnja autom (uskoro)</option>
+                </select>
+              </label>
+              <p style="margin-top:6px;color:var(--muted);font-size:12px">
+                Napomena: vožnja autom je procjena i može odstupati — planinarske staze često nisu cestovno dostupne do samog starta.
+              </p>
+            </div>
+          </div>
+
+          <!-- =====================================================
+               ##05.3 PLANINA / PODRUČJE — sadržaj se seli u DOCK
+               ===================================================== -->
+          <div class="filter-tile" data-tile="area" aria-controls="tileArea">
+            <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 20h18L12 4 3 20z"></path>
+            </svg>
+            <div class="tile-title">Planina/Područje</div>
+            <div id="tileArea" class="tile-pop" aria-hidden="true">
+              <label>
+                Odaberi lokaciju
+                <select id="areaSelect">
+                  <option value="">Sve lokacije</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <!-- =====================================================
+               ##05.4 VRIJEME HODANJA — sadržaj se seli u DOCK
+               ===================================================== -->
+          <div class="filter-tile" data-tile="duration" aria-controls="tileDuration">
+            <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 20h18L12 4 3 20z"></path>
+            </svg>
+            <div class="tile-title">Vrijeme hodanja</div>
+            <div id="tileDuration" class="tile-pop" aria-hidden="true">
+              <label>
+                Odaberi trajanje
+                <select id="durationBucket">
+                  <option value="">Bilo koje</option>
+                  <option value="3">Do 3 h</option>
+                  <option value="5">Do 5 h</option>
+                  <option value="8">Do 8 h</option>
+                  <option value="10">Do 10 h</option>
+                  <option value=">10">Preko 10 h</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA tekst + gumb za kombinirane filtre -->
+        <p style="text-align:center;margin:8px 0 6px;color:var(--muted);font-size:14px">
+          Odaberi najbolje za sebe. <strong>Kombiniraj filtre</strong> i otkrij stazu iz snova.
+        </p>
+        <div style="display:flex;justify-content:center">
+          <button id="toggleCombo" class="combo-toggle" type="button">Kombiniraj filtre</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         #06 KOMBINIRANI FILTERI (svi zajedno)
+         ========================================================= -->
+    <section id="comboWrap" class="combo-wrap" style="display:none">
+      <div class="filters">
+        <div class="title">
+          <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 20h18L12 4 3 20z"></path>
+            <path d="M12 4l4 7-2 1-2-4-3 6"></path>
+          </svg>
+          <span>Odaberi najbolje za sebe — kombiniraj filtre i otkrij stazu iz snova</span>
+        </div>
+
+        <div class="filter-row">
+          <label>
+            Planina/Područje
+            <select id="areaSelectCombo">
+              <option value="">Sve lokacije</option>
+            </select>
+          </label>
+
+          <label>
+            Udaljenost od mene
+            <select id="radiusSelectCombo">
+              <option value="">Bez ograničenja</option>
+              <option value="100">Do 100 km</option>
+              <option value="200">Do 200 km</option>
+              <option value="300">Do 300 km</option>
+              <option value="400">Do 400 km</option>
+              <option value="500">Do 500 km</option>
+            </select>
+          </label>
+
+          <label>
+            Način mjerenja udaljenosti
+            <select id="distanceModeCombo">
+              <option value="air" selected>Zračna linija (preporučeno)</option>
+              <option value="drive">Vožnja autom (beta)</option>
+            </select>
+          </label>
+
+          <label>
+            Vrijeme hodanja
+            <select id="durationBucketCombo">
+              <option value="">Bilo koje</option>
+              <option value="3">Do 3 h</option>
+              <option value="5">Do 5 h</option>
+              <option value="8">Do 8 h</option>
+              <option value="10">Do 10 h</option>
+              <option value=">10">Preko 10 h</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="difficulty">
+          <legend>Težina staze</legend>
+          <div class="mode">
+            <label><input id="modeKmCombo" type="checkbox" checked /> po kilometrima hodanja</label>
+            <label><input id="modeElevCombo" type="checkbox" checked /> po prijeđenoj nadmorskoj visini</label>
+            <select id="difficultyLogicCombo">
+              <option value="any" selected>Poklopi bilo koju</option>
+              <option value="all">Poklopi obje</option>
+            </select>
+          </div>
+          <div class="chips">
+            <label><input class="diff-chip-combo" type="checkbox" value="very-easy" /> Jako lako</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="easy" /> Lako</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="medium" checked /> Srednje teško</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="hard" /> Jako teško</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="extreme" /> Ekstremno</label>
+          </div>
+        </fieldset>
+
+        <div class="filter-row">
+          <label style="grid-column:1 / -1">
+            Tražilica odredišta (vrh/mjesto)
+            <input id="poiSearchCombo" type="search" placeholder="npr. Hajdučka Vrata, Kredarica, Aljažev stup" />
+          </label>
+
+          <div class="actions">
+            <button id="applyFilters" class="btn" type="button">Primijeni</button>
+            <button id="clearFilters" class="btn secondary" type="button">Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         #07 AKTIVNI FILTERI (ČIPOVI)
+         ========================================================= -->
+    <section id="activeChips" class="active-chips"></section>
+
+    <!-- =========================================================
+         #08 LISTA STAZA (rendera JS)
+         ========================================================= -->
+    <section id="trail-list" class="trail-list"></section>
+  </main>
+
+  <!-- =========================================================
+       #09 FOOTER + BACK TO TOP
+       ========================================================= -->
+  <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <footer id="footer" class="container">
+    <div class="footer-icons">
+      <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
+        </svg>
+      </a>
+      <a href="mailto:mountainadventures1717@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </a>
+    </div>
+    © Mountain Adventures. All rights reserved.
+  </footer>
+
+  <!-- =========================================================
+       #10 SCRIPTS
+       ========================================================= -->
+  <script src="season.js"></script>
+  <script>
+    /* ---------------------------------------------------------
+       #10.1 NAV / JEZIK / MENI / TOP BTN
+       --------------------------------------------------------- */
+    const langToggle = document.getElementById('language-toggle');
+    const searchInput = document.getElementById('search');
+    const menuToggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('menu');
+    const backToTopBtn = document.getElementById('backToTop');
+    const footer = document.getElementById('footer');
+
+    function getInitialLang(){
+      const urlLang = new URLSearchParams(location.search).get('lang');
+      if(['hr','en'].includes(urlLang)) return urlLang;
+      try{const s=localStorage.getItem('preferredLang'); if(['hr','en'].includes(s)) return s;}catch(e){}
+      return 'hr';
+    }
+
+    function applyLanguage(lang){
+      try{localStorage.setItem('preferredLang',lang);}catch(e){}
+      const u = new URL(location.href);
+      u.searchParams.set('lang',lang);
+      history.replaceState({},'',u.toString());
+      document.documentElement.lang = lang;
+
+      if(langToggle){
+        langToggle.src = lang==='hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+        langToggle.alt = lang==='hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+        langToggle.setAttribute('data-tooltip', lang==='hr' ? 'Promijeni jezik' : 'Change language');
       }
+      if(searchInput){
+        searchInput.placeholder = lang==='hr' ? 'Pretraži...' : 'Search...';
+      }
+      document.querySelectorAll('[data-hr]').forEach(el=>{
+        const v = el.getAttribute(\`data-\${lang}\`);
+        if(v==null) return;
+        if(v.includes('<')) el.innerHTML=v; else el.textContent=v;
+      });
+      document.querySelectorAll('.menu-overlay a').forEach(a=>{
+        const v = a.getAttribute(\`data-\${lang}\`);
+        if(v!=null) a.textContent=v;
+      });
+    }
+
+    let currentLang = getInitialLang();
+    applyLanguage(currentLang);
+    if(langToggle){ langToggle.addEventListener('click',()=>{ currentLang = currentLang==='hr' ? 'en' : 'hr'; applyLanguage(currentLang); }); }
+
+    menuToggle.addEventListener('click',()=>{ menu.classList.toggle('open'); });
+    window.addEventListener('click',(e)=>{
+      if(!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id!=='language-toggle'){
+        menu.classList.remove('open');
+      }
+    });
+    document.querySelectorAll('.menu-overlay a').forEach(l=>{ l.addEventListener('click',()=>{ menu.classList.remove('open'); }); });
+
+    window.addEventListener('scroll',()=>{
+      const y = window.scrollY;
+      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      const h = window.innerHeight;
+      backToTopBtn.style.display = y>300 ? 'flex' : 'none';
+      backToTopBtn.style.bottom = (y+h>footerTop) ? \`\${(y+h-footerTop)+60}px\` : '30px';
+    });
+    backToTopBtn.addEventListener('click',()=>{ window.scrollTo({top:0,behavior:'smooth'}); });
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      const s = localStorage.getItem("activeSeason");
+      if(s){
+        setTimeout(()=>{
+          if(s==="winter") startWinterEffect(true);
+          else if(s==="summer") startSummerEffect(true);
+          else if(s==="spring") startSpringEffect(true);
+          else if(s==="autumn") startAutumnEffect(true);
+        },10000);
+      }
+      fetch("season.html")
+        .then(r=>r.text())
+        .then(html=>{
+          const ph = document.getElementById("season-placeholder");
+          if(ph) ph.innerHTML = html;
+          if(typeof initializeSeasonToggle==='function') initializeSeasonToggle();
+        }).catch(()=>{});
+    });
+
+    /* ---------------------------------------------------------
+       #10.2 TEŽINSKE KATEGORIJE + POMOĆNE
+       --------------------------------------------------------- */
+    const DIFF_LABELS={
+      "very-easy":"Jako lako",
+      "easy":"Lako",
+      "medium":"Srednje teško",
+      "hard":"Jako teško",
+      "extreme":"Ekstremno"
+    };
+
+    function classifyByKm(km){
+      if(km<=6) return "very-easy";
+      if(km<=10) return "easy";
+      if(km<=16) return "medium";
+      if(km<=20) return "hard";
+      return "extreme";
+    }
+    function classifyByElev(m){
+      if(m<=200) return "very-easy";
+      if(m<=500) return "easy";
+      if(m<=1000) return "medium";
+      if(m<=1500) return "hard";
+      return "extreme";
+    }
+    function norm(s){ return (s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+    function badgeEl(text,classes=[]){
+      const s=document.createElement('span'); s.className=['badge',...classes].join(' '); s.textContent=text; return s;
+    }
+    function scrollToResults(){
+      const list=document.getElementById('trail-list');
+      if(list){ list.scrollIntoView({behavior:'smooth',block:'start'}); }
+    }
+
+    /* ---------------------------------------------------------
+       #10.3 GEOLOKACIJA + UDALJENOSTI
+       --------------------------------------------------------- */
+    let userLocation=null;
+    function ensureGeolocationOnce(){
+      return new Promise((res)=>{
+        if(userLocation) return res(userLocation);
+        if(!('geolocation' in navigator)) return res(null);
+        navigator.geolocation.getCurrentPosition(
+          (pos)=>{ userLocation={lat:pos.coords.latitude,lon:pos.coords.longitude}; res(userLocation); },
+          _=>res(null),
+          {enableHighAccuracy:true,timeout:10000,maximumAge:60000}
+        );
+      });
+    }
+    function haversineKm(lat1,lon1,lat2,lon2){
+      const R=6371, toRad=d=>d*Math.PI/180;
+      const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+      const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+      return 2*R*Math.asin(Math.sqrt(a));
+    }
+    async function drivingDistanceKm(origin,dest){ return null; } // placeholder za budući API
+
+    /* ---------------------------------------------------------
+       #10.4 POPIS PLANINA / PODRUČJA
+       --------------------------------------------------------- */
+    const AREAS=[
+      "Triglav","Velebit","Begunjščica","Klekovača","Sljeme","Medvednica","Dinara","Oštrovača","Šator","Kozara",
+      "Ivanščica","Kamešnica","Cincar","Vranica","Matinski Vis","Zavelim","Golija","Stožer","Ljubuša","Tušnica",
+      "Svilaja","Biokovo","Mosor","Raduša","Vran","Čvrsnica","Čabulja","Prenj","Crvanj","Matokit","Velež","Visočica",
+      "Bjelašnica","Treskavica","Zelengora","Volujak","Maglić","Lelija","Durmitor","Komovi","Prokletije","Šar planina",
+      "Otok Pag","Poluotok Pelješac","Šipovo","Otok Hvar","Otok Brač","Kanjon Badnjevice","Oštrc"
+    ];
+
+    /* ---------------------------------------------------------
+       #10.5 PODACI O TURAMA (NE DIRANO – PUN POPIS)
+       --------------------------------------------------------- */
+    const TRAILS=[/* ——— (isti popis kao tvoj, NEPROMIJENJEN) ——— */ 
+      {"id":1,"slug":"triglav-planika","name":"Uspon na Triglav","area":"Triglav","mountain":"Triglav","distanceKm":12,"elevationM":1100,"durationH":8,"startLat":46.379,"startLon":13.836,"routeType":"Povratna (isti put)","destinations":["Triglav"],"tags":["Kredarica","Planika","Aljažev stup","Dom Planika"],"description":"Klasični uspon preko Planike/Praga. Izloženiji dijelovi osigurani sajlama.","gpx":"/gps/triglav-planika.gpx","thumbnail":"images/thumbnails/triglav-planika.jpg"},
+      {"id":2,"slug":"velebit-premuziceva","name":"Premužićeva staza (dio)","area":"Velebit","mountain":"Velebit","distanceKm":9,"elevationM":180,"durationH":3.5,"startLat":44.737,"startLon":15.028,"routeType":"Povratna (isti put)","destinations":["Zavižan"],"tags":["Rossijevo sklonište","Alan"],"description":"Lagani kameni put kroz srca sjevernog Velebita.","gpx":"/gps/velebit-premuziceva.gpx","thumbnail":"images/thumbnails/velebit-premuziceva.jpg"},
+      {"id":3,"slug":"begunjscica-vrh","name":"Begunjščica vrh","area":"Begunjščica","mountain":"Begunjščica","distanceKm":10,"elevationM":900,"durationH":6,"startLat":46.4,"startLon":14.2,"routeType":"Povratna (isti put)","destinations":["Begunjščica"],"tags":["Roblekov dom"],"description":"Strmiji uspon s panoramama Gorenjske.","gpx":"/gps/begunjscica-vrh.gpx","thumbnail":"images/thumbnails/begunjscica-vrh.jpg"},
+      {"id":4,"slug":"klekovaca-greben","name":"Klekovača greben","area":"Klekovača","mountain":"Klekovača","distanceKm":13,"elevationM":850,"durationH":6.5,"startLat":44.15,"startLon":16.45,"routeType":"Kružna","destinations":["Klekovača"],"tags":["Greben Klekovače","Bukove šume"],"description":"Grebenom kroz bukove šume do kamenih vrhova.","gpx":"/gps/klekovaca-greben.gpx","thumbnail":"images/thumbnails/klekovaca-greben.jpg"},
+      {"id":5,"slug":"sljeme-tomislavac","name":"Sljeme preko Tomislavca","area":"Sljeme","mountain":"Medvednica","distanceKm":9,"elevationM":650,"durationH":4.2,"startLat":45.86,"startLon":15.95,"routeType":"Povratna (isti put)","destinations":["Sljeme"],"tags":["Tomislavac","Medvedgrad","Grafičar"],"description":"Popularna gradska klasika uz šumske staze.","gpx":"/gps/sljeme-tomislavac.gpx","thumbnail":"images/thumbnails/sljeme-tomislavac.jpg"},
+      {"id":6,"slug":"medvednica-hunjka","name":"Medvednica – Hunjka krug","area":"Medvednica","mountain":"Medvednica","distanceKm":8.5,"elevationM":400,"durationH":3.5,"startLat":45.92,"startLon":15.97,"routeType":"Kružna","destinations":["Hunjka"],"tags":["Puntijarka","Sljeme"],"description":"Lagani krug po vršnim šumama Medvednice.","gpx":"/gps/medvednica-hunjka.gpx","thumbnail":"images/thumbnails/medvednica-hunjka.jpg"},
+      {"id":7,"slug":"dinara-sinjal","name":"Sinjal (Dinara)","area":"Dinara","mountain":"Dinara","distanceKm":18,"elevationM":1200,"durationH":8,"startLat":44.06,"startLon":16.44,"routeType":"Povratna (isti put)","destinations":["Sinjal"],"tags":["Najviši vrh RH","Glavaš","Martinova košara"],"description":"Najviši vrh RH preko planinskih pašnjaka.","gpx":"/gps/dinara-sinjal.gpx","thumbnail":"images/thumbnails/dinara-sinjal.jpg"},
+      {"id":8,"slug":"ostrovaca-uspon","name":"Oštrovača uspon","area":"Oštrovača","mountain":"Oštrovača","distanceKm":7.5,"elevationM":520,"durationH":3.2,"startLat":44.35,"startLon":15.9,"routeType":"Povratna (isti put)","destinations":["Oštrovača"],"tags":["Vidikovac","Krš"],"description":"Kratka ali oštrija dionica do vidikovca.","gpx":"/gps/ostrovaca-uspon.gpx","thumbnail":"images/thumbnails/ostrovaca-uspon.jpg"},
+      {"id":9,"slug":"sator-jezero-vrh","name":"Planina Šator – jezero i vrh","area":"Šator","mountain":"Šator","distanceKm":13,"elevationM":780,"durationH":6,"startLat":44.16,"startLon":16.7,"routeType":"Kružna","destinations":["Šatorsko jezero"],"tags":["Šator planina","Vidikovci"],"description":"Pješačenje oko jezera i uspon na vrh.","gpx":"/gps/sator-jezero-vrh.gpx","thumbnail":"images/thumbnails/sator-jezero-vrh.jpg"},
+      {"id":10,"slug":"kozara-mrakovica","name":"Mrakovica – greben","area":"Kozara","mountain":"Kozara","distanceKm":11,"elevationM":500,"durationH":4.5,"startLat":45.02,"startLon":16.83,"routeType":"Kružna","destinations":["Mrakovica"],"tags":["Spomenik","Tjesnaci"],"description":"Grebenom Kozare kroz borove i vidikovce.","gpx":"/gps/kozara-mrakovica.gpx","thumbnail":"images/thumbnails/kozara-mrakovica.jpg"},
+      {"id":11,"slug":"ivanscica-vrh","name":"Ivanščica vrh","area":"Ivanščica","mountain":"Ivanščica","distanceKm":10.5,"elevationM":700,"durationH":5,"startLat":46.15,"startLon":16.1,"routeType":"Povratna (isti put)","destinations":["Ivanščica"],"tags":["TV toranj","Juras"],"description":"Uspon do TV tornja, pogledi na Zagorje.","gpx":"/gps/ivanscica-vrh.gpx","thumbnail":"images/thumbnails/ivanscica-vrh.jpg"},
+      {"id":12,"slug":"kamesnica-konj","name":"Kamešnica – Konj","area":"Kamešnica","mountain":"Kamešnica","distanceKm":12.5,"elevationM":900,"durationH":6,"startLat":43.74,"startLon":16.73,"routeType":"Povratna (isti put)","destinations":["Konj"],"tags":["Pešino vrilo","Greben Kamešnice"],"description":"Kameniti putovi i široki pogledi.","gpx":"/gps/kamesnica-konj.gpx","thumbnail":"images/thumbnails/kamesnica-konj.jpg"},
+      {"id":13,"slug":"cincar-vrh","name":"Cincar vrh","area":"Cincar","mountain":"Cincar","distanceKm":14,"elevationM":800,"durationH":6.5,"startLat":43.91,"startLon":17.0,"routeType":"Povratna (isti put)","destinations":["Cincar"],"tags":["Livno","Visoravan"],"description":"Visoravan Livanjskog polja s kamenim vrhom.","gpx":"/gps/cincar-vrh.gpx","thumbnail":"images/thumbnails/cincar-vrh.jpg"},
+      {"id":14,"slug":"vranica-nadkrstac","name":"Nadkrstac – Vranica","area":"Vranica","mountain":"Vranica","distanceKm":16,"elevationM":900,"durationH":7,"startLat":43.98,"startLon":17.62,"routeType":"Kružna","destinations":["Nadkrstac"],"tags":["Zlatne kupole","Prokoško jezero"],"description":"Zlatne kupole i travnati grebeni Vranice.","gpx":"/gps/vranica-nadkrstac.gpx","thumbnail":"images/thumbnails/vranica-nadkrstac.jpg"},
+      {"id":15,"slug":"matinski-vis","name":"Matinski Vis uspon","area":"Matinski Vis","mountain":"Matinski Vis","distanceKm":8.2,"elevationM":520,"durationH":3.5,"startLat":43.42,"startLon":17.41,"routeType":"Povratna (isti put)","destinations":["Matinski Vis"],"tags":["Matin grad","Pogledi"],"description":"Kratka, ugodna ruta s pogledima.","gpx":"/gps/matinski-vis.gpx","thumbnail":"images/thumbnails/matinski-vis.jpg"},
+      {"id":16,"slug":"zavelim-vrh","name":"Zavelim vrh","area":"Zavelim","mountain":"Zavelim","distanceKm":9.5,"elevationM":600,"durationH":4,"startLat":43.4,"startLon":17.27,"routeType":"Povratna (isti put)","destinations":["Zavelim"],"tags":["Imotska krajina","Kameniti prijevoj"],"description":"Kameniti prijevoji iznad Imotske krajine.","gpx":"/gps/zavelim-vrh.gpx","thumbnail":"images/thumbnails/zavelim-vrh.jpg"},
+      {"id":17,"slug":"golija-greben","name":"Golija greben","area":"Golija","mountain":"Golija","distanceKm":13.5,"elevationM":780,"durationH":6,"startLat":43.33,"startLon":20.2,"routeType":"Kružna","destinations":["Golija"],"tags":["Biosfera","NP Golija"],"description":"Put kroz guste šume i travnate vrhove.","gpx":"/gps/golija-greben.gpx","thumbnail":"images/thumbnails/golija-greben.jpg"},
+      {"id":18,"slug":"stozer-vrh","name":"Stožer vrh","area":"Stožer","mountain":"Stožer","distanceKm":10,"elevationM":700,"durationH":5,"startLat":43.87,"startLon":17.4,"routeType":"Povratna (isti put)","destinations":["Stožer"],"tags":["Kupres","Skijalište"],"description":"Planina iznad Kupresa s otvorenim vidicima.","gpx":"/gps/stozer-vrh.gpx","thumbnail":"images/thumbnails/stozer-vrh.jpg"},
+      {"id":19,"slug":"ljubusa-prijevoj","name":"Ljubuša prijevoj","area":"Ljubuša","mountain":"Ljubuša","distanceKm":12,"elevationM":500,"durationH":5,"startLat":43.79,"startLon":17.43,"routeType":"Kružna","destinations":["Ljubuša"],"tags":["Pašnjaci","Kupreško"],"description":"Valoviti pašnjaci i blagi usponi.","gpx":"/gps/ljubusa-prijevoj.gpx","thumbnail":"images/thumbnails/ljubusa-prijevoj.jpg"},
+      {"id":20,"slug":"tusnica-greben","name":"Tušnica greben","area":"Tušnica","mountain":"Tušnica","distanceKm":11.5,"elevationM":640,"durationH":5,"startLat":43.74,"startLon":17.01,"routeType":"Kružna","destinations":["Tušnica"],"tags":["Livno","Greben Tušnice"],"description":"Greben s pogledom na Livno.","gpx":"/gps/tusnica-greben.gpx","thumbnail":"images/thumbnails/tusnica-greben.jpg"},
+      {"id":21,"slug":"svilaja-bat","name":"Svilaja – Bat","area":"Svilaja","mountain":"Svilaja","distanceKm":12.8,"elevationM":880,"durationH":6,"startLat":43.7,"startLon":16.49,"routeType":"Povratna (isti put)","destinations":["Bat"],"tags":["Lećevića","Zečje polje"],"description":"Kameniti vrhovi nad Dalmatinskom zagorom.","gpx":"/gps/svilaja-bat.gpx","thumbnail":"images/thumbnails/svilaja-bat.jpg"},
+      {"id":22,"slug":"biokovo-sveti-jure","name":"Sveti Jure","area":"Biokovo","mountain":"Biokovo","distanceKm":8,"elevationM":700,"durationH":4.5,"startLat":43.352,"startLon":17.059,"routeType":"Povratna (isti put)","destinations":["Sveti Jure"],"tags":["Biokovo Skywalk","Ravni"],"description":"Krov Dalmacije s nevjerojatnim pogledima.","gpx":"/gps/biokovo-sv-jure.gpx","thumbnail":"images/thumbnails/biokovo-sveti-jure.jpg"},
+      {"id":23,"slug":"mosor-vickov-stup","name":"Vickov stup krug","area":"Mosor","mountain":"Mosor","distanceKm":10,"elevationM":820,"durationH":5.5,"startLat":43.52,"startLon":16.62,"routeType":"Kružna","destinations":["Vickov stup"],"tags":["Umberto Girometta","Žlijeb"],"description":"Kružna staza po Mosoru, krševit teren.","gpx":"/gps/mosor-vickov-stup.gpx","thumbnail":"images/thumbnails/mosor-vickov-stup.jpg"},
+      {"id":24,"slug":"radusa-idovac","name":"Raduša Idovac","area":"Raduša","mountain":"Raduša","distanceKm":14.5,"elevationM":900,"durationH":7,"startLat":43.85,"startLon":17.36,"routeType":"Povratna (isti put)","destinations":["Idovac"],"tags":["Blidinje","Raduša greben"],"description":"Prostrani travnjaci i grebeni.","gpx":"/gps/radusa-idovac.gpx","thumbnail":"images/thumbnails/radusa-idovac.jpg"},
+      {"id":25,"slug":"vran-veliki","name":"Vran – Veliki Vran","area":"Vran","mountain":"Vran","distanceKm":12.2,"elevationM":950,"durationH":6,"startLat":43.63,"startLon":17.4,"routeType":"Povratna (isti put)","destinations":["Veliki Vran"],"tags":["Masna Luka","Blidinje"],"description":"Staza iznad Blidinjskog jezera.","gpx":"/gps/vran-veliki.gpx","thumbnail":"images/thumbnails/vran-veliki.jpg"},
+      {"id":26,"slug":"cvrsnica-hajducka-vrata","name":"Hajdučka Vrata","area":"Čvrsnica","mountain":"Čvrsnica","distanceKm":15,"elevationM":950,"durationH":7.5,"startLat":43.54,"startLon":17.561,"routeType":"Povratna (isti put)","destinations":["Hajdučka Vrata"],"tags":["Vidikovac","Široka poljana","Plato"],"description":"Kultno kameno ‘vrata’, zahtjevniji uspon.","gpx":"/gps/cvrsnica-hajducka-vrata.gpx","thumbnail":"images/thumbnails/cvrsnica-hajducka-vrata.jpg"},
+      {"id":27,"slug":"cabulja-vlajna","name":"Čabulja – Velika Vlajna","area":"Čabulja","mountain":"Čabulja","distanceKm":11.5,"elevationM":780,"durationH":5.5,"startLat":43.43,"startLon":17.71,"routeType":"Povratna (isti put)","destinations":["Velika Vlajna"],"tags":["Mostar","Kamenjar"],"description":"Kamenjar iznad Mostara.","gpx":"/gps/cabulja-vlajna.gpx","thumbnail":"images/thumbnails/cabulja-vlajna.jpg"},
+      {"id":28,"slug":"prenj-zelena-glava","name":"Prenj – Zelena glava","area":"Prenj","mountain":"Prenj","distanceKm":14,"elevationM":1200,"durationH":8,"startLat":43.52,"startLon":17.94,"routeType":"Povratna (isti put)","destinations":["Zelena glava"],"tags":["Bijele vode","Tisovica"],"description":"Alpski karakter i oštri grebeni.","gpx":"/gps/prenj-zelena-glava.gpx","thumbnail":"images/thumbnails/prenj-zelena-glava.jpg"},
+      {"id":29,"slug":"crvanj-vrh","name":"Crvanj vrh","area":"Crvanj","mountain":"Crvanj","distanceKm":12,"elevationM":850,"durationH":6,"startLat":43.43,"startLon":18.08,"routeType":"Povratna (isti put)","destinations":["Crvanj"],"tags":["Nevesinje","Planinski pašnjaci"],"description":"Tiša planina s lijepim vizurama.","gpx":"/gps/crvanj-vrh.gpx","thumbnail":"images/thumbnails/crvanj-vrh.jpg"},
+      {"id":30,"slug":"matokit-sv-rok","name":"Matokit – Sveti Rok","area":"Matokit","mountain":"Matokit","distanceKm":7.8,"elevationM":620,"durationH":3.8,"startLat":43.28,"startLon":17.0,"routeType":"Povratna (isti put)","destinations":["Sveti Rok"],"tags":["Vrgorac","Strm uspon"],"description":"Iznad Vrgorca, kratko i strmo.","gpx":"/gps/matokit-sv-rok.gpx","thumbnail":"images/thumbnails/matokit-sv-rok.jpg"},
+      {"id":31,"slug":"velez-botin","name":"Velež – Botin","area":"Velež","mountain":"Velež","distanceKm":10.5,"elevationM":850,"durationH":5.5,"startLat":43.31,"startLon":17.99,"routeType":"Povratna (isti put)","destinations":["Botin"],"tags":["Podvelež","Mostar"],"description":"Surovi kamen i snažni pogledi.","gpx":"/gps/velez-botin.gpx","thumbnail":"images/thumbnails/velez-botin.jpg"},
+      {"id":32,"slug":"visocica-vito","name":"Visočica – Vito","area":"Visočica","mountain":"Visočica","distanceKm":13,"elevationM":900,"durationH":6.5,"startLat":43.67,"startLon":18.09,"routeType":"Povratna (isti put)","destinations":["Vito"],"tags":["Rakitnica","Grebenska staza"],"description":"Greben iznad kanjona Rakitnice.","gpx":"/gps/visocica-vito.gpx","thumbnail":"images/thumbnails/visocica-vito.jpg"},
+      {"id":33,"slug":"bjelasnica-vrh","name":"Bjelašnica vrh","area":"Bjelašnica","mountain":"Bjelašnica","distanceKm":9.5,"elevationM":700,"durationH":4.5,"startLat":43.71,"startLon":18.26,"routeType":"Povratna (isti put)","destinations":["Bjelašnica"],"tags":["Opservatorij","Ivan planina"],"description":"Otvoreni platoi i vjetar na vrhu.","gpx":"/gps/bjelasnica-vrh.gpx","thumbnail":"images/thumbnails/bjelasnica-vrh.jpg"},
+      {"id":34,"slug":"treskavica-turov","name":"Treskavica – Turov","area":"Treskavica","mountain":"Treskavica","distanceKm":15.5,"elevationM":1000,"durationH":7.5,"startLat":43.6,"startLon":18.35,"routeType":"Povratna (isti put)","destinations":["Turov"],"tags":["Veliko jezero","Crno jezero"],"description":"Divlja planina s jezerima.","gpx":"/gps/treskavica-turov.gpx","thumbnail":"images/thumbnails/treskavica-turov.jpg"},
+      {"id":35,"slug":"zelengora-orlovacko","name":"Zelengora – Orlovačko jezero","area":"Zelengora","mountain":"Zelengora","distanceKm":12,"elevationM":500,"durationH":5,"startLat":43.3,"startLon":18.72,"routeType":"Kružna","destinations":["Orlovačko jezero"],"tags":["Sutjeska","Jezera Zelengore"],"description":"Lagani usponi i kristalna jezera.","gpx":"/gps/zelengora-orlovacko.gpx","thumbnail":"images/thumbnails/zelengora-orlovacko.jpg"},
+      {"id":36,"slug":"volujak-greben","name":"Volujak greben","area":"Volujak","mountain":"Volujak","distanceKm":14.5,"elevationM":1100,"durationH":8,"startLat":43.25,"startLon":18.69,"routeType":"Povratna (isti put)","destinations":["Volujak"],"tags":["Perućica","Greben"],"description":"Dugi grebeni iznad Perućice.","gpx":"/gps/volujak-greben.gpx","thumbnail":"images/thumbnails/volujak-greben.jpg"},
+      {"id":37,"slug":"maglic-bih","name":"Maglić BiH vrh","area":"Maglić","mountain":"Maglić","distanceKm":13,"elevationM":1200,"durationH":7.5,"startLat":43.31,"startLon":18.74,"routeType":"Povratna (isti put)","destinations":["Maglić"],"tags":["Trnovačko jezero","Sutjeska NP"],"description":"Najviši vrh BiH, krševit teren.","gpx":"/gps/maglic-bih.gpx","thumbnail":"images/thumbnails/maglic-bih.jpg"},
+      {"id":38,"slug":"lelija-velika","name":"Lelija – Velika Lelija","area":"Lelija","mountain":"Lelija","distanceKm":12.2,"elevationM":820,"durationH":6,"startLat":43.38,"startLon":18.55,"routeType":"Povratna (isti put)","destinations":["Velika Lelija"],"tags":["Prašuma Perućica","Tisina"],"description":"Mirna planina s travnatim vršnim dijelom.","gpx":"/gps/lelija-velika.gpx","thumbnail":"images/thumbnails/lelija-velika.jpg"},
+      {"id":39,"slug":"durmitor-bobotov","name":"Bobotov kuk","area":"Durmitor","mountain":"Durmitor","distanceKm":11.5,"elevationM":1000,"durationH":6.5,"startLat":43.114,"startLon":19.054,"routeType":"Povratna (isti put)","destinations":["Bobotov kuk"],"tags":["Žabljak","Škrčka jezera"],"description":"Najpoznatiji durmitorski uspon.","gpx":"/gps/durmitor-bobotov.gpx","thumbnail":"images/thumbnails/durmitor-bobotov.jpg"},
+      {"id":40,"slug":"komovi-vasojeviski","name":"Komovi – Vasojevićki","area":"Komovi","mountain":"Komovi","distanceKm":7,"elevationM":620,"durationH":3.5,"startLat":42.71,"startLon":19.61,"routeType":"Povratna (isti put)","destinations":["Kom Vasojevićki"],"tags":["Planinski dom","Alpski teren"],"description":"Strmiji, ali kratak vršni uspon.","gpx":"/gps/komovi-vasojeviski.gpx","thumbnail":"images/thumbnails/komovi-vasojeviski.jpg"},
+      {"id":41,"slug":"prokletije-jezerce","name":"Maja Jezerce","area":"Prokletije","mountain":"Prokletije","distanceKm":22,"elevationM":1700,"durationH":11,"startLat":42.441,"startLon":19.812,"routeType":"Povratna (isti put)","destinations":["Maja Jezerce"],"tags":["Theth","Valbona","Alpski"],"description":"Zahtjevna alpska tura Prokletija.","gpx":"/gps/prokletije-jezerce.gpx","thumbnail":"images/thumbnails/prokletije-jezerce.jpg"},
+      {"id":42,"slug":"sar-titov-vrh","name":"Titov vrh","area":"Šar planina","mountain":"Šar planina","distanceKm":16,"elevationM":1200,"durationH":8.5,"startLat":42.0,"startLon":20.75,"routeType":"Povratna (isti put)","destinations":["Titov vrh"],"tags":["Koritnik","Šara"],"description":"Dugi uspon do najvišeg vrha Šare.","gpx":"/gps/sar-titov-vrh.gpx","thumbnail":"images/thumbnails/sar-titov-vrh.jpg"},
+      {"id":43,"slug":"pag-sv-vid","name":"Otok Pag – Sveti Vid","area":"Otok Pag","mountain":"Otok Pag","distanceKm":6.5,"elevationM":220,"durationH":2.5,"startLat":44.5,"startLon":14.99,"routeType":"Povratna (isti put)","destinations":["Sveti Vid"],"tags":["Paški zaljev","Pag vidikovac"],"description":"Kameniti otok i pogled na Paški zaljev.","gpx":"/gps/pag-sv-vid.gpx","thumbnail":"images/thumbnails/pag-sv-vid.jpg"},
+      {"id":44,"slug":"peljesac-sv-ilija","name":"Sveti Ilija","area":"Poluotok Pelješac","mountain":"Poluotok Pelješac","distanceKm":11.8,"elevationM":900,"durationH":6,"startLat":42.97,"startLon":17.16,"routeType":"Povratna (isti put)","destinations":["Sveti Ilija"],"tags":["Orebić","Pelješka panorama"],"description":"Impresivni vidici na Korčulu i Neretvu.","gpx":"/gps/peljesac-sv-ilija.gpx","thumbnail":"images/thumbnails/peljesac-sv-ilija.jpg"},
+      {"id":45,"slug":"sipovo-janj","name":"Šipovo – Janj","area":"Šipovo","mountain":"Šipovo","distanceKm":8.8,"elevationM":300,"durationH":3.2,"startLat":44.28,"startLon":17.08,"routeType":"Kružna","destinations":["Janj"],"tags":["Janj rijeka","Šume Šipova"],"description":"Šume i izvori rijeke Janj.","gpx":"/gps/sipovo-janj.gpx","thumbnail":"images/thumbnails/sipovo-janj.jpg"},
+      {"id":46,"slug":"hvar-sv-nikola","name":"Otok Hvar – Sv. Nikola","area":"Otok Hvar","mountain":"Otok Hvar","distanceKm":10.2,"elevationM":650,"durationH":5,"startLat":43.18,"startLon":16.63,"routeType":"Povratna (isti put)","destinations":["Sveti Nikola"],"tags":["Hvar vrh","Vidikovac"],"description":"Najviši vrh Hvara, miris borova.","gpx":"/gps/hvar-sv-nikola.gpx","thumbnail":"images/thumbnails/hvar-sv-nikola.jpg"},
+      {"id":47,"slug":"brac-vidova-gora","name":"Otok Brač – Vidova gora","area":"Otok Brač","mountain":"Otok Brač","distanceKm":7.5,"elevationM":420,"durationH":3.2,"startLat":43.3,"startLon":16.65,"routeType":"Povratna (isti put)","destinations":["Vidova gora"],"tags":["Zlatni rat","Supetar"],"description":"Pogled na Zlatni rat i Hvar.","gpx":"/gps/brac-vidova-gora.gpx","thumbnail":"images/thumbnails/brac-vidova-gora.jpg"},
+      {"id":48,"slug":"badnjevice-kanjon","name":"Kanjon Badnjevice staza","area":"Kanjon Badnjevice","mountain":"Kanjon Badnjevice","distanceKm":6.8,"elevationM":260,"durationH":2.8,"startLat":43.44,"startLon":17.48,"routeType":"Kružna","destinations":["Badnjevice"],"tags":["Kanjon","Mostina"],"description":"Kroz kanjon uz stijene i vodu.","gpx":"/gps/badnjevice-kanjon.gpx","thumbnail":"images/thumbnails/badnjevice-kanjon.jpg"},
+      {"id":49,"slug":"ostrc-vrh","name":"Oštrc vrh","area":"Oštrc","mountain":"Oštrc","distanceKm":8.4,"elevationM":520,"durationH":3.6,"startLat":45.73,"startLon":15.5,"routeType":"Povratna (isti put)","destinations":["Oštrc"],"tags":["Samoborsko gorje","Japetić"],"description":"Samoborsko gorje – kratko i slatko.","gpx":"/gps/ostrc-vrh.gpx","thumbnail":"images/thumbnails/ostrc-vrh.jpg"}
     ];
 
     /* ---------------------------------------------------------
        #10.6 POPUNA SELECTA PLANINA/PODRUČJA
        --------------------------------------------------------- */
-    (function fillAreas() {
-      const sel1 = document.getElementById('areaSelect');
-      const sel2 = document.getElementById('areaSelectCombo');
-      AREAS.forEach(a => {
-        const o1 = document.createElement('option');
-        o1.value = a;
-        o1.textContent = a;
-        sel1.appendChild(o1);
-        const o2 = document.createElement('option');
-        o2.value = a;
-        o2.textContent = a;
-        sel2.appendChild(o2);
+    (function fillAreas(){
+      const sel1=document.getElementById('areaSelect');
+      const sel2=document.getElementById('areaSelectCombo');
+      AREAS.forEach(a=>{
+        const o1=document.createElement('option'); o1.value=a; o1.textContent=a; sel1.appendChild(o1);
+        const o2=document.createElement('option'); o2.value=a; o2.textContent=a; sel2.appendChild(o2);
       });
     })();
 
     /* ---------------------------------------------------------
        #10.7 GLOBALNO STANJE FILTERA
        --------------------------------------------------------- */
-    const filterState = {
-      area: "",
-      radius: "",
-      duration: "",
-      modeKm: true,
-      modeElev: true,
-      logic: "any",
-      chipsSel: [],
-      poi: "",
-      distanceMode: "air" // 'air' | 'drive' (drive = beta / fallback na air)
+    const filterState={
+      area:"",
+      radius:"",
+      duration:"",
+      modeKm:true,
+      modeElev:true,
+      logic:"any",
+      chipsSel:[],
+      poi:"",
+      distanceMode:"air"
     };
 
-    function stateFromControls(combo) {
-      const suffix = combo ? 'Combo' : '';
-      const modeKm = document.getElementById('modeKm' + suffix) ? document.getElementById('modeKm' + suffix).checked : filterState.modeKm;
-      const modeElev = document.getElementById('modeElev' + suffix) ? document.getElementById('modeElev' + suffix).checked : filterState.modeElev;
-      const logic = document.getElementById('difficultyLogic' + suffix) ? document.getElementById('difficultyLogic' + suffix).value : filterState.logic;
-      const chips = [...document.querySelectorAll((combo ? '.diff-chip-combo' : '.diff-chip') + ':checked')].map(i => i.value);
+    function stateFromControls(combo){
+      const suffix=combo?'Combo':'';
+      const modeKm = document.getElementById('modeKm'+suffix) ? document.getElementById('modeKm'+suffix).checked : filterState.modeKm;
+      const modeElev = document.getElementById('modeElev'+suffix) ? document.getElementById('modeElev'+suffix).checked : filterState.modeElev;
+      const logic = document.getElementById('difficultyLogic'+suffix) ? document.getElementById('difficultyLogic'+suffix).value : filterState.logic;
+      const chips = [...document.querySelectorAll((combo?'.diff-chip-combo':'.diff-chip')+':checked')].map(i=>i.value);
       return {
-        area: (document.getElementById('areaSelect' + suffix)?.value || ""),
-        radius: (document.getElementById('radiusSelect' + suffix)?.value || ""),
-        duration: (document.getElementById('durationBucket' + suffix)?.value || ""),
+        area:(document.getElementById('areaSelect'+suffix)?.value || ""),
+        radius:(document.getElementById('radiusSelect'+suffix)?.value || ""),
+        duration:(document.getElementById('durationBucket'+suffix)?.value || ""),
         poi: combo ? (document.getElementById('poiSearchCombo')?.value || "") : filterState.poi,
-        modeKm,
-        modeElev,
-        logic,
-        chipsSel: chips,
-        distanceMode: (document.getElementById('distanceMode' + suffix)?.value || filterState.distanceMode)
+        modeKm, modeElev, logic, chipsSel:chips,
+        distanceMode:(document.getElementById('distanceMode'+suffix)?.value || filterState.distanceMode)
       };
     }
-
-    function updateFilterState(newState) {
-      Object.assign(filterState, newState);
-    }
+    function updateFilterState(newState){ Object.assign(filterState,newState); }
 
     /* ---------------------------------------------------------
        #10.8 AKTIVNI ČIPOVI
        --------------------------------------------------------- */
-    function renderActiveChips() {
-      const host = document.getElementById('activeChips');
-      host.innerHTML = "";
-
-      function addChip(label, onRemove) {
-        const chip = document.createElement('span');
-        chip.className = 'chip';
-        chip.innerHTML = `${label} <button title="Ukloni" aria-label="Ukloni">×</button>`;
+    function renderActiveChips(){
+      const host=document.getElementById('activeChips');
+      host.innerHTML="";
+      function addChip(label,onRemove){
+        const chip=document.createElement('span');
+        chip.className='chip';
+        chip.innerHTML = `${label} <button type="button" aria-label="Ukloni">×</button>`;
         chip.querySelector('button').addEventListener('click', onRemove);
         host.appendChild(chip);
       }
 
+      // — area
       if (filterState.area) {
-        addChip(`Područje: ${filterState.area}`, () => {
-          filterState.area = "";
-          document.getElementById('areaSelect').value = "";
-          document.getElementById('areaSelectCombo').value = "";
-          applyFiltersUnified({ combo: true });
+        addChip(`Lokacija: ${filterState.area}`, () => {
+          const sel1 = document.getElementById('areaSelect');
+          const sel2 = document.getElementById('areaSelectCombo');
+          if (sel1) sel1.value = '';
+          if (sel2) sel2.value = '';
+          updateFilterState({ area: '' });
+          runFiltering();
         });
       }
 
+      // — radius
       if (filterState.radius) {
-        const modeTxt = 'zračna linija';
-        addChip(`Do ${filterState.radius} km • ${modeTxt}`, () => {
-          filterState.radius = "";
-          document.getElementById('radiusSelect').value = "";
-          document.getElementById('radiusSelectCombo').value = "";
-          applyFiltersUnified({ combo: true });
+        addChip(`Radijus: do ${filterState.radius} km`, () => {
+          const sel1 = document.getElementById('radiusSelect');
+          const sel2 = document.getElementById('radiusSelectCombo');
+          if (sel1) sel1.value = '';
+          if (sel2) sel2.value = '';
+          updateFilterState({ radius: '' });
+          runFiltering();
         });
       }
 
+      // — duration
       if (filterState.duration) {
-        const txt = filterState.duration === '>10' ? 'Preko 10 h' : `Do ${filterState.duration} h`;
-        addChip(`Vrijeme hodanja: ${txt}`, () => {
-          filterState.duration = "";
-          document.getElementById('durationBucket').value = "";
-          document.getElementById('durationBucketCombo').value = "";
-          applyFiltersUnified({ combo: true });
+        const mapDur = { '3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h' };
+        addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, () => {
+          const sel1 = document.getElementById('durationBucket');
+          const sel2 = document.getElementById('durationBucketCombo');
+          if (sel1) sel1.value = '';
+          if (sel2) sel2.value = '';
+          updateFilterState({ duration: '' });
+          runFiltering();
         });
       }
 
+      // — poi
       if (filterState.poi) {
         addChip(`Odredište: ${filterState.poi}`, () => {
-          filterState.poi = "";
-          document.getElementById('poiSearchCombo').value = "";
-          applyFiltersUnified({ combo: true });
+          const inp = document.getElementById('poiSearchCombo');
+          if (inp) inp.value = '';
+          updateFilterState({ poi: '' });
+          runFiltering();
         });
       }
 
-      if (filterState.chipsSel.length > 0 && (filterState.modeKm || filterState.modeElev)) {
-        const parts = [];
-        if (filterState.modeKm) parts.push('km');
-        if (filterState.modeElev) parts.push('n/mv');
-        const labels = filterState.chipsSel.map(k => DIFF_LABELS[k]).join(', ');
-        const modeTxt = filterState.logic === 'all' ? 'obje' : 'bilo koju';
-        addChip(`Težina (${parts.join('+')}): ${labels} • ${modeTxt}`, () => {
-          filterState.chipsSel = [];
-          document.querySelectorAll('.diff-chip, .diff-chip-combo').forEach(i => i.checked = false);
-          applyFiltersUnified({ combo: true });
+      // — difficulty chips
+      if (filterState.chipsSel && filterState.chipsSel.length) {
+        addChip(
+          `Težina: ${filterState.chipsSel.map(c=>DIFF_LABELS[c]||c).join(', ')}`,
+          () => {
+            document.querySelectorAll('.diff-chip:checked').forEach(i=>i.checked=false);
+            document.querySelectorAll('.diff-chip-combo:checked').forEach(i=>i.checked=false);
+            updateFilterState({ chipsSel: [] });
+            runFiltering();
+          }
+        );
+      }
+
+      // — modes / logic
+      const modeBits = [];
+      if (filterState.modeKm) modeBits.push('km');
+      if (filterState.modeElev) modeBits.push('visina');
+      if (modeBits.length && (filterState.chipsSel?.length || true)) {
+        addChip(`Način: ${modeBits.join(' + ')} / ${filterState.logic==='all'?'OBJE':'BILO KOJA'}`, () => {
+          const ids = ['modeKm','modeElev','difficultyLogic','modeKmCombo','modeElevCombo','difficultyLogicCombo'];
+          ids.forEach(id=>{
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (id.includes('modeKm')) el.checked = true;
+            if (id.includes('modeElev')) el.checked = true;
+            if (id.includes('difficultyLogic')) el.value = 'any';
+          });
+          updateFilterState({ modeKm:true, modeElev:true, logic:'any' });
+          runFiltering();
         });
       }
+
+      // — distance mode (for future API)
+      if (filterState.distanceMode && filterState.distanceMode !== 'air') {
+        addChip(`Način udaljenosti: ${filterState.distanceMode}`, () => {
+          const s1 = document.getElementById('distanceModeCombo');
+          const s2 = document.getElementById('distanceMode');
+          if (s1) s1.value = 'air';
+          if (s2) s2.value = 'air';
+          updateFilterState({ distanceMode:'air' });
+          runFiltering();
+        });
+      }
+
+      // ako ima ijedan čip — skrolamo do rezultata
+      if (host.children.length) scrollToResults();
     }
 
     /* ---------------------------------------------------------
-       #10.9 RENDER LISTE STAZA
+       #10.9 RENDER KARTICA (2 u redu, odgovara CSS-u)
        --------------------------------------------------------- */
-    function routeTypeIcon(type) {
-      // Jednostavne inline SVG ikone
-      if (type === 'Kružna') {
-        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 4-7.5" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7,5 11,5 11,1" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
-      }
-      if (type === 'Jednosmjerna') {
-        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14,6 20,12 14,18" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
-      }
-      // Povratna (isti put)
-      return '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="4,7 10,7 10,3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="20,17 14,17 14,21" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 7c4 0 6 4 6 10" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+    function routeTypeBadge(rt) {
+      // Dodatna oznaka za "Jednosmjerna" (ako se pojavi u podacima)
+      const oneWay = /jednosmjerna/i.test(rt||'');
+      return `
+        <span class="badge" title="${rt||''}">
+          ${rt || 'Ruta'}
+        </span>
+        ${oneWay ? `<span class="badge" title="Jednosmjerna tura" style="display:inline-flex;align-items:center;gap:6px">
+          ↦ Jednosmjerna
+        </span>` : ''}`;
+    }
+
+    function cardHTML(t) {
+      const diffKm = classifyByKm(t.distanceKm);
+      const diffEl = classifyByElev(t.elevationM);
+      // konzervativno: prikazani "dominantniji" razred
+      const order = ['very-easy','easy','medium','hard','extreme'];
+      const mainDiff = order[Math.max(order.indexOf(diffKm), order.indexOf(diffEl))] || 'medium';
+
+      return `
+        <article class="trail-card" data-id="${t.id}">
+          <img src="${t.thumbnail}" alt="${t.name}" loading="lazy" />
+          <div>
+            <h3>${t.name}</h3>
+            <p>${t.description}</p>
+            <div class="info-line" style="margin:6px 0">
+              <span class="badge ${mainDiff}" title="Ocjena težine (procjena)">• ${DIFF_LABELS[mainDiff]||'Težina'}</span>
+              ${routeTypeBadge(t.routeType)}
+            </div>
+            <div class="badges">
+              ${badgeEl(`${t.distanceKm} km`, ['km']).outerHTML}
+              ${badgeEl(`${t.elevationM} m`, ['elev']).outerHTML}
+              ${badgeEl(`${t.durationH} h`, []).outerHTML}
+              ${t.destinations?.slice(0,2).map(d=>badgeEl(d, ['poi']).outerHTML).join('')}
+            </div>
+            <div class="info-line" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7zM12 11.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"/></svg>
+              <span>${t.area}</span>
+            </div>
+          </div>
+        </article>`;
     }
 
     function renderTrails(list) {
       const host = document.getElementById('trail-list');
-      host.innerHTML = "";
-
-      if (!list.length) {
-        host.innerHTML = '<p style="opacity:.9">Nema rezultata za odabrane filtere.</p>';
-        return;
-      }
-
-      list.forEach(t => {
-        const kmDiff = classifyByKm(t.distanceKm);
-        const elevDiff = classifyByElev(t.elevationM);
-
-        let distanceInfo = "";
-        if (userLocation && Number.isFinite(t.startLat) && Number.isFinite(t.startLon)) {
-          // zračna linija
-          const d = haversineKm(userLocation.lat, userLocation.lon, t.startLat, t.startLon);
-          distanceInfo = ` • ${d.toFixed(0)} km (zračna linija) od tebe`;
-        }
-
-        const card = document.createElement('article');
-        card.className = 'trail-card';
-        card.innerHTML = `
-          <img src="${t.thumbnail || 'images/thumbnails/placeholder.jpg'}" alt="${t.area}" />
-          <div>
-            <h3>${t.name}</h3>
-            <p class="info-line">
-              <strong>Planina/Područje:</strong> ${t.area}${distanceInfo}
-            </p>
-            <p class="info-line">
-              <strong>Vrijeme hodanja:</strong> ${t.durationH} h
-              &nbsp;•&nbsp;
-              <strong>Staza u kilometrima:</strong> ${t.distanceKm} km
-              &nbsp;•&nbsp;
-              <strong>Staza u nadmorskoj visini:</strong> ${t.elevationM} m
-            </p>
-            <p class="info-line" title="${t.routeType}">
-              <strong>Tip staze:</strong>
-              <span style="display:inline-flex;align-items:center;gap:6px;">
-                ${routeTypeIcon(t.routeType)}
-                ${t.routeType}
-              </span>
-            </p>
-            <div class="badges"></div>
-            <p style="margin-top:6px">${t.description}</p>
-            <p style="margin-top:4px">
-              <strong>Odredište:</strong> ${t.destinations?.[0] || '-'}
-              <!-- skrivene ključne riječi za pretragu -->
-              <span style="display:none" data-tags="${(t.tags || []).join('|')}"></span>
-            </p>
-            <p style="margin-top:6px">
-              <a href="${t.gpx}" download>Preuzmi GPX</a>
-              &nbsp;|&nbsp;
-              <a href="staze/${t.slug}.html">Detalji</a>
-            </p>
-          </div>
-        `;
-
-        const badges = card.querySelector('.badges');
-        badges.appendChild(badgeEl(`Težina (km): ${DIFF_LABELS[kmDiff]}`, ['km', kmDiff]));
-        badges.appendChild(badgeEl(`Težina (n/mv): ${DIFF_LABELS[elevDiff]}`, ['elev', elevDiff]));
-        if (t.destinations?.length) {
-          badges.appendChild(badgeEl(`Odredište: ${t.destinations[0]}`, ['poi']));
-        }
-
-        host.appendChild(card);
-      });
+      host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
     }
 
     /* ---------------------------------------------------------
-       #10.10 FILTRIRANJE
+       #10.10 PRAVILA FILTRIRANJA
        --------------------------------------------------------- */
-    async function applyFiltersUnified({ combo = false } = {}) {
-      const st = stateFromControls(combo);
-      updateFilterState(st);
+    function matchesDifficulty(t, chipsSel, modeKm, modeElev, logic) {
+      if (!chipsSel || !chipsSel.length) return true; // bez čipova -> prolazi
+      const kmClass = classifyByKm(t.distanceKm);
+      const elevClass = classifyByElev(t.elevationM);
 
-      if (filterState.radius && !userLocation) {
-        await ensureGeolocationOnce();
+      const hitKm = modeKm ? chipsSel.includes(kmClass) : false;
+      const hitEl = modeElev ? chipsSel.includes(elevClass) : false;
+
+      if (modeKm && modeElev) {
+        return logic === 'all' ? (hitKm && hitEl) : (hitKm || hitEl);
       }
-      const maxDistance = filterState.radius ? parseInt(filterState.radius, 10) : null;
-
-      const filtered = TRAILS.filter(t => {
-        // Planina/područje
-        if (filterState.area && t.area !== filterState.area) return false;
-
-        // Udaljenost
-        if (maxDistance && userLocation) {
-          if (!(Number.isFinite(t.startLat) && Number.isFinite(t.startLon))) return false;
-
-          // Za sada uvijek zračna linija (napomena u UI)
-          const d = haversineKm(userLocation.lat, userLocation.lon, t.startLat, t.startLon);
-          if (d > maxDistance) return false;
-        }
-
-        // Vrijeme hodanja
-        if (filterState.duration) {
-          if (filterState.duration === '>10') {
-            if (!(t.durationH > 10)) return false;
-          } else {
-            if (!(t.durationH <= Number(filterState.duration))) return false;
-          }
-        }
-
-        // POI/odredišta/tags (multi-ključne riječi)
-        if (filterState.poi) {
-          const hay = [
-            t.name,
-            t.area,
-            t.mountain,
-            ...(t.destinations || []),
-            ...(t.tags || []),
-            t.description || ""
-          ].map(norm).join('|');
-          if (!hay.includes(norm(filterState.poi))) return false;
-        }
-
-        // Težina (km / n/mv)
-        if (filterState.chipsSel.length > 0 && (filterState.modeKm || filterState.modeElev)) {
-          const kmDiff = classifyByKm(t.distanceKm);
-          const elevDiff = classifyByElev(t.elevationM);
-          const kmMatch = filterState.modeKm ? filterState.chipsSel.includes(kmDiff) : null;
-          const elevMatch = filterState.modeElev ? filterState.chipsSel.includes(elevDiff) : null;
-
-          if (filterState.modeKm && filterState.modeElev) {
-            return (filterState.logic === 'all') ? (kmMatch && elevMatch) : (kmMatch || elevMatch);
-          }
-          if (filterState.modeKm) return kmMatch;
-          if (filterState.modeElev) return elevMatch;
-        }
-
-        return true;
-      });
-
-      renderActiveChips();
-      renderTrails(filtered);
+      if (modeKm) return hitKm;
+      if (modeElev) return hitEl;
+      return true; // ni jedan mod nije uključen -> ne filtriraj
     }
 
-    function clearAllFilters() {
-      // CTA
-      ['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = id === 'distanceMode' ? 'air' : '';
-      });
-      document.querySelectorAll('.diff-chip').forEach(i => i.checked = false);
-      const mk = document.getElementById('modeKm');
-      const me = document.getElementById('modeElev');
-      if (mk) mk.checked = true;
-      if (me) me.checked = true;
-      if (document.getElementById('difficultyLogic')) document.getElementById('difficultyLogic').value = 'any';
+    function matchesDuration(t, bucket) {
+      if (!bucket) return true;
+      const d = t.durationH || 0;
+      if (bucket === '>10') return d > 10;
+      const lim = parseFloat(bucket);
+      return d <= lim;
+    }
 
-      // COMBO
-      ['areaSelectCombo', 'radiusSelectCombo', 'durationBucketCombo', 'poiSearchCombo', 'distanceModeCombo'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = id === 'distanceModeCombo' ? 'air' : '';
-      });
-      document.querySelectorAll('.diff-chip-combo').forEach(i => i.checked = false);
-      const mkc = document.getElementById('modeKmCombo');
-      const mec = document.getElementById('modeElevCombo');
-      if (mkc) mkc.checked = true;
-      if (mec) mec.checked = true;
-      if (document.getElementById('difficultyLogicCombo')) document.getElementById('difficultyLogicCombo').value = 'any';
+    function matchesArea(t, area) {
+      if (!area) return true;
+      return t.area === area || t.mountain === area;
+    }
 
-      updateFilterState({
-        area: "",
-        radius: "",
-        duration: "",
-        modeKm: true,
-        modeElev: true,
-        logic: "any",
-        chipsSel: [],
-        poi: "",
-        distanceMode: "air"
-      });
+    function matchesPOI(t, q) {
+      if (!q) return true;
+      const s = norm(q);
+      const hay = [
+        t.name, t.area, t.mountain, t.routeType,
+        ...(t.tags||[]), ...(t.destinations||[])
+      ].map(norm).join(' • ');
+      return hay.includes(s);
+    }
 
+    async function matchesRadius(t, radius, mode) {
+      if (!radius) return true;
+      const loc = await ensureGeolocationOnce();
+      if (!loc) return true; // bez lokacije ne odbacuj
+      if (mode !== 'air') return true; // placeholder za drive
+      const d = haversineKm(loc.lat, loc.lon, t.startLat, t.startLon);
+      return d <= parseFloat(radius);
+    }
+
+    async function filterList() {
+      const {
+        area, radius, duration, modeKm, modeElev, logic, chipsSel, poi, distanceMode
+      } = filterState;
+
+      // brži prefilter bez radijusa
+      let base = TRAILS.filter(t =>
+        matchesArea(t, area) &&
+        matchesDuration(t, duration) &&
+        matchesPOI(t, poi) &&
+        matchesDifficulty(t, chipsSel, modeKm, modeElev, logic)
+      );
+
+      // radijus (asinkrono)
+      if (radius) {
+        const results = [];
+        const loc = await ensureGeolocationOnce();
+        for (const t of base) {
+          if (!loc) { results.push(t); continue; }
+          const ok = await matchesRadius(t, radius, distanceMode);
+          if (ok) results.push(t);
+        }
+        return results;
+      }
+      return base;
+    }
+
+    async function runFiltering() {
+      const list = await filterList();
+      renderTrails(list);
       renderActiveChips();
-      renderTrails(TRAILS);
     }
 
     /* ---------------------------------------------------------
-       #10.11 UI INTERAKCIJE (popover + instant apply)
+       #10.11 DOCK PONAŠANJE (jedan otvoren u isto vrijeme)
        --------------------------------------------------------- */
-    // Popover toggle
+    const filtersDock = document.getElementById('filtersDock');
+    const dockInner   = filtersDock.querySelector('.filters-dock-inner');
+    let dockedTileId  = null; // npr. "tileDiff"
+
+    function closeDock() {
+      if (!dockedTileId) return;
+      const content = dockInner.firstElementChild;
+      if (content) {
+        // vrati sadržaj u izvorni tile-pop
+        const orig = document.getElementById(dockedTileId);
+        if (orig) orig.appendChild(content);
+      }
+      filtersDock.classList.remove('active');
+      dockInner.innerHTML = '';
+      dockedTileId = null;
+      // makni .active s pločice
+      document.querySelectorAll('.filter-tile.active').forEach(el=>el.classList.remove('active'));
+    }
+
+    function openDockFor(tileId, tileEl) {
+      if (dockedTileId === tileId) { closeDock(); return; }
+      closeDock();
+      const src = document.getElementById(tileId);
+      if (!src) return;
+      const box = document.createElement('div');
+      const title = document.createElement('div');
+      title.className = 'dock-title';
+      title.textContent = tileEl.querySelector('.tile-title')?.textContent || 'Filter';
+
+      const x = document.createElement('button');
+      x.type = 'button';
+      x.className = 'dock-close';
+      x.title = 'Zatvori';
+      x.textContent = '×';
+      x.addEventListener('click', closeDock);
+
+      box.appendChild(title);
+      // premještamo samo unutrašnjost izvorne popover sekcije
+      while (src.firstChild) box.appendChild(src.firstChild);
+
+      dockInner.appendChild(box);
+      filtersDock.classList.add('active');
+      dockedTileId = tileId;
+
+      document.querySelectorAll('.filter-tile.active').forEach(el=>el.classList.remove('active'));
+      tileEl.classList.add('active');
+    }
+
     document.getElementById('ctaGrid').addEventListener('click', (e) => {
       const tile = e.target.closest('.filter-tile');
       if (!tile) return;
-      document.querySelectorAll('.tile-pop.open').forEach(p => {
-        if (!tile.contains(p)) p.classList.remove('open');
+      const targetId = tile.getAttribute('aria-controls');
+      if (!targetId) return;
+      openDockFor(targetId, tile);
+    });
+
+    /* ---------------------------------------------------------
+       #10.12 BRZI RESET I KOMBINIRANI PANEL
+       --------------------------------------------------------- */
+    document.getElementById('quickReset').addEventListener('click', () => {
+      // zatvori dock
+      closeDock();
+      // očisti UI
+      ['areaSelect','areaSelectCombo','radiusSelect','radiusSelectCombo','durationBucket','durationBucketCombo']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      ['modeKm','modeKmCombo','modeElev','modeElevCombo'].forEach(id=>{ const el=document.getElementById(id); if (el) el.checked=true; });
+      ['difficultyLogic','difficultyLogicCombo'].forEach(id=>{ const el=document.getElementById(id); if (el) el.value='any'; });
+      document.querySelectorAll('.diff-chip:checked,.diff-chip-combo:checked').forEach(i=>i.checked=false);
+      const poi = document.getElementById('poiSearchCombo'); if (poi) poi.value='';
+      updateFilterState({ area:'', radius:'', duration:'', modeKm:true, modeElev:true, logic:'any', chipsSel:[], poi:'', distanceMode:'air' });
+      runFiltering();
+    });
+
+    const comboWrap   = document.getElementById('comboWrap');
+    const toggleCombo = document.getElementById('toggleCombo');
+    toggleCombo.addEventListener('click', () => {
+      const open = comboWrap.style.display !== 'none';
+      comboWrap.style.display = open ? 'none' : 'block';
+      if (!open) scrollToResults();
+    });
+
+    // Apply / Clear u kombiniranom panelu
+    document.getElementById('applyFilters').addEventListener('click', async () => {
+      const st = stateFromControls(true);
+      updateFilterState(st);
+      await runFiltering();
+      scrollToResults();
+    });
+
+    document.getElementById('clearFilters').addEventListener('click', () => {
+      ['areaSelectCombo','radiusSelectCombo','durationBucketCombo','distanceModeCombo'].forEach(id=>{
+        const el = document.getElementById(id); if (el) el.value='';
       });
-      const pop = tile.querySelector('.tile-pop');
-      if (pop) pop.classList.toggle('open');
+      document.getElementById('distanceModeCombo').value = 'air';
+      document.querySelectorAll('.diff-chip-combo:checked').forEach(i=>i.checked=false);
+      document.getElementById('modeKmCombo').checked = true;
+      document.getElementById('modeElevCombo').checked = true;
+      document.getElementById('difficultyLogicCombo').value = 'any';
+      const poi = document.getElementById('poiSearchCombo'); if (poi) poi.value='';
+      updateFilterState({ area:'', radius:'', duration:'', poi:'', chipsSel:[], modeKm:true, modeElev:true, logic:'any', distanceMode:'air' });
+      runFiltering();
     });
 
-    // Klik izvan popovera zatvara sve
-    document.addEventListener('click', (e) => {
-      const inside = e.target.closest('.filter-tile');
-      if (!inside) document.querySelectorAll('.tile-pop.open').forEach(p => p.classList.remove('open'));
-    });
+    /* ---------------------------------------------------------
+       #10.13 POVEZIVANJE KONTROLA (CTA pločice, dock sadržaj)
+       --------------------------------------------------------- */
+    // kada se mijenjaju selecti/checkboxi unutar docka, update state-a (lagano)
+    document.addEventListener('change', (e) => {
+      const id = e.target.id;
+      if (!id) return;
 
-    // Instant promjene – Težina
-    ['modeKm','modeElev','difficultyLogic'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('change', () => { applyFiltersUnified({ combo:false }); renderActiveChips(); });
-    });
-    document.querySelectorAll('.diff-chip').forEach(i => {
-      i.addEventListener('change', () => { applyFiltersUnified({ combo:false }); renderActiveChips(); });
-    });
+      if (id === 'areaSelect' || id === 'radiusSelect' || id === 'durationBucket' ||
+          id === 'distanceMode' || id === 'modeKm' || id === 'modeElev' || id === 'difficultyLogic') {
+        updateFilterState(stateFromControls(false));
+        runFiltering();
+      }
 
-    // Udaljenost / Planina / Vrijeme / Način mjerenja
-    ['radiusSelect','areaSelect','durationBucket','distanceMode'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('change', async () => {
-        await applyFiltersUnified({ combo:false });
+      if (id === 'modeKmCombo' || id === 'modeElevCombo' || id === 'difficultyLogicCombo' ||
+          id === 'areaSelectCombo' || id === 'radiusSelectCombo' || id === 'durationBucketCombo' ||
+          id === 'distanceModeCombo') {
+        // ne filtriramo odmah u combo modu (osim quick experience),
+        // ali možemo ažurirati state da čipovi prikažu što je odabrano
+        updateFilterState(stateFromControls(true));
         renderActiveChips();
-        scrollToResults();
-      });
-    });
-
-    // Kombinirani gumb toggle
-    document.getElementById('toggleCombo').addEventListener('click', () => {
-      const wrap = document.getElementById('comboWrap');
-      wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
-      if (wrap.style.display === 'block') {
-        window.scrollTo({ top: wrap.offsetTop - 80, behavior: 'smooth' });
       }
     });
 
-    // COMBO apply/reset
-    document.getElementById('applyFilters').addEventListener('click', () => applyFiltersUnified({ combo: true }));
-    document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
-
-    // radius fokus -> traži lokaciju
-    ['radiusSelect', 'radiusSelectCombo'].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      let asked = false;
-      el.addEventListener('focus', async () => {
-        if (!asked) { asked = true; await ensureGeolocationOnce(); }
-      });
-      el.addEventListener('change', () => applyFiltersUnified({ combo: id.endsWith('Combo') }));
+    document.addEventListener('input', (e) => {
+      // live tražilica u hero search polju -> filtrira po nazivu/tags/destinations
+      if (e.target.id === 'search') {
+        const q = e.target.value.trim();
+        updateFilterState({ poi: q });
+        runFiltering();
+      }
+      if (e.target.id === 'poiSearchCombo') {
+        const q = e.target.value.trim();
+        updateFilterState({ poi: q });
+        renderActiveChips(); // lagani update čipova, bez punog filtera (apply će filtrirati)
+      }
     });
 
-    // distance mode u kombiniranom
-    ['areaSelectCombo','radiusSelectCombo','durationBucketCombo','distanceModeCombo'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('change', () => applyFiltersUnified({ combo:true }));
-    });
-
-    // enter u POI
-    const poi = document.getElementById('poiSearchCombo');
-    if (poi) {
-      poi.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { applyFiltersUnified({ combo: true }); scrollToResults(); }
+    // čipovi težine (oba seta)
+    function wireDifficultyChips(selector, combo=false){
+      document.querySelectorAll(selector).forEach(cb=>{
+        cb.addEventListener('change', ()=>{
+          const st = stateFromControls(combo);
+          updateFilterState(st);
+          if (!combo) runFiltering(); else renderActiveChips();
+        });
       });
     }
+    wireDifficultyChips('.diff-chip', false);
+    wireDifficultyChips('.diff-chip-combo', true);
 
-    // inicijalni render
+    /* ---------------------------------------------------------
+       #10.14 INIT — početno renderiranje
+       --------------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
-      renderActiveChips();
       renderTrails(TRAILS);
+      renderActiveChips();
+
+      // ako korisnik otvori dock pa odskrola, zadržavamo otvoren dok ne klikne X
+      // (nema posebnog handlanja scroll eventa)
     });
   </script>
+</body>
 </html>
+
