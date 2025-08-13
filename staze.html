@@ -1,3 +1,39 @@
+Odlično, uzeo sam tvoj staze.html i ubacio sve što tražiš:
+
+vraćen je kolorirani prikaz težine po svakoj metriki (km i uspon), s jasnim oznakama: Jako lako, Lako, Srednje teško, Jako teško, Ekstremno
+
+u kartici: naslov ture + (kad dozvoliš lokaciju) “XX km od tebe” desno od naslova
+
+ispod idu tri uredne “metričke” linije:
+
+1. Duljina — broj km + težinski bedž za km
+
+
+2. Uspon — broj metara + težinski bedž za uspon
+
+
+3. Trajanje — sati (bez bedža)
+
+
+
+ispod toga ide kratki opis
+
+geolokacija je “kao prije”: kad je jednom dopustiš (u pločici Udaljenost…), svaka kartica prikazuje udaljenost od početne točke staze; isto se koristi i za filtriranje po radijusu
+
+
+> Napomena: u popis-staza.js obavezno neka svaka staza ima startLat i startLon, uz dosadašnja polja (distanceKm, elevationM, durationH, thumbnail, description, …). Bez ta dva polja udaljenost se ne može izračunati.
+
+
+
+
+---
+
+Tvoj ažurirani staze.html (zamijeni postojeći ovim)
+
+> Ako već imaš season.js i popis-staza.js – samo prekopiraj ovaj fajl. Sve ostalo ostaje kompatibilno.
+
+
+
 <!DOCTYPE html>
 <html lang="hr">
 <head>
@@ -14,1062 +50,214 @@
     content="Istraži planinarske staze Balkana. Filtriraj po težini (km/nadmorska), planini/području, trajanju i udaljenosti od tvoje lokacije. GPX tragovi i sažeti opisi."
   />
 
-  <link
-    rel="icon"
-    href="images/mountain-adventures.svg"
-    type="image/svg+xml"
-  />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;600;700&display=swap"
-    rel="stylesheet"
-  />
-
-  <link
-    rel="stylesheet"
-    href="season.css"
-  />
+  <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="season.css" />
 
   <!-- =========================================================
-       #02 STILOVI (svaki zapis u svom retku)
+       #02 STILOVI
        ========================================================= -->
   <style>
     :root {
-      --bg: #0b1110;
-      --ink: #e8f1ed;
-      --muted: #b7c7c0;
-      --panel: #0f1a15;
-      --panel-2: #0e1714;
-      --line: rgba(255, 255, 255, 0.10);
-      --brand: #2e7d5b;
-      --brand-2: #3d9c73;
-      --chip: #16231d;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      overflow-x: hidden;
-    }
-
-    body {
-      font-family: Montserrat, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      scroll-behavior: smooth;
-    }
-
-    a {
-      color: #9fe1c5;
-      text-decoration: none;
-    }
-
-    .container {
-      max-width: 1150px;
-      margin: 0 auto;
-      padding: 0 14px;
-    }
-
-    /* =========================================================
-       #03 NAVBAR / MENI
-       ========================================================= */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .navbar-left img {
-      height: 16px;
-      width: 24px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .navbar-left img:hover::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      top: 30px;
-      left: 0;
-      background: #ffffff;
-      color: #000000;
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 12px;
-      white-space: nowrap;
-      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .navbar-center {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      transform: translateY(12px);
-    }
-
-    .search-container {
-      width: 260px;
-      position: relative;
-      padding-top: 10px;
-    }
-
-    .search-wrapper {
-      position: relative;
-      height: 34px;
-      background: #ffffff;
-      color: #222222;
-      border-radius: 22px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-    }
-
-    .search-top-decoration {
-      position: absolute;
-      top: -212px;
-      left: 108px;
-      width: 1600%;
-      height: 30px;
-      object-fit: cover;
-      z-index: -10;
-      transform: scale(19);
-      transform-origin: top center;
-      pointer-events: none;
-    }
-
-    .mountain-search {
-      flex: 1;
-      border: 0;
-      background: transparent;
-      outline: 0;
-      font-size: 14px;
-      padding: 0 8px;
-    }
-
-    .search-wrapper img[alt="ikona za tražilicu"] {
-      position: absolute;
-      right: 12px;
-      bottom: 7px;
-      width: 19px;
-      height: 19px;
-      pointer-events: none;
-    }
-
-    .navbar-right {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 8px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .burger-line {
-      width: 26px;
-      height: 3px;
-      background: #ffffff;
-      border-radius: 2px;
-    }
-
-    .menu-overlay {
-      position: fixed;
-      top: 70px;
-      right: 0;
-      width: 72vw;
-      max-width: 360px;
-      display: none;
-      flex-direction: column;
-      background: rgba(15, 25, 20, 0.96);
-      backdrop-filter: blur(10px);
-      border-left: 1px solid var(--line);
-      padding: 18px;
-      z-index: 9999;
-    }
-
-    .menu-overlay.open {
-      display: flex;
-    }
-
-    .menu-overlay a {
-      color: #ffffff;
-      margin: 10px 0;
-    }
-
-    /* =========================================================
-       #04 HERO + NASLOV
-       ========================================================= */
-    .image-section {
-      height: 50vh;
-      position: relative;
-      background: url('images/hero.jpg') center / cover no-repeat;
-    }
-
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));
-    }
-
-    main .header {
-      background: linear-gradient(180deg, #101b16, #0e1814);
-      text-align: center;
-      padding: 16px 16px;
-      border-bottom: 1px solid var(--line);
-      border-radius: 16px;
-    }
-
-    main .header h1 {
-      font-size: clamp(14px, 2.3vw, 19px);
-      letter-spacing: 0.2px;
-    }
-
-    main .header p {
-      color: var(--muted);
-      margin-top: 8px;
-      font-size: clamp(8px, 1.6vw, 10px);
-    }
-
-    /* =========================================================
-       #05 CTA FILTERI + DOCK
-       ========================================================= */
-    .filters-cta {
-      margin: 22px auto;
-    }
-
-    .cta-card {
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      z-index: 1001;
-      padding: 6px 6px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    }
-
-    .cta-title {
-      font-weight: 600;
-      font-size: 12px;
-      letter-spacing: 0.2px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 3px;
-      margin-bottom: 5px;
-    }
-
-    /* brzi reset */
-    #quickReset {
-      margin-left: auto;
-      padding: 8px 10px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #24342d;
-      color: #d9ebe4;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .filters-dock {
-      display: none;
-      margin: 8px 0 12px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #0f1814;
-      padding: 10px;
-    }
-
-    .filters-dock.active {
-      display: block;
-    }
-
-    .filters-dock-inner {
-      position: relative;
-    }
-
-    .dock-close {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      transform: translate(0, -100%);
-      background: #24342d;
-      color: #d9ebe4;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .dock-title {
-      font-weight: 700;
-      margin-bottom: 8px;
-      opacity: 0.9;
-    }
-
-    .cta-grid {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-
-    .filter-tile {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 1px 1px;
-      min-height: 28px;
-      background: #12221b;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.12s ease, background 0.12s ease;
-      font-size: 11px;
-      line-height: 1.2;
-      white-space: normal;
-      text-align: left;
-    }
-
-    .filter-tile:hover {
-      transform: translateY(-1px);
-      background: #152820;
-    }
-
-    .filter-tile.active {
-      outline: 2px solid rgba(61, 156, 115, 0.5);
-    }
-
-    .mountain-icon {
-      width: 14px;
-      height: 16px;
-    }
-
-    .mountain-icon path {
-      stroke: currentColor;
-      stroke-width: 1.4;
-      fill: none;
-    }
-
-    .mountain-top {
-      display: none;
-    }
-
-    .tile-title {
-      margin: 0;
-      font-weight: 600;
-      font-size: 10px;
-    }
-
-    .tile-pop {
-      display: none;
-    }
-
-    .tile-pop .chips label,
-    .tile-pop label,
-    .tile-pop select {
-      font-size: 10px;
-    }
-
-    .tile-pop .mode {
-      gap: 10px;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 6px;
-    }
-
-    .tile-pop .btn {
-      display: none;
-    }
-
-    /* =========================================================
-       #06 KOMBINIRANI FILTERI
-       ========================================================= */
-    .combo-wrap {
-      margin: 18px auto;
-    }
-
-    .combo-toggle {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 14px;
-      background: linear-gradient(180deg, var(--brand), var(--brand-2));
-      color: #ffffff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .filters {
-      margin-top: 12px;
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 14px 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    }
-
-    .filters .title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 4px 4px 12px;
-      font-weight: 700;
-    }
-
-    .filter-row {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      margin-bottom: 10px;
-    }
-
-    .filters label,
-    .filters fieldset {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 14px;
-    }
-
-    .filters select,
-    .filters input[type="search"] {
-      background: #0f1714;
-      color: #eaf2ee;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 8px 10px;
-      outline: none;
-      font-size: 12px;
-    }
-
-    .filters select:focus,
-    .filters input[type="search"]:focus {
-      border-color: rgba(61, 156, 115, 0.7);
-    }
-
-    fieldset.difficulty {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
-      background: #0e1814;
-    }
-
-    .difficulty legend {
-      padding: 0 6px;
-      font-weight: 700;
-    }
-
-    .difficulty .mode {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .difficulty .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .filters .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-
-    .btn {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 14px;
-      background: linear-gradient(180deg, var(--brand), var(--brand-2));
-      color: #ffffff;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .btn.secondary {
-      background: #24342d;
-      color: #d9ebe4;
-    }
-
-    /* =========================================================
-       #07 AKTIVNI FILTERI (ČIPOVI)
-       ========================================================= */
-    .active-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin: 12px auto 0;
-      padding: 0 4px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      background: #1a2a23;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      font-size: 13px;
-      color: #dff4ea;
-    }
-
-    .chip button {
-      appearance: none;
-      border: 0;
-      background: transparent;
-      color: #dff4ea;
-      cursor: pointer;
-      font-size: 14px;
-      line-height: 1;
-      padding: 0;
-    }
-
-    /* =========================================================
-       #08 LISTA STAZA
-       ========================================================= */
-    .trail-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-      justify-content: center;
-      margin: 22px auto;
-    }
-
-    @media (max-width: 760px) {
-      .trail-list {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .trail-card {
-      width: 100%;
-      background: #0f1a15;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .trail-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .trail-card img {
-      width: 100%;
-      height: 170px;
-      object-fit: cover;
-      background: #0e1714;
-    }
-
-    .trail-card div {
-      padding: 12px;
-    }
-
-    .trail-card h3 {
-      margin: 0 0 6px 0;
-    }
-
-    .trail-card p {
-      color: #cfe1d9;
-      margin: 4px 0;
-    }
-
-    .info-line {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: 14px;
-    }
-
-    .info-line svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    .badges {
-      display: flex;
-      gap: 6px;
-      margin-top: 6px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: #1a2a23;
-      border: 1px solid var(--line);
-    }
-
-    .badge.km {
-      background: #112a38;
-    }
-
-    .badge.elev {
-      background: #142b1a;
-    }
-
-    .badge.poi {
-      background: #2a2136;
-    }
-
-    .badge.very-easy {
-      color: #38d39f;
-    }
-
-    .badge.easy {
-      color: #6be6bd;
-    }
-
-    .badge.medium {
-      color: #f3c969;
-    }
-
-    .badge.hard {
-      color: #f28b82;
-    }
-
-    .badge.extreme {
-      color: #ff6b6b;
-    }
-
-    /* =========================================================
-       #09 FOOTER / BACK TO TOP
-       ========================================================= */
-    #backToTop {
-      position: fixed;
-      bottom: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    footer {
-      background: #0e1714;
-      color: #bcd0c7;
-      text-align: center;
-      padding: 20px 10px;
-      margin-top: 40px;
-      border-top: 1px solid var(--line);
-    }
-
-    .footer-icons svg {
-      width: 32px;
-      height: 32px;
-      margin: 0 10px;
-      opacity: 0.85;
-    }
-
-    /* =========================
-       SPLIT LAYOUT: mobitel
-       ========================= */
-    .filters-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      align-items: start;
-    }
-
-    .filters-left {
-      display: block;
-    }
-
-    .filters-right {
-      display: block;
-    }
-
-    .filters-left,
-    .filters-right {
-      max-height: 75vh;
-      overflow: auto;
-      padding-right: 4px;
-    }
-
-    .filters-left {
-      border-right: 1px solid var(--line);
-      padding-right: 7px;
-    }
-
-    .filters-right {
-      padding-left: 4px;
-    }
-
-    .filters-left .cta-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 6px;
-      margin-top: 10px;
-    }
-
-    .filters-left .filter-tile {
-      min-height: 42px;
-      padding: 20px 12px;
-    }
-
-    .filters-right .filters-dock {
-      display: block;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #0f1814;
-      padding: 10px;
-    }
-
-    .filters-right .filters-dock:empty,
-    .filters-right .filters-dock .filters-dock-inner:empty {
-      min-height: 120px;
-      display: block;
-      background: linear-gradient(180deg, #0f1814, #0e1714);
-      border: 1px dashed rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-    }
-
-    .filters-right .dock-title {
-      font-weight: 700;
-      margin-bottom: 8px;
-      opacity: 0.9;
-    }
-
-    .filters-right .dock-close {
-      width: 36px;
-      height: 36px;
-      top: -6px;
-      right: -6px;
-    }
-
-    .filters-right .filters-dock p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    @media (min-width: 600px) {
-      .filters-left .cta-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* (ostavljam tvoj iskomentirani responsive blok nepromijenjen)
-    @media (max-width: 360px) {
-      .filters-split { grid-template-columns: 1fr; }
-      .filters-left { border-right: 0; padding-right: 0; }
-      .filters-right { padding-left: 0; margin-top: 8px; }
-    } */
+      --bg:#0b1110; --ink:#e8f1ed; --muted:#b7c7c0;
+      --panel:#0f1a15; --panel-2:#0e1714; --line:rgba(255,255,255,.10);
+      --brand:#2e7d5b; --brand-2:#3d9c73; --chip:#16231d;
+      /* dif boje */
+      --very-easy:#1d2f27; --very-easy-ink:#38d39f;
+      --easy:#18332a;      --easy-ink:#6be6bd;
+      --medium:#2b2816;    --medium-ink:#f3c969;
+      --hard:#331c1a;      --hard-ink:#f28b82;
+      --extreme:#351616;   --extreme-ink:#ff6b6b;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{overflow-x:hidden}
+    body{font-family:Montserrat,Arial,sans-serif;background:var(--bg);color:var(--ink);scroll-behavior:smooth}
+    a{color:#9fe1c5;text-decoration:none}
+    .container{max-width:1150px;margin:0 auto;padding:0 14px}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;z-index:1000;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .navbar-left img{height:16px;width:24px;cursor:pointer;position:relative}
+    .navbar-left img:hover::after{content:attr(data-tooltip);position:absolute;top:30px;left:0;background:#fff;color:#000;padding:4px 8px;border-radius:5px;font-size:12px;white-space:nowrap;box-shadow:0 0 6px rgba(0,0,0,.2)}
+    .navbar-center{flex:1;display:flex;justify-content:center;transform:translateY(12px)}
+    .search-container{width:260px;position:relative;padding-top:10px}
+    .search-wrapper{position:relative;height:34px;background:#fff;color:#222;border-radius:22px;box-shadow:0 3px 8px rgba(0,0,0,.3);display:flex;align-items:center;padding:0 14px}
+    .search-top-decoration{position:absolute;top:-212px;left:108px;width:1600%;height:30px;object-fit:cover;z-index:-10;transform:scale(19);transform-origin:top center;pointer-events:none}
+    .mountain-search{flex:1;border:0;background:transparent;outline:0;font-size:14px;padding:0 8px}
+    .search-wrapper img[alt="ikona za tražilicu"]{position:absolute;right:12px;bottom:7px;width:19px;height:19px;pointer-events:none}
+    .navbar-right{display:flex;flex-direction:column;gap:5px;padding:8px;border:1px solid rgba(255,255,255,.35);border-radius:8px;cursor:pointer;background:rgba(255,255,255,.05)}
+    .burger-line{width:26px;height:3px;background:#fff;border-radius:2px}
+    .menu-overlay{position:fixed;top:70px;right:0;width:72vw;max-width:360px;display:none;flex-direction:column;background:rgba(15,25,20,.96);backdrop-filter:blur(10px);border-left:1px solid var(--line);padding:18px;z-index:9999}
+    .menu-overlay.open{display:flex}
+    .menu-overlay a{color:#fff;margin:10px 0}
+
+    /* HERO */
+    .image-section{height:50vh;position:relative;background:url('images/hero.jpg') center/cover no-repeat}
+    .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.55))}
+    main .header{background:linear-gradient(180deg,#101b16,#0e1814);text-align:center;padding:16px;border-bottom:1px solid var(--line);border-radius:16px}
+    main .header h1{font-size:clamp(14px,2.3vw,19px);letter-spacing:.2px}
+    main .header p{color:var(--muted);margin-top:8px;font-size:clamp(8px,1.6vw,10px)}
+
+    /* CTA FILTERI + DOCK (ostavljeno kao u tvojoj verziji) */
+    .filters-cta{margin:22px auto}
+    .cta-card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:16px;z-index:1001;padding:6px 6px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+    .cta-title{font-weight:600;font-size:12px;letter-spacing:.2px;display:flex;align-items:center;gap:10px;margin:3px 0 5px}
+    #quickReset{margin-left:auto;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#24342d;color:#d9ebe4;cursor:pointer;font-weight:700;font-size:13px}
+    .filters-dock{display:none;margin:8px 0 12px;border:1px solid var(--line);border-radius:12px;background:#0f1814;padding:10px}
+    .filters-dock.active{display:block}
+    .filters-dock-inner{position:relative}
+    .dock-close{position:absolute;top:-6px;right:-6px;transform:translate(0,-100%);background:#24342d;color:#d9ebe4;border:1px solid var(--line);border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700}
+    .dock-title{font-weight:700;margin-bottom:8px;opacity:.9}
+
+    .combo-wrap{margin:18px auto}
+    .combo-toggle{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;font-weight:700;cursor:pointer}
+    .filters{margin-top:12px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:16px;padding:14px 14px 8px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .filters .title{display:flex;align-items:center;gap:10px;margin:4px 4px 12px;font-weight:700}
+    .filter-row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:10px}
+    .filters label,.filters fieldset{display:flex;flex-direction:column;gap:6px;font-size:14px}
+    .filters select,.filters input[type="search"]{background:#0f1714;color:#eaf2ee;border:1px solid var(--line);border-radius:8px;padding:8px 10px;outline:none;font-size:12px}
+    .filters select:focus,.filters input[type="search"]:focus{border-color:rgba(61,156,115,.7)}
+    fieldset.difficulty{border:1px solid var(--line);border-radius:12px;padding:10px;background:#0e1814}
+    .difficulty legend{padding:0 6px;font-weight:700}
+    .difficulty .mode{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+    .difficulty .chips{display:flex;flex-wrap:wrap;gap:10px}
+    .btn{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;cursor:pointer;font-weight:700}
+    .btn.secondary{background:#24342d;color:#d9ebe4}
+
+    /* AKTIVNI ČIPOVI */
+    .active-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px auto 0;padding:0 4px}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:#1a2a23;border:1px solid var(--line);border-radius:999px;font-size:13px;color:#dff4ea}
+    .chip button{appearance:none;border:0;background:transparent;color:#dff4ea;cursor:pointer;font-size:14px;line-height:1;padding:0}
+
+    /* LISTA STAZA */
+    .trail-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;justify-content:center;margin:22px auto}
+    @media(max-width:760px){.trail-list{grid-template-columns:1fr}}
+    .trail-card{width:100%;background:#0f1a15;border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:transform .15s ease, box-shadow .15s ease}
+    .trail-card:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.25)}
+    .trail-card img{width:100%;height:170px;object-fit:cover;background:#0e1714}
+    .trail-card .pad{padding:12px}
+    .title-line{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .title-line h3{margin:0;font-size:16px}
+    .dist-chip{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:#13231c;color:#cfe9de;white-space:nowrap}
+    .card-desc{color:#cfe1d9;margin-top:10px}
+
+    .metric-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed rgba(255,255,255,.08)}
+    .metric-row:first-of-type{border-top:0}
+    .metric-label{font-weight:700;font-size:13px;opacity:.95}
+    .metric-value{justify-self:start;opacity:.95}
+
+    .diff-pill{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line);white-space:nowrap}
+    .diff-pill.very-easy{background:var(--very-easy);color:var(--very-easy-ink)}
+    .diff-pill.easy{background:var(--easy);color:var(--easy-ink)}
+    .diff-pill.medium{background:var(--medium);color:var(--medium-ink)}
+    .diff-pill.hard{background:var(--hard);color:var(--hard-ink)}
+    .diff-pill.extreme{background:var(--extreme);color:var(--extreme-ink)}
+
+    /* FOOTER / BACK TO TOP */
+    #backToTop{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(255,255,255,.15);backdrop-filter:blur(12px);color:#fff;border:1px solid rgba(255,255,255,.25);width:48px;height:48px;border-radius:50%;display:none;align-items:center;justify-content:center}
+    footer{background:#0e1714;color:#bcd0c7;text-align:center;padding:20px 10px;margin-top:40px;border-top:1px solid var(--line)}
+    .footer-icons svg{width:32px;height:32px;margin:0 10px;opacity:.85}
+
+    /* SPLIT layout za pločice */
+    .filters-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+    .filters-left,.filters-right{display:block;max-height:75vh;overflow:auto;padding-right:4px}
+    .filters-left{border-right:1px solid var(--line);padding-right:7px}
+    .filters-right{padding-left:4px}
+    .filters-left .cta-grid{display:grid;grid-template-columns:1fr;gap:6px;margin-top:10px}
+    .filters-left .filter-tile{min-height:42px;padding:20px 12px}
+    .filters-right .filters-dock{display:block;border:1px solid var(--line);border-radius:12px;background:#0f1814;padding:10px}
+    .filters-right .filters-dock:empty,.filters-right .filters-dock .filters-dock-inner:empty{min-height:120px;display:block;background:linear-gradient(180deg,#0f1814,#0e1714);border:1px dashed rgba(255,255,255,.08);border-radius:10px}
+    .filters-right .dock-title{font-weight:700;margin-bottom:8px;opacity:.9}
+    .filters-right .dock-close{width:36px;height:36px;top:-6px;right:-6px}
+    .filters-right .filters-dock p{color:var(--muted);font-size:13px;line-height:1.35}
   </style>
 </head>
 
 <body>
-  <!-- nevidljivi placeholder da fetch("season.html") ne baca grešku -->
-  <div
-    id="season-placeholder"
-    style="display: none"
-  ></div>
+  <!-- placeholder zbog fetch("season.html") -->
+  <div id="season-placeholder" style="display:none"></div>
 
-  <!-- =========================================================
-       #03A NAVBAR / JEZIK / MENI
-       ========================================================= -->
+  <!-- NAVBAR -->
   <div class="navbar">
     <div class="navbar-left">
-      <img
-        id="language-toggle"
-        src="images/flag-uk.svg"
-        alt="promjena jezika na engleski"
-        data-tooltip="Promijeni jezik"
-      />
+      <img id="language-toggle" src="images/flag-uk.svg" alt="promjena jezika na engleski" data-tooltip="Promijeni jezik" />
     </div>
-
     <div class="navbar-center">
       <div class="search-container">
         <div class="search-wrapper">
-          <img
-            class="search-top-decoration"
-            src="images/planine-za-trazilicu.png"
-            alt="planinski-vrhovi"
-          />
-          <input
-            id="search"
-            class="mountain-search"
-            type="text"
-            placeholder="Pretraži..."
-          />
-          <img
-            src="images/search.svg"
-            alt="ikona za tražilicu"
-          />
+          <img class="search-top-decoration" src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" />
+          <input id="search" class="mountain-search" type="text" placeholder="Pretraži..." />
+          <img src="images/search.svg" alt="ikona za tražilicu" />
         </div>
       </div>
     </div>
-
-    <div
-      id="menu-toggle"
-      class="navbar-right"
-      aria-label="Otvori izbornik"
-      role="button"
-    >
-      <div class="burger-line"></div>
-      <div class="burger-line"></div>
-      <div class="burger-line"></div>
+    <div id="menu-toggle" class="navbar-right" aria-label="Otvori izbornik" role="button">
+      <div class="burger-line"></div><div class="burger-line"></div><div class="burger-line"></div>
     </div>
   </div>
 
-  <div
-    id="menu"
-    class="menu-overlay"
-  >
-    <a
-      href="index.html"
-      data-hr="Naslovna"
-      data-en="Home"
-    >Naslovna</a>
-
-    <a
-      href="staze.html"
-      data-hr="Staze"
-      data-en="Trails"
-    >Staze</a>
-
-    <a
-      href="avantura.html"
-      data-hr="Avantura"
-      data-en="Adventure"
-    >Avantura</a>
-
-    <a
-      href="webshop.html"
-      data-hr="Web shop"
-      data-en="Web Shop"
-    >Web shop</a>
-
-    <a
-      href="planinarskevijesti.html"
-      data-hr="Blog"
-      data-en="Blog"
-    >Blog</a>
-
-    <a
-      href="digitalniruksak.html"
-      data-hr="Digitalni ruksak"
-      data-en="Digital backpack"
-    >Digitalni ruksak</a>
-
-    <a
-      href="kontakt.html"
-      data-hr="Kontakt"
-      data-en="Contact"
-    >Kontakt</a>
+  <div id="menu" class="menu-overlay">
+    <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="webshop.html" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="planinarskevijesti.html" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="digitalniruksak.html" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>
+    <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
 
-  <!-- =========================================================
-       #04A HERO + NASLOV (band 0: hero)
-       ========================================================= -->
-  <section class="image-section">
-    <div class="overlay"></div>
-  </section>
+  <!-- HERO -->
+  <section class="image-section"><div class="overlay"></div></section>
 
   <main class="container">
-    <!-- band 1: naslov + opis -->
     <section class="header">
       <h1>Istraži planinarske staze Balkana</h1>
-      <p>
-        Pronađi svoju turu prema težini (km/nadmorska), planini/području, vremenu hodanja ili udaljenosti od tvoje lokacije.
-      </p>
+      <p>Pronađi svoju turu prema težini (km/nadmorska), planini/području, vremenu hodanja ili udaljenosti od tvoje lokacije.</p>
     </section>
 
-    <!-- =========================================================
-         #05 CTA FILTERI (kompaktni + DOCK panel)
-         ========================================================= -->
+    <!-- CTA + pločice (ne diram raspored; isto kao kod tebe) -->
     <section class="filters-cta">
       <div class="cta-card">
         <div class="cta-title">
-          <svg
-            class="mountain-icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path d="M3 20h18L12 4 3 20z"></path>
-            <path d="M12 4l4 7-2 1-2-4-3 6"></path>
-          </svg>
-
+          <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18L12 4 3 20z"></path><path d="M12 4l4 7-2 1-2-4-3 6"></path></svg>
           <span>Upotrijebi filter kako bi pronašao svoju idealnu planinarsku turu</span>
-
-          <button
-            id="quickReset"
-            type="button"
-            title="Brzi reset svih filtera"
-          >
-            Osvježi
-          </button>
+          <button id="quickReset" type="button" title="Brzi reset svih filtera">Osvježi</button>
         </div>
 
-        <!-- SPLIT layout: lijevo tile-ovi, desno dock -->
         <div class="filters-split">
-          <!-- Lijeva kolona: gumbi/tile-ovi -->
+          <!-- Lijevo: pločice -->
           <div class="filters-left">
-            <div
-              id="ctaGrid"
-              class="cta-grid"
-            >
+            <div id="ctaGrid" class="cta-grid">
               <!-- TEŽINA -->
-              <div
-                class="filter-tile"
-                data-tile="diff"
-                aria-controls="tileDiff"
-              >
-                <svg
-                  class="mountain-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M3 20h18L12 4 3 20z"></path>
-                </svg>
-
+              <div class="filter-tile" data-tile="diff" aria-controls="tileDiff">
+                <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18L12 4 3 20z"></path></svg>
                 <div class="tile-title">Težina staze</div>
-
-                <div
-                  id="tileDiff"
-                  class="tile-pop"
-                  aria-hidden="true"
-                >
+                <div id="tileDiff" class="tile-pop" aria-hidden="true">
                   <div class="mode">
-                    <label>
-                      <input
-                        id="modeKm"
-                        type="checkbox"
-                        checked
-                      />
-                      po kilometrima hodanja
-                    </label>
-
-                    <label>
-                      <input
-                        id="modeElev"
-                        type="checkbox"
-                        checked
-                      />
-                      po prijeđenoj nadmorskoj visini
-                    </label>
-
-                    <select
-                      id="difficultyLogic"
-                      title="Kombinacija pravila"
-                    >
+                    <label><input id="modeKm" type="checkbox" checked/> po kilometrima hodanja</label>
+                    <label><input id="modeElev" type="checkbox" checked/> po prijeđenoj nadmorskoj visini</label>
+                    <select id="difficultyLogic" title="Kombinacija pravila">
                       <option value="any" selected>Poklopi bilo koju</option>
                       <option value="all">Poklopi obje</option>
                     </select>
                   </div>
-
                   <div class="chips">
-                    <label>
-                      <input
-                        class="diff-chip"
-                        type="checkbox"
-                        value="very-easy"
-                      />
-                      Jako lako
-                    </label>
-
-                    <label>
-                      <input
-                        class="diff-chip"
-                        type="checkbox"
-                        value="easy"
-                      />
-                      Lako
-                    </label>
-
-                    <label>
-                      <input
-                        class="diff-chip"
-                        type="checkbox"
-                        value="medium"
-                        checked
-                      />
-                      Srednje teško
-                    </label>
-
-                    <label>
-                      <input
-                        class="diff-chip"
-                        type="checkbox"
-                        value="hard"
-                      />
-                      Jako teško
-                    </label>
-
-                    <label>
-                      <input
-                        class="diff-chip"
-                        type="checkbox"
-                        value="extreme"
-                      />
-                      Ekstremno
-                    </label>
+                    <label><input class="diff-chip" type="checkbox" value="very-easy"/> Jako lako</label>
+                    <label><input class="diff-chip" type="checkbox" value="easy"/> Lako</label>
+                    <label><input class="diff-chip" type="checkbox" value="medium" checked/> Srednje teško</label>
+                    <label><input class="diff-chip" type="checkbox" value="hard"/> Jako teško</label>
+                    <label><input class="diff-chip" type="checkbox" value="extreme"/> Ekstremno</label>
                   </div>
                 </div>
               </div>
 
               <!-- UDALJENOST -->
-              <div
-                class="filter-tile"
-                data-tile="radius"
-                aria-controls="tileRadius"
-              >
-                <svg
-                  class="mountain-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M3 20h18L12 4 3 20z"></path>
-                </svg>
-
+              <div class="filter-tile" data-tile="radius" aria-controls="tileRadius">
+                <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18L12 4 3 20z"></path></svg>
                 <div class="tile-title">Udaljenost staze od vaše trenutne lokacije</div>
-
-                <div
-                  id="tileRadius"
-                  class="tile-pop"
-                  aria-hidden="true"
-                >
-                  <label>
-                    Odaberi radijus
+                <div id="tileRadius" class="tile-pop" aria-hidden="true">
+                  <label>Odaberi radijus
                     <select id="radiusSelect">
                       <option value="">Bez ograničenja</option>
                       <option value="100">Do 100 km</option>
@@ -1079,77 +267,35 @@
                       <option value="500">Do 500 km</option>
                     </select>
                   </label>
-
-                  <label>
-                    Način mjerenja
-                    <select
-                      id="distanceMode"
-                      title="Način mjerenja udaljenosti"
-                    >
+                  <label>Način mjerenja
+                    <select id="distanceMode" title="Način mjerenja udaljenosti">
                       <option value="air" selected>Zračna linija (preporučeno)</option>
                       <option value="drive">Vožnja autom (beta)</option>
                     </select>
                   </label>
-
-                  <p style="margin-top: 6px; color: var(--muted); font-size: 12px;">
-                    Napomena: vožnja autom je procjena i može odstupati — planinarske staze često nisu cestovno dostupne do samog starta.
+                  <p style="margin-top:6px;color:var(--muted);font-size:12px">
+                    Savjet: Otvori ovu pločicu i daj dopuštenje za lokaciju — tada će svaka kartica prikazati “XX km od tebe”.
                   </p>
                 </div>
               </div>
 
               <!-- PODRUČJE -->
-              <div
-                class="filter-tile"
-                data-tile="area"
-                aria-controls="tileArea"
-              >
-                <svg
-                  class="mountain-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M3 20h18L12 4 3 20z"></path>
-                </svg>
-
+              <div class="filter-tile" data-tile="area" aria-controls="tileArea">
+                <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18L12 4 3 20z"></path></svg>
                 <div class="tile-title">Planina/Područje</div>
-
-                <div
-                  id="tileArea"
-                  class="tile-pop"
-                  aria-hidden="true"
-                >
-                  <label>
-                    Odaberi lokaciju
-                    <select id="areaSelect">
-                      <option value="">Sve lokacije</option>
-                    </select>
+                <div id="tileArea" class="tile-pop" aria-hidden="true">
+                  <label>Odaberi lokaciju
+                    <select id="areaSelect"><option value="">Sve lokacije</option></select>
                   </label>
                 </div>
               </div>
 
               <!-- TRAJANJE -->
-              <div
-                class="filter-tile"
-                data-tile="duration"
-                aria-controls="tileDuration"
-              >
-                <svg
-                  class="mountain-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M3 20h18L12 4 3 20z"></path>
-                </svg>
-
+              <div class="filter-tile" data-tile="duration" aria-controls="tileDuration">
+                <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18L12 4 3 20z"></path></svg>
                 <div class="tile-title">Vrijeme hodanja</div>
-
-                <div
-                  id="tileDuration"
-                  class="tile-pop"
-                  aria-hidden="true"
-                >
-                  <label>
-                    Odaberi trajanje
+                <div id="tileDuration" class="tile-pop" aria-hidden="true">
+                  <label>Odaberi trajanje
                     <select id="durationBucket">
                       <option value="">Bilo koje</option>
                       <option value="3">Do 3 h</option>
@@ -1164,76 +310,37 @@
             </div>
           </div>
 
-          <!-- Desna kolona: dock -->
+          <!-- Desno: dock -->
           <div class="filters-right">
-            <div
-              id="filtersDock"
-              class="filters-dock"
-              aria-live="polite"
-            >
+            <div id="filtersDock" class="filters-dock" aria-live="polite">
               <div class="filters-dock-inner"></div>
             </div>
           </div>
         </div>
 
-        <!-- CTA tekst + gumb za kombinirane filtre -->
-        <p
-          style="
-            text-align: center;
-            margin: 8px 0 6px;
-            color: var(--muted);
-            font-size: 14px;
-          "
-        >
-          Odaberi najbolje za sebe.
-          <strong>Kombiniraj filtre</strong>
-          i otkrij stazu iz snova.
+        <p style="text-align:center;margin:8px 0 6px;color:var(--muted);font-size:14px">
+          Odaberi najbolje za sebe. <strong>Kombiniraj filtre</strong> i otkrij stazu iz snova.
         </p>
-
-        <div style="display: flex; justify-content: center;">
-          <button
-            id="toggleCombo"
-            class="combo-toggle"
-            type="button"
-          >
-            Kombiniraj filtre
-          </button>
+        <div style="display:flex;justify-content:center;">
+          <button id="toggleCombo" class="combo-toggle" type="button">Kombiniraj filtre</button>
         </div>
       </div>
     </section>
 
-    <!-- =========================================================
-         #06 KOMBINIRANI FILTERI (svi zajedno)
-         ========================================================= -->
-    <section
-      id="comboWrap"
-      class="combo-wrap"
-      style="display: none;"
-    >
+    <!-- KOMBINIRANI FILTERI -->
+    <section id="comboWrap" class="combo-wrap" style="display:none;">
       <div class="filters">
         <div class="title">
-          <svg
-            class="mountain-icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path d="M3 20h18L12 4 3 20z"></path>
-            <path d="M12 4l4 7-2 1-2-4-3 6"></path>
-          </svg>
-
+          <svg class="mountain-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18L12 4 3 20z"></path><path d="M12 4l4 7-2 1-2-4-3 6"></path></svg>
           <span>Odaberi najbolje za sebe — kombiniraj filtre i otkrij stazu iz snova</span>
         </div>
 
         <div class="filter-row">
-          <label>
-            Planina/Područje
-            <select id="areaSelectCombo">
-              <option value="">Sve lokacije</option>
-            </select>
+          <label>Planina/Područje
+            <select id="areaSelectCombo"><option value="">Sve lokacije</option></select>
           </label>
 
-          <label>
-            Udaljenost od mene
+          <label>Udaljenost od mene
             <select id="radiusSelectCombo">
               <option value="">Bez ograničenja</option>
               <option value="100">Do 100 km</option>
@@ -1244,16 +351,14 @@
             </select>
           </label>
 
-          <label>
-            Način mjerenja udaljenosti
+          <label>Način mjerenja udaljenosti
             <select id="distanceModeCombo">
               <option value="air" selected>Zračna linija (preporučeno)</option>
               <option value="drive">Vožnja autom (beta)</option>
             </select>
           </label>
 
-          <label>
-            Vrijeme hodanja
+          <label>Vrijeme hodanja
             <select id="durationBucketCombo">
               <option value="">Bilo koje</option>
               <option value="3">Do 3 h</option>
@@ -1267,1172 +372,413 @@
 
         <fieldset class="difficulty">
           <legend>Težina staze</legend>
-
           <div class="mode">
-            <label>
-              <input
-                id="modeKmCombo"
-                type="checkbox"
-                checked
-              />
-              po kilometrima hodanja
-            </label>
-
-            <label>
-              <input
-                id="modeElevCombo"
-                type="checkbox"
-                checked
-              />
-              po prijeđenoj nadmorskoj visini
-            </label>
-
+            <label><input id="modeKmCombo" type="checkbox" checked/> po kilometrima hodanja</label>
+            <label><input id="modeElevCombo" type="checkbox" checked/> po prijeđenoj nadmorskoj visini</label>
             <select id="difficultyLogicCombo">
               <option value="any" selected>Poklopi bilo koju</option>
               <option value="all">Poklopi obje</option>
             </select>
           </div>
-
           <div class="chips">
-            <label>
-              <input
-                class="diff-chip-combo"
-                type="checkbox"
-                value="very-easy"
-              />
-              Jako lako
-            </label>
-
-            <label>
-              <input
-                class="diff-chip-combo"
-                type="checkbox"
-                value="easy"
-              />
-              Lako
-            </label>
-
-            <label>
-              <input
-                class="diff-chip-combo"
-                type="checkbox"
-                value="medium"
-                checked
-              />
-              Srednje teško
-            </label>
-
-            <label>
-              <input
-                class="diff-chip-combo"
-                type="checkbox"
-                value="hard"
-              />
-              Jako teško
-            </label>
-
-            <label>
-              <input
-                class="diff-chip-combo"
-                type="checkbox"
-                value="extreme"
-              />
-              Ekstremno
-            </label>
+            <label><input class="diff-chip-combo" type="checkbox" value="very-easy"/> Jako lako</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="easy"/> Lako</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="medium" checked/> Srednje teško</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="hard"/> Jako teško</label>
+            <label><input class="diff-chip-combo" type="checkbox" value="extreme"/> Ekstremno</label>
           </div>
         </fieldset>
 
         <div class="filter-row">
-          <label style="grid-column: 1 / -1;">
-            Tražilica odredišta (vrh/mjesto)
-            <input
-              id="poiSearchCombo"
-              type="search"
-              placeholder="npr. Hajdučka Vrata, Kredarica, Aljažev stup"
-            />
+          <label style="grid-column:1 / -1;">Tražilica odredišta (vrh/mjesto)
+            <input id="poiSearchCombo" type="search" placeholder="npr. Hajdučka Vrata, Kredarica, Aljažev stup" />
           </label>
-
           <div class="actions">
-            <button
-              id="applyFilters"
-              class="btn"
-              type="button"
-            >
-              Primijeni
-            </button>
-
-            <button
-              id="clearFilters"
-              class="btn secondary"
-              type="button"
-            >
-              Reset
-            </button>
+            <button id="applyFilters" class="btn" type="button">Primijeni</button>
+            <button id="clearFilters" class="btn secondary" type="button">Reset</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =========================================================
-         #07 AKTIVNI FILTERI (ČIPOVI)
-         ========================================================= -->
-    <section
-      id="activeChips"
-      class="active-chips"
-    ></section>
+    <!-- AKTIVNI ČIPOVI -->
+    <section id="activeChips" class="active-chips"></section>
 
-    <!-- =========================================================
-         #08 LISTA STAZA (rendera JS)
-         ========================================================= -->
-    <section
-      id="trail-list"
-      class="trail-list"
-    ></section>
+    <!-- LISTA STAZA -->
+    <section id="trail-list" class="trail-list"></section>
   </main>
 
-  <!-- =========================================================
-       #09 FOOTER + BACK TO TOP
-       ========================================================= -->
-  <button
-    id="backToTop"
-    title="Na vrh"
-    aria-label="Gumb na vrh"
-  >
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="18 15 12 9 6 15"></polyline>
-    </svg>
+  <!-- FOOTER + BACK TO TOP -->
+  <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"></polyline></svg>
   </button>
 
-  <footer
-    id="footer"
-    class="container"
-  >
+  <footer id="footer" class="container">
     <div class="footer-icons">
-      <a
-        href="https://instagram.com/mountainadventures__"
-        target="_blank"
-        aria-label="Instagram"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#ffffff"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect
-            x="2"
-            y="2"
-            width="20"
-            height="20"
-            rx="5"
-            ry="5"
-          ></rect>
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-          <line
-            x1="17.5"
-            y1="6.5"
-            x2="17.5"
-            y2="6.5"
-          ></line>
-        </svg>
+      <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
       </a>
-
-      <a
-        href="mailto:mountainadventures1717@gmail.com"
-        aria-label="Email"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#ffffff"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-          <polyline points="22,6 12,13 2,6"></polyline>
-        </svg>
+      <a href="mailto:mountainadventures1717@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
       </a>
     </div>
-
     © Mountain Adventures. All rights reserved.
   </footer>
 
   <!-- =========================================================
        #10 SCRIPTS
        ========================================================= -->
-
-  <!-- Vanjski sezonski skript (ostaje ovdje kako je i bio) -->
   <script src="season.js"></script>
-
-
-  <!-- Vanjski skript za staze (ostaje ovdje kako je i bio) -->
-
   <script src="popis-staza.js"></script>
 
-<script>
-
-  /* ---------------------------------------------------------
-     #10.1 NAV / JEZIK / MENI / BACK-TO-TOP
-     --------------------------------------------------------- */
-  const langToggle = document.getElementById('language-toggle');
-  const searchInput = document.getElementById('search');
-  const menuToggle = document.getElementById('menu-toggle');
-  const menu = document.getElementById('menu');
-  const backToTopBtn = document.getElementById('backToTop');
-  const footer = document.getElementById('footer');
-
-  function getInitialLang() {
-    const urlLang = new URLSearchParams(location.search).get('lang');
-    if (['hr', 'en'].includes(urlLang)) return urlLang;
-    try {
-      const s = localStorage.getItem('preferredLang');
-      if (['hr', 'en'].includes(s)) return s;
-    } catch (e) {}
-    return 'hr';
-  }
-
-  function applyLanguage(lang) {
-    try { localStorage.setItem('preferredLang', lang); } catch (e) {}
-    const u = new URL(location.href);
-    u.searchParams.set('lang', lang);
-    history.replaceState({}, '', u.toString());
-    document.documentElement.lang = lang;
-
-    if (langToggle) {
-      langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-      langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
-      langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
-    }
-
-    if (searchInput) {
-      searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
-    }
-
-    document.querySelectorAll('[data-hr]').forEach(el => {
-      const v = el.getAttribute(`data-${lang}`);
-      if (v == null) return;
-      if (v.includes('<')) el.innerHTML = v; else el.textContent = v;
-    });
-
-    document.querySelectorAll('.menu-overlay a').forEach(a => {
-      const v = a.getAttribute(`data-${lang}`);
-      if (v != null) a.textContent = v;
-    });
-  }
-
-  let currentLang = getInitialLang();
-  applyLanguage(currentLang);
-
-  if (langToggle) {
-    langToggle.addEventListener('click', () => {
-      currentLang = currentLang === 'hr' ? 'en' : 'hr';
-      applyLanguage(currentLang);
-    });
-  }
-
-  menuToggle.addEventListener('click', () => {
-    menu.classList.toggle('open');
-  });
-
-  window.addEventListener('click', (e) => {
-    if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') {
-      menu.classList.remove('open');
-    }
-  });
-
-  document.querySelectorAll('.menu-overlay a').forEach(l => {
-    l.addEventListener('click', () => { menu.classList.remove('open'); });
-  });
-
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-    const h = window.innerHeight;
-    backToTopBtn.style.display = y > 300 ? 'flex' : 'none';
-    backToTopBtn.style.bottom = (y + h > footerTop) ? `${(y + h - footerTop) + 60}px` : '30px';
-  });
-
-  backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const s = localStorage.getItem('activeSeason');
-    if (s) {
-      setTimeout(() => {
-        if (s === 'winter') startWinterEffect(true);
-        else if (s === 'summer') startSummerEffect(true);
-        else if (s === 'spring') startSpringEffect(true);
-        else if (s === 'autumn') startAutumnEffect(true);
-      }, 10000);
-    }
-
-    fetch('season.html')
-      .then(r => r.text())
-      .then(html => {
-        const ph = document.getElementById('season-placeholder');
-        if (ph) ph.innerHTML = html;
-        if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
-      })
-      .catch(() => {});
-  });
-
-  /* ---------------------------------------------------------
-     #10.2 TEŽINSKE KATEGORIJE + POMOĆNE
-     --------------------------------------------------------- */
-  const DIFF_LABELS = {
-    'very-easy': 'Jako lako',
-    'easy': 'Lako',
-    'medium': 'Srednje teško',
-    'hard': 'Jako teško',
-    'extreme': 'Ekstremno'
-  };
-
-  function classifyByKm(km) {
-    if (km <= 6) return 'very-easy';
-    if (km <= 10) return 'easy';
-    if (km <= 16) return 'medium';
-    if (km <= 20) return 'hard';
-    return 'extreme';
-  }
-
-  function classifyByElev(m) {
-    if (m <= 200) return 'very-easy';
-    if (m <= 500) return 'easy';
-    if (m <= 1000) return 'medium';
-    if (m <= 1500) return 'hard';
-    return 'extreme';
-  }
-
-  function norm(s) {
-    return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
-
-  function badgeEl(text, classes = []) {
-    const s = document.createElement('span');
-    s.className = ['badge', ...classes].join(' ');
-    s.textContent = text;
-    return s;
-  }
-
-  function scrollToResults() {
-    const list = document.getElementById('trail-list');
-    if (list) { list.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  }
-
-  /* ---------------------------------------------------------
-     #10.3 GEOLOKACIJA + UDALJENOSTI + OSRM
-     --------------------------------------------------------- */
-  let userLocation = null;
-  let geoTried = false;
-
-  function ensureGeolocationOnce(force = false) {
-    return new Promise((res) => {
-      if (userLocation) return res(userLocation);
-      if (geoTried && !force) return res(null);
-      geoTried = true;
-      if (!('geolocation' in navigator)) return res(null);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => { userLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude }; res(userLocation); },
-        (_) => res(null),
-        { enableHighAccuracy: true, timeout: 12000, maximumAge: 120000 }
-      );
-    });
-  }
-
-  function haversineKm(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const toRad = d => d * Math.PI / 180;
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1); /* ispravno: λ2-λ1 */
-    const a = Math.sin(dLat / 2) ** 2
-            + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-    return 2 * R * Math.asin(Math.sqrt(a));
-  }
-
-  const driveCache = new Map();
-
-  function withTimeout(promise, ms = 6000) {
-    return Promise.race([promise, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
-  }
-
-  async function drivingDistanceKm(origin, dest) {
-    if (!origin || !dest) return null;
-    const key = `${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
-    if (driveCache.has(key)) return driveCache.get(key);
-    const url = `https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
-    try {
-      const resp = await withTimeout(fetch(url), 6000);
-      if (!resp.ok) throw new Error('bad status');
-      const data = await resp.json();
-      const m = data?.routes?.[0]?.distance;
-      const km = (typeof m === 'number') ? m / 1000 : null;
-      if (km != null) driveCache.set(key, km);
-      return km;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  /* ---------------------------------------------------------
-     #10.4 PODRUČJA (AREAS) — original + 50 novih
-     --------------------------------------------------------- */
-  const AREAS = [
-    /* originalni popis */
-    'Triglav',
-    'Velebit',
-    'Begunjščica',
-    'Klekovača',
-    'Sljeme',
-    'Medvednica',
-    'Dinara',
-    'Oštrovača',
-    'Šator',
-    'Kozara',
-    'Ivanščica',
-    'Kamešnica',
-    'Cincar',
-    'Vranica',
-    'Matinski Vis',
-    'Zavelim',
-    'Golija',
-    'Stožer',
-    'Ljubuša',
-    'Tušnica',
-    'Svilaja',
-    'Biokovo',
-    'Mosor',
-    'Raduša',
-    'Vran',
-    'Čvrsnica',
-    'Čabulja',
-    'Prenj',
-    'Crvanj',
-    'Matokit',
-    'Velež',
-    'Visočica',
-    'Bjelašnica',
-    'Treskavica',
-    'Zelengora',
-    'Volujak',
-    'Maglić',
-    'Lelija',
-    'Durmitor',
-    'Komovi',
-    'Prokletije',
-    'Šar planina',
-    'Otok Pag',
-    'Poluotok Pelješac',
-    'Šipovo',
-    'Otok Hvar',
-    'Otok Brač',
-    'Kanjon Badnjevice',
-    'Oštrc',
-    'Učka',
-    'Risnjak',
-    'Snježnik (HR)',
-    'Papuk',
-    'Psunj',
-    'Kalnik',
-    'Ugljan',
-    'Krk',
-    'Cres',
-    'Mljet',
-    'Nanos',
-    'Snežnik (SLO)',
-    'Stol (Karavanke)',
-    'Krn',
-    'Grintovec',
-    'Velika planina',
-    'Vitosha',
-    'Rila',
-    'Pirin',
-    'Balkan (Stara planina BG)',
-    'Rhodope',
-    'Osogovo',
-    'Belasica',
-    'Strandzha',
-    'Kopaonik',
-    'Stara planina (RS)',
-    'Rtanj',
-    'Suva planina',
-    'Zlatibor',
-    'Tara',
-    'Fruška gora',
-    'Rudnik',
-    'Jastrebac',
-    'Maljen (Divčibare)',
-    'Homolje',
-    'Kuјачke planine',
-    'Orjen',
-    'Lovćen',
-    'Rumija',
-    'Bjelasica',
-    'Sinjajevina',
-    'Korab',
-    'Pelister',
-    'Jablanica planina',
-    'Kozuf',
-    'Jakupica (Solunska Glava)',
-    'Bistra (Mavrovo)',
-    'Dajti',
-    'Tomorr',
-    'Cika (Llogara)',
-    'Gjallica',
-    'Smolikas',
-    'Tymfi (Gamila)',
-    'Olymp',
-    'Vihren (Pirin)',
-    'Musala (Rila)',
-    'Cherni Vrah (Vitosha)',
-    'Botev (Balkan BG)',
-    'Taygetus'
-  ];
-
-</script>
-  
-  <!-- =========================================================
-       #10.6 (AUTO) POPUNA PODRUČJA U <select> POLJIMA
-       ========================================================= -->
   <script>
-    (function fillAreas() {
-      const sel1 = document.getElementById('areaSelect');
-      const sel2 = document.getElementById('areaSelectCombo');
+    /* -----------------------------------
+       #10.1 NAV / JEZIK / MENI / BACK-TO-TOP
+       ----------------------------------- */
+    const langToggle=document.getElementById('language-toggle');
+    const searchInput=document.getElementById('search');
+    const menuToggle=document.getElementById('menu-toggle');
+    const menu=document.getElementById('menu');
+    const backToTopBtn=document.getElementById('backToTop');
+    const footer=document.getElementById('footer');
 
-      AREAS.forEach((a) => {
-        const o1 = document.createElement('option');
-        o1.value = a;
-        o1.textContent = a;
-        sel1.appendChild(o1);
+    function getInitialLang(){
+      const urlLang=new URLSearchParams(location.search).get('lang');
+      if(['hr','en'].includes(urlLang)) return urlLang;
+      try{const s=localStorage.getItem('preferredLang');if(['hr','en'].includes(s)) return s;}catch(e){}
+      return 'hr';
+    }
+    function applyLanguage(lang){
+      try{localStorage.setItem('preferredLang',lang);}catch(e){}
+      const u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState({},'',u.toString());
+      document.documentElement.lang=lang;
+      if(langToggle){langToggle.src=lang==='hr'?'images/flag-uk.svg':'images/flag-hr.svg';langToggle.alt=lang==='hr'?'Promijeni na engleski':'Switch to Croatian';langToggle.setAttribute('data-tooltip',lang==='hr'?'Promijeni jezik':'Change language');}
+      if(searchInput){searchInput.placeholder=lang==='hr'?'Pretraži...':'Search...';}
+      document.querySelectorAll('[data-hr]').forEach(el=>{const v=el.getAttribute(`data-${lang}`);if(v==null)return; if(v.includes('<'))el.innerHTML=v; else el.textContent=v;});
+      document.querySelectorAll('.menu-overlay a').forEach(a=>{const v=a.getAttribute(`data-${lang}`);if(v!=null)a.textContent=v;});
+    }
+    let currentLang=getInitialLang();applyLanguage(currentLang);
+    if(langToggle){langToggle.addEventListener('click',()=>{currentLang=currentLang==='hr'?'en':'hr';applyLanguage(currentLang);});}
+    menuToggle.addEventListener('click',()=>{menu.classList.toggle('open');});
+    window.addEventListener('click',(e)=>{if(!menu.contains(e.target)&&!menuToggle.contains(e.target)&&e.target.id!=='language-toggle'){menu.classList.remove('open');}});
+    document.querySelectorAll('.menu-overlay a').forEach(l=>{l.addEventListener('click',()=>{menu.classList.remove('open');});});
+    window.addEventListener('scroll',()=>{const y=window.scrollY;const footerTop=footer.getBoundingClientRect().top+window.scrollY;const h=window.innerHeight;backToTopBtn.style.display=y>300?'flex':'none';backToTopBtn.style.bottom=(y+h>footerTop)?`${(y+h-footerTop)+60}px`:'30px';});
+    backToTopBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});
+    document.addEventListener('DOMContentLoaded',()=>{
+      const s=localStorage.getItem('activeSeason');
+      if(s){setTimeout(()=>{if(s==='winter')startWinterEffect(true); else if(s==='summer')startSummerEffect(true); else if(s==='spring')startSpringEffect(true); else if(s==='autumn')startAutumnEffect(true);},10000);}
+      fetch('season.html').then(r=>r.text()).then(html=>{const ph=document.getElementById('season-placeholder');if(ph) ph.innerHTML=html; if(typeof initializeSeasonToggle==='function') initializeSeasonToggle();}).catch(()=>{});
+    });
 
-        const o2 = document.createElement('option');
-        o2.value = a;
-        o2.textContent = a;
-        sel2.appendChild(o2);
+    /* -----------------------------------
+       #10.2 TEŽINSKE KATEGORIJE
+       ----------------------------------- */
+    const DIFF_LABELS={ 'very-easy':'Jako lako','easy':'Lako','medium':'Srednje teško','hard':'Jako teško','extreme':'Ekstremno' };
+    function classifyByKm(km){ if(km<=6) return 'very-easy'; if(km<=10) return 'easy'; if(km<=16) return 'medium'; if(km<=20) return 'hard'; return 'extreme'; }
+    function classifyByElev(m){ if(m<=200) return 'very-easy'; if(m<=500) return 'easy'; if(m<=1000) return 'medium'; if(m<=1500) return 'hard'; return 'extreme'; }
+    function norm(s){return (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+    function scrollToResults(){const list=document.getElementById('trail-list'); if(list){list.scrollIntoView({behavior:'smooth',block:'start'});} }
+
+    /* -----------------------------------
+       #10.3 GEOLOKACIJA + UDALJENOSTI
+       ----------------------------------- */
+    let userLocation=null; let geoTried=false; let distancesEnabled=false;
+    function ensureGeolocationOnce(force=false){
+      return new Promise((res)=>{ if(userLocation) return res(userLocation); if(geoTried&&!force) return res(null); geoTried=true;
+        if(!('geolocation' in navigator)) return res(null);
+        navigator.geolocation.getCurrentPosition(
+          (pos)=>{ userLocation={lat:pos.coords.latitude, lon:pos.coords.longitude}; distancesEnabled=true; res(userLocation); },
+          (_)=>res(null),
+          {enableHighAccuracy:true,timeout:12000,maximumAge:120000}
+        );
+      });
+    }
+    function haversineKm(lat1,lon1,lat2,lon2){
+      const R=6371, toRad=d=>d*Math.PI/180;
+      const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+      const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+      return 2*R*Math.asin(Math.sqrt(a));
+    }
+
+    // (opcionalno) OSRM vožnja – ostavljeno iz tvoje verzije; koristi se za filtar radijusa u "drive" modu
+    const driveCache=new Map();
+    function withTimeout(promise,ms=6000){return Promise.race([promise,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);}
+    async function drivingDistanceKm(origin,dest){
+      if(!origin||!dest) return null;
+      const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
+      if(driveCache.has(key)) return driveCache.get(key);
+      const url=`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
+      try{
+        const resp=await withTimeout(fetch(url),6000);
+        if(!resp.ok) throw new Error('bad status');
+        const data=await resp.json();
+        const m=data?.routes?.[0]?.distance; const km=(typeof m==='number')?m/1000:null;
+        if(km!=null) driveCache.set(key,km); return km;
+      }catch(_){return null;}
+    }
+
+    /* -----------------------------------
+       #10.4 PODRUČJA (AREAS) — tvoj popis ostavljen
+       ----------------------------------- */
+    const AREAS=[/* ... ostavljeno identično tvojoj verziji ... */ 
+      'Triglav','Velebit','Begunjščica','Klekovača','Sljeme','Medvednica','Dinara','Oštrovača','Šator','Kozara','Ivanščica','Kamešnica','Cincar','Vranica','Matinski Vis','Zavelim','Golija','Stožer','Ljubuša','Tušnica','Svilaja','Biokovo','Mosor','Raduša','Vran','Čvrsnica','Čabulja','Prenj','Crvanj','Matokit','Velež','Visočica','Bjelašnica','Treskavica','Zelengora','Volujak','Maglić','Lelija','Durmitor','Komovi','Prokletije','Šar planina','Otok Pag','Poluotok Pelješac','Šipovo','Otok Hvar','Otok Brač','Kanjon Badnjevice','Oštrc','Učka','Risnjak','Snježnik (HR)','Papuk','Psunj','Kalnik','Ugljan','Krk','Cres','Mljet','Nanos','Snežnik (SLO)','Stol (Karavanke)','Krn','Grintovec','Velika planina','Vitosha','Rila','Pirin','Balkan (Stara planina BG)','Rhodope','Osogovo','Belasica','Strandzha','Kopaonik','Stara planina (RS)','Rtanj','Suva planina','Zlatibor','Tara','Fruška gora','Rudnik','Jastrebac','Maljen (Divčibare)','Homolje','Kuјачke planine','Orjen','Lovćen','Rumija','Bjelasica','Sinjajevina','Korab','Pelister','Jablanica planina','Kozuf','Jakupica (Solunska Glava)','Bistra (Mavrovo)','Dajti','Tomorr','Cika (Llogara)','Gjallica','Smolikas','Tymfi (Gamila)','Olymp','Vihren (Pirin)','Musala (Rila)','Cherni Vrah (Vitosha)','Botev (Balkan BG)','Taygetus'
+    ];
+
+  </script>
+
+  <!-- POPUNA SELECTA -->
+  <script>
+    (function fillAreas(){
+      const sel1=document.getElementById('areaSelect');
+      const sel2=document.getElementById('areaSelectCombo');
+      AREAS.forEach(a=>{
+        const o1=document.createElement('option'); o1.value=a; o1.textContent=a; sel1.appendChild(o1);
+        const o2=document.createElement('option'); o2.value=a; o2.textContent=a; sel2.appendChild(o2);
       });
     })();
 
-    /* ---------------------------------------------------------
+    /* -----------------------------------
        #10.7 GLOBAL STATE
-       --------------------------------------------------------- */
-    const filterState = {
-      area: '',
-      radius: '',
-      duration: '',
-      modeKm: true,
-      modeElev: true,
-      logic: 'any',
-      chipsSel: [],
-      poi: '',
-      distanceMode: 'air'
-    };
+       ----------------------------------- */
+    const filterState={area:'',radius:'',duration:'',modeKm:true,modeElev:true,logic:'any',chipsSel:[],poi:'',distanceMode:'air'};
 
-    function stateFromControls(combo) {
-      const suffix = combo ? 'Combo' : '';
-
-      const modeKm = document.getElementById('modeKm' + suffix)
-        ? document.getElementById('modeKm' + suffix).checked
-        : filterState.modeKm;
-
-      const modeElev = document.getElementById('modeElev' + suffix)
-        ? document.getElementById('modeElev' + suffix).checked
-        : filterState.modeElev;
-
-      const logic = document.getElementById('difficultyLogic' + suffix)
-        ? document.getElementById('difficultyLogic' + suffix).value
-        : filterState.logic;
-
-      const chips = [
-        ...document.querySelectorAll((combo ? '.diff-chip-combo' : '.diff-chip') + ':checked')
-      ].map((i) => i.value);
-
+    function stateFromControls(combo){
+      const s=combo?'Combo':'';
+      const modeKm=document.getElementById('modeKm'+s)?document.getElementById('modeKm'+s).checked:filterState.modeKm;
+      const modeElev=document.getElementById('modeElev'+s)?document.getElementById('modeElev'+s).checked:filterState.modeElev;
+      const logic=document.getElementById('difficultyLogic'+s)?document.getElementById('difficultyLogic'+s).value:filterState.logic;
+      const chips=[...document.querySelectorAll((combo?'.diff-chip-combo':'.diff-chip')+':checked')].map(i=>i.value);
       return {
-        area: (document.getElementById('areaSelect' + suffix)?.value || ''),
-        radius: (document.getElementById('radiusSelect' + suffix)?.value || ''),
-        duration: (document.getElementById('durationBucket' + suffix)?.value || ''),
-        poi: combo ? (document.getElementById('poiSearchCombo')?.value || '') : filterState.poi,
-        modeKm,
-        modeElev,
-        logic,
-        chipsSel: chips,
-        distanceMode: (document.getElementById('distanceMode' + suffix)?.value || filterState.distanceMode)
+        area:(document.getElementById('areaSelect'+s)?.value||''),
+        radius:(document.getElementById('radiusSelect'+s)?.value||''),
+        duration:(document.getElementById('durationBucket'+s)?.value||''),
+        poi: combo ? (document.getElementById('poiSearchCombo')?.value||'') : filterState.poi,
+        modeKm,modeElev,logic,chipsSel:chips,
+        distanceMode:(document.getElementById('distanceMode'+s)?.value || filterState.distanceMode)
       };
     }
+    function updateFilterState(ns){Object.assign(filterState,ns);}
 
-    function updateFilterState(newState) {
-      Object.assign(filterState, newState);
+    /* -----------------------------------
+       #10.8 AKTIVNI ČIPOVI
+       ----------------------------------- */
+    function renderActiveChips(){
+      const host=document.getElementById('activeChips'); host.innerHTML='';
+      function addChip(label,onRemove){const chip=document.createElement('span'); chip.className='chip'; chip.innerHTML=`${label} <button type="button" aria-label="Ukloni">×</button>`; chip.querySelector('button').addEventListener('click',onRemove); host.appendChild(chip);}
+      if(filterState.area){addChip(`Lokacija: ${filterState.area}`,()=>{const sel1=document.getElementById('areaSelect');const sel2=document.getElementById('areaSelectCombo');if(sel1) sel1.value=''; if(sel2) sel2.value=''; updateFilterState({area:''}); runFiltering();});}
+      if(filterState.radius){addChip(`Radijus: do ${filterState.radius} km`,()=>{const a=document.getElementById('radiusSelect');const b=document.getElementById('radiusSelectCombo'); if(a) a.value=''; if(b) b.value=''; updateFilterState({radius:''}); runFiltering();});}
+      if(filterState.duration){const mapDur={'3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h'}; addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`,()=>{const a=document.getElementById('durationBucket');const b=document.getElementById('durationBucketCombo'); if(a) a.value=''; if(b) b.value=''; updateFilterState({duration:''}); runFiltering();});}
+      if(filterState.poi){addChip(`Odredište: ${filterState.poi}`,()=>{const inp=document.getElementById('poiSearchCombo'); if(inp) inp.value=''; updateFilterState({poi:''}); runFiltering();});}
+      if(filterState.chipsSel?.length){addChip(`Težina: ${filterState.chipsSel.map(c=>DIFF_LABELS[c]||c).join(', ')}`,()=>{document.querySelectorAll('.diff-chip:checked,.diff-chip-combo:checked').forEach(i=>i.checked=false); updateFilterState({chipsSel:[]}); runFiltering();});}
+      const modeBits=[]; if(filterState.modeKm) modeBits.push('km'); if(filterState.modeElev) modeBits.push('visina');
+      if(modeBits.length){addChip(`Način: ${modeBits.join(' + ')} / ${filterState.logic==='all'?'OBJE':'BILO KOJA'}`,()=>{['modeKm','modeKmCombo','modeElev','modeElevCombo'].forEach(id=>{const el=document.getElementById(id); if(el) el.checked=true;}); ['difficultyLogic','difficultyLogicCombo'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='any';}); updateFilterState({modeKm:true,modeElev:true,logic:'any'}); runFiltering();});}
+      if(filterState.distanceMode!=='air'){addChip(`Način udaljenosti: ${filterState.distanceMode}`,()=>{const s1=document.getElementById('distanceModeCombo');const s2=document.getElementById('distanceMode'); if(s1) s1.value='air'; if(s2) s2.value='air'; updateFilterState({distanceMode:'air'}); runFiltering();});}
+      if(host.children.length) scrollToResults();
     }
 
-    /* ---------------------------------------------------------
-       #10.8 AKTIVNI ČIPOVI (render uključenih filtera)
-       --------------------------------------------------------- */
-    function renderActiveChips() {
-      const host = document.getElementById('activeChips');
-      host.innerHTML = '';
-
-      function addChip(label, onRemove) {
-        const chip = document.createElement('span');
-        chip.className = 'chip';
-        chip.innerHTML = `${label} <button type="button" aria-label="Ukloni">×</button>`;
-        chip.querySelector('button').addEventListener('click', onRemove);
-        host.appendChild(chip);
-      }
-
-      if (filterState.area) {
-        addChip(`Lokacija: ${filterState.area}`, () => {
-          const sel1 = document.getElementById('areaSelect');
-          const sel2 = document.getElementById('areaSelectCombo');
-          if (sel1) sel1.value = '';
-          if (sel2) sel2.value = '';
-          updateFilterState({ area: '' });
-          runFiltering();
-        });
-      }
-
-      if (filterState.radius) {
-        addChip(`Radijus: do ${filterState.radius} km`, () => {
-          const sel1 = document.getElementById('radiusSelect');
-          const sel2 = document.getElementById('radiusSelectCombo');
-          if (sel1) sel1.value = '';
-          if (sel2) sel2.value = '';
-          updateFilterState({ radius: '' });
-          runFiltering();
-        });
-      }
-
-      if (filterState.duration) {
-        const mapDur = {
-          '3': 'Do 3 h',
-          '5': 'Do 5 h',
-          '8': 'Do 8 h',
-          '10': 'Do 10 h',
-          '>10': 'Preko 10 h'
-        };
-        addChip(`Trajanje: ${mapDur[filterState.duration] || filterState.duration}`, () => {
-          const sel1 = document.getElementById('durationBucket');
-          const sel2 = document.getElementById('durationBucketCombo');
-          if (sel1) sel1.value = '';
-          if (sel2) sel2.value = '';
-          updateFilterState({ duration: '' });
-          runFiltering();
-        });
-      }
-
-      if (filterState.poi) {
-        addChip(`Odredište: ${filterState.poi}`, () => {
-          const inp = document.getElementById('poiSearchCombo');
-          if (inp) inp.value = '';
-          updateFilterState({ poi: '' });
-          runFiltering();
-        });
-      }
-
-      if (filterState.chipsSel && filterState.chipsSel.length) {
-        addChip(
-          `Težina: ${filterState.chipsSel.map((c) => DIFF_LABELS[c] || c).join(', ')}`,
-          () => {
-            document.querySelectorAll('.diff-chip:checked').forEach((i) => (i.checked = false));
-            document.querySelectorAll('.diff-chip-combo:checked').forEach((i) => (i.checked = false));
-            updateFilterState({ chipsSel: [] });
-            runFiltering();
-          }
-        );
-      }
-
-      const modeBits = [];
-      if (filterState.modeKm) modeBits.push('km');
-      if (filterState.modeElev) modeBits.push('visina');
-
-      if (modeBits.length && (filterState.chipsSel?.length || true)) {
-        addChip(`Način: ${modeBits.join(' + ')} / ${filterState.logic === 'all' ? 'OBJE' : 'BILO KOJA'}`, () => {
-          const ids = [
-            'modeKm',
-            'modeElev',
-            'difficultyLogic',
-            'modeKmCombo',
-            'modeElevCombo',
-            'difficultyLogicCombo'
-          ];
-          ids.forEach((id) => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if (id.includes('modeKm')) el.checked = true;
-            if (id.includes('modeElev')) el.checked = true;
-            if (id.includes('difficultyLogic')) el.value = 'any';
-          });
-          updateFilterState({ modeKm: true, modeElev: true, logic: 'any' });
-          runFiltering();
-        });
-      }
-
-      if (filterState.distanceMode && filterState.distanceMode !== 'air') {
-        addChip(`Način udaljenosti: ${filterState.distanceMode}`, () => {
-          const s1 = document.getElementById('distanceModeCombo');
-          const s2 = document.getElementById('distanceMode');
-          if (s1) s1.value = 'air';
-          if (s2) s2.value = 'air';
-          updateFilterState({ distanceMode: 'air' });
-          runFiltering();
-        });
-      }
-
-      if (host.children.length) scrollToResults();
-    }
-
-    /* ---------------------------------------------------------
-       #10.9 RENDER KARTICA + BADGEVI
-       --------------------------------------------------------- */
-    function routeTypeBadge(rt) {
-      const oneWay = /jednosmjerna/i.test(rt || '');
-      return `
-        <span class="badge" title="${rt || ''}">${rt || 'Ruta'}</span>
-        ${
-          oneWay
-            ? `<span class="badge" title="Jednosmjerna tura" style="display:inline-flex;align-items:center;gap:6px">↦ Jednosmjerna</span>`
-            : ''
-        }`;
-    }
-
-    function cardHTML(t) {
-      const diffKm = classifyByKm(t.distanceKm);
-      const diffEl = classifyByElev(t.elevationM);
-      const order = ['very-easy', 'easy', 'medium', 'hard', 'extreme'];
-      const mainDiff = order[Math.max(order.indexOf(diffKm), order.indexOf(diffEl))] || 'medium';
+    /* -----------------------------------
+       #10.9 RENDER KARTICA – NOVI LAYOUT
+       ----------------------------------- */
+    function cardHTML(t){
+      const diffKm=classifyByKm(t.distanceKm);
+      const diffEl=classifyByElev(t.elevationM);
+      const distChip = (distancesEnabled && typeof t._distKm==='number') ? `<span class="dist-chip">${t._distKm.toFixed(1)} km od tebe</span>` : '';
 
       return `
         <article class="trail-card" data-id="${t.id}">
-          <img src="${t.thumbnail}" alt="${t.name}" loading="lazy" />
-          <div>
-            <h3>${t.name}</h3>
-            <p>${t.description}</p>
-
-            <div class="info-line" style="margin:6px 0">
-              <span class="badge ${mainDiff}" title="Ocjena težine (procjena)">• ${DIFF_LABELS[mainDiff] || 'Težina'}</span>
-              ${routeTypeBadge(t.routeType)}
+          <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
+          <div class="pad">
+            <div class="title-line">
+              <h3>${t.name}</h3>
+              ${distChip}
             </div>
 
-            <div class="badges">
-              ${badgeEl(`${t.distanceKm} km`, ['km']).outerHTML}
-              ${badgeEl(`${t.elevationM} m`, ['elev']).outerHTML}
-              ${badgeEl(`${t.durationH} h`, []).outerHTML}
-              ${(t.destinations || []).slice(0, 2).map((d) => badgeEl(d, ['poi']).outerHTML).join('')}
+            <div class="metric-row">
+              <span class="metric-label">Duljina</span>
+              <span class="metric-value">${t.distanceKm} km</span>
+              <span class="diff-pill ${diffKm}" title="Ocjena težine po km">${DIFF_LABELS[diffKm]}</span>
             </div>
 
-            <div class="info-line" style="margin-top:8px">
-              <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16">
-                <path d="M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7zM12 11.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"></path>
-              </svg>
-              <span>${t.area}</span>
+            <div class="metric-row">
+              <span class="metric-label">Uspon</span>
+              <span class="metric-value">${t.elevationM} m</span>
+              <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
             </div>
+
+            <div class="metric-row">
+              <span class="metric-label">Trajanje</span>
+              <span class="metric-value">${t.durationH} h</span>
+              <span></span>
+            </div>
+
+            <p class="card-desc">${t.description || ''}</p>
           </div>
-        </article>`;
+        </article>
+      `;
     }
-
-    function renderTrails(list) {
-      const host = document.getElementById('trail-list');
+    function renderTrails(list){
+      const host=document.getElementById('trail-list');
       host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
     }
 
-    /* ---------------------------------------------------------
-       #10.10 PRAVILA FILTRIRANJA (težina, trajanje, područje, POI, radijus)
-       --------------------------------------------------------- */
-    function matchesDifficulty(t, chipsSel, modeKm, modeElev, logic) {
-      if (!chipsSel || !chipsSel.length) return true;
-
-      const kmClass = classifyByKm(t.distanceKm);
-      const elevClass = classifyByElev(t.elevationM);
-      const hitKm = modeKm ? chipsSel.includes(kmClass) : false;
-      const hitEl = modeElev ? chipsSel.includes(elevClass) : false;
-
-      if (modeKm && modeElev) return logic === 'all' ? (hitKm && hitEl) : (hitKm || hitEl);
-      if (modeKm) return hitKm;
-      if (modeElev) return hitEl;
-      return true;
+    /* -----------------------------------
+       #10.10 FILTRIRANJE
+       ----------------------------------- */
+    function matchesDifficulty(t,chipsSel,modeKm,modeElev,logic){
+      if(!chipsSel||!chipsSel.length) return true;
+      const kmClass=classifyByKm(t.distanceKm);
+      const elevClass=classifyByElev(t.elevationM);
+      const hitKm=modeKm ? chipsSel.includes(kmClass) : false;
+      const hitEl=modeElev? chipsSel.includes(elevClass) : false;
+      if(modeKm&&modeElev) return logic==='all' ? (hitKm&&hitEl) : (hitKm||hitEl);
+      if(modeKm) return hitKm; if(modeElev) return hitEl; return true;
     }
+    function matchesDuration(t,bucket){ if(!bucket) return true; const d=t.durationH||0; if(bucket==='>10') return d>10; const lim=parseFloat(bucket); return d<=lim; }
+    function matchesArea(t,area){ if(!area) return true; return t.area===area || t.mountain===area; }
+    function matchesPOI(t,q){ if(!q) return true; const s=norm(q); const hay=[t.name,t.area,t.mountain,t.routeType, ...(t.tags||[]), ...(t.destinations||[])].map(norm).join(' • '); return hay.includes(s); }
 
-    function matchesDuration(t, bucket) {
-      if (!bucket) return true;
-      const d = t.durationH || 0;
-      if (bucket === '>10') return d > 10;
-      const lim = parseFloat(bucket);
-      return d <= lim;
-    }
-
-    function matchesArea(t, area) {
-      if (!area) return true;
-      return t.area === area || t.mountain === area;
-    }
-
-    function matchesPOI(t, q) {
-      if (!q) return true;
-      const s = norm(q);
-      const hay = [t.name, t.area, t.mountain, t.routeType, ...(t.tags || []), ...(t.destinations || [])]
-        .map(norm)
-        .join(' • ');
-      return hay.includes(s);
-    }
-
-    async function matchesRadius(t, radius, mode) {
-      if (!radius) return true;
-      const loc = await ensureGeolocationOnce();
-      if (!loc) return true;
-
-      const rKm = parseFloat(radius);
-
-      if (mode === 'air') {
-        const d = haversineKm(loc.lat, loc.lon, t.startLat, t.startLon);
-        return d <= rKm;
+    async function matchesRadius(t,radius,mode){
+      if(!radius) return true;
+      const loc=await ensureGeolocationOnce();
+      if(!loc) return true;
+      const rKm=parseFloat(radius);
+      if(mode==='air'){ const d=haversineKm(loc.lat,loc.lon,t.startLat,t.startLon); return d<=rKm; }
+      if(mode==='drive'){
+        const km=await drivingDistanceKm(loc,{lat:t.startLat,lon:t.startLon});
+        if(km==null){ const dAir=haversineKm(loc.lat,loc.lon,t.startLat,t.startLon); return dAir<=rKm; }
+        return km<=rKm;
       }
-
-      if (mode === 'drive') {
-        const km = await drivingDistanceKm(loc, { lat: t.startLat, lon: t.startLon });
-        if (km == null) {
-          const dAir = haversineKm(loc.lat, loc.lon, t.startLat, t.startLon);
-          return dAir <= rKm;
-        }
-        return km <= rKm;
-      }
-
-      const d = haversineKm(loc.lat, loc.lon, t.startLat, t.startLon);
-      return d <= rKm;
+      const d=haversineKm(loc.lat,loc.lon,t.startLat,t.startLon); return d<=rKm;
     }
 
-    async function filterList() {
-      const {
-        area,
-        radius,
-        duration,
-        modeKm,
-        modeElev,
-        logic,
-        chipsSel,
-        poi,
-        distanceMode
-      } = filterState;
-
-      let base = TRAILS.filter(
-        (t) =>
-          matchesArea(t, area) &&
-          matchesDuration(t, duration) &&
-          matchesPOI(t, poi) &&
-          matchesDifficulty(t, chipsSel, modeKm, modeElev, logic)
-      );
-
-      if (radius) {
-        const results = [];
-        const loc = await ensureGeolocationOnce();
-        for (const t of base) {
-          if (!loc) {
-            results.push(t);
-            continue;
-          }
-          const ok = await matchesRadius(t, radius, distanceMode);
-          if (ok) results.push(t);
+    async function filterList(){
+      const {area,radius,duration,modeKm,modeElev,logic,chipsSel,poi,distanceMode}=filterState;
+      let base=TRAILS.filter(t=> matchesArea(t,area) && matchesDuration(t,duration) && matchesPOI(t,poi) && matchesDifficulty(t,chipsSel,modeKm,modeElev,logic));
+      if(radius){
+        const results=[]; const loc=await ensureGeolocationOnce();
+        for(const t of base){
+          if(!loc){results.push(t); continue;}
+          const ok=await matchesRadius(t,radius,distanceMode);
+          if(ok) results.push(t);
         }
         return results;
       }
-
       return base;
     }
 
-    async function runFiltering() {
-      const list = await filterList();
+    async function attachDistances(list){
+      if(!distancesEnabled) return list;
+      if(!userLocation) return list;
+      for(const t of list){
+        if(typeof t.startLat==='number' && typeof t.startLon==='number'){
+          t._distKm = haversineKm(userLocation.lat,userLocation.lon,t.startLat,t.startLon);
+        } else {
+          t._distKm = undefined;
+        }
+      }
+      return list;
+    }
+
+    async function runFiltering(){
+      let list = await filterList();
+      if(userLocation) distancesEnabled=true;
+      list = await attachDistances(list);
+      // ako je radijus uključen, smisleno je sortirati po udaljenosti
+      if(filterState.radius && distancesEnabled){
+        list.sort((a,b)=> (a._distKm??1e9) - (b._distKm??1e9));
+      }
       renderTrails(list);
       renderActiveChips();
     }
 
-    /* ---------------------------------------------------------
-       #10.11 DOCK PANEL (otvaranje/ zatvaranje i prijenos sadržaja)
-       --------------------------------------------------------- */
-    const filtersDock = document.getElementById('filtersDock');
-    const dockInner = filtersDock.querySelector('.filters-dock-inner');
-    let dockedTileId = null;
+    /* -----------------------------------
+       #10.11 DOCK PANEL
+       ----------------------------------- */
+    const filtersDock=document.getElementById('filtersDock');
+    const dockInner=filtersDock.querySelector('.filters-dock-inner');
+    let dockedTileId=null;
 
-    function closeDock() {
-      if (!dockedTileId) return;
-
-      const orig = document.getElementById(dockedTileId);
-      const contentBox = dockInner.querySelector('.dock-content');
-
-      if (orig && contentBox) {
-        while (contentBox.firstChild) orig.appendChild(contentBox.firstChild);
-      }
-
-      dockInner.innerHTML = '';
-      filtersDock.classList.remove('active');
-      dockedTileId = null;
-      document.querySelectorAll('.filter-tile.active').forEach((el) => el.classList.remove('active'));
+    function closeDock(){
+      if(!dockedTileId) return;
+      const orig=document.getElementById(dockedTileId);
+      const contentBox=dockInner.querySelector('.dock-content');
+      if(orig && contentBox){ while(contentBox.firstChild) orig.appendChild(contentBox.firstChild); }
+      dockInner.innerHTML=''; filtersDock.classList.remove('active'); dockedTileId=null;
+      document.querySelectorAll('.filter-tile.active').forEach(el=>el.classList.remove('active'));
     }
-
-    function openDockFor(tileId, tileEl) {
-      if (dockedTileId === tileId) {
-        closeDock();
-        return;
-      }
-
+    function openDockFor(tileId,tileEl){
+      if(dockedTileId===tileId){ closeDock(); return; }
       closeDock();
-
-      const src = document.getElementById(tileId);
-      if (!src) return;
-
-      const box = document.createElement('div');
-
-      const title = document.createElement('div');
-      title.className = 'dock-title';
-      title.textContent = tileEl.querySelector('.tile-title')?.textContent || 'Filter';
-
-      const x = document.createElement('button');
-      x.type = 'button';
-      x.className = 'dock-close';
-      x.title = 'Zatvori';
-      x.textContent = '×';
-      x.addEventListener('click', closeDock);
-
-      const contentWrap = document.createElement('div');
-      contentWrap.className = 'dock-content';
-      while (src.firstChild) contentWrap.appendChild(src.firstChild);
-
-      box.appendChild(title);
-      box.appendChild(x);
-      box.appendChild(contentWrap);
-
-      dockInner.innerHTML = '';
-      dockInner.appendChild(box);
-
-      filtersDock.classList.add('active');
-      dockedTileId = tileId;
-
-      document.querySelectorAll('.filter-tile.active').forEach((el) => el.classList.remove('active'));
-      tileEl.classList.add('active');
-
-      if (tileId === 'tileRadius') {
-        ensureGeolocationOnce().then((loc) => {
-          if (!loc) {
-            const note = document.createElement('p');
-            note.style.cssText = 'margin-top:6px;color:var(--muted);font-size:12px';
-            note.textContent = 'Nisam uspio dobiti lokaciju. Provjeri dopuštenje za lokaciju ili uključi GPS.';
-            contentWrap.appendChild(note);
-          }
-        });
-      }
+      const src=document.getElementById(tileId); if(!src) return;
+      const box=document.createElement('div');
+      const title=document.createElement('div'); title.className='dock-title'; title.textContent=tileEl.querySelector('.tile-title')?.textContent || 'Filter';
+      const x=document.createElement('button'); x.type='button'; x.className='dock-close'; x.title='Zatvori'; x.textContent='×'; x.addEventListener('click',closeDock);
+      const contentWrap=document.createElement('div'); contentWrap.className='dock-content'; while(src.firstChild) contentWrap.appendChild(src.firstChild);
+      box.appendChild(title); box.appendChild(x); box.appendChild(contentWrap); dockInner.innerHTML=''; dockInner.appendChild(box);
+      filtersDock.classList.add('active'); dockedTileId=tileId;
+      document.querySelectorAll('.filter-tile.active').forEach(el=>el.classList.remove('active')); tileEl.classList.add('active');
+      if(tileId==='tileRadius'){ ensureGeolocationOnce().then(loc=>{ if(!loc){ const note=document.createElement('p'); note.style.cssText='margin-top:6px;color:var(--muted);font-size:12px'; note.textContent='Nisam uspio dobiti lokaciju. Provjeri dopuštenje za lokaciju ili uključi GPS.'; contentWrap.appendChild(note);} else { distancesEnabled=true; runFiltering(); } }); }
     }
+    document.getElementById('ctaGrid').addEventListener('click',(e)=>{const tile=e.target.closest('.filter-tile'); if(!tile) return; const targetId=tile.getAttribute('aria-controls'); if(!targetId) return; openDockFor(targetId,tile);});
 
-    document.getElementById('ctaGrid').addEventListener('click', (e) => {
-      const tile = e.target.closest('.filter-tile');
-      if (!tile) return;
-
-      const targetId = tile.getAttribute('aria-controls');
-      if (!targetId) return;
-
-      openDockFor(targetId, tile);
-    });
-
-    /* ---------------------------------------------------------
-       #10.12 BRZI RESET + KOMBINIRANI FILTER PANEL
-       --------------------------------------------------------- */
-    document.getElementById('quickReset').addEventListener('click', () => {
+    /* -----------------------------------
+       #10.12 RESET + KOMBINIRANI PANEL
+       ----------------------------------- */
+    document.getElementById('quickReset').addEventListener('click',()=>{
       closeDock();
-
-      [
-        'areaSelect',
-        'areaSelectCombo',
-        'radiusSelect',
-        'radiusSelectCombo',
-        'durationBucket',
-        'durationBucketCombo'
-      ].forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-
-      ['modeKm', 'modeKmCombo', 'modeElev', 'modeElevCombo'].forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.checked = true;
-      });
-
-      ['difficultyLogic', 'difficultyLogicCombo'].forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.value = 'any';
-      });
-
-      document.querySelectorAll('.diff-chip:checked, .diff-chip-combo:checked').forEach((i) => (i.checked = false));
-
-      const poi = document.getElementById('poiSearchCombo');
-      if (poi) poi.value = '';
-
-      const dm1 = document.getElementById('distanceMode');
-      if (dm1) dm1.value = 'air';
-
-      const dm2 = document.getElementById('distanceModeCombo');
-      if (dm2) dm2.value = 'air';
-
-      updateFilterState({
-        area: '',
-        radius: '',
-        duration: '',
-        modeKm: true,
-        modeElev: true,
-        logic: 'any',
-        chipsSel: [],
-        poi: '',
-        distanceMode: 'air'
-      });
-
+      ['areaSelect','areaSelectCombo','radiusSelect','radiusSelectCombo','durationBucket','durationBucketCombo'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+      ['modeKm','modeKmCombo','modeElev','modeElevCombo'].forEach(id=>{const el=document.getElementById(id); if(el) el.checked=true;});
+      ['difficultyLogic','difficultyLogicCombo'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='any';});
+      document.querySelectorAll('.diff-chip:checked,.diff-chip-combo:checked').forEach(i=>i.checked=false);
+      const poi=document.getElementById('poiSearchCombo'); if(poi) poi.value='';
+      const dm1=document.getElementById('distanceMode'); if(dm1) dm1.value='air';
+      const dm2=document.getElementById('distanceModeCombo'); if(dm2) dm2.value='air';
+      updateFilterState({area:'',radius:'',duration:'',modeKm:true,modeElev:true,logic:'any',chipsSel:[],poi:'',distanceMode:'air'});
       runFiltering();
     });
 
-    const comboWrap = document.getElementById('comboWrap');
-    const toggleCombo = document.getElementById('toggleCombo');
-
-    toggleCombo.addEventListener('click', () => {
-      const open = comboWrap.style.display !== 'none';
-      comboWrap.style.display = open ? 'none' : 'block';
-      if (!open) scrollToResults();
-    });
-
-    document.getElementById('applyFilters').addEventListener('click', async () => {
-      const st = stateFromControls(true);
-      updateFilterState(st);
-      await runFiltering();
-      scrollToResults();
-    });
-
-    document.getElementById('clearFilters').addEventListener('click', () => {
-      ['areaSelectCombo', 'radiusSelectCombo', 'durationBucketCombo', 'distanceModeCombo'].forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-
-      document.getElementById('distanceModeCombo').value = 'air';
-      document.querySelectorAll('.diff-chip-combo:checked').forEach((i) => (i.checked = false));
-
-      document.getElementById('modeKmCombo').checked = true;
-      document.getElementById('modeElevCombo').checked = true;
-      document.getElementById('difficultyLogicCombo').value = 'any';
-
-      const poi = document.getElementById('poiSearchCombo');
-      if (poi) poi.value = '';
-
-      updateFilterState({
-        area: '',
-        radius: '',
-        duration: '',
-        poi: '',
-        chipsSel: [],
-        modeKm: true,
-        modeElev: true,
-        logic: 'any',
-        distanceMode: 'air'
-      });
-
+    const comboWrap=document.getElementById('comboWrap');
+    const toggleCombo=document.getElementById('toggleCombo');
+    toggleCombo.addEventListener('click',()=>{const open=comboWrap.style.display!=='none'; comboWrap.style.display=open?'none':'block'; if(!open) scrollToResults();});
+    document.getElementById('applyFilters').addEventListener('click',async ()=>{const st=stateFromControls(true); updateFilterState(st); await runFiltering(); scrollToResults();});
+    document.getElementById('clearFilters').addEventListener('click',()=>{
+      ['areaSelectCombo','radiusSelectCombo','durationBucketCombo','distanceModeCombo'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+      document.getElementById('distanceModeCombo').value='air';
+      document.querySelectorAll('.diff-chip-combo:checked').forEach(i=>i.checked=false);
+      document.getElementById('modeKmCombo').checked=true; document.getElementById('modeElevCombo').checked=true; document.getElementById('difficultyLogicCombo').value='any';
+      const poi=document.getElementById('poiSearchCombo'); if(poi) poi.value='';
+      updateFilterState({area:'',radius:'',duration:'',poi:'',chipsSel:[],modeKm:true,modeElev:true,logic:'any',distanceMode:'air'});
       runFiltering();
     });
 
-    /* ---------------------------------------------------------
-       #10.13 ŽIČENJE KONTROLA (change/input handleri)
-       --------------------------------------------------------- */
-    document.addEventListener('change', async (e) => {
-      const id = e.target.id;
-      if (!id) return;
-
-      if (id === 'distanceMode' || id === 'distanceModeCombo') {
-        if (e.target.value === 'drive') await ensureGeolocationOnce(true);
-      }
-
-      if (
-        id === 'areaSelect' ||
-        id === 'radiusSelect' ||
-        id === 'durationBucket' ||
-        id === 'distanceMode' ||
-        id === 'modeKm' ||
-        id === 'modeElev' ||
-        id === 'difficultyLogic'
-      ) {
-        updateFilterState(stateFromControls(false));
-        runFiltering();
-      }
-
-      if (
-        id === 'modeKmCombo' ||
-        id === 'modeElevCombo' ||
-        id === 'difficultyLogicCombo' ||
-        id === 'areaSelectCombo' ||
-        id === 'radiusSelectCombo' ||
-        id === 'durationBucketCombo' ||
-        id === 'distanceModeCombo'
-      ) {
-        updateFilterState(stateFromControls(true));
-        renderActiveChips();
-      }
+    /* -----------------------------------
+       #10.13 WIRING KONTROLA + SEARCH
+       ----------------------------------- */
+    document.addEventListener('change',async (e)=>{
+      const id=e.target.id; if(!id) return;
+      if(id==='distanceMode' || id==='distanceModeCombo'){ if(e.target.value==='drive') await ensureGeolocationOnce(true); }
+      if(['areaSelect','radiusSelect','durationBucket','distanceMode','modeKm','modeElev','difficultyLogic'].includes(id)){ updateFilterState(stateFromControls(false)); runFiltering(); }
+      if(['modeKmCombo','modeElevCombo','difficultyLogicCombo','areaSelectCombo','radiusSelectCombo','durationBucketCombo','distanceModeCombo'].includes(id)){ updateFilterState(stateFromControls(true)); renderActiveChips(); }
     });
-
-    document.addEventListener('input', (e) => {
-      if (e.target.id === 'search') {
-        const q = e.target.value.trim();
-        updateFilterState({ poi: q });
-        runFiltering();
-      }
-
-      if (e.target.id === 'poiSearchCombo') {
-        const q = e.target.value.trim();
-        updateFilterState({ poi: q });
-        renderActiveChips();
-      }
+    document.addEventListener('input',(e)=>{
+      if(e.target.id==='search'){ const q=e.target.value.trim(); updateFilterState({poi:q}); runFiltering(); }
+      if(e.target.id==='poiSearchCombo'){ const q=e.target.value.trim(); updateFilterState({poi:q}); renderActiveChips(); }
     });
-
-    // pomoćna: žičenje čipova težine (oba seta – kompaktni i combo)
-    function wireDifficultyChips(selector, combo = false) {
-      document.querySelectorAll(selector).forEach((cb) => {
-        cb.addEventListener('change', () => {
-          const st = stateFromControls(combo);
-          updateFilterState(st);
-          if (!combo) runFiltering();
-          else renderActiveChips();
-        });
+    function wireDifficultyChips(selector,combo=false){
+      document.querySelectorAll(selector).forEach(cb=>{
+        cb.addEventListener('change',()=>{const st=stateFromControls(combo); updateFilterState(st); if(!combo) runFiltering(); else renderActiveChips();});
       });
     }
-    wireDifficultyChips('.diff-chip', false);
-    wireDifficultyChips('.diff-chip-combo', true);
+    wireDifficultyChips('.diff-chip',false);
+    wireDifficultyChips('.diff-chip-combo',true);
 
-    /* ---------------------------------------------------------
-       #10.13.1 (Opcionalno) Hotfix: duplikat Haversine s ispravnom dLon formulom
-       --------------------------------------------------------- */
-    function haversineKm(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const toRad = (d) => (d * Math.PI) / 180;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1); // ispravno: λ2 - λ1
-      const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-      return 2 * R * Math.asin(Math.sqrt(a));
-    }
-
-    /* ---------------------------------------------------------
-       #10.14 INIT (inicijalno renderiranje)
-       --------------------------------------------------------- */
-    document.addEventListener('DOMContentLoaded', () => {
-      renderTrails(TRAILS);
-      renderActiveChips();
-    });
+    /* -----------------------------------
+       #10.14 INIT
+       ----------------------------------- */
+    document.addEventListener('DOMContentLoaded',()=>{ renderTrails(TRAILS); renderActiveChips(); });
+  
   </script>
+  
 </body>
 </html>
-                            
-      
-
-    
 
