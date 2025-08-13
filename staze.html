@@ -32,740 +32,573 @@
        #02 STILOVI (čitko, red po red)
        ========================================================= -->
   <style>
-    :root {
-      --bg: #0b1110;
-      --ink: #e8f1ed;
-      --muted: #b7c7c0;
-      --panel: #0f1a15;
-      --panel-2: #0e1714;
-      --line: rgba(255, 255, 255, 0.10);
-      --brand: #2e7d5b;
-      --brand-2: #3d9c73;
-      --chip: #16231d;
-
-      /* boje za težine (po traženoj shemi) */
-      /* very-easy -> "Srednje lako" = zeleno */
-      --diff-veryeasy-bg: #0f2c22;
-      --diff-veryeasy-ink: #7ad8a1;
-
-      /* easy -> "Lako" = plavo */
-      --diff-easy-bg: #102638;
-      --diff-easy-ink: #7fbaf2;
-
-      /* medium -> žuto */
-      --diff-medium-bg: #2a2914;
-      --diff-medium-ink: #f3d36b;
-
-      /* hard -> narančasto */
-      --diff-hard-bg: #331f12;
-      --diff-hard-ink: #ffa066;
-
-      /* extreme -> crveno */
-      --diff-extreme-bg: #351616;
-      --diff-extreme-ink: #ff6b6b;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      overflow-x: hidden;
-    }
-
-    body {
-      font-family: Montserrat, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      scroll-behavior: smooth;
-    }
-
-    a {
-      color: #9fe1c5;
-      text-decoration: none;
-    }
-
-    .container {
-      max-width: 1150px;
-      margin: 0 auto;
-      padding: 0 14px;
-    }
-
-    /* =========================================================
-       NAVBAR
-       ========================================================= */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .navbar-left img {
-      height: 16px;
-      width: 24px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .navbar-left img:hover::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      top: 30px;
-      left: 0;
-      background: #ffffff;
-      color: #000000;
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 12px;
-      white-space: nowrap;
-      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .navbar-center {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      transform: translateY(12px);
-    }
-
-    .search-container {
-      width: 260px;
-      position: relative;
-      padding-top: 10px;
-    }
-
-    .search-wrapper {
-      position: relative;
-      height: 34px;
-      background: #ffffff;
-      color: #222222;
-      border-radius: 22px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-    }
-
-    .search-top-decoration {
-      position: absolute;
-      top: -212px;
-      left: 108px;
-      width: 1600%;
-      height: 30px;
-      object-fit: cover;
-      z-index: -10;
-      transform: scale(19);
-      transform-origin: top center;
-      pointer-events: none;
-    }
-
-    .mountain-search {
-      flex: 1;
-      border: 0;
-      background: transparent;
-      outline: 0;
-      font-size: 14px;
-      padding: 0 8px;
-    }
-
-    .search-wrapper img[alt="ikona za tražilicu"] {
-      position: absolute;
-      right: 12px;
-      bottom: 7px;
-      width: 19px;
-      height: 19px;
-      pointer-events: none;
-    }
-
-    .navbar-right {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 8px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .burger-line {
-      width: 26px;
-      height: 3px;
-      background: #ffffff;
-      border-radius: 2px;
-    }
-
-    .menu-overlay {
-      position: fixed;
-      top: 70px;
-      right: 0;
-      width: 72vw;
-      max-width: 360px;
-      display: none;
-      flex-direction: column;
-      background: rgba(15, 25, 20, 0.96);
-      backdrop-filter: blur(10px);
-      border-left: 1px solid var(--line);
-      padding: 18px;
-      z-index: 9999;
-    }
-
-    .menu-overlay.open {
-      display: flex;
-    }
-
-    .menu-overlay a {
-      color: #ffffff;
-      margin: 10px 0;
-    }
-
-    /* =========================================================
-       HERO + NASLOV
-       ========================================================= */
-    .image-section {
-      height: 50vh;
-      position: relative;
-      background: url('images/hero.jpg') center / cover no-repeat;
-    }
-
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));
-    }
-
-    main .header {
-      background: linear-gradient(180deg, #101b16, #0e1814);
-      text-align: center;
-      padding: 16px;
-      border-bottom: 1px solid var(--line);
-      border-radius: 16px;
-    }
-
-    main .header h1 {
-      font-size: clamp(14px, 2.3vw, 19px);
-      letter-spacing: 0.2px;
-    }
-
-    main .header p {
-      color: var(--muted);
-      margin-top: 8px;
-      font-size: clamp(8px, 1.6vw, 10px);
-    }
-
-    /* =========================================================
-       CTA FILTERI + DOCK (kompaktni split)
-       ========================================================= */
-    
-/* Kontejner s dvije kolone */
-.filters-split {
-  display: grid;
-  grid-template-columns: 220px 1fr;   /* uža lijeva kolona da stane više tipki */
-  gap: 10px;
-  align-items: start;
-}
-
-/* Lijevo: lista gumbova (pločice) — sve kompaktno i čitko */
-.filters-left {
-  display: block;
-  max-height: 70vh;
-  overflow: auto;
-  border-right: 1px solid var(--line);
-  padding-right: 8px;
-}
-
-.filters-left .cta-grid {
-  display: grid;
-  grid-template-columns: 1fr;         /* jedan ispod drugog */
-  gap: 6px;
-  margin-top: 6px;
-}
-
-/* Pločice / gumbi */
-.filter-tile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  min-height: 36px;
-  background: #12221b;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.12s ease, background 0.12s ease;
-  font-size: 12px;
-  line-height: 1.2;
-}
-
-.filter-tile:hover {
-  transform: translateY(-1px);
-  background: #152820;
-}
-
-.filter-tile.active {
-  outline: 2px solid rgba(61, 156, 115, 0.45);
-}
-
-/* Ikonica brda na pločicama – manja */
-.mountain-icon {
-  width: 14px;
-  height: 14px;
-  flex: 0 0 14px;
-}
-
-/* Naslov pločice */
-.tile-title {
-  margin: 0;
-  font-weight: 600;
-  font-size: 12px;
-}
-
-/* Sadržaj pločica (u desnom docku) – manji font, manji padding kontrola */
-.tile-pop .mode,
-.tile-pop .chips,
-.tile-pop label {
-  font-size: 12px;
-}
-
-.tile-pop select,
-.tile-pop input[type="search"] {
-  font-size: 12px;
-  padding: 6px 8px;
-  height: 32px;
-}
-
-/* Čekboksi u chipovima malo manji */
-.tile-pop input[type="checkbox"] {
-  transform: scale(0.95);
-  transform-origin: center;
-}
-
-/* Desno: dock s odabranim filterom — kompaktan */
-.filters-right {
-  display: block;
-  max-height: 70vh;
-  overflow: auto;
-  padding-left: 6px;
-}
-
-.filters-right .filters-dock {
-  display: block;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #0f1814;
-  padding: 10px;
-}
-
-.filters-right .filters-dock:empty,
-.filters-right .filters-dock .filters-dock-inner:empty {
-  min-height: 120px;
-  background: linear-gradient(180deg, #0f1814, #0e1714);
-  border: 1px dashed rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-}
-
-.dock-title {
-  font-weight: 700;
-  margin-bottom: 6px;
-  opacity: 0.9;
-  font-size: 13px;
-}
-
-.dock-close {
-  width: 28px;
-  height: 28px;
-  top: -6px;
-  right: -6px;
-  font-size: 16px;
-}
-
-/* Kontrole unutar docka – sve smanjeno i ujednačeno */
-.filters-right .filters-dock select,
-.filters-right .filters-dock input[type="search"] {
-  background: #0f1714;
-  color: #eaf2ee;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 6px 8px;
-  outline: none;
-  font-size: 12px;
-  height: 32px;
-}
-
-.filters-right .filters-dock select:focus,
-.filters-right .filters-dock input[type="search"]:focus {
-  border-color: rgba(61, 156, 115, 0.7);
-}
-
-/* Fieldset za težine – kompaktan */
-fieldset.difficulty {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 8px;
-  background: #0e1814;
-}
-
-.difficulty legend {
-  padding: 0 6px;
-  font-weight: 700;
-  font-size: 12px;
-}
-
-.difficulty .mode {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
-  font-size: 12px;
-}
-
-.difficulty .chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* Naslov sekcije CTA malo manji da sve stane */
-.cta-title {
-  font-size: 11px;
-}
-
-/* Gumb "Kombiniraj filtre" – malo manji */
-.combo-toggle {
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-}
-
-    /* =========================================================
-       KOMBINIRANI FILTERI
-       ========================================================= */
-    .combo-wrap {
-      margin: 18px auto;
-    }
-
-    .combo-toggle {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 14px;
-      background: linear-gradient(180deg, var(--brand), var(--brand-2));
-      color: #ffffff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .filters {
-      margin-top: 12px;
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 14px 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    }
-
-    .filters .title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 4px 4px 12px;
-      font-weight: 700;
-    }
-
-    .filter-row {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      margin-bottom: 10px;
-    }
-
-    .filters label,
-    .filters fieldset {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 14px;
-    }
-
-    .filters select,
-    .filters input[type="search"] {
-      background: #0f1714;
-      color: #eaf2ee;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 8px 10px;
-      outline: none;
-      font-size: 12px;
-    }
-
-    .filters select:focus,
-    .filters input[type="search"]:focus {
-      border-color: rgba(61, 156, 115, 0.7);
-    }
-
-    fieldset.difficulty {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
-      background: #0e1814;
-    }
-
-    .difficulty legend {
-      padding: 0 6px;
-      font-weight: 700;
-    }
-
-    .difficulty .mode {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .difficulty .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .btn {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 14px;
-      background: linear-gradient(180deg, var(--brand), var(--brand-2));
-      color: #ffffff;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .btn.secondary {
-      background: #24342d;
-      color: #d9ebe4;
-    }
-
-    /* =========================================================
-       AKTIVNI ČIPOVI
-       ========================================================= */
-    .active-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin: 12px auto 0;
-      padding: 0 4px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      background: #1a2a23;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      font-size: 13px;
-      color: #dff4ea;
-    }
-
-    .chip button {
-      appearance: none;
-      border: 0;
-      background: transparent;
-      color: #dff4ea;
-      cursor: pointer;
-      font-size: 14px;
-      line-height: 1;
-      padding: 0;
-    }
-
-    /* =========================================================
-       LISTA STAZA
-       ========================================================= */
+  :root {
+    --bg: #0b1110;
+    --ink: #e8f1ed;
+    --muted: #b7c7c0;
+    --panel: #0f1a15;
+    --panel-2: #0e1714;
+    --line: rgba(255, 255, 255, 0.10);
+    --brand: #2e7d5b;
+    --brand-2: #3d9c73;
+    --chip: #16231d;
+
+    /* boje za težine (po traženoj shemi) */
+    --diff-veryeasy-bg: #0f2c22;
+    --diff-veryeasy-ink: #7ad8a1;
+    --diff-easy-bg: #102638;
+    --diff-easy-ink: #7fbaf2;
+    --diff-medium-bg: #2a2914;
+    --diff-medium-ink: #f3d36b;
+    --diff-hard-bg: #331f12;
+    --diff-hard-ink: #ffa066;
+    --diff-extreme-bg: #351616;
+    --diff-extreme-ink: #ff6b6b;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: Montserrat, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    scroll-behavior: smooth;
+  }
+
+  a {
+    color: #9fe1c5;
+    text-decoration: none;
+  }
+
+  .container {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0 14px;
+  }
+
+  /* =========================================================
+     NAVBAR
+     ========================================================= */
+  .navbar {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+  }
+
+  .navbar-left img {
+    position: relative;
+    height: 16px;
+    width: 24px;
+    cursor: pointer;
+  }
+
+  .navbar-left img:hover::after {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    content: attr(data-tooltip);
+    padding: 4px 8px;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #000000;
+    font-size: 12px;
+    white-space: nowrap;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .navbar-center {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    transform: translateY(12px);
+  }
+
+  .search-container {
+    position: relative;
+    width: 260px;
+    padding-top: 10px;
+  }
+
+  .search-wrapper {
+    position: relative;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 22px;
+    background: #ffffff;
+    color: #222222;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .search-top-decoration {
+    position: absolute;
+    z-index: -10;
+    top: -212px;
+    left: 108px;
+    width: 1600%;
+    height: 30px;
+    transform: scale(19);
+    transform-origin: top center;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .mountain-search {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    padding: 0 8px;
+    background: transparent;
+    font-size: 14px;
+  }
+
+  .search-wrapper img[alt="ikona za tražilicu"] {
+    position: absolute;
+    right: 12px;
+    bottom: 7px;
+    width: 19px;
+    height: 19px;
+    pointer-events: none;
+  }
+
+  .navbar-right {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+  }
+
+  .burger-line {
+    width: 26px;
+    height: 3px;
+    border-radius: 2px;
+    background: #ffffff;
+  }
+
+  .menu-overlay {
+    position: fixed;
+    z-index: 9999;
+    top: 70px;
+    right: 0;
+    width: 72vw;
+    max-width: 360px;
+    display: none;
+    flex-direction: column;
+    padding: 18px;
+    border-left: 1px solid var(--line);
+    background: rgba(15, 25, 20, 0.96);
+    backdrop-filter: blur(10px);
+  }
+
+  .menu-overlay.open {
+    display: flex;
+  }
+
+  .menu-overlay a {
+    margin: 10px 0;
+    color: #ffffff;
+  }
+
+  /* =========================================================
+     HERO + NASLOV
+     ========================================================= */
+  .image-section {
+    position: relative;
+    height: 50vh;
+    background: url('images/hero.jpg') center / cover no-repeat;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));
+  }
+
+  main .header {
+    text-align: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--line);
+    border-radius: 16px;
+    background: linear-gradient(180deg, #101b16, #0e1814);
+  }
+
+  main .header h1 {
+    font-size: clamp(14px, 2.3vw, 19px);
+    letter-spacing: 0.2px;
+  }
+
+  main .header p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: clamp(8px, 1.6vw, 10px);
+  }
+
+  /* =========================================================
+     FILTERI — lijevo tab-gumbi, desno panel
+     ========================================================= */
+  .filters-wrap {
+    display: grid;
+    grid-template-columns: 132px 1fr;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    color: var(--ink);
+  }
+
+  /* Lijevi stupac — tab gumbi */
+  .filters-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-tab {
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #121418;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    outline: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.04s;
+  }
+
+  .filter-tab:active {
+    transform: scale(0.98);
+  }
+
+  .filter-tab.active {
+    border-color: #35404a;
+    background: linear-gradient(180deg, #152028, #12171d);
+  }
+
+  /* Primijeni / Osvježi */
+  .filters-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .btn-apply,
+  .btn-reset {
+    flex: 1 1 auto;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #121418;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .btn-apply {
+    border-color: #1f815a;
+    background: linear-gradient(180deg, var(--brand), var(--brand-2));
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  /* Desni panel — prikazuje se samo aktivni */
+  .filters-right {
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    min-height: 140px;
+    background: #111418;
+  }
+
+  .panel {
+    display: none;
+  }
+
+  .panel.active {
+    display: block;
+  }
+
+  /* Opći elementi u panelu */
+  .panel-title {
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #20252c;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  .chip input {
+    display: none;
+  }
+
+  .chip.active {
+    border-color: #39424c;
+    background: #2b3440;
+  }
+
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .field label {
+    min-width: 88px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .select,
+  .range,
+  .button-slim {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #0f1216;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .hint {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  /* Geolokacija badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid #28303a;
+    border-radius: 999px;
+    background: #101419;
+    color: #cde6d9;
+    font-size: 12px;
+  }
+
+  /* =========================================================
+     LISTA STAZA
+     ========================================================= */
+  .trail-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    justify-content: center;
+    margin: 22px auto;
+  }
+
+  @media (max-width: 760px) {
     .trail-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-      justify-content: center;
-      margin: 22px auto;
+      grid-template-columns: 1fr;
     }
+  }
 
-    @media (max-width: 760px) {
-      .trail-list {
-        grid-template-columns: 1fr;
-      }
-    }
+  .trail-card {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #0f1a15;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
 
-    .trail-card {
-      width: 100%;
-      background: #0f1a15;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
+  .trail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  }
 
-    .trail-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-    }
+  .trail-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    background: #0e1714;
+  }
 
-    .trail-card img {
-      width: 100%;
-      height: 170px;
-      object-fit: cover;
-      background: #0e1714;
-    }
+  .trail-card .pad {
+    padding: 12px;
+  }
 
-    .trail-card .pad {
-      padding: 12px;
-    }
+  .title-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
 
-    .title-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
+  .title-line h3 {
+    margin: 0;
+    font-size: 16px;
+  }
 
-    .title-line h3 {
-      margin: 0;
-      font-size: 16px;
-    }
+  .dist-chip {
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #13231c;
+    color: #cfe9de;
+    font-size: 12px;
+    white-space: nowrap;
+  }
 
-    .dist-chip {
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #13231c;
-      color: #cfe9de;
-      white-space: nowrap;
-    }
+  .metric-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  }
 
-    /* redovi metrika + pilule težine */
-    .metric-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-top: 1px dashed rgba(255, 255, 255, 0.08);
-    }
+  .metric-row:first-of-type {
+    border-top: 0;
+  }
 
-    .metric-row:first-of-type {
-      border-top: 0;
-    }
+  .metric-label {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.95;
+  }
 
-    .metric-label {
-      font-weight: 700;
-      font-size: 13px;
-      opacity: 0.95;
-    }
+  .metric-value {
+    justify-self: start;
+    opacity: 0.95;
+  }
 
-    .metric-value {
-      justify-self: start;
-      opacity: 0.95;
-    }
+  .diff-pill {
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
 
-    .diff-pill {
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      border: 1px solid var(--line);
-      white-space: nowrap;
-    }
+  .diff-pill.very-easy {
+    background: var(--diff-veryeasy-bg);
+    color: var(--diff-veryeasy-ink);
+  }
 
-    .diff-pill.very-easy {
-      background: var(--diff-veryeasy-bg);
-      color: var(--diff-veryeasy-ink);
-    }
+  .diff-pill.easy {
+    background: var(--diff-easy-bg);
+    color: var(--diff-easy-ink);
+  }
 
-    .diff-pill.easy {
-      background: var(--diff-easy-bg);
-      color: var(--diff-easy-ink);
-    }
+  .diff-pill.medium {
+    background: var(--diff-medium-bg);
+    color: var(--diff-medium-ink);
+  }
 
-    .diff-pill.medium {
-      background: var(--diff-medium-bg);
-      color: var(--diff-medium-ink);
-    }
+  .diff-pill.hard {
+    background: var(--diff-hard-bg);
+    color: var(--diff-hard-ink);
+  }
 
-    .diff-pill.hard {
-      background: var(--diff-hard-bg);
-      color: var(--diff-hard-ink);
-    }
+  .diff-pill.extreme {
+    background: var(--diff-extreme-bg);
+    color: var(--diff-extreme-ink);
+  }
 
-    .diff-pill.extreme {
-      background: var(--diff-extreme-bg);
-      color: var(--diff-extreme-ink);
-    }
+  .card-desc {
+    margin-top: 10px;
+    color: #cfe1d9;
+    line-height: 1.45;
+  }
 
-    .card-desc {
-      color: #cfe1d9;
-      margin-top: 10px;
-      line-height: 1.45;
-    }
+  .card-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    color: var(--muted);
+    font-size: 12px;
+  }
 
-    .card-footer {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-      font-size: 12px;
-    }
+  /* =========================================================
+     FOOTER / BACK TO TOP
+     ========================================================= */
+  #backToTop {
+    position: fixed;
+    z-index: 9999;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    backdrop-filter: blur(12px);
+  }
 
-    /* =========================================================
-       FOOTER / BACK TO TOP
-       ========================================================= */
-    #backToTop {
-      position: fixed;
-      bottom: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
+  footer {
+    text-align: center;
+    padding: 20px 10px;
+    margin-top: 40px;
+    border-top: 1px solid var(--line);
+    background: #0e1714;
+    color: #bcd0c7;
+  }
 
-    footer {
-      background: #0e1714;
-      color: #bcd0c7;
-      text-align: center;
-      padding: 20px 10px;
-      margin-top: 40px;
-      border-top: 1px solid var(--line);
-    }
-
-    .footer-icons svg {
-      width: 32px;
-      height: 32px;
-      margin: 0 10px;
-      opacity: 0.85;
-    }
-  </style>
+  .footer-icons svg {
+    width: 32px;
+    height: 32px;
+    margin: 0 10px;
+    opacity: 0.85;
+  }
+</style>
 </head>
 
 <body>
