@@ -660,30 +660,26 @@
       <div class="filters-right">
         <!-- TEŽINA -->
         <div id="panel-diff" class="panel active">
-          <div class="panel-title">Ocijeni po kilometraži i/ili usponu</div>
-          <div class="field">
-            <label for="difficultyLogic">Način</label>
-            <select id="difficultyLogic" class="select" title="Kombinacija pravila">
-              <option value="any" selected>Poklopi bilo koju</option>
-              <option value="all">Poklopi obje</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Uključi</label>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <label class="badge"><input id="modeKm" type="checkbox" checked /> km</label>
-              <label class="badge"><input id="modeElev" type="checkbox" checked /> uspon</label>
-            </div>
-          </div>
-          <div class="chips" style="margin-top:6px;">
-            <label class="chip"><input class="diff-chip" type="checkbox" value="very-easy" /> Jako lako</label>
-            <label class="chip"><input class="diff-chip" type="checkbox" value="easy" /> Lako</label>
-            <label class="chip"><input class="diff-chip" type="checkbox" value="medium" checked /> Srednje teško</label>
-            <label class="chip"><input class="diff-chip" type="checkbox" value="hard" /> Jako teško</label>
-            <label class="chip"><input class="diff-chip" type="checkbox" value="extreme" /> Ekstremno</label>
-          </div>
-          <p class="hint">Savjet: uključi npr. “km + uspon” i “Poklopi obje” za strože filtre.</p>
-        </div>
+  <div class="panel-title">Ocijeni po kilometraži i/ili usponu</div>
+
+  <div class="field">
+    <label>Uključi</label>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <label class="badge"><input id="modeKm" type="checkbox" checked /> km</label>
+      <label class="badge"><input id="modeElev" type="checkbox" checked /> uspon</label>
+    </div>
+  </div>
+
+  <div class="chips" style="margin-top:6px;">
+    <label class="chip"><input class="diff-chip" type="checkbox" value="very-easy" /> Jako lako</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="easy" /> Lako</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="medium" checked /> Srednje teško</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="hard" /> Jako teško</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="extreme" /> Ekstremno</label>
+  </div>
+
+  <p class="hint">Savjet: uključi “km” i/ili “uspon”. Ako su oba uključena, prikazuju se staze koje zadovolje barem jedan od njih.</p>
+</div>
 
         <!-- UDALJENOST -->
         <div id="panel-radius" class="panel">
@@ -935,31 +931,29 @@
        #10.5 STATE
        --------------------------------------------------------- */
     const filterState = {
-      area: '',
-      radius: '',
-      duration: '',
-      modeKm: true,
-      modeElev: true,
-      logic: 'any',
-      chipsSel: ['medium'],
-      poi: '',
-      distanceMode: 'air'
-    };
+  area: '',
+  radius: '',
+  duration: '',
+  modeKm: true,
+  modeElev: true,
+  chipsSel: ['medium'],
+  poi: '',
+  distanceMode: 'air'
+};
 
     function stateFromControls(){
-      const chips=[...document.querySelectorAll('.diff-chip:checked')].map(i=>i.value);
-      return {
-        area: document.getElementById('areaSelect')?.value || '',
-        radius: document.getElementById('radiusSelect')?.value || '',
-        duration: document.getElementById('durationBucket')?.value || '',
-        poi: document.getElementById('poiSearch')?.value?.trim() || '',
-        modeKm: document.getElementById('modeKm')?.checked ?? true,
-        modeElev: document.getElementById('modeElev')?.checked ?? true,
-        logic: document.getElementById('difficultyLogic')?.value || 'any',
-        chipsSel: chips,
-        distanceMode: document.getElementById('distanceMode')?.value || 'air'
-      };
-    }
+  const chips = [...document.querySelectorAll('.diff-chip:checked')].map(i => i.value);
+  return {
+    area: document.getElementById('areaSelect')?.value || '',
+    radius: document.getElementById('radiusSelect')?.value || '',
+    duration: document.getElementById('durationBucket')?.value || '',
+    poi: document.getElementById('poiSearch')?.value?.trim() || '',
+    modeKm: document.getElementById('modeKm')?.checked ?? true,
+    modeElev: document.getElementById('modeElev')?.checked ?? true,
+    chipsSel: chips,
+    distanceMode: document.getElementById('distanceMode')?.value || 'air'
+  };
+}
     function updateFilterState(ns){ Object.assign(filterState, ns); }
 
     /* ---------------------------------------------------------
@@ -984,16 +978,18 @@
         document.querySelectorAll('.diff-chip:checked').forEach(i=>i.checked=false);
         updateFilterState({chipsSel:[]}); runFiltering();
       });
-      const modeBits=[]; if(filterState.modeKm) modeBits.push('km'); if(filterState.modeElev) modeBits.push('visina');
-      if (modeBits.length) addChip(`Način: ${modeBits.join(' + ')} / ${filterState.logic==='all'?'OBJE':'BILO KOJA'}`, ()=>{
-        document.getElementById('modeKm').checked=true; document.getElementById('modeElev').checked=true;
-        document.getElementById('difficultyLogic').value='any';
-        updateFilterState({modeKm:true, modeElev:true, logic:'any'}); runFiltering();
-      });
-      if (filterState.distanceMode!=='air') addChip(`Udaljenost: ${filterState.distanceMode}`, ()=>{
-        document.getElementById('distanceMode').value='air';
-        updateFilterState({distanceMode:'air'}); runFiltering();
-      });
+      const modeBits = [];
+if (filterState.modeKm) modeBits.push('km');
+if (filterState.modeElev) modeBits.push('uspon');
+
+if (modeBits.length) {
+  addChip(`Kriteriji: ${modeBits.join(' + ')}`, () => {
+    document.getElementById('modeKm').checked = true;
+    document.getElementById('modeElev').checked = true;
+    updateFilterState({ modeKm: true, modeElev: true });
+    runFiltering();
+  });
+}
     }
 
     /* ---------------------------------------------------------
@@ -1042,17 +1038,26 @@
     /* ---------------------------------------------------------
        #10.8 FILTRIRANJE
        --------------------------------------------------------- */
-    function matchesDifficulty(t, chipsSel, modeKm, modeElev, logic){
-      if (!chipsSel || !chipsSel.length) return true;
-      const kmClass = classifyByKm(t.distanceKm);
-      const elevClass = classifyByElev(t.elevationM);
-      const hitKm = modeKm ? chipsSel.includes(kmClass) : false;
-      const hitEl = modeElev ? chipsSel.includes(elevClass) : false;
-      if (modeKm && modeElev) return logic === 'all' ? (hitKm && hitEl) : (hitKm || hitEl);
-      if (modeKm) return hitKm;
-      if (modeElev) return hitEl;
-      return true;
-    }
+        function matchesDifficulty(t, chipsSel, modeKm, modeElev){
+  // ako nema odabranih “težina”, ne filtriraj po težini
+  if (!chipsSel || !chipsSel.length) return true;
+
+  const kmClass   = classifyByKm(t.distanceKm);
+  const elevClass = classifyByElev(t.elevationM);
+
+  const hitKm = modeKm   && chipsSel.includes(kmClass);
+  const hitEl = modeElev && chipsSel.includes(elevClass);
+
+  // ako su oba uključena → dovoljno je zadovoljiti barem jedan
+  if (modeKm && modeElev) return (hitKm || hitEl);
+
+  // samo jedan uključen → filtriraj po tom jednom
+  if (modeKm)   return hitKm;
+  if (modeElev) return hitEl;
+
+  // ako su oba isključena → ne ograničavaj po težini
+  return true;
+}
     function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
     function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
     function matchesPOI(t,q){
@@ -1144,28 +1149,49 @@
       updateFilterState(stateFromControls());
       await runFiltering();
     });
-    document.getElementById('quickReset').addEventListener('click', ()=>{
-      ['areaSelect','radiusSelect','durationBucket','distanceMode'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-      document.getElementById('modeKm').checked = true;
-      document.getElementById('modeElev').checked = true;
-      document.getElementById('difficultyLogic').value = 'any';
-      document.querySelectorAll('.diff-chip:checked').forEach(i=>i.checked=false);
-      const poi = document.getElementById('poiSearch'); if (poi) poi.value='';
+    document.getElementById('quickReset').addEventListener('click', () => {
+  ['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
 
-      updateFilterState({
-        area:'', radius:'', duration:'', poi:'', chipsSel:[],
-        modeKm:true, modeElev:true, logic:'any', distanceMode:'air'
-      });
-      runFiltering();
-    });
+  const modeKmEl   = document.getElementById('modeKm');
+  const modeElevEl = document.getElementById('modeElev');
+  if (modeKmEl)   modeKmEl.checked = true;
+  if (modeElevEl) modeElevEl.checked = true;
 
-    document.addEventListener('change', async (e)=>{
-      const id=e.target.id; if(!id) return;
-      if (id==='distanceMode' && e.target.value==='drive'){ await ensureGeolocationOnce(true); }
-      if (['areaSelect','radiusSelect','durationBucket','distanceMode','modeKm','modeElev','difficultyLogic'].includes(id)){
-        updateFilterState(stateFromControls()); runFiltering();
-      }
-    });
+  document.querySelectorAll('.diff-chip:checked').forEach(i => i.checked = false);
+
+  const poi = document.getElementById('poiSearch');
+  if (poi) poi.value = '';
+
+  updateFilterState({
+    area: '',
+    radius: '',
+    duration: '',
+    poi: '',
+    chipsSel: [],
+    modeKm: true,
+    modeElev: true,
+    distanceMode: 'air'
+  });
+
+  runFiltering();
+});
+
+    document.addEventListener('change', async (e) => {
+  const id = e.target.id;
+  if (!id) return;
+
+  if (id === 'distanceMode' && e.target.value === 'drive') {
+    await ensureGeolocationOnce(true);
+  }
+
+  if (['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode', 'modeKm', 'modeElev'].includes(id)) {
+    updateFilterState(stateFromControls());
+    runFiltering();
+  }
+});
     document.addEventListener('input', (e)=>{
       if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
       if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
