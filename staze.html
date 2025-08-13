@@ -33,7 +33,6 @@
       --brand-2: #3d9c73;
       --chip: #16231d;
 
-      /* boje za težine (po traženoj shemi) */
       --diff-veryeasy-bg: #0f2c22;
       --diff-veryeasy-ink: #7ad8a1;
       --diff-easy-bg: #102638;
@@ -46,9 +45,16 @@
       --diff-extreme-ink: #ff6b6b;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    html, body { overflow-x: hidden; }
+    html,
+    body {
+      overflow-x: hidden;
+    }
 
     body {
       font-family: Montserrat, Arial, sans-serif;
@@ -57,179 +63,532 @@
       scroll-behavior: smooth;
     }
 
-    a { color: #9fe1c5; text-decoration: none; }
+    a {
+      color: #9fe1c5;
+      text-decoration: none;
+    }
 
-    .container { max-width: 1150px; margin: 0 auto; padding: 0 14px; }
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 0 14px;
+    }
 
     /* =========================================================
        NAVBAR
        ========================================================= */
     .navbar {
-      position: fixed; z-index: 1000; top: 0; right: 0; left: 0; height: 70px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 15px; border-bottom: 1px solid var(--line);
-      background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px);
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
     }
 
-    .navbar-left img { position: relative; height: 16px; width: 24px; cursor: pointer; }
-    .navbar-left img:hover::after{
-      position: absolute; top: 30px; left: 0; content: attr(data-tooltip);
-      padding: 4px 8px; border-radius: 5px; background: #ffffff; color: #000;
-      font-size: 12px; white-space: nowrap; box-shadow: 0 0 6px rgba(0,0,0,.2);
+    .navbar-left img {
+      position: relative;
+      height: 16px;
+      width: 24px;
+      cursor: pointer;
     }
 
-    .navbar-center { display: flex; justify-content: center; flex: 1; transform: translateY(12px); }
-    .search-container { position: relative; width: 260px; padding-top: 10px; }
-    .search-wrapper{
-      position: relative; height: 34px; display: flex; align-items: center; padding: 0 14px;
-      border-radius: 22px; background: #fff; color: #222; box-shadow: 0 3px 8px rgba(0,0,0,.3);
+    .navbar-left img:hover::after {
+      position: absolute;
+      top: 30px;
+      left: 0;
+      content: attr(data-tooltip);
+      padding: 4px 8px;
+      border-radius: 5px;
+      background: #ffffff;
+      color: #000;
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 0 6px rgba(0, 0, 0, .2);
     }
-    .search-top-decoration{
-      position: absolute; z-index: -10; top: -212px; left: 108px; width: 1600%; height: 30px;
-      transform: scale(19); transform-origin: top center; object-fit: cover; pointer-events: none;
-    }
-    .mountain-search{ flex:1; border:0; outline:0; padding:0 8px; background:transparent; font-size:14px; }
-    .search-wrapper img[alt="ikona za tražilicu"]{ position: absolute; right:12px; bottom:7px; width:19px; height:19px; pointer-events:none; }
 
-    .navbar-right{
-      display:flex; flex-direction:column; gap:5px; padding:8px;
-      border:1px solid rgba(255,255,255,.35); border-radius:8px; background: rgba(255,255,255,.05);
-      cursor:pointer;
+    .navbar-center {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+      transform: translateY(12px);
     }
-    .burger-line{ width:26px; height:3px; border-radius:2px; background:#fff; }
 
-    .menu-overlay{
-      position: fixed; z-index: 9999; top: 70px; right: 0; width: 72vw; max-width: 360px;
-      display: none; flex-direction: column; padding: 18px; border-left: 1px solid var(--line);
-      background: rgba(15,25,20,.96); backdrop-filter: blur(10px);
+    .search-container {
+      position: relative;
+      width: 260px;
+      padding-top: 10px;
     }
-    .menu-overlay.open{ display:flex; }
-    .menu-overlay a{ margin:10px 0; color:#fff; }
+
+    .search-wrapper {
+      position: relative;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 22px;
+      background: #fff;
+      color: #222;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, .3);
+    }
+
+    .search-top-decoration {
+      position: absolute;
+      z-index: -10;
+      top: -212px;
+      left: 108px;
+      width: 1600%;
+      height: 30px;
+      transform: scale(19);
+      transform-origin: top center;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .mountain-search {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      padding: 0 8px;
+      background: transparent;
+      font-size: 14px;
+    }
+
+    .search-wrapper img[alt="ikona za tražilicu"] {
+      position: absolute;
+      right: 12px;
+      bottom: 7px;
+      width: 19px;
+      height: 19px;
+      pointer-events: none;
+    }
+
+    .navbar-right {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, .35);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .05);
+      cursor: pointer;
+    }
+
+    .burger-line {
+      width: 26px;
+      height: 3px;
+      border-radius: 2px;
+      background: #fff;
+    }
+
+    .menu-overlay {
+      position: fixed;
+      z-index: 9999;
+      top: 70px;
+      right: 0;
+      width: 72vw;
+      max-width: 360px;
+      display: none;
+      flex-direction: column;
+      padding: 18px;
+      border-left: 1px solid var(--line);
+      background: rgba(15, 25, 20, .96);
+      backdrop-filter: blur(10px);
+    }
+
+    .menu-overlay.open {
+      display: flex;
+    }
+
+    .menu-overlay a {
+      margin: 10px 0;
+      color: #fff;
+    }
 
     /* =========================================================
        HERO + NASLOV
        ========================================================= */
-    .image-section { position: relative; height: 50vh; background: url('images/hero.jpg') center / cover no-repeat; }
-    .overlay{ position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55)); }
+    .image-section {
+      position: relative;
+      height: 50vh;
+      background: url('images/hero.jpg') center / cover no-repeat;
+    }
 
-    main .header{
-      text-align:center; padding:16px; border-bottom:1px solid var(--line); border-radius:16px;
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .55));
+    }
+
+    main .header {
+      text-align: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      border-radius: 16px;
       background: linear-gradient(180deg, #101b16, #0e1814);
     }
-    main .header h1{ font-size: clamp(14px, 2.3vw, 19px); letter-spacing: .2px; }
-    main .header p{ margin-top: 8px; color: var(--muted); font-size: clamp(8px, 1.6vw, 10px); }
+
+    main .header h1 {
+      font-size: clamp(14px, 2.3vw, 19px);
+      letter-spacing: .2px;
+    }
+
+    main .header p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: clamp(8px, 1.6vw, 10px);
+    }
 
     /* =========================================================
-       FILTERI — lijevo tab-gumbi, desno panel
+       FILTERI — lijevo tab-gumbi (usko), desno panel (kompakt)
        ========================================================= */
-    .filters-wrap{
-      display:grid; grid-template-columns: 132px 1fr; gap:10px; width:100%;
-      padding:10px; border:1px solid var(--line); border-radius:14px;
+    .filters-wrap {
+      display: grid;
+      grid-template-columns: 108px 1fr;
+      gap: 10px;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
       background: linear-gradient(180deg, var(--panel), var(--panel-2));
-      box-shadow:0 8px 24px rgba(0,0,0,.25); color:var(--ink);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+      color: var(--ink);
     }
-    .filters-left{ display:flex; flex-direction:column; gap:8px; }
-    .filter-tab{
-      width:100%; text-align:left; padding:8px 10px; border:1px solid var(--line); border-radius:10px;
-      background:#121418; color:var(--ink); font-size:14px; line-height:1; letter-spacing:.2px; outline:none;
+
+    .filters-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-tab {
+      width: 100%;
+      text-align: left;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #121418;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1;
+      letter-spacing: .2px;
+      outline: none;
       transition: background .2s, border-color .2s, transform .04s;
     }
-    .filter-tab:active{ transform:scale(.98); }
-    .filter-tab.active{ background:linear-gradient(180deg,#152028,#12171d); border-color:#35404a; }
 
-    .filters-actions{ margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
-    .btn-apply, .btn-reset{
-      flex:1 1 auto; padding:8px 10px; border:1px solid var(--line); border-radius:10px;
-      background:#121418; color:var(--ink); font-size:13px;
+    .filter-tab:active {
+      transform: scale(.985);
     }
-    .btn-apply{ background: linear-gradient(180deg, var(--brand), var(--brand-2)); border-color:#1f815a; color:#fff; font-weight:700; }
 
-    .filters-right{
-      padding:10px; border:1px solid var(--line); border-radius:12px; min-height:140px; background:#111418;
+    .filter-tab.active {
+      background: linear-gradient(180deg, #152028, #12171d);
+      border-color: #35404a;
     }
-    .panel{ display:none; }
-    .panel.active{ display:block; }
 
-    .panel-title{ margin-bottom:8px; color:var(--muted); font-size:13px; font-weight:700; letter-spacing:.2px; }
-    .chips{ display:flex; flex-wrap:wrap; gap:8px; }
-    .chip{
-      padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:#20252c;
-      color:var(--ink); font-size:13px; line-height:1;
+    .filters-actions {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
-    .chip input{ display:none; }
-    .chip.active{ background:#2b3440; border-color:#39424c; }
 
-    .field{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-    .field label{ min-width:88px; color:var(--muted); font-size:13px; }
-    .select, .range, .button-slim{
-      width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:10px;
-      background:#0f1216; color:var(--ink); font-size:13px;
+    .btn-apply,
+    .btn-reset {
+      flex: 1 1 auto;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #121418;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1;
     }
-    .hint{ margin-top:6px; font-size:12px; color:var(--muted); }
 
-    .badge{
-      display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border:1px solid #28303a; border-radius:999px;
-      background:#101419; color:#cde6d9; font-size:12px;
+    .btn-apply {
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      border-color: #1f815a;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .filters-right {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      min-height: 120px;
+      background: #111418;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .panel-title {
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #20252c;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .chip input {
+      display: none;
+    }
+
+    .chip.active {
+      background: #2b3440;
+      border-color: #39424c;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .field label {
+      min-width: 84px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .select,
+    .range,
+    .button-slim {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #0f1216;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    .hint {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border: 1px solid #28303a;
+      border-radius: 999px;
+      background: #101419;
+      color: #cde6d9;
+      font-size: 11px;
+      line-height: 1;
     }
 
     /* =========================================================
-       LISTA STAZA
+       LISTA STAZA — „prvi dan” kompakt
        ========================================================= */
-    .trail-list{
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; justify-content: center; margin: 22px auto;
-    }
-    @media (max-width: 760px){ .trail-list{ grid-template-columns: 1fr; } }
-
-    .trail-card{
-      width:100%; border:1px solid var(--line); border-radius:12px; background:#0f1a15;
-      overflow:hidden; transition: transform .15s ease, box-shadow .15s ease;
-    }
-    .trail-card:hover{ transform: translateY(-2px); box-shadow:0 10px 20px rgba(0,0,0,.25); }
-    .trail-card img{ width:100%; height:170px; object-fit:cover; background:#0e1714; }
-    .trail-card .pad{ padding:12px; }
-
-    .title-line{ display:flex; align-items:center; justify-content: space-between; gap:8px; }
-    .title-line h3{ margin:0; font-size:16px; }
-
-    .dist-chip{
-      padding:4px 8px; border:1px solid var(--line); border-radius:999px; background:#13231c;
-      color:#cfe9de; font-size:12px; white-space:nowrap;
+    .trail-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      justify-content: center;
+      margin: 20px auto;
     }
 
-    .metric-row{
-      display:grid; grid-template-columns: auto 1fr auto; align-items:center; gap:10px;
-      padding:8px 0; border-top:1px dashed rgba(255,255,255,.08);
+    @media (max-width: 760px) {
+      .trail-list {
+        grid-template-columns: 1fr;
+      }
     }
-    .metric-row:first-of-type{ border-top:0; }
-    .metric-label{ font-size:13px; font-weight:700; opacity:.95; }
-    .metric-value{ justify-self:start; opacity:.95; }
 
-    .diff-pill{
-      padding:4px 8px; border:1px solid var(--line); border-radius:999px; font-size:12px; white-space:nowrap;
+    .trail-card {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0f1a15;
+      overflow: hidden;
+      transition: transform .15s ease, box-shadow .15s ease;
     }
-    .diff-pill.very-easy{ background: var(--diff-veryeasy-bg); color: var(--diff-veryeasy-ink); }
-    .diff-pill.easy     { background: var(--diff-easy-bg);      color: var(--diff-easy-ink); }
-    .diff-pill.medium   { background: var(--diff-medium-bg);    color: var(--diff-medium-ink); }
-    .diff-pill.hard     { background: var(--diff-hard-bg);      color: var(--diff-hard-ink); }
-    .diff-pill.extreme  { background: var(--diff-extreme-bg);   color: var(--diff-extreme-ink); }
 
-    .card-desc{ margin-top:10px; color:#cfe1d9; line-height:1.45; }
-    .card-footer{ margin-top:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,.08); color:var(--muted); font-size:12px; }
+    .trail-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
+    }
+
+    .trail-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background: #0e1714;
+    }
+
+    .trail-card .pad {
+      padding: 10px;
+    }
+
+    .title-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .title-line h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .dist-chip {
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #13231c;
+      color: #cfe9de;
+      font-size: 11px;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-top: 1px dashed rgba(255, 255, 255, .08);
+    }
+
+    .metric-row:first-of-type {
+      border-top: 0;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      font-weight: 700;
+      opacity: .95;
+    }
+
+    .metric-value {
+      justify-self: start;
+      opacity: .95;
+      font-size: 12px;
+    }
+
+    .diff-pill {
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 11px;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .diff-pill.very-easy {
+      background: var(--diff-veryeasy-bg);
+      color: var(--diff-veryeasy-ink);
+    }
+
+    .diff-pill.easy {
+      background: var(--diff-easy-bg);
+      color: var(--diff-easy-ink);
+    }
+
+    .diff-pill.medium {
+      background: var(--diff-medium-bg);
+      color: var(--diff-medium-ink);
+    }
+
+    .diff-pill.hard {
+      background: var(--diff-hard-bg);
+      color: var(--diff-hard-ink);
+    }
+
+    .diff-pill.extreme {
+      background: var(--diff-extreme-bg);
+      color: var(--diff-extreme-ink);
+    }
+
+    .card-desc {
+      margin-top: 8px;
+      color: #cfe1d9;
+      line-height: 1.4;
+      font-size: 12px;
+    }
+
+    .card-footer {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, .08);
+      color: var(--muted);
+      font-size: 11px;
+    }
 
     /* =========================================================
        FOOTER / BACK TO TOP
        ========================================================= */
-    #backToTop{
-      position: fixed; z-index: 9999; bottom: 22px; left: 50%; transform: translateX(-50%);
-      display:none; align-items:center; justify-content:center; width:48px; height:48px;
-      border:1px solid rgba(255,255,255,.25); border-radius:50%;
-      background: rgba(255,255,255,.15); color:#fff; backdrop-filter: blur(12px);
+    #backToTop {
+      position: fixed;
+      z-index: 9999;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
+      backdrop-filter: blur(12px);
     }
-    footer{
-      text-align:center; padding:20px 10px; margin-top:40px; border-top:1px solid var(--line);
-      background:#0e1714; color:#bcd0c7;
+
+    footer {
+      text-align: center;
+      padding: 20px 10px;
+      margin-top: 40px;
+      border-top: 1px solid var(--line);
+      background: #0e1714;
+      color: #bcd0c7;
     }
-    .footer-icons svg{ width:32px; height:32px; margin:0 10px; opacity:.85; }
+
+    .footer-icons svg {
+      width: 32px;
+      height: 32px;
+      margin: 0 10px;
+      opacity: .85;
+    }
   </style>
 </head>
 
@@ -254,7 +613,9 @@
     </div>
 
     <div id="menu-toggle" class="navbar-right" aria-label="Otvori izbornik" role="button">
-      <div class="burger-line"></div><div class="burger-line"></div><div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
     </div>
   </div>
 
@@ -269,7 +630,9 @@
   </div>
 
   <!-- HERO -->
-  <section class="image-section"><div class="overlay"></div></section>
+  <section class="image-section">
+    <div class="overlay"></div>
+  </section>
 
   <main class="container">
     <section class="header">
@@ -578,7 +941,7 @@
       modeKm: true,
       modeElev: true,
       logic: 'any',
-      chipsSel: ['medium'],  // zadržavam tvoj default
+      chipsSel: ['medium'],
       poi: '',
       distanceMode: 'air'
     };
@@ -643,29 +1006,29 @@
         ? `<span class="dist-chip">${t._distKm.toFixed(1)} km od tebe</span>` : '';
       const areaFooter = (t.area || t.mountain) ? `<div class="card-footer">${t.area || t.mountain}</div>` : '';
       return `
-        <article class="trail-card" data-id="${t.id}">
-          <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
+        <article class="trail-card" data-id="\${t.id}">
+          <img src="\${t.thumbnail}" alt="\${t.name}" loading="lazy"/>
           <div class="pad">
             <div class="title-line">
-              <h3>${t.name}</h3>
+              <h3>\${t.name}</h3>
               ${distChip}
             </div>
             <div class="metric-row">
               <span class="metric-label">Duljina</span>
-              <span class="metric-value">${t.distanceKm} km</span>
-              <span class="diff-pill ${diffKm}" title="Ocjena težine po km">${DIFF_LABELS[diffKm]}</span>
+              <span class="metric-value">\${t.distanceKm} km</span>
+              <span class="diff-pill ${'${diffKm}'}" title="Ocjena težine po km">\${DIFF_LABELS[diffKm]}</span>
             </div>
             <div class="metric-row">
               <span class="metric-label">Uspon</span>
-              <span class="metric-value">${t.elevationM} m</span>
-              <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
+              <span class="metric-value">\${t.elevationM} m</span>
+              <span class="diff-pill ${'${diffEl}'}" title="Ocjena težine po usponu">\${DIFF_LABELS[diffEl]}</span>
             </div>
             <div class="metric-row">
               <span class="metric-label">Trajanje</span>
-              <span class="metric-value">${t.durationH} h</span>
+              <span class="metric-value">\${t.durationH} h</span>
               <span></span>
             </div>
-            <p class="card-desc">${t.description || ''}</p>
+            <p class="card-desc">\${t.description || ''}</p>
             ${areaFooter}
           </div>
         </article>
@@ -760,7 +1123,6 @@
     /* ---------------------------------------------------------
        #10.9 TABS + WIRING
        --------------------------------------------------------- */
-    // Tabs
     document.querySelectorAll('.filter-tab').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
@@ -770,7 +1132,6 @@
         const panel = document.getElementById(id);
         if (panel) panel.classList.add('active');
 
-        // Posebno: ako otvori Udaljenost, zamoli lokaciju
         if (id==='panel-radius') {
           ensureGeolocationOnce().then(loc => {
             if (loc){ distancesEnabled = true; runFiltering(); }
@@ -779,13 +1140,11 @@
       });
     });
 
-    // Apply / Reset
     document.getElementById('applyFilters').addEventListener('click', async ()=>{
       updateFilterState(stateFromControls());
       await runFiltering();
     });
     document.getElementById('quickReset').addEventListener('click', ()=>{
-      // reset UI
       ['areaSelect','radiusSelect','durationBucket','distanceMode'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
       document.getElementById('modeKm').checked = true;
       document.getElementById('modeElev').checked = true;
@@ -793,7 +1152,6 @@
       document.querySelectorAll('.diff-chip:checked').forEach(i=>i.checked=false);
       const poi = document.getElementById('poiSearch'); if (poi) poi.value='';
 
-      // reset state
       updateFilterState({
         area:'', radius:'', duration:'', poi:'', chipsSel:[],
         modeKm:true, modeElev:true, logic:'any', distanceMode:'air'
@@ -801,7 +1159,6 @@
       runFiltering();
     });
 
-    // Realtime change
     document.addEventListener('change', async (e)=>{
       const id=e.target.id; if(!id) return;
       if (id==='distanceMode' && e.target.value==='drive'){ await ensureGeolocationOnce(true); }
@@ -813,7 +1170,6 @@
       if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
       if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
     });
-    // diff chips
     document.querySelectorAll('.diff-chip').forEach(cb=>{
       cb.addEventListener('change', ()=>{ updateFilterState(stateFromControls()); runFiltering(); });
     });
