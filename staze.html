@@ -996,40 +996,51 @@ if (modeBits.length) {
        #10.7 KARTICE
        --------------------------------------------------------- */
     function cardHTML(t){
-      const diffKm = classifyByKm(t.distanceKm);
-      const diffEl = classifyByElev(t.elevationM);
-      const distChip = (distancesEnabled && typeof t._distKm === 'number')
-        ? `<span class="dist-chip">${t._distKm.toFixed(1)} km od tebe</span>` : '';
-      const areaFooter = (t.area || t.mountain) ? `<div class="card-footer">${t.area || t.mountain}</div>` : '';
-      return `
-        <article class="trail-card" data-id="\${t.id}">
-          <img src="\${t.thumbnail}" alt="\${t.name}" loading="lazy"/>
-          <div class="pad">
-            <div class="title-line">
-              <h3>\${t.name}</h3>
-              ${distChip}
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">Duljina</span>
-              <span class="metric-value">\${t.distanceKm} km</span>
-              <span class="diff-pill ${'${diffKm}'}" title="Ocjena težine po km">\${DIFF_LABELS[diffKm]}</span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">Uspon</span>
-              <span class="metric-value">\${t.elevationM} m</span>
-              <span class="diff-pill ${'${diffEl}'}" title="Ocjena težine po usponu">\${DIFF_LABELS[diffEl]}</span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">Trajanje</span>
-              <span class="metric-value">\${t.durationH} h</span>
-              <span></span>
-            </div>
-            <p class="card-desc">\${t.description || ''}</p>
-            ${areaFooter}
-          </div>
-        </article>
-      `;
-    }
+  const diffKm = classifyByKm(t.distanceKm);
+  const diffEl = classifyByElev(t.elevationM);
+
+  const distChip = (distancesEnabled && typeof t._distKm === 'number')
+    ? `<span class="dist-chip">${t._distKm.toFixed(1)} km od tebe</span>`
+    : '';
+
+  const areaFooter = (t.area || t.mountain)
+    ? `<div class="card-footer">${t.area || t.mountain}</div>`
+    : '';
+
+  return `
+    <article class="trail-card" data-id="${t.id}">
+      <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
+      <div class="pad">
+        <div class="title-line">
+          <h3>${t.name}</h3>
+          ${distChip}
+        </div>
+
+        <div class="metric-row">
+          <span class="metric-label">Duljina</span>
+          <span class="metric-value">${t.distanceKm} km</span>
+          <span class="diff-pill ${diffKm}" title="Ocjena težine po km">${DIFF_LABELS[diffKm]}</span>
+        </div>
+
+        <div class="metric-row">
+          <span class="metric-label">Uspon</span>
+          <span class="metric-value">${t.elevationM} m</span>
+          <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
+        </div>
+
+        <div class="metric-row">
+          <span class="metric-label">Trajanje</span>
+          <span class="metric-value">${t.durationH} h</span>
+          <span></span>
+        </div>
+
+        <p class="card-desc">${t.description || ''}</p>
+        ${areaFooter}
+      </div>
+    </article>
+  `;
+}
+    
     function renderTrails(list){
       const host=document.getElementById('trail-list');
       host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
@@ -1086,14 +1097,16 @@ if (modeBits.length) {
       const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
       return d <= rKm;
     }
-    async function filterList(){
-      const {area,radius,duration,modeKm,modeElev,logic,chipsSel,poi,distanceMode} = filterState;
-      let base = TRAILS.filter(t =>
-        matchesArea(t,area) &&
-        matchesDuration(t,duration) &&
-        matchesPOI(t,poi) &&
-        matchesDifficulty(t,chipsSel,modeKm,modeElev,logic)
-      );
+      async function filterList(){
+  const { area, radius, duration, modeKm, modeElev, chipsSel, poi, distanceMode } = filterState;
+
+  let base = TRAILS.filter(t =>
+    matchesArea(t, area) &&
+    matchesDuration(t, duration) &&
+    matchesPOI(t, poi) &&
+    matchesDifficulty(t, chipsSel, modeKm, modeElev)
+  );
+  
       if (radius){
         const results=[]; const loc=await ensureGeolocationOnce();
         for (const t of base){
