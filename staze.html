@@ -656,8 +656,8 @@
 
   <main class="container">
     <section class="header">
-      <h1>Istraži planinarske staze Balkana</h1>
-      <p>Pronađi svoju turu prema težini (km/nadmorska), planini/području, vremenu hodanja ili udaljenosti od tvoje lokacije.</p>
+      <h1>Istražte planinarske staze</h1>
+      <p>Pronađite svoju turu prema težini (km/nmv), planini/području, vremenu hodanja ili udaljenosti od vaše lokacije.</p>
     </section>
 
     <!-- FILTERI (Lijevo: mali gumbi; Desno: mali paneli) -->
@@ -680,13 +680,13 @@
       <div class="filters-right">
         <!-- TEŽINA -->
         <div id="panel-diff" class="panel active">
-  <div class="panel-title">Ocijeni po kilometraži i/ili usponu</div>
+  <div class="panel-title">Ocijeni po kilometraži i/ili nadmorskoj visini</div>
 
   <div class="field">
     <label>Uključi</label>
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
       <label class="badge"><input id="modeKm" type="checkbox" checked /> km</label>
-      <label class="badge"><input id="modeElev" type="checkbox" checked /> uspon</label>
+      <label class="badge"><input id="modeElev" type="checkbox" checked /> nm/v</label>
     </div>
   </div>
 
@@ -698,12 +698,12 @@
     <label class="chip"><input class="diff-chip" type="checkbox" value="extreme" /> Ekstremno</label>
   </div>
 
-  <p class="hint">Savjet: uključi “km” i/ili “uspon”. Ako su oba uključena, prikazuju se staze koje zadovolje barem jedan od njih.</p>
+  <p class="hint">Savjet: uključi “km” i/ili “nm/v”. Ako su oba filtera uključena, prikazuju se staze koje zadovolje barem jedan od njih.</p>
 </div>
 
         <!-- UDALJENOST -->
         <div id="panel-radius" class="panel">
-          <div class="panel-title">Udaljenost od tvoje lokacije</div>
+          <div class="panel-title">Udaljenost od vaše lokacije</div>
           <div class="field">
             <label for="radiusSelect">Radijus</label>
             <select id="radiusSelect" class="select">
@@ -722,7 +722,7 @@
               <option value="drive">Vožnja autom (beta)</option>
             </select>
           </div>
-          <p class="hint">Dopusti lokaciju za automatski prikaz “XX km od tebe” na svakoj kartici.</p>
+          <p class="hint">Dopusti lokaciju za automatski prikaz “XX km od vas” na svakoj kartici.</p>
         </div>
 
         <!-- PODRUČJE -->
