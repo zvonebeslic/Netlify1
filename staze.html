@@ -600,8 +600,6 @@
 </head>
 
 <body>
-  <!-- placeholder zbog fetch("season.html") -->
-  <div id="season-placeholder" style="display:none"></div>
 
 <!-- === NAVIGACIJA (gore) === -->
   <div class="navbar">
@@ -635,6 +633,18 @@
     <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
 
+  <!-- === SEASON TOGGLE IKONE === -->
+<div id="season-toggle-wrapper">
+  <img src="images/seasonchange.svg" id="season-toggle" alt="odabir godišnjeg doba" />
+  <div id="season-strike" class="hidden"></div> <!-- KOSA CRTA -->
+  <div id="season-icons">
+    <div class="season-icon" data-season="winter">❄️</div>
+    <div class="season-icon" data-season="spring">🌸</div>
+    <div class="season-icon" data-season="summer">☀️</div>
+    <div class="season-icon" data-season="autumn">🍂</div>
+  </div>
+ </div>
+  
   <!-- HERO -->
   <section class="image-section">
     <div class="overlay"></div>
