@@ -860,8 +860,8 @@
       'hard': 'Jako teško',
       'extreme': 'Ekstremno'
     };
-    function classifyByKm(km){ if (km <= 6) return 'very-easy'; if (km <= 10) return 'easy'; if (km <= 16) return 'medium'; if (km <= 20) return 'hard'; return 'extreme'; }
-    function classifyByElev(m){ if (m <= 200) return 'very-easy'; if (m <= 500) return 'easy'; if (m <= 1000) return 'medium'; if (m <= 1500) return 'hard'; return 'extreme'; }
+    function classifyByKm(km){ if (km <= 4) return 'very-easy'; if (km <= 8) return 'easy'; if (km <= 14) return 'medium'; if (km <= 18) return 'hard'; return 'extreme'; }
+    function classifyByElev(m){ if (m <= 100) return 'very-easy'; if (m <= 300) return 'easy'; if (m <= 800) return 'medium'; if (m <= 1300) return 'hard'; return 'extreme'; }
     const norm = (s)=> (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
     /* ---------------------------------------------------------
