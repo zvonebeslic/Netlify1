@@ -603,30 +603,29 @@
   <!-- placeholder zbog fetch("season.html") -->
   <div id="season-placeholder" style="display:none"></div>
 
-  <!-- NAVBAR -->
+<!-- === NAVIGACIJA (gore) === -->
   <div class="navbar">
     <div class="navbar-left">
-      <img id="language-toggle" src="images/flag-uk.svg" alt="promjena jezika na engleski" data-tooltip="Promijeni jezik" />
+      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
     </div>
-
     <div class="navbar-center">
       <div class="search-container">
         <div class="search-wrapper">
           <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration" />
-          <input id="search" class="mountain-search" type="text" placeholder="Pretraži..." />
-          <img src="images/search.svg" alt="ikona za tražilicu" />
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
+          <img src="images/search.svg" alt="ikona za tražilicu">
         </div>
       </div>
     </div>
-
-    <div id="menu-toggle" class="navbar-right" aria-label="Otvori izbornik" role="button">
+    <div class="navbar-right" id="menu-toggle">
       <div class="burger-line"></div>
       <div class="burger-line"></div>
       <div class="burger-line"></div>
     </div>
   </div>
 
-  <div id="menu" class="menu-overlay">
+  <!-- === HAMBURGER MENI === -->
+  <div class="menu-overlay" id="menu">
     <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
     <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
     <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
