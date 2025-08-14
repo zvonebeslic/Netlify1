@@ -144,7 +144,8 @@
   border-radius: 20px;
 }
 
-  .search-top-decoration {
+/* === UKRASNA PLANINA IZNAD TRAŽILICE === */
+.search-top-decoration {
   position: absolute;
   top: -212.7px;
   left: 108px;
@@ -157,24 +158,27 @@
   transform-origin: top center;
   pointer-events: none;
 }
+      
+/* === UNUTARNJI INPUT POLJE === */
+.mountain-search {
+  width: 100%;
+  padding: 14px 40px 8px 12px;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: #333;
+  outline: none;
+}
 
-    .mountain-search {
-      flex: 1;
-      border: 0;
-      outline: 0;
-      padding: 0 8px;
-      background: transparent;
-      font-size: 14px;
-    }
-
-    .search-wrapper img[alt="ikona za tražilicu"] {
-      position: absolute;
-      right: 12px;
-      bottom: 7px;
-      width: 19px;
-      height: 19px;
-      pointer-events: none;
-    }
+/* === IKONA UNUTAR TRAŽILICE === */
+.search-wrapper img {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  width: 19px;
+  height: 19px;
+  pointer-events: none;
+}
 
     .navbar-right {
       display: flex;
