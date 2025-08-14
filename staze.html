@@ -114,30 +114,35 @@
       box-shadow: 0 0 6px rgba(0, 0, 0, .2);
     }
 
-    .navbar-center {
-      display: flex;
-      justify-content: center;
-      flex: 1;
-      transform: translateY(12px);
-    }
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+  transform: translateY(12px);
+}
 
-    .search-container {
-      position: relative;
-      width: 260px;
-      padding-top: 10px;
-    }
+.search-container {
+  width: 250px;
+  position: relative;
+  padding-top: 10px;
+  z-index: 1;
+}
 
-    .search-wrapper {
-      position: relative;
-      height: 34px;
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      border-radius: 22px;
-      background: #fff;
-      color: #222;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, .3);
-    }
+.search-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 30px; /* ili 55px ako dodaješ prostor za sliku */
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  padding: 0 15px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  border-radius: 20px;
+}
 
   .search-top-decoration {
   position: absolute;
