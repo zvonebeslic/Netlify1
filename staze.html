@@ -677,16 +677,19 @@
         <div id="panel-diff" class="panel active">
   <div class="panel-title">Ocijeni po kilometraži i/ili nadmorskoj visini</div>
 
-  <div class="field">
+    <div class="field">
   <label>Uključi</label>
   <div style="display:flex; gap:8px; flex-wrap:wrap;">
-    <label class="badge"><input type="checkbox" checked /> km</label>
-    <label class="badge"><input type="checkbox" checked /> nm/v</label>
-    <label class="badge"><input class="diff-chip" type="checkbox" /> Lako</label>
-    <label class="badge"><input class="diff-chip" type="checkbox" /> Umjereno</label>
-    <label class="badge"><input class="diff-chip" type="checkbox" /> Zahtjevno</label>
-    <label class="badge"><input class="diff-chip" type="checkbox" /> Jako teško</label>
-    <label class="badge"><input class="diff-chip" type="checkbox" /> Ekstremno</label>
+    <!-- mora imati ID jer ih čita JS -->
+    <label class="badge"><input id="modeKm" type="checkbox" checked /> km</label>
+    <label class="badge"><input id="modeElev" type="checkbox" checked /> nm/v</label>
+
+    <!-- diff-chip MORA imati value koji prati DIFF_LABELS ključeve -->
+    <label class="badge"><input class="diff-chip" type="checkbox" value="Easy" /> Lako</label>
+    <label class="badge"><input class="diff-chip" type="checkbox" value="Moderate" /> Umjereno</label>
+    <label class="badge"><input class="diff-chip" type="checkbox" value="Challenging" /> Zahtjevno</label>
+    <label class="badge"><input class="diff-chip" type="checkbox" value="Hard" /> Jako teško</label>
+    <label class="badge"><input class="diff-chip" type="checkbox" value="Extreme" /> Ekstremno</label>
   </div>
 </div>
   </div>
