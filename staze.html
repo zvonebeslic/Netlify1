@@ -691,11 +691,11 @@
   </div>
 
   <div class="chips" style="margin-top:6px;">
-    <label class="chip"><input class="diff-chip" type="checkbox" value="very-easy" /> Jako lako</label>
-    <label class="chip"><input class="diff-chip" type="checkbox" value="easy" /> Lako</label>
-    <label class="chip"><input class="diff-chip" type="checkbox" value="medium" checked /> Srednje teško</label>
-    <label class="chip"><input class="diff-chip" type="checkbox" value="hard" /> Jako teško</label>
-    <label class="chip"><input class="diff-chip" type="checkbox" value="extreme" /> Ekstremno</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="Easy" /> Lako</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="Moderate" /> Umjereno</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="Challenging" checked /> Zahtjevno</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="Hard" /> Jako teško</label>
+    <label class="chip"><input class="diff-chip" type="checkbox" value="Extreme" /> Ekstremno</label>
   </div>
 
   <p class="hint">Savjet: uključi “km” i/ili “nm/v”. Ako su oba filtera uključena, prikazuju se staze koje zadovolje barem jedan od njih.</p>
@@ -874,14 +874,14 @@
        #10.2 TEŽINSKE KATEGORIJE
        --------------------------------------------------------- */
     const DIFF_LABELS = {
-      'very-easy': 'Jako lako',
-      'easy': 'Lako',
-      'medium': 'Srednje teško',
-      'hard': 'Jako teško',
-      'extreme': 'Ekstremno'
+      'Easy': 'Lako',
+      'Moderate': 'Umjereno',
+      'Challenging': 'Zahtjevno',
+      'Hard': 'Jako teško',
+      'Extreme': 'Ekstremno'
     };
-    function classifyByKm(km){ if (km <= 4) return 'very-easy'; if (km <= 8) return 'easy'; if (km <= 14) return 'medium'; if (km <= 18) return 'hard'; return 'extreme'; }
-    function classifyByElev(m){ if (m <= 100) return 'very-easy'; if (m <= 300) return 'easy'; if (m <= 800) return 'medium'; if (m <= 1300) return 'hard'; return 'extreme'; }
+    function classifyByKm(km){ if (km <= 4) return 'Easy'; if (km <= 8) return 'Moderate'; if (km <= 14) return 'Challenging'; if (km <= 18) return 'Hard'; return 'Extreme'; }
+    function classifyByElev(m){ if (m <= 100) return 'Easy'; if (m <= 300) return 'Moderate'; if (m <= 800) return 'Challenging'; if (m <= 1300) return 'Hard'; return 'Extreme'; }
     const norm = (s)=> (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
     /* ---------------------------------------------------------
@@ -1183,10 +1183,13 @@ if (modeBits.length) {
       await runFiltering();
     });
     document.getElementById('quickReset').addEventListener('click', () => {
-  ['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode'].forEach(id => {
+  ['areaSelect', 'radiusSelect', 'durationBucket'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+
+  const dm = document.getElementById('distanceMode');
+  if (dm) dm.value = 'air'; // resetiraj na zadanu opciju
 
   const modeKmEl   = document.getElementById('modeKm');
   const modeElevEl = document.getElementById('modeElev');
