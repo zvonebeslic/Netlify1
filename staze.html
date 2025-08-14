@@ -1000,7 +1000,7 @@
       });
       const modeBits = [];
 if (filterState.modeKm) modeBits.push('km');
-if (filterState.modeElev) modeBits.push('uspon');
+if (filterState.modeElev) modeBits.push('nm/v');
 
 if (modeBits.length) {
   addChip(`Kriteriji: ${modeBits.join(' + ')}`, () => {
@@ -1043,7 +1043,7 @@ if (modeBits.length) {
         </div>
 
         <div class="metric-row">
-          <span class="metric-label">Uspon</span>
+          <span class="metric-label">nm/v</span>
           <span class="metric-value">${t.elevationM} m</span>
           <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
         </div>
