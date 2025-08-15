@@ -686,27 +686,16 @@
   </div>
   </div>
           
-  <div class="chips" style="margin-top: 6px;">
-  <label class="chip clickable">
-    <input class="diff-chip" type="checkbox" value="Easy" />
-    Lako (do 4 km i 100 nm/v)
-  </label>
-  <label class="chip clickable">
-    <input class="diff-chip" type="checkbox" value="Moderate" />
-    Umjereno (do 8 km i 300 nm/v)
-  </label>
-  <label class="chip clickable">
-    <input class="diff-chip" type="checkbox" value="Challenging" checked />
-    Zahtjevno (do 14 km i 800 nm/v)
-  </label>
-  <label class="chip clickable">
-    <input class="diff-chip" type="checkbox" value="Hard" />
-    Jako teško (do 18 km i 1300 nm/v)
-  </label>
-  <label class="chip clickable">
-    <input class="diff-chip" type="checkbox" value="Extreme" />
-    Ekstremno (iznad 18 km i 1300 nm/v)
-  </label>
+   <div class="field">
+  <label for="difficultySelect">Težina</label>
+  <select id="difficultySelect" class="select">
+    <option value="">Bez ograničenja</option>
+    <option value="Easy">Lako</option>
+    <option value="Moderate">Umjereno</option>
+    <option value="Challenging">Zahtjevno</option>
+    <option value="Hard">Jako teško</option>
+    <option value="Extreme">Ekstremno</option>
+  </select>
 </div>
 
   <p class="hint">Savjet: uključi “km” i/ili “nm/v”. Ako su oba filtera uključena, prikazuju se staze koje zadovolje barem jedan od njih.</p>
