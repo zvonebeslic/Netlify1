@@ -1072,16 +1072,20 @@ if (modeBits.length) {
        #10.8 FILTRIRANJE
        --------------------------------------------------------- */
         function matchesDifficulty(t, chosen, modeKm, modeElev) {
-  if (!chosen) return true; // Bez ograničenja
+  if (!chosen) return true;
 
-  const kmClass   = classifyByKm(t.distanceKm);
-  const elevClass = classifyByElev(t.elevationM);
+  const kmClass   = classifyByKm(t.distanceKm) ?? null;
+  const elevClass = classifyByElev(t.elevationM) ?? null;
 
-  if (modeKm && modeElev) return (kmClass === chosen || elevClass === chosen);
-  if (modeKm)   return kmClass === chosen;
-  if (modeElev) return elevClass === chosen;
-  return true;  // ako su oba isključena, ne ograničavaj
+  if (modeKm && modeElev) {
+    if (kmClass == null && elevClass == null) return true; // nema podataka → ne sužavaj
+    return (kmClass === chosen) || (elevClass === chosen);
+  }
+  if (modeKm)   return (kmClass   == null) ? true : (kmClass   === chosen);
+  if (modeElev) return (elevClass == null) ? true : (elevClass === chosen);
+  return true;
 }
+    
     function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
     function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
     function matchesPOI(t,q){
@@ -1140,16 +1144,17 @@ if (modeBits.length) {
       }
       return list;
     }
-    async function runFiltering(){
-      let list = await filterList();
-      if (userLocation) distancesEnabled = true;
-      list = await attachDistances(list);
-      if (filterState.radius && distancesEnabled){
-        list.sort((a,b)=> (a._distKm ?? 1e9) - (b._distKm ?? 1e9));
-      }
-      renderTrails(list);
-      renderActiveChips();
-    }
+      async function runFiltering(){
+  updateFilterState(stateFromControls());   
+  let list = await filterList();
+  if (userLocation) distancesEnabled = true;
+  list = await attachDistances(list);
+  if (filterState.radius && distancesEnabled){
+    list.sort((a,b)=> (a._distKm ?? 1e9) - (b._distKm ?? 1e9));
+  }
+  renderTrails(list);
+  renderActiveChips();
+}
 
     /* ---------------------------------------------------------
        #10.9 TABS + WIRING
@@ -1171,10 +1176,6 @@ if (modeBits.length) {
       });
     });
 
-    document.getElementById('applyFilters').addEventListener('click', async ()=>{
-      updateFilterState(stateFromControls());
-      await runFiltering();
-    });
 
     document.getElementById('quickReset').addEventListener('click', () => {
   ['areaSelect', 'radiusSelect', 'durationBucket'].forEach(id => {
