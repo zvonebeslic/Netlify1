@@ -651,8 +651,8 @@
 
   <main class="container">
     <section class="header">
-      <h1>Istražte planinarske staze</h1>
-      <p>Pronađite svoju turu prema težini (km/nmv), planini/području, vremenu hodanja ili udaljenosti od vaše lokacije.</p>
+      <h1>Istražite planinarske staze</h1>
+      <p>Pronađite svoju turu prema težini (km/mnv), planini/području, vremenu hodanja ili udaljenosti od vaše lokacije.</p>
     </section>
 
     <!-- FILTERI (Lijevo: mali gumbi; Desno: mali paneli) -->
@@ -690,11 +690,11 @@
   <label for="difficultySelect">Težina</label>
   <select id="difficultySelect" class="select">
     <option value="">Bez ograničenja</option>
-    <option value="Easy">Lako</option>
-    <option value="Moderate">Umjereno</option>
-    <option value="Challenging">Zahtjevno</option>
-    <option value="Hard">Jako teško</option>
-    <option value="Extreme">Ekstremno</option>
+    <option value="Easy">Lako (do 4km i 100m/nv)</option>
+    <option value="Moderate">Umjereno (do 8km i 300m/nv)</option>
+    <option value="Challenging">Zahtjevno (do 14km i 800m/nv)</option>
+    <option value="Hard">Jako teško (do 18km i 1300m/nv)</option>
+    <option value="Extreme">Ekstremno (iznad 18km i 1300m/nv) </option>
   </select>
 </div>
 
@@ -1045,7 +1045,7 @@ if (modeBits.length) {
         </div>
 
         <div class="metric-row">
-          <span class="metric-label">nm/v</span>
+          <span class="metric-label">m/nv</span>
           <span class="metric-value">${t.elevationM} m</span>
           <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
         </div>
