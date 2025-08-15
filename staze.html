@@ -956,13 +956,12 @@
   duration: '',
   modeKm: true,
   modeElev: true,
-  chipsSel: ['medium'],
+  difficulty: '',     
   poi: '',
   distanceMode: 'air'
 };
 
     function stateFromControls(){
-  const chips = [...document.querySelectorAll('.diff-chip:checked')].map(i => i.value);
   return {
     area: document.getElementById('areaSelect')?.value || '',
     radius: document.getElementById('radiusSelect')?.value || '',
@@ -970,10 +969,11 @@
     poi: document.getElementById('poiSearch')?.value?.trim() || '',
     modeKm: document.getElementById('modeKm')?.checked ?? true,
     modeElev: document.getElementById('modeElev')?.checked ?? true,
-    chipsSel: chips,
+    difficulty: document.getElementById('difficultySelect')?.value || '',
     distanceMode: document.getElementById('distanceMode')?.value || 'air'
   };
 }
+    
     function updateFilterState(ns){ Object.assign(filterState, ns); }
 
     /* ---------------------------------------------------------
@@ -994,10 +994,12 @@
         addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
       }
       if (filterState.poi) addChip(`Odredište: ${filterState.poi}`, ()=>{ const i=document.getElementById('poiSearch'); if(i) i.value=''; updateFilterState({poi:''}); runFiltering(); });
-      if (filterState.chipsSel?.length) addChip(`Težina: ${filterState.chipsSel.map(c=>DIFF_LABELS[c]||c).join(', ')}`, ()=>{
-        document.querySelectorAll('.diff-chip:checked').forEach(i=>i.checked=false);
-        updateFilterState({chipsSel:[]}); runFiltering();
-      });
+      if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty}`, ()=>{
+  const sel = document.getElementById('difficultySelect');
+  if (sel) sel.value = '';
+  updateFilterState({ difficulty: '' });
+  runFiltering();
+});
       const modeBits = [];
 if (filterState.modeKm) modeBits.push('km');
 if (filterState.modeElev) modeBits.push('nm/v');
@@ -1069,25 +1071,16 @@ if (modeBits.length) {
     /* ---------------------------------------------------------
        #10.8 FILTRIRANJE
        --------------------------------------------------------- */
-        function matchesDifficulty(t, chipsSel, modeKm, modeElev){
-  // ako nema odabranih “težina”, ne filtriraj po težini
-  if (!chipsSel || !chipsSel.length) return true;
+        function matchesDifficulty(t, chosen, modeKm, modeElev){
+  if (!chosen) return true; // Bez ograničenja
 
   const kmClass   = classifyByKm(t.distanceKm);
   const elevClass = classifyByElev(t.elevationM);
 
-  const hitKm = modeKm   && chipsSel.includes(kmClass);
-  const hitEl = modeElev && chipsSel.includes(elevClass);
-
-  // ako su oba uključena → dovoljno je zadovoljiti barem jedan
-  if (modeKm && modeElev) return (hitKm || hitEl);
-
-  // samo jedan uključen → filtriraj po tom jednom
-  if (modeKm)   return hitKm;
-  if (modeElev) return hitEl;
-
-  // ako su oba isključena → ne ograničavaj po težini
-  return true;
+  if (modeKm && modeElev) return (kmClass === chosen || elevClass === chosen);
+  if (modeKm)   return kmClass === chosen;
+  if (modeElev) return elevClass === chosen;
+  return true;  // ako su oba isključena, ne ograničavaj
 }
     function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
     function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
@@ -1118,13 +1111,13 @@ if (modeBits.length) {
       return d <= rKm;
     }
       async function filterList(){
-  const { area, radius, duration, modeKm, modeElev, chipsSel, poi, distanceMode } = filterState;
+  const { area, radius, duration, modeKm, modeElev, difficulty, poi, distanceMode } = filterState;
 
   let base = TRAILS.filter(t =>
     matchesArea(t, area) &&
     matchesDuration(t, duration) &&
     matchesPOI(t, poi) &&
-    matchesDifficulty(t, chipsSel, modeKm, modeElev)
+    matchesDifficulty(t, difficulty, modeKm, modeElev)
   );
   
       if (radius){
@@ -1182,6 +1175,7 @@ if (modeBits.length) {
       updateFilterState(stateFromControls());
       await runFiltering();
     });
+
     document.getElementById('quickReset').addEventListener('click', () => {
   ['areaSelect', 'radiusSelect', 'durationBucket'].forEach(id => {
     const el = document.getElementById(id);
@@ -1189,14 +1183,15 @@ if (modeBits.length) {
   });
 
   const dm = document.getElementById('distanceMode');
-  if (dm) dm.value = 'air'; // resetiraj na zadanu opciju
+  if (dm) dm.value = 'air';
 
   const modeKmEl   = document.getElementById('modeKm');
   const modeElevEl = document.getElementById('modeElev');
   if (modeKmEl)   modeKmEl.checked = true;
   if (modeElevEl) modeElevEl.checked = true;
 
-  document.querySelectorAll('.diff-chip:checked').forEach(i => i.checked = false);
+  const diffSel = document.getElementById('difficultySelect');
+  if (diffSel) diffSel.value = '';
 
   const poi = document.getElementById('poiSearch');
   if (poi) poi.value = '';
@@ -1206,7 +1201,7 @@ if (modeBits.length) {
     radius: '',
     duration: '',
     poi: '',
-    chipsSel: [],
+    difficulty: '',
     modeKm: true,
     modeElev: true,
     distanceMode: 'air'
@@ -1232,9 +1227,10 @@ if (modeBits.length) {
       if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
       if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
     });
-    document.querySelectorAll('.diff-chip').forEach(cb=>{
-      cb.addEventListener('change', ()=>{ updateFilterState(stateFromControls()); runFiltering(); });
-    });
+
+    document.getElementById('difficultySelect')?.addEventListener('change', ()=>{
+  updateFilterState(stateFromControls()); runFiltering();
+});
 
     /* ---------------------------------------------------------
        #10.10 INIT
