@@ -698,7 +698,7 @@
   </select>
 </div>
 
-  <p class="hint">Savjet: uključi “km” i/ili “nm/v”. Ako su oba filtera uključena, prikazuju se staze koje zadovolje barem jedan od njih.</p>
+  <p class="hint">Savjet: uključi “km” i/ili “m/nv”. Ako su oba filtera uključena, prikazuju se staze koje zadovolje barem jedan od njih.</p>
 </div>
     
         <!-- UDALJENOST -->
@@ -1002,7 +1002,7 @@
 });
       const modeBits = [];
 if (filterState.modeKm) modeBits.push('km');
-if (filterState.modeElev) modeBits.push('nm/v');
+if (filterState.modeElev) modeBits.push('m/nv');
 
 if (modeBits.length) {
   addChip(`Kriteriji: ${modeBits.join(' + ')}`, () => {
