@@ -953,7 +953,7 @@
      <!-- =========================================================
      #10.3 GEOLOKACIJA + UDALJENOSTI
      ========================================================= -->
-<script>
+       
 // --- ELEMENTI GEO TOASTA (već postoje u tvojem HTML-u) ---
 const geoToastEl = document.getElementById('geo-toast');
 const geoTitleEl = document.getElementById('geo-title');
@@ -1077,23 +1077,22 @@ async function drivingDistanceKm(origin,dest){
     return km;
   }catch(_){ return null; }
 }
-</script>
+
 
 <!-- =========================================================
      #10.4 PODRUČJA (AREAS)  — (ostaje kako već imaš)
      ========================================================= -->
-<script>
+
 const AREAS = [ /* ... tvoje AREAS polje ostaje ... */ ];
 (function fillAreas(){
   const sel=document.getElementById('areaSelect');
   AREAS.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o); });
 })();
-</script>
 
 <!-- =========================================================
      #10.5 STATE  — (ostaje, ali neka distanceMode ostane 'air' default)
      ========================================================= -->
-<script>
+
 const filterState = {
   area: '',
   radius: '',
@@ -1117,12 +1116,11 @@ function stateFromControls(){
   };
 }
 function updateFilterState(ns){ Object.assign(filterState, ns); }
-</script>
 
 <!-- =========================================================
      #10.6 AKTIVNI ČIPOVI  — (ne mijenja se)
      ========================================================= -->
-<script>
+
 function renderActiveChips(){
   const host = document.getElementById('activeChips'); host.innerHTML='';
   function addChip(label, onRemove){
@@ -1156,12 +1154,11 @@ function renderActiveChips(){
     });
   }
 }
-</script>
 
 <!-- =========================================================
      #10.7 KARTICE  — (dodana podrška za drive/air čip)
      ========================================================= -->
-<script>
+
 function cardHTML(t){
   const diffKm = classifyByKm(t.distanceKm);
   const diffEl = classifyByElev(t.elevationM);
@@ -1213,12 +1210,11 @@ function renderTrails(list){
   const host=document.getElementById('trail-list');
   host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
 }
-</script>
 
 <!-- =========================================================
      #10.8 FILTRIRANJE  — (dodana podrška za drive i prikaz)
      ========================================================= -->
-<script>
+
 function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
 function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
 function matchesPOI(t,q){
@@ -1355,12 +1351,11 @@ async function runFiltering(){
   renderTrails(list);
   renderActiveChips();
 }
-</script>
 
 <!-- =========================================================
      #10.9 TABS + WIRING  — (fix za drive switch)
      ========================================================= -->
-<script>
+
 document.querySelectorAll('.filter-tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
