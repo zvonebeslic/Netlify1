@@ -859,585 +859,575 @@
     © Mountain Adventures. All rights reserved.
   </footer>
 
-  <!-- =========================================================
-       #10 SCRIPTS
-       ========================================================= -->
+         
+       
   <script src="season.js"></script>
   <script src="popis-staza.js"></script>
 
-  <script>
-    /* ---------------------------------------------------------
-       #10.1 NAV / JEZIK / MENI / BACK-TO-TOP
-       --------------------------------------------------------- */
-    const langToggle = document.getElementById('language-toggle');
-    const searchInput = document.getElementById('search');
-    const menuToggle = document.getElementById('menu-toggle');
-    const menu = document.getElementById('menu');
-    const backToTopBtn = document.getElementById('backToTop');
-    const footer = document.getElementById('footer');
+<script>
+  /* ---------------------------------------------------------
+     #10.1 NAV / JEZIK / MENI / BACK-TO-TOP
+     --------------------------------------------------------- */
+  const langToggle = document.getElementById('language-toggle');
+  const searchInput = document.getElementById('search');
+  const menuToggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('menu');
+  const backToTopBtn = document.getElementById('backToTop');
+  const footer = document.getElementById('footer');
 
-    function getInitialLang() {
-      const urlLang = new URLSearchParams(location.search).get('lang');
-      if (['hr', 'en'].includes(urlLang)) return urlLang;
-      try { const s = localStorage.getItem('preferredLang'); if (['hr','en'].includes(s)) return s; } catch(e){}
-      return 'hr';
-    }
-
-    function applyLanguage(lang) {
-      try { localStorage.setItem('preferredLang', lang); } catch(e){}
-      const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState({}, '', u.toString());
-      document.documentElement.lang = lang;
-
-      if (langToggle) {
-        langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-        langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
-        langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
-      }
-      if (searchInput) searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
-
-      document.querySelectorAll('[data-hr]').forEach(el => {
-        const v = el.getAttribute('data-' + lang);
-        if (v == null) return;
-        if (v.includes('<')) el.innerHTML = v; else el.textContent = v;
-      });
-      document.querySelectorAll('.menu-overlay a').forEach(a => {
-        const v = a.getAttribute('data-' + lang); if (v != null) a.textContent = v;
-      });
-    }
-
-    let currentLang = getInitialLang();
-    applyLanguage(currentLang);
-    if (langToggle) langToggle.addEventListener('click', () => { currentLang = currentLang === 'hr' ? 'en' : 'hr'; applyLanguage(currentLang); });
-
-    menuToggle.addEventListener('click', () => { menu.classList.toggle('open'); });
-    window.addEventListener('click', (e) => { if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') menu.classList.remove('open'); });
-    document.querySelectorAll('.menu-overlay a').forEach(l => l.addEventListener('click', () => menu.classList.remove('open')));
-
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY; const footerTop = footer.getBoundingClientRect().top + window.scrollY; const h = window.innerHeight;
-      backToTopBtn.style.display = y > 300 ? 'flex' : 'none';
-      backToTopBtn.style.bottom = (y + h > footerTop) ? ((y + h - footerTop) + 60) + 'px' : '30px';
-    });
-    backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const s = localStorage.getItem('activeSeason');
-      if (s) {
-        setTimeout(() => {
-          if (s === 'winter') startWinterEffect(true);
-          else if (s === 'summer') startSummerEffect(true);
-          else if (s === 'spring') startSpringEffect(true);
-          else if (s === 'autumn') startAutumnEffect(true);
-        }, 10000);
-      }
-      fetch('season.html').then(r => r.text()).then(html => {
-        const ph = document.getElementById('season-placeholder'); if (ph) ph.innerHTML = html;
-        if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
-      }).catch(() => {});
-    });
-
-    /* ---------------------------------------------------------
-       #10.2 TEŽINSKE KATEGORIJE
-       --------------------------------------------------------- */
-    const DIFF_LABELS = {
-      'Easy': 'Lako',
-      'Moderate': 'Umjereno',
-      'Challenging': 'Zahtjevno',
-      'Hard': 'Jako teško',
-      'Extreme': 'Ekstremno'
-    };
-    function classifyByKm(km){ if (km <= 4) return 'Easy'; if (km <= 8) return 'Moderate'; if (km <= 14) return 'Challenging'; if (km <= 18) return 'Hard'; return 'Extreme'; }
-    function classifyByElev(m){ if (m <= 100) return 'Easy'; if (m <= 300) return 'Moderate'; if (m <= 800) return 'Challenging'; if (m <= 1300) return 'Hard'; return 'Extreme'; }
-    const norm = (s)=> (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-
-     <!-- =========================================================
-     #10.3 GEOLOKACIJA + UDALJENOSTI
-     ========================================================= -->
-       
-// --- ELEMENTI GEO TOASTA (već postoje u tvojem HTML-u) ---
-const geoToastEl = document.getElementById('geo-toast');
-const geoTitleEl = document.getElementById('geo-title');
-const geoMsgEl   = document.getElementById('geo-msg');
-const geoTryBtn  = document.getElementById('geo-try-again');
-const geoCloseBtn= document.getElementById('geo-close');
-
-let __geoLastRetry = null;
-function showGeoToast(title, msg, onRetry){
-  if (geoToastEl && geoTitleEl && geoMsgEl) {
-    geoTitleEl.textContent = title;
-    geoMsgEl.textContent = msg;
-    __geoLastRetry = typeof onRetry === 'function' ? onRetry : null;
-    geoToastEl.classList.remove('geo-hidden');
-  } else {
-    alert(title + '\n\n' + msg);
-    if (typeof onRetry === 'function') onRetry();
+  function getInitialLang() {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (['hr', 'en'].includes(urlLang)) return urlLang;
+    try { const s = localStorage.getItem('preferredLang'); if (['hr','en'].includes(s)) return s; } catch(e){}
+    return 'hr';
   }
-}
-function hideGeoToast(){ if (geoToastEl) geoToastEl.classList.add('geo-hidden'); }
-geoTryBtn?.addEventListener('click', ()=>{ hideGeoToast(); if (__geoLastRetry) __geoLastRetry(); });
-geoCloseBtn?.addEventListener('click', hideGeoToast);
 
-// --- Permissions helper + mapiranje geolokacijskih grešaka ---
-async function getGeoPermissionState() {
-  try {
-    if (!('permissions' in navigator) || !navigator.permissions?.query) return null;
-    const res = await navigator.permissions.query({ name: 'geolocation' });
-    return res?.state; // 'granted' | 'prompt' | 'denied'
-  } catch { return null; }
-}
+  function applyLanguage(lang) {
+    try { localStorage.setItem('preferredLang', lang); } catch(e){}
+    const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState({}, '', u.toString());
+    document.documentElement.lang = lang;
 
-async function mapGeoError(error) {
-  const permState = await getGeoPermissionState();
-  // 1=PERMISSION_DENIED, 2=POSITION_UNAVAILABLE, 3=TIMEOUT
-  if (error.code === 1) {
-    return (permState === 'denied')
-      ? { type: 'denied', raw: error }
-      : { type: 'unavailable', raw: error }; // često: OS lokacija ugašena
+    if (langToggle) {
+      langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+      langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+      langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
+    }
+    if (searchInput) searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
+
+    document.querySelectorAll('[data-hr]').forEach(el => {
+      const v = el.getAttribute('data-' + lang);
+      if (v == null) return;
+      if (v.includes('<')) el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('.menu-overlay a').forEach(a => {
+      const v = a.getAttribute('data-' + lang); if (v != null) a.textContent = v;
+    });
   }
-  if (error.code === 2) return { type: 'unavailable', raw: error };
-  if (error.code === 3) return { type: 'timeout', raw: error };
-  return { type: 'unknown', raw: error };
-}
 
-// --- Jedinstveni “help” toast za sve slučajeve ---
-function showUnifiedGeoHelp(retryCb) {
-  showGeoToast(
-    'Uključi lokaciju i dopusti pristup',
-    'Ne možemo dohvatiti tvoju lokaciju.\n\n' +
-    'Probaj:\n' +
-    '• Uključi GPS/Lokaciju na uređaju\n' +
-    '• U postavkama preglednika dopusti lokaciju za ovu stranicu\n' +
-    '  (na iOS-u uključi “Precise Location”)\n' +
-    '• Ako si ranije odbio, ukloni blokadu u “Site settings/Dozvole”\n\n' +
-    'Zatim dodirni “Pokušaj ponovno”.',
-    retryCb
-  );
-}
+  let currentLang = getInitialLang();
+  applyLanguage(currentLang);
+  if (langToggle) langToggle.addEventListener('click', () => { currentLang = currentLang === 'hr' ? 'en' : 'hr'; applyLanguage(currentLang); });
 
-// --- Globalno stanje geolokacije ---
-let userLocation = null;        // {lat, lon, accuracy?}
-let distancesEnabled = false;
+  menuToggle.addEventListener('click', () => { menu.classList.toggle('open'); });
+  window.addEventListener('click', (e) => { if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') menu.classList.remove('open'); });
+  document.querySelectorAll('.menu-overlay a').forEach(l => l.addEventListener('click', () => menu.classList.remove('open')));
 
-// --- Jednokratni pokušaj dohvaćanja lokacije (robusno mapiranje) ---
-function requestLocationOnce(options = { enableHighAccuracy:true, timeout:12000, maximumAge:120000 }) {
-  return new Promise((resolve, reject) => {
-    if (!('geolocation' in navigator)) {
-      reject({ type:'unsupported' });
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy }),
-      async err => reject(await mapGeoError(err)),
-      options
-    );
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY; const footerTop = footer.getBoundingClientRect().top + window.scrollY; const h = window.innerHeight;
+    backToTopBtn.style.display = y > 300 ? 'flex' : 'none';
+    backToTopBtn.style.bottom = (y + h > footerTop) ? ((y + h - footerTop) + 60) + 'px' : '30px';
   });
-}
+  backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-// --- Ensure wrapper: pokazuje jedinstveni vodič + retry ---
-function ensureLocationThen(cb){
-  if (userLocation) { cb(userLocation); return; }
-
-  requestLocationOnce().then(loc=>{
-    userLocation = loc;
-    distancesEnabled = true;
-    cb(userLocation);
-  }).catch(e=>{
-    if (e?.type === 'unsupported') {
-      showGeoToast('Geolokacija nije podržana', 'Ovaj preglednik ne podržava geolokaciju. Otvori stranicu u novijem pregledniku.', null);
-      return;
+  document.addEventListener('DOMContentLoaded', () => {
+    const s = localStorage.getItem('activeSeason');
+    if (s) {
+      setTimeout(() => {
+        if (s === 'winter') startWinterEffect(true);
+        else if (s === 'summer') startSummerEffect(true);
+        else if (s === 'spring') startSpringEffect(true);
+        else if (s === 'autumn') startAutumnEffect(true);
+      }, 10000);
     }
-    showUnifiedGeoHelp(()=> ensureLocationThen(cb));
+    fetch('season.html').then(r => r.text()).then(html => {
+      const ph = document.getElementById('season-placeholder'); if (ph) ph.innerHTML = html;
+      if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+    }).catch(() => {});
   });
-}
 
-// --- Haversine (zračna linija) ---
-function haversineKm(lat1,lon1,lat2,lon2){
-  const R=6371, toRad=d=>d*Math.PI/180;
-  const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
-  const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-  return 2*R*Math.asin(Math.sqrt(a));
-}
-
-// --- Driving distance (OSRM) + cache + timeout ---
-const driveCache=new Map();
-const withTimeout=(p,ms=7000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
-async function drivingDistanceKm(origin,dest){
-  if (!origin||!dest) return null;
-  const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
-  if (driveCache.has(key)) return driveCache.get(key);
-
-  const url=`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
-  try{
-    const resp=await withTimeout(fetch(url),7000);
-    if(!resp.ok) throw new Error('bad status');
-    const data=await resp.json();
-    const m=data?.routes?.[0]?.distance;
-    const km=(typeof m==='number')? m/1000 : null;
-    if(km!=null) driveCache.set(key,km);
-    return km;
-  }catch(_){ return null; }
-}
-
-
-<!-- =========================================================
-     #10.4 PODRUČJA (AREAS)  — (ostaje kako već imaš)
-     ========================================================= -->
-
-const AREAS = [ /* ... tvoje AREAS polje ostaje ... */ ];
-(function fillAreas(){
-  const sel=document.getElementById('areaSelect');
-  AREAS.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o); });
-})();
-
-<!-- =========================================================
-     #10.5 STATE  — (ostaje, ali neka distanceMode ostane 'air' default)
-     ========================================================= -->
-
-const filterState = {
-  area: '',
-  radius: '',
-  duration: '',
-  modeKm: true,
-  modeElev: true,
-  difficulty: '',
-  poi: '',
-  distanceMode: 'air' // 'air' | 'drive'
-};
-function stateFromControls(){
-  return {
-    area: document.getElementById('areaSelect')?.value || '',
-    radius: document.getElementById('radiusSelect')?.value || '',
-    duration: document.getElementById('durationBucket')?.value || '',
-    poi: document.getElementById('poiSearch')?.value?.trim() || '',
-    modeKm: document.getElementById('modeKm')?.checked ?? true,
-    modeElev: document.getElementById('modeElev')?.checked ?? true,
-    difficulty: document.getElementById('difficultySelect')?.value || '',
-    distanceMode: document.getElementById('distanceMode')?.value || 'air'
+  /* ---------------------------------------------------------
+     #10.2 TEŽINSKE KATEGORIJE
+     --------------------------------------------------------- */
+  const DIFF_LABELS = {
+    'Easy': 'Lako',
+    'Moderate': 'Umjereno',
+    'Challenging': 'Zahtjevno',
+    'Hard': 'Jako teško',
+    'Extreme': 'Ekstremno'
   };
-}
-function updateFilterState(ns){ Object.assign(filterState, ns); }
+  function classifyByKm(km){ if (km <= 4) return 'Easy'; if (km <= 8) return 'Moderate'; if (km <= 14) return 'Challenging'; if (km <= 18) return 'Hard'; return 'Extreme'; }
+  function classifyByElev(m){ if (m <= 100) return 'Easy'; if (m <= 300) return 'Moderate'; if (m <= 800) return 'Challenging'; if (m <= 1300) return 'Hard'; return 'Extreme'; }
+  const norm = (s)=> (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
-<!-- =========================================================
-     #10.6 AKTIVNI ČIPOVI  — (ne mijenja se)
-     ========================================================= -->
+  /* =========================================================
+     #10.3 GEOLOKACIJA + UDALJENOSTI
+     ========================================================= */
 
-function renderActiveChips(){
-  const host = document.getElementById('activeChips'); host.innerHTML='';
-  function addChip(label, onRemove){
-    const chip=document.createElement('span'); chip.className='chip';
-    chip.innerHTML = `${label} <button type="button" aria-label="Ukloni">×</button>`;
-    chip.querySelector('button').addEventListener('click', onRemove);
-    host.appendChild(chip);
-  }
-  if (filterState.area) addChip(`Lokacija: ${filterState.area}`, ()=>{ document.getElementById('areaSelect').value=''; updateFilterState({area:''}); runFiltering(); });
-  if (filterState.radius) addChip(`Radijus: do ${filterState.radius} km`, ()=>{ document.getElementById('radiusSelect').value=''; updateFilterState({radius:''}); runFiltering(); });
-  if (filterState.duration){
-    const mapDur={'3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h'};
-    addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
-  }
-  if (filterState.poi) addChip(`Odredište: ${filterState.poi}`, ()=>{ const i=document.getElementById('poiSearch'); if(i) i.value=''; updateFilterState({poi:''}); runFiltering(); });
-  if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty}`, ()=>{
-    const sel = document.getElementById('difficultySelect');
-    if (sel) sel.value = '';
-    updateFilterState({ difficulty: '' });
-    runFiltering();
-  });
-  const modeBits = [];
-  if (filterState.modeKm) modeBits.push('km');
-  if (filterState.modeElev) modeBits.push('m/nv');
-  if (modeBits.length) {
-    addChip(`Kriteriji: ${modeBits.join(' + ')}`, () => {
-      document.getElementById('modeKm').checked = true;
-      document.getElementById('modeElev').checked = true;
-      updateFilterState({ modeKm: true, modeElev: true });
-      runFiltering();
-    });
-  }
-}
+  // --- ELEMENTI GEO TOASTA (već postoje u HTML-u) ---
+  const geoToastEl = document.getElementById('geo-toast');
+  const geoTitleEl = document.getElementById('geo-title');
+  const geoMsgEl   = document.getElementById('geo-msg');
+  const geoTryBtn  = document.getElementById('geo-try-again');
+  const geoCloseBtn= document.getElementById('geo-close');
 
-<!-- =========================================================
-     #10.7 KARTICE  — (dodana podrška za drive/air čip)
-     ========================================================= -->
-
-function cardHTML(t){
-  const diffKm = classifyByKm(t.distanceKm);
-  const diffEl = classifyByElev(t.elevationM);
-
-  const shown = (typeof t._distShownKm === 'number') ? t._distShownKm : null;
-  const chipLabel = (filterState.distanceMode === 'drive') ? 'km vožnje' : 'km od vas';
-  const distChip = (distancesEnabled && shown != null)
-    ? `<span class="dist-chip">${shown.toFixed(1)} ${chipLabel}</span>`
-    : '';
-
-  const areaFooter = (t.area || t.mountain)
-    ? `<div class="card-footer">${t.area || t.mountain}</div>`
-    : '';
-
-  return `
-    <article class="trail-card" data-id="${t.id}">
-      <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
-      <div class="pad">
-        <div class="title-line">
-          <h3>${t.name}</h3>
-          ${distChip}
-        </div>
-
-        <div class="metric-row">
-          <span class="metric-label">Duljina</span>
-          <span class="metric-value">${t.distanceKm} km</span>
-          <span class="diff-pill ${diffKm}" title="Ocjena težine po km">${DIFF_LABELS[diffKm]}</span>
-        </div>
-
-        <div class="metric-row">
-          <span class="metric-label">m/nv</span>
-          <span class="metric-value">${t.elevationM} m</span>
-          <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
-        </div>
-
-        <div class="metric-row">
-          <span class="metric-label">Trajanje</span>
-          <span class="metric-value">${t.durationH} h</span>
-          <span></span>
-        </div>
-
-        <p class="card-desc">${t.description || ''}</p>
-        ${areaFooter}
-      </div>
-    </article>
-  `;
-}
-function renderTrails(list){
-  const host=document.getElementById('trail-list');
-  host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
-}
-
-<!-- =========================================================
-     #10.8 FILTRIRANJE  — (dodana podrška za drive i prikaz)
-     ========================================================= -->
-
-function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
-function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
-function matchesPOI(t,q){
-  if(!q) return true;
-  const s=norm(q);
-  const hay=[t.name,t.area,t.mountain,t.routeType,...(t.tags||[]),...(t.destinations||[])].map(norm).join(' • ');
-  return hay.includes(s);
-}
-function matchesDifficulty(t, chosen, modeKm, modeElev) {
-  if (!chosen) return true;
-  const kmClass   = classifyByKm(t.distanceKm) ?? null;
-  const elevClass = classifyByElev(t.elevationM) ?? null;
-  if (modeKm && modeElev) {
-    if (kmClass == null && elevClass == null) return true;
-    return (kmClass === chosen) || (elevClass === chosen);
-  }
-  if (modeKm)   return (kmClass   == null) ? true : (kmClass   === chosen);
-  if (modeElev) return (elevClass == null) ? true : (elevClass === chosen);
-  return true;
-}
-
-// Ako je tražen radijus, osiguraj lokaciju i filtriraj
-async function matchesRadius(t, radius, mode, loc){
-  if (!radius) return true;
-  if (!loc) return false;
-  const rKm = parseFloat(radius);
-
-  if (mode==='air'){
-    const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
-    return d <= rKm;
-  }
-  if (mode==='drive'){
-    const km = await drivingDistanceKm(loc,{lat:t.startLat,lon:t.startLon});
-    if (km==null){
-      const dAir = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
-      return dAir <= rKm;
-    }
-    return km <= rKm;
-  }
-  const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
-  return d <= rKm;
-}
-
-async function filterList(){
-  const { area, radius, duration, modeKm, modeElev, difficulty, poi, distanceMode } = filterState;
-
-  let base = TRAILS.filter(t =>
-    matchesArea(t, area) &&
-    matchesDuration(t, duration) &&
-    matchesPOI(t, poi) &&
-    matchesDifficulty(t, difficulty, modeKm, modeElev)
-  );
-
-  if (!radius) return base;
-
-  if (!userLocation) {
-    return new Promise(resolve=>{
-      ensureLocationThen((_loc)=>{
-        filterList().then(resolve);
-      });
-    });
-  }
-
-  const results=[];
-  for (const t of base){
-    const ok = await matchesRadius(t, radius, distanceMode, userLocation);
-    if (ok) results.push(t);
-  }
-  return results;
-}
-
-// Ograničena konkurentnost za API pozive (drive)
-async function mapWithLimit(items, limit, mapper) {
-  let i = 0;
-  const out = new Array(items.length);
-  const N = Math.min(limit, items.length) || 1;
-  const workers = Array.from({length:N}, async () => {
-    while (true) {
-      const idx = i++; if (idx >= items.length) break;
-      out[idx] = await mapper(items[idx], idx);
-    }
-  });
-  await Promise.all(workers);
-  return out;
-}
-
-// Popuni prikazanu udaljenost (_distShownKm) ovisno o modu
-async function attachDistances(list){
-  if (!userLocation) return list;
-
-  // uvijek računamo air (jeftino)
-  for (const t of list){
-    if (typeof t.startLat==='number' && typeof t.startLon==='number'){
-      t._distAirKm = haversineKm(userLocation.lat,userLocation.lon,t.startLat,t.startLon);
+  let __geoLastRetry = null;
+  function showGeoToast(title, msg, onRetry){
+    if (geoToastEl && geoTitleEl && geoMsgEl) {
+      geoTitleEl.textContent = title;
+      geoMsgEl.textContent = msg;
+      __geoLastRetry = typeof onRetry === 'function' ? onRetry : null;
+      geoToastEl.classList.remove('geo-hidden');
     } else {
-      t._distAirKm = undefined;
+      alert(title + '\n\n' + msg);
+      if (typeof onRetry === 'function') onRetry();
     }
-    t._distDriveKm = undefined;
+  }
+  function hideGeoToast(){ if (geoToastEl) geoToastEl.classList.add('geo-hidden'); }
+  geoTryBtn?.addEventListener('click', ()=>{ hideGeoToast(); if (__geoLastRetry) __geoLastRetry(); });
+  geoCloseBtn?.addEventListener('click', hideGeoToast);
+
+  // --- Permissions helper + mapiranje geolokacijskih grešaka ---
+  async function getGeoPermissionState() {
+    try {
+      if (!('permissions' in navigator) || !navigator.permissions?.query) return null;
+      const res = await navigator.permissions.query({ name: 'geolocation' });
+      return res?.state; // 'granted' | 'prompt' | 'denied'
+    } catch { return null; }
   }
 
-  if (filterState.distanceMode === 'drive') {
-    // ograniči paralelizam da ne davi OSRM (npr. 4 istovremeno)
-    await mapWithLimit(list, 4, async (t)=>{
-      if (typeof t.startLat==='number' && typeof t.startLon==='number'){
-        const d = await drivingDistanceKm(userLocation, {lat:t.startLat, lon:t.startLon});
-        t._distDriveKm = (typeof d === 'number') ? d : null;
+  async function mapGeoError(error) {
+    const permState = await getGeoPermissionState();
+    // 1=PERMISSION_DENIED, 2=POSITION_UNAVAILABLE, 3=TIMEOUT
+    if (error.code === 1) {
+      return (permState === 'denied')
+        ? { type: 'denied', raw: error }
+        : { type: 'unavailable', raw: error }; // često: OS lokacija ugašena
+    }
+    if (error.code === 2) return { type: 'unavailable', raw: error };
+    if (error.code === 3) return { type: 'timeout', raw: error };
+    return { type: 'unknown', raw: error };
+  }
+
+  // --- Jedinstveni “help” toast za sve slučajeve ---
+  function showUnifiedGeoHelp(retryCb) {
+    showGeoToast(
+      'Uključi lokaciju i dopusti pristup',
+      'Ne možemo dohvatiti tvoju lokaciju.\n\n' +
+      'Probaj:\n' +
+      '• Uključi GPS/Lokaciju na uređaju\n' +
+      '• U postavkama preglednika dopusti lokaciju za ovu stranicu\n' +
+      '  (na iOS-u uključi “Precise Location”)\n' +
+      '• Ako si ranije odbio, ukloni blokadu u “Site settings/Dozvole”\n\n' +
+      'Zatim dodirni “Pokušaj ponovno”.',
+      retryCb
+    );
+  }
+
+  // --- Globalno stanje geolokacije ---
+  let userLocation = null;        // {lat, lon, accuracy?}
+  let distancesEnabled = false;
+
+  // --- Jednokratni pokušaj dohvaćanja lokacije (robusno mapiranje) ---
+  function requestLocationOnce(options = { enableHighAccuracy:true, timeout:12000, maximumAge:120000 }) {
+    return new Promise((resolve, reject) => {
+      if (!('geolocation' in navigator)) {
+        reject({ type:'unsupported' });
+        return;
       }
+      navigator.geolocation.getCurrentPosition(
+        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy }),
+        async err => reject(await mapGeoError(err)),
+        options
+      );
     });
   }
 
-  for (const t of list){
-    // odabir vrijednosti za prikaz/sortiranje
-    if (filterState.distanceMode === 'drive' && typeof t._distDriveKm === 'number') {
-      t._distShownKm = t._distDriveKm;
-    } else {
-      t._distShownKm = (typeof t._distAirKm === 'number') ? t._distAirKm : null;
-    }
-  }
-  return list;
-}
+  // --- Ensure wrapper: pokazuje jedinstveni vodič + retry ---
+  function ensureLocationThen(cb){
+    if (userLocation) { cb(userLocation); return; }
 
-async function runFiltering(){
-  updateFilterState(stateFromControls());
-  let list = await filterList();
-
-  if (userLocation) distancesEnabled = true;
-  list = await attachDistances(list);
-
-  // Sortiraj prema prikazanoj udaljenosti (air ili drive)
-  if (distancesEnabled){
-    list.sort((a,b)=> (a._distShownKm ?? 1e9) - (b._distShownKm ?? 1e9));
+    requestLocationOnce().then(loc=>{
+      userLocation = loc;
+      distancesEnabled = true;
+      cb(userLocation);
+    }).catch(e=>{
+      if (e?.type === 'unsupported') {
+        showGeoToast('Geolokacija nije podržana', 'Ovaj preglednik ne podržava geolokaciju. Otvori stranicu u novijem pregledniku.', null);
+        return;
+      }
+      showUnifiedGeoHelp(()=> ensureLocationThen(cb));
+    });
   }
 
-  renderTrails(list);
-  renderActiveChips();
-}
+  // --- Haversine (zračna linija) ---
+  function haversineKm(lat1,lon1,lat2,lon2){
+    const R=6371, toRad=d=>d*Math.PI/180;
+    const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+    const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+    return 2*R*Math.asin(Math.sqrt(a));
+  }
 
-<!-- =========================================================
-     #10.9 TABS + WIRING  — (fix za drive switch)
-     ========================================================= -->
+  // --- Driving distance (OSRM) + cache + timeout ---
+  const driveCache=new Map();
+  const withTimeout=(p,ms=7000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
+  async function drivingDistanceKm(origin,dest){
+    if (!origin||!dest) return null;
+    const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
+    if (driveCache.has(key)) return driveCache.get(key);
 
-document.querySelectorAll('.filter-tab').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    const id = btn.getAttribute('data-panel');
-    const panel = document.getElementById(id);
-    if (panel) panel.classList.add('active');
+    const url=`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
+    try{
+      const resp=await withTimeout(fetch(url),7000);
+      if(!resp.ok) throw new Error('bad status');
+      const data=await resp.json();
+      const m=data?.routes?.[0]?.distance;
+      const km=(typeof m==='number')? m/1000 : null;
+      if(km!=null) driveCache.set(key,km);
+      return km;
+    }catch(_){ return null; }
+  }
 
-    if (id==='panel-radius') {
-      ensureLocationThen(()=>{ distancesEnabled = true; runFiltering(); });
-    }
-  });
-});
+  /* =========================================================
+     #10.4 PODRUČJA (AREAS)
+     ========================================================= */
 
-// RESET
-document.getElementById('quickReset').addEventListener('click', () => {
-  ['areaSelect', 'radiusSelect', 'durationBucket'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  const dm = document.getElementById('distanceMode');
-  if (dm) dm.value = 'air';
+  // Ako AREAS dolazi iz popis-staza.js, koristimo ga; inače ostavi prazno polje.
+  const AREAS = window.AREAS || [];
+  (function fillAreas(){
+    const sel=document.getElementById('areaSelect');
+    AREAS.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o); });
+  })();
 
-  const modeKmEl   = document.getElementById('modeKm');
-  const modeElevEl = document.getElementById('modeElev');
-  if (modeKmEl)   modeKmEl.checked = true;
-  if (modeElevEl) modeElevEl.checked = true;
+  /* =========================================================
+     #10.5 STATE (distanceMode default = 'air')
+     ========================================================= */
 
-  const diffSel = document.getElementById('difficultySelect');
-  if (diffSel) diffSel.value = '';
-
-  const poi = document.getElementById('poiSearch');
-  if (poi) poi.value = '';
-
-  updateFilterState({
+  const filterState = {
     area: '',
     radius: '',
     duration: '',
-    poi: '',
-    difficulty: '',
     modeKm: true,
     modeElev: true,
-    distanceMode: 'air'
+    difficulty: '',
+    poi: '',
+    distanceMode: 'air' // 'air' | 'drive'
+  };
+  function stateFromControls(){
+    return {
+      area: document.getElementById('areaSelect')?.value || '',
+      radius: document.getElementById('radiusSelect')?.value || '',
+      duration: document.getElementById('durationBucket')?.value || '',
+      poi: document.getElementById('poiSearch')?.value?.trim() || '',
+      modeKm: document.getElementById('modeKm')?.checked ?? true,
+      modeElev: document.getElementById('modeElev')?.checked ?? true,
+      difficulty: document.getElementById('difficultySelect')?.value || '',
+      distanceMode: document.getElementById('distanceMode')?.value || 'air'
+    };
+  }
+  function updateFilterState(ns){ Object.assign(filterState, ns); }
+
+  /* =========================================================
+     #10.6 AKTIVNI ČIPOVI
+     ========================================================= */
+  function renderActiveChips(){
+    const host = document.getElementById('activeChips'); host.innerHTML='';
+    function addChip(label, onRemove){
+      const chip=document.createElement('span'); chip.className='chip';
+      chip.innerHTML = `${label} <button type="button" aria-label="Ukloni">×</button>`;
+      chip.querySelector('button').addEventListener('click', onRemove);
+      host.appendChild(chip);
+    }
+    if (filterState.area) addChip(`Lokacija: ${filterState.area}`, ()=>{ document.getElementById('areaSelect').value=''; updateFilterState({area:''}); runFiltering(); });
+    if (filterState.radius) addChip(`Radijus: do ${filterState.radius} km`, ()=>{ document.getElementById('radiusSelect').value=''; updateFilterState({radius:''}); runFiltering(); });
+    if (filterState.duration){
+      const mapDur={'3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h'};
+      addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
+    }
+    if (filterState.poi) addChip(`Odredište: ${filterState.poi}`, ()=>{ const i=document.getElementById('poiSearch'); if(i) i.value=''; updateFilterState({poi:''}); runFiltering(); });
+    if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty]}`, ()=>{
+      const sel = document.getElementById('difficultySelect');
+      if (sel) sel.value = '';
+      updateFilterState({ difficulty: '' });
+      runFiltering();
+    });
+    const modeBits = [];
+    if (filterState.modeKm) modeBits.push('km');
+    if (filterState.modeElev) modeBits.push('m/nv');
+    if (modeBits.length) {
+      addChip(`Kriteriji: ${modeBits.join(' + ')}`, () => {
+        document.getElementById('modeKm').checked = true;
+        document.getElementById('modeElev').checked = true;
+        updateFilterState({ modeKm: true, modeElev: true });
+        runFiltering();
+      });
+    }
+  }
+
+  /* =========================================================
+     #10.7 KARTICE (air/drive čip)
+     ========================================================= */
+  function cardHTML(t){
+    const diffKm = classifyByKm(t.distanceKm);
+    const diffEl = classifyByElev(t.elevationM);
+
+    const shown = (typeof t._distShownKm === 'number') ? t._distShownKm : null;
+    const chipLabel = (filterState.distanceMode === 'drive') ? 'km vožnje' : 'km od vas';
+    const distChip = (distancesEnabled && shown != null)
+      ? `<span class="dist-chip">${shown.toFixed(1)} ${chipLabel}</span>`
+      : '';
+
+    const areaFooter = (t.area || t.mountain)
+      ? `<div class="card-footer">${t.area || t.mountain}</div>`
+      : '';
+
+    return `
+      <article class="trail-card" data-id="${t.id}">
+        <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
+        <div class="pad">
+          <div class="title-line">
+            <h3>${t.name}</h3>
+            ${distChip}
+          </div>
+
+          <div class="metric-row">
+            <span class="metric-label">Duljina</span>
+            <span class="metric-value">${t.distanceKm} km</span>
+            <span class="diff-pill ${diffKm}" title="Ocjena težine po km">${DIFF_LABELS[diffKm]}</span>
+          </div>
+
+          <div class="metric-row">
+            <span class="metric-label">m/nv</span>
+            <span class="metric-value">${t.elevationM} m</span>
+            <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
+          </div>
+
+          <div class="metric-row">
+            <span class="metric-label">Trajanje</span>
+            <span class="metric-value">${t.durationH} h</span>
+            <span></span>
+          </div>
+
+          <p class="card-desc">${t.description || ''}</p>
+          ${areaFooter}
+        </div>
+      </article>
+    `;
+  }
+  function renderTrails(list){
+    const host=document.getElementById('trail-list');
+    host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
+  }
+
+  /* =========================================================
+     #10.8 FILTRIRANJE (drive/air podrška)
+     ========================================================= */
+  function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
+  function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
+  function matchesPOI(t,q){
+    if(!q) return true;
+    const s=norm(q);
+    const hay=[t.name,t.area,t.mountain,t.routeType,...(t.tags||[]),...(t.destinations||[])].map(norm).join(' • ');
+    return hay.includes(s);
+  }
+  function matchesDifficulty(t, chosen, modeKm, modeElev) {
+    if (!chosen) return true;
+    const kmClass   = classifyByKm(t.distanceKm) ?? null;
+    const elevClass = classifyByElev(t.elevationM) ?? null;
+    if (modeKm && modeElev) {
+      if (kmClass == null && elevClass == null) return true;
+      return (kmClass === chosen) || (elevClass === chosen);
+    }
+    if (modeKm)   return (kmClass   == null) ? true : (kmClass   === chosen);
+    if (modeElev) return (elevClass == null) ? true : (elevClass === chosen);
+    return true;
+  }
+
+  async function matchesRadius(t, radius, mode, loc){
+    if (!radius) return true;
+    if (!loc) return false;
+    const rKm = parseFloat(radius);
+
+    if (mode==='air'){
+      const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
+      return d <= rKm;
+    }
+    if (mode==='drive'){
+      const km = await drivingDistanceKm(loc,{lat:t.startLat,lon:t.startLon});
+      if (km==null){
+        const dAir = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
+        return dAir <= rKm;
+      }
+      return km <= rKm;
+    }
+    const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
+    return d <= rKm;
+  }
+
+  async function filterList(){
+    const { area, radius, duration, modeKm, modeElev, difficulty, poi, distanceMode } = filterState;
+
+    let base = TRAILS.filter(t =>
+      matchesArea(t, area) &&
+      matchesDuration(t, duration) &&
+      matchesPOI(t, poi) &&
+      matchesDifficulty(t, difficulty, modeKm, modeElev)
+    );
+
+    if (!radius) return base;
+
+    if (!userLocation) {
+      return new Promise(resolve=>{
+        ensureLocationThen((_loc)=>{
+          filterList().then(resolve);
+        });
+      });
+    }
+
+    const results=[];
+    for (const t of base){
+      const ok = await matchesRadius(t, radius, distanceMode, userLocation);
+      if (ok) results.push(t);
+    }
+    return results;
+  }
+
+  async function mapWithLimit(items, limit, mapper) {
+    let i = 0;
+    const out = new Array(items.length);
+    const N = Math.min(limit, items.length) || 1;
+    const workers = Array.from({length:N}, async () => {
+      while (true) {
+        const idx = i++; if (idx >= items.length) break;
+        out[idx] = await mapper(items[idx], idx);
+      }
+    });
+    await Promise.all(workers);
+    return out;
+  }
+
+  async function attachDistances(list){
+    if (!userLocation) return list;
+
+    // air uvijek
+    for (const t of list){
+      if (typeof t.startLat==='number' && typeof t.startLon==='number'){
+        t._distAirKm = haversineKm(userLocation.lat,userLocation.lon,t.startLat,t.startLon);
+      } else {
+        t._distAirKm = undefined;
+      }
+      t._distDriveKm = undefined;
+    }
+
+    if (filterState.distanceMode === 'drive') {
+      await mapWithLimit(list, 4, async (t)=>{
+        if (typeof t.startLat==='number' && typeof t.startLon==='number'){
+          const d = await drivingDistanceKm(userLocation, {lat:t.startLat, lon:t.startLon});
+          t._distDriveKm = (typeof d === 'number') ? d : null;
+        }
+      });
+    }
+
+    for (const t of list){
+      if (filterState.distanceMode === 'drive' && typeof t._distDriveKm === 'number') {
+        t._distShownKm = t._distDriveKm;
+      } else {
+        t._distShownKm = (typeof t._distAirKm === 'number') ? t._distAirKm : null;
+      }
+    }
+    return list;
+  }
+
+  async function runFiltering(){
+    updateFilterState(stateFromControls());
+    let list = await filterList();
+
+    if (userLocation) distancesEnabled = true;
+    list = await attachDistances(list);
+
+    if (distancesEnabled){
+      list.sort((a,b)=> (a._distShownKm ?? 1e9) - (b._distShownKm ?? 1e9));
+    }
+
+    renderTrails(list);
+    renderActiveChips();
+  }
+
+  /* =========================================================
+     #10.9 TABS + WIRING
+     ========================================================= */
+
+  document.querySelectorAll('.filter-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      const id = btn.getAttribute('data-panel');
+      const panel = document.getElementById(id);
+      if (panel) panel.classList.add('active');
+
+      if (id==='panel-radius') {
+        ensureLocationThen(()=>{ distancesEnabled = true; runFiltering(); });
+      }
+    });
   });
 
-  runFiltering();
-});
+  // RESET
+  document.getElementById('quickReset').addEventListener('click', () => {
+    ['areaSelect', 'radiusSelect', 'durationBucket'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    const dm = document.getElementById('distanceMode');
+    if (dm) dm.value = 'air';
 
-// GLOBALNI CHANGE/INPUT
-document.addEventListener('change', async (e) => {
-  const id = e.target.id;
-  if (!id) return;
+    const modeKmEl   = document.getElementById('modeKm');
+    const modeElevEl = document.getElementById('modeElev');
+    if (modeKmEl)   modeKmEl.checked = true;
+    if (modeElevEl) modeElevEl.checked = true;
 
-  if (id === 'distanceMode' && e.target.value === 'drive') {
-    // PRETHODNO je ovdje bio undefined ensureGeolocationOnce; sada:
-    ensureLocationThen(()=> runFiltering());
-    return;
-  }
+    const diffSel = document.getElementById('difficultySelect');
+    if (diffSel) diffSel.value = '';
 
-  if (['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode', 'modeKm', 'modeElev'].includes(id)) {
-    updateFilterState(stateFromControls());
+    const poi = document.getElementById('poiSearch');
+    if (poi) poi.value = '';
+
+    updateFilterState({
+      area: '',
+      radius: '',
+      duration: '',
+      poi: '',
+      difficulty: '',
+      modeKm: true,
+      modeElev: true,
+      distanceMode: 'air'
+    });
+
     runFiltering();
-  }
-});
-document.addEventListener('input', (e)=>{
-  if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
-  if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
-});
-document.getElementById('difficultySelect')?.addEventListener('change', ()=>{
-  updateFilterState(stateFromControls()); runFiltering();
-});
+  });
 
-<!-- =========================================================
-     #10.10 INIT  — (ostaje kako jest)
-     ========================================================= -->
+  // GLOBALNI CHANGE/INPUT
+  document.addEventListener('change', async (e) => {
+    const id = e.target.id;
+    if (!id) return;
 
+    if (id === 'distanceMode' && e.target.value === 'drive') {
+      ensureLocationThen(()=> runFiltering());
+      return;
+    }
+
+    if (['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode', 'modeKm', 'modeElev'].includes(id)) {
+      updateFilterState(stateFromControls());
+      runFiltering();
+    }
+  });
+  document.addEventListener('input', (e)=>{
+    if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
+    if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
+  });
+  document.getElementById('difficultySelect')?.addEventListener('change', ()=>{
+    updateFilterState(stateFromControls()); runFiltering();
+  });
+
+  /* =========================================================
+     #10.10 INIT
+     ========================================================= */
   document.addEventListener('DOMContentLoaded', ()=>{
-  renderTrails(TRAILS);
-  renderActiveChips();
-});
-</script>     
+    // TRAILS dolazi iz popis-staza.js
+    renderTrails(TRAILS);
+    renderActiveChips();
+  });
+</script>
+   
              
 </body>
 </html>
