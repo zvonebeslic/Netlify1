@@ -950,49 +950,6 @@
     function classifyByElev(m){ if (m <= 100) return 'Easy'; if (m <= 300) return 'Moderate'; if (m <= 800) return 'Challenging'; if (m <= 1300) return 'Hard'; return 'Extreme'; }
     const norm = (s)=> (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
-     /* === GEO TOAST helper (koristi tvoje već postojeće HTML elemente) === */
-const geoToastEl = document.getElementById('geo-toast');
-const geoTitleEl = document.getElementById('geo-title');
-const geoMsgEl   = document.getElementById('geo-msg');
-const geoTryBtn  = document.getElementById('geo-try-again');
-const geoCloseBtn= document.getElementById('geo-close');
-
-let __geoLastRetry = null;
-function showGeoToast(title, msg, onRetry){
-  if (geoToastEl && geoTitleEl && geoMsgEl) {
-    geoTitleEl.textContent = title;
-    geoMsgEl.textContent = msg;
-    __geoLastRetry = typeof onRetry === 'function' ? onRetry : null;
-    geoToastEl.classList.remove('geo-hidden');
-  } else {
-    alert(title + '\n\n' + msg);
-    if (typeof onRetry === 'function') onRetry();
-  }
-}
-function hideGeoToast(){ if (geoToastEl) geoToastEl.classList.add('geo-hidden'); }
-geoTryBtn?.addEventListener('click', ()=>{ hideGeoToast(); if (__geoLastRetry) __geoLastRetry(); });
-geoCloseBtn?.addEventListener('click', hideGeoToast);
-
-    
-      const sel = document.getElementById('difficultySelect');
-  if (sel) sel.value = '';
-  updateFilterState({ difficulty: '' });
-  runFiltering();
-});
-      const modeBits = [];
-if (filterState.modeKm) modeBits.push('km');
-if (filterState.modeElev) modeBits.push('m/nv');
-
-if (modeBits.length) {
-  addChip(`Kriteriji: ${modeBits.join(' + ')}`, () => {
-    document.getElementById('modeKm').checked = true;
-    document.getElementById('modeElev').checked = true;
-    updateFilterState({ modeKm: true, modeElev: true });
-    runFiltering();
-  });
-}
-    }
-
      <!-- =========================================================
      #10.3 GEOLOKACIJA + UDALJENOSTI
      ========================================================= -->
