@@ -950,31 +950,112 @@
     function classifyByElev(m){ if (m <= 100) return 'Easy'; if (m <= 300) return 'Moderate'; if (m <= 800) return 'Challenging'; if (m <= 1300) return 'Hard'; return 'Extreme'; }
     const norm = (s)=> (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
+     /* === GEO TOAST helper (koristi tvoje već postojeće HTML elemente) === */
+const geoToastEl = document.getElementById('geo-toast');
+const geoTitleEl = document.getElementById('geo-title');
+const geoMsgEl   = document.getElementById('geo-msg');
+const geoTryBtn  = document.getElementById('geo-try-again');
+const geoCloseBtn= document.getElementById('geo-close');
+
+let __geoLastRetry = null;
+function showGeoToast(title, msg, onRetry){
+  if (geoToastEl && geoTitleEl && geoMsgEl) {
+    geoTitleEl.textContent = title;
+    geoMsgEl.textContent = msg;
+    __geoLastRetry = typeof onRetry === 'function' ? onRetry : null;
+    geoToastEl.classList.remove('geo-hidden');
+  } else {
+    alert(title + '\n\n' + msg);
+    if (typeof onRetry === 'function') onRetry();
+  }
+}
+function hideGeoToast(){ if (geoToastEl) geoToastEl.classList.add('geo-hidden'); }
+geoTryBtn?.addEventListener('click', ()=>{ hideGeoToast(); if (__geoLastRetry) __geoLastRetry(); });
+geoCloseBtn?.addEventListener('click', hideGeoToast);
+
+    
     /* ---------------------------------------------------------
        #10.3 GEOLOKACIJA + UDALJENOSTI
        --------------------------------------------------------- */
-    let userLocation = null, geoTried = false, distancesEnabled = false;
-    function ensureGeolocationOnce(force=false){
-      return new Promise((res)=>{
-        if (userLocation) return res(userLocation);
-        if (geoTried && !force) return res(null);
-        geoTried = true;
-        if (!('geolocation' in navigator)) return res(null);
-        navigator.geolocation.getCurrentPosition(
-          (pos)=>{ userLocation={lat:pos.coords.latitude, lon:pos.coords.longitude}; distancesEnabled=true; res(userLocation); },
-          _=> res(null),
-          { enableHighAccuracy:true, timeout:12000, maximumAge:120000 }
-        );
-      });
+    let userLocation = null;
+let distancesEnabled = false;
+
+/* 2.1 — single attempt (s jasnim statusima) */
+function requestLocationOnce(){
+  return new Promise((resolve, reject)=>{
+    if (!('geolocation' in navigator)) return reject({type:'unsupported'});
+    navigator.geolocation.getCurrentPosition(
+      (pos)=> resolve({lat: pos.coords.latitude, lon: pos.coords.longitude}),
+      (err)=> {
+        if (err.code===1)      reject({type:'denied'});       // trajno odbijeno ili trenutno blokirano
+        else if (err.code===2) reject({type:'unavailable'});  // GPS off / nema signala
+        else if (err.code===3) reject({type:'timeout'});
+        else                   reject({type:'unknown'});
+      },
+      { enableHighAccuracy:true, timeout:12000, maximumAge:120000 }
+    );
+  });
+}
+
+/* 2.2 — ensure: ako nema lokacije, traži je; na fail pokaži toast s retryjem */
+function ensureLocationThen(cb){
+  if (userLocation) { cb(userLocation); return; }
+  requestLocationOnce().then(loc=>{
+    userLocation = loc; distancesEnabled = true; cb(userLocation);
+  }).catch(e=>{
+    if (e.type==='denied'){
+      showGeoToast(
+        'Dopusti lokaciju u postavkama',
+        'U postavkama preglednika dopusti lokaciju za ovu stranicu, zatim pokušaj ponovno.',
+        ()=> ensureLocationThen(cb)
+      );
+    } else if (e.type==='unavailable'){
+      showGeoToast(
+        'Uključi GPS (Lokacija)',
+        'Izgleda da je GPS isključen ili nema signala. Uključi lokaciju pa pokušaj ponovno.',
+        ()=> ensureLocationThen(cb)
+      );
+    } else if (e.type==='timeout'){
+      showGeoToast(
+        'Spora lokacija',
+        'Nismo uspjeli dohvatiti lokaciju na vrijeme. Pokušaj ponovno.',
+        ()=> ensureLocationThen(cb)
+      );
+    } else if (e.type==='unsupported'){
+      showGeoToast('Nije podržano', 'Preglednik ne podržava geolokaciju.', null);
+    } else {
+      showGeoToast('Greška lokacije', 'Dogodila se neočekivana greška. Pokušaj ponovno.', ()=> ensureLocationThen(cb));
     }
-    function haversineKm(lat1,lon1,lat2,lon2){
-      const R=6371, toRad=d=>d*Math.PI/180;
-      const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
-      const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-      return 2*R*Math.asin(Math.sqrt(a));
-    }
-    const driveCache=new Map();
-    const withTimeout=(p,ms=6000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
+  });
+}
+
+/* 2.3 — udaljenosti */
+function haversineKm(lat1,lon1,lat2,lon2){
+  const R=6371, toRad=d=>d*Math.PI/180;
+  const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+/* 2.4 — vožnja (tvoja logika ostaje) */
+const driveCache=new Map();
+const withTimeout=(p,ms=6000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
+async function drivingDistanceKm(origin,dest){
+  if (!origin||!dest) return null;
+  const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
+  if (driveCache.has(key)) return driveCache.get(key);
+  const url=`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
+  try{
+    const resp=await withTimeout(fetch(url),6000);
+    if(!resp.ok) throw new Error('bad status');
+    const data=await resp.json();
+    const m=data?.routes?.[0]?.distance;
+    const km=(typeof m==='number')? m/1000 : null;
+    if(km!=null) driveCache.set(key,km);
+    return km;
+  }catch(_){ return null; }
+}
+    
     async function drivingDistanceKm(origin,dest){
       if (!origin||!dest) return null;
       const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
@@ -1160,27 +1241,29 @@ if (modeBits.length) {
       const hay=[t.name,t.area,t.mountain,t.routeType,...(t.tags||[]),...(t.destinations||[])].map(norm).join(' • ');
       return hay.includes(s);
     }
-    async function matchesRadius(t, radius, mode){
-      if (!radius) return true;
-      const loc = await ensureGeolocationOnce();
-      if (!loc) return true;
-      const rKm = parseFloat(radius);
-      if (mode==='air'){
-        const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
-        return d <= rKm;
-      }
-      if (mode==='drive'){
-        const km = await drivingDistanceKm(loc,{lat:t.startLat,lon:t.startLon});
-        if (km==null){
-          const dAir = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
-          return dAir <= rKm;
-        }
-        return km <= rKm;
-      }
-      const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
-      return d <= rKm;
+      
+     async function matchesRadius(t, radius, mode, loc){
+  if (!radius) return true;
+  if (!loc) return false; // nema lokacije -> ne zadovoljava (pozvat ćemo ensure pa ponoviti filtriranje)
+  const rKm = parseFloat(radius);
+
+  if (mode==='air'){
+    const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
+    return d <= rKm;
+  }
+  if (mode==='drive'){
+    const km = await drivingDistanceKm(loc,{lat:t.startLat,lon:t.startLon});
+    if (km==null){
+      const dAir = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
+      return dAir <= rKm;
     }
-      async function filterList(){
+    return km <= rKm;
+  }
+  const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
+  return d <= rKm;
+}
+    
+    async function filterList(){
   const { area, radius, duration, modeKm, modeElev, difficulty, poi, distanceMode } = filterState;
 
   let base = TRAILS.filter(t =>
@@ -1189,18 +1272,29 @@ if (modeBits.length) {
     matchesPOI(t, poi) &&
     matchesDifficulty(t, difficulty, modeKm, modeElev)
   );
-  
-      if (radius){
-        const results=[]; const loc=await ensureGeolocationOnce();
-        for (const t of base){
-          if (!loc){ results.push(t); continue; }
-          const ok = await matchesRadius(t,radius,distanceMode);
-          if (ok) results.push(t);
-        }
-        return results;
-      }
-      return base;
-    }
+
+  // Ako nema radijusa, gotovi smo
+  if (!radius) return base;
+
+  // Ako radijus postoji, osiguraj lokaciju pa filtriraj
+  if (!userLocation) {
+    // zatraži lokaciju i tek onda nastavi
+    return new Promise(resolve=>{
+      ensureLocationThen((_loc)=>{
+        filterList().then(resolve); // ponovno pozovi kad lokacija stigne
+      });
+    });
+  }
+
+  const results=[];
+  for (const t of base){
+    const ok = await matchesRadius(t, radius, distanceMode, userLocation);
+    if (ok) results.push(t);
+  }
+  return results;
+}
+
+           
     async function attachDistances(list){
       if (!distancesEnabled || !userLocation) return list;
       for (const t of list){
@@ -1235,10 +1329,8 @@ if (modeBits.length) {
         if (panel) panel.classList.add('active');
 
         if (id==='panel-radius') {
-          ensureGeolocationOnce().then(loc => {
-            if (loc){ distancesEnabled = true; runFiltering(); }
-          });
-        }
+        ensureLocationThen((_loc)=>{ distancesEnabled = true; runFiltering(); });
+       }
       });
     });
 
