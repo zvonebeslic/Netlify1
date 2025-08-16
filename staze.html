@@ -974,175 +974,7 @@ geoTryBtn?.addEventListener('click', ()=>{ hideGeoToast(); if (__geoLastRetry) _
 geoCloseBtn?.addEventListener('click', hideGeoToast);
 
     
-    /* ---------------------------------------------------------
-       #10.3 GEOLOKACIJA + UDALJENOSTI
-       --------------------------------------------------------- */
-    let userLocation = null;
-let distancesEnabled = false;
-
-/* 2.1 — single attempt (s jasnim statusima) */
-function requestLocationOnce(){
-  return new Promise((resolve, reject)=>{
-    if (!('geolocation' in navigator)) return reject({type:'unsupported'});
-    navigator.geolocation.getCurrentPosition(
-      (pos)=> resolve({lat: pos.coords.latitude, lon: pos.coords.longitude}),
-      (err)=> {
-        if (err.code===1)      reject({type:'denied'});       // trajno odbijeno ili trenutno blokirano
-        else if (err.code===2) reject({type:'unavailable'});  // GPS off / nema signala
-        else if (err.code===3) reject({type:'timeout'});
-        else                   reject({type:'unknown'});
-      },
-      { enableHighAccuracy:true, timeout:12000, maximumAge:120000 }
-    );
-  });
-}
-
-/* 2.2 — ensure: ako nema lokacije, traži je; na fail pokaži toast s retryjem */
-function ensureLocationThen(cb){
-  if (userLocation) { cb(userLocation); return; }
-  requestLocationOnce().then(loc=>{
-    userLocation = loc; distancesEnabled = true; cb(userLocation);
-  }).catch(e=>{
-    if (e.type==='denied'){
-      showGeoToast(
-        'Dopusti lokaciju u postavkama',
-        'U postavkama preglednika dopusti lokaciju za ovu stranicu, zatim pokušaj ponovno.',
-        ()=> ensureLocationThen(cb)
-      );
-    } else if (e.type==='unavailable'){
-      showGeoToast(
-        'Uključi GPS (Lokacija)',
-        'Izgleda da je GPS isključen ili nema signala. Uključi lokaciju pa pokušaj ponovno.',
-        ()=> ensureLocationThen(cb)
-      );
-    } else if (e.type==='timeout'){
-      showGeoToast(
-        'Spora lokacija',
-        'Nismo uspjeli dohvatiti lokaciju na vrijeme. Pokušaj ponovno.',
-        ()=> ensureLocationThen(cb)
-      );
-    } else if (e.type==='unsupported'){
-      showGeoToast('Nije podržano', 'Preglednik ne podržava geolokaciju.', null);
-    } else {
-      showGeoToast('Greška lokacije', 'Dogodila se neočekivana greška. Pokušaj ponovno.', ()=> ensureLocationThen(cb));
-    }
-  });
-}
-
-/* 2.3 — udaljenosti */
-function haversineKm(lat1,lon1,lat2,lon2){
-  const R=6371, toRad=d=>d*Math.PI/180;
-  const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
-  const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-  return 2*R*Math.asin(Math.sqrt(a));
-}
-
-/* 2.4 — vožnja (tvoja logika ostaje) */
-const driveCache=new Map();
-const withTimeout=(p,ms=6000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
-async function drivingDistanceKm(origin,dest){
-  if (!origin||!dest) return null;
-  const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
-  if (driveCache.has(key)) return driveCache.get(key);
-  const url=`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
-  try{
-    const resp=await withTimeout(fetch(url),6000);
-    if(!resp.ok) throw new Error('bad status');
-    const data=await resp.json();
-    const m=data?.routes?.[0]?.distance;
-    const km=(typeof m==='number')? m/1000 : null;
-    if(km!=null) driveCache.set(key,km);
-    return km;
-  }catch(_){ return null; }
-}
-    
-    async function drivingDistanceKm(origin,dest){
-      if (!origin||!dest) return null;
-      const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
-      if (driveCache.has(key)) return driveCache.get(key);
-      const url=`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
-      try{
-        const resp=await withTimeout(fetch(url),6000);
-        if(!resp.ok) throw new Error('bad status');
-        const data=await resp.json();
-        const m=data?.routes?.[0]?.distance;
-        const km=(typeof m==='number')? m/1000 : null;
-        if(km!=null) driveCache.set(key,km);
-        return km;
-      }catch(_){ return null; }
-    }
-
-    /* ---------------------------------------------------------
-       #10.4 PODRUČJA (AREAS)
-       --------------------------------------------------------- */
-    const AREAS = [
-      'Triglav','Velebit','Begunjščica','Klekovača','Sljeme','Medvednica','Dinara','Oštrovača','Šator','Kozara',
-      'Ivanščica','Kamešnica','Cincar','Vranica','Matinski Vis','Zavelim','Golija','Stožer','Ljubuša','Tušnica',
-      'Svilaja','Biokovo','Mosor','Raduša','Vran','Čvrsnica','Čabulja','Prenj','Crvanj','Matokit','Velež','Visočica',
-      'Bjelašnica','Treskavica','Zelengora','Volujak','Maglić','Lelija','Durmitor','Komovi','Prokletije','Šar planina',
-      'Otok Pag','Poluotok Pelješac','Šipovo','Otok Hvar','Otok Brač','Kanjon Badnjevice','Oštrc','Učka','Risnjak',
-      'Snježnik (HR)','Papuk','Psunj','Kalnik','Ugljan','Krk','Cres','Mljet','Nanos','Snežnik (SLO)',
-      'Stol (Karavanke)','Krn','Grintovec','Velika planina','Vitosha','Rila','Pirin','Balkan (Stara planina BG)',
-      'Rhodope','Osogovo','Belasica','Strandzha','Kopaonik','Stara planina (RS)','Rtanj','Suva planina','Zlatibor',
-      'Tara','Fruška gora','Rudnik','Jastrebac','Maljen (Divčibare)','Homolje','Kuјачke planine','Orjen','Lovćen',
-      'Rumija','Bjelasica','Sinjajevina','Korab','Pelister','Jablanica planina','Kozuf','Jakupica (Solunska Glava)',
-      'Bistra (Mavrovo)','Dajti','Tomorr','Cika (Llogara)','Gjallica','Smolikas','Tymfi (Gamila)','Olymp','Vihren (Pirin)',
-      'Musala (Rila)','Cherni Vrah (Vitosha)','Botev (Balkan BG)','Taygetus'
-    ];
-    (function fillAreas(){
-      const sel=document.getElementById('areaSelect');
-      AREAS.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o); });
-    })();
-
-    /* ---------------------------------------------------------
-       #10.5 STATE
-       --------------------------------------------------------- */
-    const filterState = {
-  area: '',
-  radius: '',
-  duration: '',
-  modeKm: true,
-  modeElev: true,
-  difficulty: '',     
-  poi: '',
-  distanceMode: 'air'
-};
-
-    function stateFromControls(){
-  return {
-    area: document.getElementById('areaSelect')?.value || '',
-    radius: document.getElementById('radiusSelect')?.value || '',
-    duration: document.getElementById('durationBucket')?.value || '',
-    poi: document.getElementById('poiSearch')?.value?.trim() || '',
-    modeKm: document.getElementById('modeKm')?.checked ?? true,
-    modeElev: document.getElementById('modeElev')?.checked ?? true,
-    difficulty: document.getElementById('difficultySelect')?.value || '',
-    distanceMode: document.getElementById('distanceMode')?.value || 'air'
-  };
-}
-    
-    function updateFilterState(ns){ Object.assign(filterState, ns); }
-
-    /* ---------------------------------------------------------
-       #10.6 AKTIVNI ČIPOVI
-       --------------------------------------------------------- */
-    function renderActiveChips(){
-      const host = document.getElementById('activeChips'); host.innerHTML='';
-      function addChip(label, onRemove){
-        const chip=document.createElement('span'); chip.className='chip';
-        chip.innerHTML = `${label} <button type="button" aria-label="Ukloni">×</button>`;
-        chip.querySelector('button').addEventListener('click', onRemove);
-        host.appendChild(chip);
-      }
-      if (filterState.area) addChip(`Lokacija: ${filterState.area}`, ()=>{ document.getElementById('areaSelect').value=''; updateFilterState({area:''}); runFiltering(); });
-      if (filterState.radius) addChip(`Radijus: do ${filterState.radius} km`, ()=>{ document.getElementById('radiusSelect').value=''; updateFilterState({radius:''}); runFiltering(); });
-      if (filterState.duration){
-        const mapDur={'3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h'};
-        addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
-      }
-      if (filterState.poi) addChip(`Odredište: ${filterState.poi}`, ()=>{ const i=document.getElementById('poiSearch'); if(i) i.value=''; updateFilterState({poi:''}); runFiltering(); });
-      if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty}`, ()=>{
-  const sel = document.getElementById('difficultySelect');
+      const sel = document.getElementById('difficultySelect');
   if (sel) sel.value = '';
   updateFilterState({ difficulty: '' });
   runFiltering();
@@ -1161,15 +993,226 @@ if (modeBits.length) {
 }
     }
 
-    /* ---------------------------------------------------------
-       #10.7 KARTICE
-       --------------------------------------------------------- */
-    function cardHTML(t){
+     <!-- =========================================================
+     #10.3 GEOLOKACIJA + UDALJENOSTI
+     ========================================================= -->
+<script>
+// --- ELEMENTI GEO TOASTA (već postoje u tvojem HTML-u) ---
+const geoToastEl = document.getElementById('geo-toast');
+const geoTitleEl = document.getElementById('geo-title');
+const geoMsgEl   = document.getElementById('geo-msg');
+const geoTryBtn  = document.getElementById('geo-try-again');
+const geoCloseBtn= document.getElementById('geo-close');
+
+let __geoLastRetry = null;
+function showGeoToast(title, msg, onRetry){
+  if (geoToastEl && geoTitleEl && geoMsgEl) {
+    geoTitleEl.textContent = title;
+    geoMsgEl.textContent = msg;
+    __geoLastRetry = typeof onRetry === 'function' ? onRetry : null;
+    geoToastEl.classList.remove('geo-hidden');
+  } else {
+    alert(title + '\n\n' + msg);
+    if (typeof onRetry === 'function') onRetry();
+  }
+}
+function hideGeoToast(){ if (geoToastEl) geoToastEl.classList.add('geo-hidden'); }
+geoTryBtn?.addEventListener('click', ()=>{ hideGeoToast(); if (__geoLastRetry) __geoLastRetry(); });
+geoCloseBtn?.addEventListener('click', hideGeoToast);
+
+// --- Permissions helper + mapiranje geolokacijskih grešaka ---
+async function getGeoPermissionState() {
+  try {
+    if (!('permissions' in navigator) || !navigator.permissions?.query) return null;
+    const res = await navigator.permissions.query({ name: 'geolocation' });
+    return res?.state; // 'granted' | 'prompt' | 'denied'
+  } catch { return null; }
+}
+
+async function mapGeoError(error) {
+  const permState = await getGeoPermissionState();
+  // 1=PERMISSION_DENIED, 2=POSITION_UNAVAILABLE, 3=TIMEOUT
+  if (error.code === 1) {
+    return (permState === 'denied')
+      ? { type: 'denied', raw: error }
+      : { type: 'unavailable', raw: error }; // često: OS lokacija ugašena
+  }
+  if (error.code === 2) return { type: 'unavailable', raw: error };
+  if (error.code === 3) return { type: 'timeout', raw: error };
+  return { type: 'unknown', raw: error };
+}
+
+// --- Jedinstveni “help” toast za sve slučajeve ---
+function showUnifiedGeoHelp(retryCb) {
+  showGeoToast(
+    'Uključi lokaciju i dopusti pristup',
+    'Ne možemo dohvatiti tvoju lokaciju.\n\n' +
+    'Probaj:\n' +
+    '• Uključi GPS/Lokaciju na uređaju\n' +
+    '• U postavkama preglednika dopusti lokaciju za ovu stranicu\n' +
+    '  (na iOS-u uključi “Precise Location”)\n' +
+    '• Ako si ranije odbio, ukloni blokadu u “Site settings/Dozvole”\n\n' +
+    'Zatim dodirni “Pokušaj ponovno”.',
+    retryCb
+  );
+}
+
+// --- Globalno stanje geolokacije ---
+let userLocation = null;        // {lat, lon, accuracy?}
+let distancesEnabled = false;
+
+// --- Jednokratni pokušaj dohvaćanja lokacije (robusno mapiranje) ---
+function requestLocationOnce(options = { enableHighAccuracy:true, timeout:12000, maximumAge:120000 }) {
+  return new Promise((resolve, reject) => {
+    if (!('geolocation' in navigator)) {
+      reject({ type:'unsupported' });
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy }),
+      async err => reject(await mapGeoError(err)),
+      options
+    );
+  });
+}
+
+// --- Ensure wrapper: pokazuje jedinstveni vodič + retry ---
+function ensureLocationThen(cb){
+  if (userLocation) { cb(userLocation); return; }
+
+  requestLocationOnce().then(loc=>{
+    userLocation = loc;
+    distancesEnabled = true;
+    cb(userLocation);
+  }).catch(e=>{
+    if (e?.type === 'unsupported') {
+      showGeoToast('Geolokacija nije podržana', 'Ovaj preglednik ne podržava geolokaciju. Otvori stranicu u novijem pregledniku.', null);
+      return;
+    }
+    showUnifiedGeoHelp(()=> ensureLocationThen(cb));
+  });
+}
+
+// --- Haversine (zračna linija) ---
+function haversineKm(lat1,lon1,lat2,lon2){
+  const R=6371, toRad=d=>d*Math.PI/180;
+  const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+// --- Driving distance (OSRM) + cache + timeout ---
+const driveCache=new Map();
+const withTimeout=(p,ms=7000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
+async function drivingDistanceKm(origin,dest){
+  if (!origin||!dest) return null;
+  const key=`${origin.lat},${origin.lon}->${dest.lat},${dest.lon}`;
+  if (driveCache.has(key)) return driveCache.get(key);
+
+  const url=`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
+  try{
+    const resp=await withTimeout(fetch(url),7000);
+    if(!resp.ok) throw new Error('bad status');
+    const data=await resp.json();
+    const m=data?.routes?.[0]?.distance;
+    const km=(typeof m==='number')? m/1000 : null;
+    if(km!=null) driveCache.set(key,km);
+    return km;
+  }catch(_){ return null; }
+}
+</script>
+
+<!-- =========================================================
+     #10.4 PODRUČJA (AREAS)  — (ostaje kako već imaš)
+     ========================================================= -->
+<script>
+const AREAS = [ /* ... tvoje AREAS polje ostaje ... */ ];
+(function fillAreas(){
+  const sel=document.getElementById('areaSelect');
+  AREAS.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o); });
+})();
+</script>
+
+<!-- =========================================================
+     #10.5 STATE  — (ostaje, ali neka distanceMode ostane 'air' default)
+     ========================================================= -->
+<script>
+const filterState = {
+  area: '',
+  radius: '',
+  duration: '',
+  modeKm: true,
+  modeElev: true,
+  difficulty: '',
+  poi: '',
+  distanceMode: 'air' // 'air' | 'drive'
+};
+function stateFromControls(){
+  return {
+    area: document.getElementById('areaSelect')?.value || '',
+    radius: document.getElementById('radiusSelect')?.value || '',
+    duration: document.getElementById('durationBucket')?.value || '',
+    poi: document.getElementById('poiSearch')?.value?.trim() || '',
+    modeKm: document.getElementById('modeKm')?.checked ?? true,
+    modeElev: document.getElementById('modeElev')?.checked ?? true,
+    difficulty: document.getElementById('difficultySelect')?.value || '',
+    distanceMode: document.getElementById('distanceMode')?.value || 'air'
+  };
+}
+function updateFilterState(ns){ Object.assign(filterState, ns); }
+</script>
+
+<!-- =========================================================
+     #10.6 AKTIVNI ČIPOVI  — (ne mijenja se)
+     ========================================================= -->
+<script>
+function renderActiveChips(){
+  const host = document.getElementById('activeChips'); host.innerHTML='';
+  function addChip(label, onRemove){
+    const chip=document.createElement('span'); chip.className='chip';
+    chip.innerHTML = `${label} <button type="button" aria-label="Ukloni">×</button>`;
+    chip.querySelector('button').addEventListener('click', onRemove);
+    host.appendChild(chip);
+  }
+  if (filterState.area) addChip(`Lokacija: ${filterState.area}`, ()=>{ document.getElementById('areaSelect').value=''; updateFilterState({area:''}); runFiltering(); });
+  if (filterState.radius) addChip(`Radijus: do ${filterState.radius} km`, ()=>{ document.getElementById('radiusSelect').value=''; updateFilterState({radius:''}); runFiltering(); });
+  if (filterState.duration){
+    const mapDur={'3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h'};
+    addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
+  }
+  if (filterState.poi) addChip(`Odredište: ${filterState.poi}`, ()=>{ const i=document.getElementById('poiSearch'); if(i) i.value=''; updateFilterState({poi:''}); runFiltering(); });
+  if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty}`, ()=>{
+    const sel = document.getElementById('difficultySelect');
+    if (sel) sel.value = '';
+    updateFilterState({ difficulty: '' });
+    runFiltering();
+  });
+  const modeBits = [];
+  if (filterState.modeKm) modeBits.push('km');
+  if (filterState.modeElev) modeBits.push('m/nv');
+  if (modeBits.length) {
+    addChip(`Kriteriji: ${modeBits.join(' + ')}`, () => {
+      document.getElementById('modeKm').checked = true;
+      document.getElementById('modeElev').checked = true;
+      updateFilterState({ modeKm: true, modeElev: true });
+      runFiltering();
+    });
+  }
+}
+</script>
+
+<!-- =========================================================
+     #10.7 KARTICE  — (dodana podrška za drive/air čip)
+     ========================================================= -->
+<script>
+function cardHTML(t){
   const diffKm = classifyByKm(t.distanceKm);
   const diffEl = classifyByElev(t.elevationM);
 
-  const distChip = (distancesEnabled && typeof t._distKm === 'number')
-    ? `<span class="dist-chip">${t._distKm.toFixed(1)} km od vas</span>`
+  const shown = (typeof t._distShownKm === 'number') ? t._distShownKm : null;
+  const chipLabel = (filterState.distanceMode === 'drive') ? 'km vožnje' : 'km od vas';
+  const distChip = (distancesEnabled && shown != null)
+    ? `<span class="dist-chip">${shown.toFixed(1)} ${chipLabel}</span>`
     : '';
 
   const areaFooter = (t.area || t.mountain)
@@ -1209,42 +1252,41 @@ if (modeBits.length) {
     </article>
   `;
 }
-    
-    function renderTrails(list){
-      const host=document.getElementById('trail-list');
-      host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
-    }
+function renderTrails(list){
+  const host=document.getElementById('trail-list');
+  host.innerHTML = list.map(cardHTML).join('') || `<p style="opacity:.8">Nema rezultata za odabrane filtere.</p>`;
+}
+</script>
 
-    /* ---------------------------------------------------------
-       #10.8 FILTRIRANJE
-       --------------------------------------------------------- */
-        function matchesDifficulty(t, chosen, modeKm, modeElev) {
+<!-- =========================================================
+     #10.8 FILTRIRANJE  — (dodana podrška za drive i prikaz)
+     ========================================================= -->
+<script>
+function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
+function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
+function matchesPOI(t,q){
+  if(!q) return true;
+  const s=norm(q);
+  const hay=[t.name,t.area,t.mountain,t.routeType,...(t.tags||[]),...(t.destinations||[])].map(norm).join(' • ');
+  return hay.includes(s);
+}
+function matchesDifficulty(t, chosen, modeKm, modeElev) {
   if (!chosen) return true;
-
   const kmClass   = classifyByKm(t.distanceKm) ?? null;
   const elevClass = classifyByElev(t.elevationM) ?? null;
-
   if (modeKm && modeElev) {
-    if (kmClass == null && elevClass == null) return true; // nema podataka → ne sužavaj
+    if (kmClass == null && elevClass == null) return true;
     return (kmClass === chosen) || (elevClass === chosen);
   }
   if (modeKm)   return (kmClass   == null) ? true : (kmClass   === chosen);
   if (modeElev) return (elevClass == null) ? true : (elevClass === chosen);
   return true;
 }
-    
-    function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
-    function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
-    function matchesPOI(t,q){
-      if(!q) return true;
-      const s=norm(q);
-      const hay=[t.name,t.area,t.mountain,t.routeType,...(t.tags||[]),...(t.destinations||[])].map(norm).join(' • ');
-      return hay.includes(s);
-    }
-      
-     async function matchesRadius(t, radius, mode, loc){
+
+// Ako je tražen radijus, osiguraj lokaciju i filtriraj
+async function matchesRadius(t, radius, mode, loc){
   if (!radius) return true;
-  if (!loc) return false; // nema lokacije -> ne zadovoljava (pozvat ćemo ensure pa ponoviti filtriranje)
+  if (!loc) return false;
   const rKm = parseFloat(radius);
 
   if (mode==='air'){
@@ -1262,8 +1304,8 @@ if (modeBits.length) {
   const d = haversineKm(loc.lat,loc.lon,t.startLat,t.startLon);
   return d <= rKm;
 }
-    
-    async function filterList(){
+
+async function filterList(){
   const { area, radius, duration, modeKm, modeElev, difficulty, poi, distanceMode } = filterState;
 
   let base = TRAILS.filter(t =>
@@ -1273,15 +1315,12 @@ if (modeBits.length) {
     matchesDifficulty(t, difficulty, modeKm, modeElev)
   );
 
-  // Ako nema radijusa, gotovi smo
   if (!radius) return base;
 
-  // Ako radijus postoji, osiguraj lokaciju pa filtriraj
   if (!userLocation) {
-    // zatraži lokaciju i tek onda nastavi
     return new Promise(resolve=>{
       ensureLocationThen((_loc)=>{
-        filterList().then(resolve); // ponovno pozovi kad lokacija stigne
+        filterList().then(resolve);
       });
     });
   }
@@ -1294,53 +1333,98 @@ if (modeBits.length) {
   return results;
 }
 
-           
-    async function attachDistances(list){
-      if (!distancesEnabled || !userLocation) return list;
-      for (const t of list){
-        if (typeof t.startLat==='number' && typeof t.startLon==='number'){
-          t._distKm = haversineKm(userLocation.lat,userLocation.lon,t.startLat,t.startLon);
-        } else t._distKm = undefined;
-      }
-      return list;
+// Ograničena konkurentnost za API pozive (drive)
+async function mapWithLimit(items, limit, mapper) {
+  let i = 0;
+  const out = new Array(items.length);
+  const N = Math.min(limit, items.length) || 1;
+  const workers = Array.from({length:N}, async () => {
+    while (true) {
+      const idx = i++; if (idx >= items.length) break;
+      out[idx] = await mapper(items[idx], idx);
     }
-      async function runFiltering(){
-  updateFilterState(stateFromControls());   
+  });
+  await Promise.all(workers);
+  return out;
+}
+
+// Popuni prikazanu udaljenost (_distShownKm) ovisno o modu
+async function attachDistances(list){
+  if (!userLocation) return list;
+
+  // uvijek računamo air (jeftino)
+  for (const t of list){
+    if (typeof t.startLat==='number' && typeof t.startLon==='number'){
+      t._distAirKm = haversineKm(userLocation.lat,userLocation.lon,t.startLat,t.startLon);
+    } else {
+      t._distAirKm = undefined;
+    }
+    t._distDriveKm = undefined;
+  }
+
+  if (filterState.distanceMode === 'drive') {
+    // ograniči paralelizam da ne davi OSRM (npr. 4 istovremeno)
+    await mapWithLimit(list, 4, async (t)=>{
+      if (typeof t.startLat==='number' && typeof t.startLon==='number'){
+        const d = await drivingDistanceKm(userLocation, {lat:t.startLat, lon:t.startLon});
+        t._distDriveKm = (typeof d === 'number') ? d : null;
+      }
+    });
+  }
+
+  for (const t of list){
+    // odabir vrijednosti za prikaz/sortiranje
+    if (filterState.distanceMode === 'drive' && typeof t._distDriveKm === 'number') {
+      t._distShownKm = t._distDriveKm;
+    } else {
+      t._distShownKm = (typeof t._distAirKm === 'number') ? t._distAirKm : null;
+    }
+  }
+  return list;
+}
+
+async function runFiltering(){
+  updateFilterState(stateFromControls());
   let list = await filterList();
+
   if (userLocation) distancesEnabled = true;
   list = await attachDistances(list);
-  if (filterState.radius && distancesEnabled){
-    list.sort((a,b)=> (a._distKm ?? 1e9) - (b._distKm ?? 1e9));
+
+  // Sortiraj prema prikazanoj udaljenosti (air ili drive)
+  if (distancesEnabled){
+    list.sort((a,b)=> (a._distShownKm ?? 1e9) - (b._distShownKm ?? 1e9));
   }
+
   renderTrails(list);
   renderActiveChips();
 }
+</script>
 
-    /* ---------------------------------------------------------
-       #10.9 TABS + WIRING
-       --------------------------------------------------------- */
-    document.querySelectorAll('.filter-tab').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-        btn.classList.add('active');
-        const id = btn.getAttribute('data-panel');
-        const panel = document.getElementById(id);
-        if (panel) panel.classList.add('active');
+<!-- =========================================================
+     #10.9 TABS + WIRING  — (fix za drive switch)
+     ========================================================= -->
+<script>
+document.querySelectorAll('.filter-tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    const id = btn.getAttribute('data-panel');
+    const panel = document.getElementById(id);
+    if (panel) panel.classList.add('active');
 
-        if (id==='panel-radius') {
-        ensureLocationThen((_loc)=>{ distancesEnabled = true; runFiltering(); });
-       }
-      });
-    });
+    if (id==='panel-radius') {
+      ensureLocationThen(()=>{ distancesEnabled = true; runFiltering(); });
+    }
+  });
+});
 
-
-    document.getElementById('quickReset').addEventListener('click', () => {
+// RESET
+document.getElementById('quickReset').addEventListener('click', () => {
   ['areaSelect', 'radiusSelect', 'durationBucket'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-
   const dm = document.getElementById('distanceMode');
   if (dm) dm.value = 'air';
 
@@ -1369,12 +1453,15 @@ if (modeBits.length) {
   runFiltering();
 });
 
-    document.addEventListener('change', async (e) => {
+// GLOBALNI CHANGE/INPUT
+document.addEventListener('change', async (e) => {
   const id = e.target.id;
   if (!id) return;
 
   if (id === 'distanceMode' && e.target.value === 'drive') {
-    await ensureGeolocationOnce(true);
+    // PRETHODNO je ovdje bio undefined ensureGeolocationOnce; sada:
+    ensureLocationThen(()=> runFiltering());
+    return;
   }
 
   if (['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode', 'modeKm', 'modeElev'].includes(id)) {
@@ -1382,22 +1469,23 @@ if (modeBits.length) {
     runFiltering();
   }
 });
-    document.addEventListener('input', (e)=>{
-      if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
-      if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
-    });
-
-    document.getElementById('difficultySelect')?.addEventListener('change', ()=>{
+document.addEventListener('input', (e)=>{
+  if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
+  if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
+});
+document.getElementById('difficultySelect')?.addEventListener('change', ()=>{
   updateFilterState(stateFromControls()); runFiltering();
 });
 
-    /* ---------------------------------------------------------
-       #10.10 INIT
-       --------------------------------------------------------- */
-    document.addEventListener('DOMContentLoaded', ()=>{
-      renderTrails(TRAILS);
-      renderActiveChips();
-    });
-  </script>
+<!-- =========================================================
+     #10.10 INIT  — (ostaje kako jest)
+     ========================================================= -->
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+  renderTrails(TRAILS);
+  renderActiveChips();
+});
+</script>     
+             
 </body>
 </html>
