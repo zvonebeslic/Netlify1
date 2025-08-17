@@ -1166,7 +1166,9 @@
       ? `<span class="dist-chip">${shown.toFixed(1)} ${chipLabel}</span>`
       : '';
 
-       const areaFooter = ''; 
+       const areaFooter = (t.area || t.mountain)
+  ? `<div class="card-footer">${t.area || t.mountain}</div>`
+  : '';
 
     return `
       <article class="trail-card" data-id="${t.id}">
