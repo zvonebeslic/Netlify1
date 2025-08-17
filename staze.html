@@ -1001,14 +1001,9 @@
   // --- Jedinstveni “help” toast za sve slučajeve ---
   function showUnifiedGeoHelp(retryCb) {
     showGeoToast(
-      'Uključi lokaciju i dopusti pristup',
-      'Ne možemo dohvatiti tvoju lokaciju.\n\n' +
-      'Probaj:\n' +
-      '• Uključi GPS/Lokaciju na uređaju\n' +
-      '• U postavkama preglednika dopusti lokaciju za ovu stranicu\n' +
-      '  (na iOS-u uključi “Precise Location”)\n' +
-      '• Ako si ranije odbio, ukloni blokadu u “Site settings/Dozvole”\n\n' +
-      'Zatim dodirni “Pokušaj ponovno”.',
+  'Lokacija nije dostupna',
+  'GPS/lokacija na vašem uređaju je isključena ili nedostupna.\n\n' +
+  'Da bi pronašli staze pomoću filtera za udaljenost, uključite vašu lokaciju i zatim kliknite na "Pokušaj ponovno".'
       retryCb
     );
   }
