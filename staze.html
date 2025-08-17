@@ -759,11 +759,11 @@
             <label for="radiusSelect">Radijus</label>
             <select id="radiusSelect" class="select">
               <option value="">Bez ograničenja</option>
+              <option value="5">Do 5 km</option>
+              <option value="10">Do 10 km</option>
+              <option value="50">Do 50 km</option>
               <option value="100">Do 100 km</option>
               <option value="200">Do 200 km</option>
-              <option value="300">Do 300 km</option>
-              <option value="400">Do 400 km</option>
-              <option value="500">Do 500 km</option>
             </select>
           </div>
           <div class="field">
@@ -1003,7 +1003,7 @@
     showGeoToast(
   'Lokacija nije dostupna',
   'GPS/lokacija na vašem uređaju je isključena ili nedostupna.\n\n' +
-  'Da bi pronašli staze pomoću filtera za udaljenost, uključite vašu lokaciju i zatim kliknite na "Pokušaj ponovno".'
+  'Da bi pronašli staze pomoću filtera za udaljenost, uključite vašu lokaciju i zatim kliknite na "Pokušaj ponovno".',
       retryCb
     );
   }
