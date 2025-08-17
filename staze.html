@@ -1129,12 +1129,17 @@
       addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
     }
     if (filterState.poi) addChip(`Odredište: ${filterState.poi}`, ()=>{ const i=document.getElementById('poiSearch'); if(i) i.value=''; updateFilterState({poi:''}); runFiltering(); });
-    if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty}`, ()=>{
-      const sel = document.getElementById('difficultySelect');
-      if (sel) sel.value = '';
-      updateFilterState({ difficulty: '' });
-      runFiltering();
-    });
+       if (filterState.difficulty) {
+  const sel = document.getElementById('difficultySelect');
+  const selectedOpt = sel ? sel.querySelector(`option[value="${filterState.difficulty}"]`) : null;
+  const label = selectedOpt ? selectedOpt.textContent : filterState.difficulty;
+
+  addChip(`Težina: ${label}`, () => {
+    if (sel) sel.value = '';
+    updateFilterState({ difficulty: '' });
+    runFiltering();
+  });
+}
     const modeBits = [];
     if (filterState.modeKm) modeBits.push('km');
     if (filterState.modeElev) modeBits.push('m/nv');
