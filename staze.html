@@ -1134,7 +1134,7 @@
       addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
     }
     if (filterState.poi) addChip(`Odredište: ${filterState.poi}`, ()=>{ const i=document.getElementById('poiSearch'); if(i) i.value=''; updateFilterState({poi:''}); runFiltering(); });
-    if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty]}`, ()=>{
+    if (filterState.difficulty) addChip(`Težina: ${DIFF_LABELS[filterState.difficulty] || filterState.difficulty}`, ()=>{
       const sel = document.getElementById('difficultySelect');
       if (sel) sel.value = '';
       updateFilterState({ difficulty: '' });
