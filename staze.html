@@ -1516,7 +1516,67 @@
     renderActiveChips();
   });
 </script>
-   
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const section = document.querySelector('.image-section.hero-videos');
+  if (!section) return;
+
+  const vids = Array.from(section.querySelectorAll('video.hero-video'));
+  if (!vids.length) return;
+
+  let current = vids.findIndex(v => v.classList.contains('active'));
+  if (current < 0) current = 0;
+
+  let lock = false;
+  const OVERLAP_MS = 120;   // kratki overlap za mekši prijelaz
+  const CLEANUP_MS = 650;   // > CSS transition (.6s) radi sigurnog cleanupa
+
+  function playSafe(video) {
+    try { video.currentTime = 0; } catch {}
+    const p = video.play();
+    if (p && typeof p.then === 'function') p.catch(()=>{});
+  }
+
+  function crossfadeTo(nextIndex) {
+    if (lock || nextIndex === current) return;
+    lock = true;
+
+    const prev = vids[current];
+    const next = vids[nextIndex];
+
+    next.classList.add('next');   // postaje vidljiv iznad starog
+    playSafe(next);
+
+    setTimeout(() => {            // ugasi stari nakon kratkog overlap-a
+      prev.classList.remove('active');
+    }, OVERLAP_MS);
+
+    setTimeout(() => {            // počisti i potvrdi novu aktivnu
+      prev.pause();
+      next.classList.remove('next');
+      next.classList.add('active');
+      current = nextIndex;
+      lock = false;
+    }, CLEANUP_MS);
+  }
+
+  function nextVideo() {
+    const next = (current + 1) % vids.length;
+    crossfadeTo(next);
+  }
+
+  // Kad jedan završi, kreni sljedeći (loop kroz listu)
+  vids.forEach(v => v.addEventListener('ended', nextVideo));
+
+  // Klik na hero odmah prebaci na sljedeći
+  section.addEventListener('click', nextVideo, { passive: true });
+
+  // Pokreni prvi
+  playSafe(vids[current]);
+});
+</script>
+  
              
 </body>
 </html>
