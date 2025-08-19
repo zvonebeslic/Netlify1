@@ -1357,13 +1357,7 @@ function stopDistanceTracking(opts = { silent: false }) {
       host.appendChild(chip);
     }
     if (filterState.area) addChip(`Lokacija: ${filterState.area}`, ()=>{ document.getElementById('areaSelect').value=''; updateFilterState({area:''}); runFiltering(); });
-      // Jedinstveni čip za udaljenost (radijus + status praćenja)
-if (filterState.radius || distanceTracking.active) {
-  const modeLabel = (filterState.distanceMode === 'drive') ? 'vožnje' : 'od vas';
-  const base = filterState.radius ? `Radijus: do ${filterState.radius} km` : 'Udaljenost';
-  const text = distanceTracking.active ? `${base} • praćenje ${modeLabel}` : base;
-  upsertActiveChip('distance', text, stopDistanceTracking);
-}
+      
     if (filterState.duration){
       const mapDur={'3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h'};
       addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
@@ -1393,9 +1387,9 @@ if (filterState.radius || distanceTracking.active) {
     }
   // Udaljenost čip (ako je aktivan radius ili praćenje)
 if (filterState.radius || distanceTracking.active) {
-  const modeLabel = (filterState.distanceMode === 'drive') ? 'vožnje' : 'od vas';
+  const modeLabel = (filterState.distanceMode === 'drive') ? 'vožnje' : 'zračne linije';
   const base = filterState.radius ? `Radijus: do ${filterState.radius} km` : 'Udaljenost';
-  const text = distanceTracking.active ? `${base} • praćenje ${modeLabel}` : base;
+  const text = distanceTracking.active ? `${base} • računanje ${modeLabel}` : base;
   upsertActiveChip('distance', text, stopDistanceTracking);
 }
   }
