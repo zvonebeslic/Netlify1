@@ -605,6 +605,8 @@
   column-gap: 8px;
   padding: 6px 0;
   border-top: 1px dashed rgba(255, 255, 255, .08);
+  justify-items: start;  /* NE rasteži djecu po širini ćelije */
+  align-items: center;   /* poravnaj po vertikali */
 }
 
 .metric-row:first-of-type {
@@ -688,7 +690,7 @@
       color: #cfe1d9;
       line-height: 1.4;
       font-size: 12px;
-      overflo×: anywhere;
+      overflow: anywhere;
       word-wrap: break-word;
       white-space: normal !important;
     }
@@ -704,7 +706,6 @@
 .metric-label,
 .metric-value,
 .dist-chip,
-.card-desc,
 .card-footer {
   width: max-content;
   display: inline-block;
@@ -1245,6 +1246,100 @@
   }
   function updateFilterState(ns){ Object.assign(filterState, ns); }
 
+  /* === STATE za udaljenost / geolokaciju (praćenje) === */
+const distanceTracking = {
+  active: false,
+  watchId: null,
+  lastPos: null
+};
+
+function upsertActiveChip(id, label, onRemove) {
+  const host = document.getElementById('activeChips');
+  let chip = host.querySelector(`[data-chip="${id}"]`);
+  if (!chip) {
+    chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.dataset.chip = id;
+    chip.innerHTML = `${label} <button type="button" aria-label="Ukloni">×</button>`;
+    chip.querySelector('button').addEventListener('click', () => {
+      try { onRemove?.(); } finally { chip.remove(); }
+      renderActiveChips();
+      runFiltering();
+    });
+    host.prepend(chip); // na početak liste čipova
+  } else {
+    const btn = chip.querySelector('button');
+    chip.firstChild.nodeValue = label + ' ';
+    btn.onclick = () => { onRemove?.(); chip.remove(); renderActiveChips(); runFiltering(); };
+  }
+}
+
+function removeActiveChip(id) {
+  const host = document.getElementById('activeChips');
+  const chip = host.querySelector(`[data-chip="${id}"]`);
+  if (chip) chip.remove();
+}
+
+  function startDistanceTracking() {
+  // pokaži čip odmah
+  upsertActiveChip('distance', 'Izračunavanje udaljenosti od vas', stopDistanceTracking);
+
+  ensureLocationThen(() => {
+    if (distanceTracking.active) return;
+    distanceTracking.active = true;
+
+    try {
+      distanceTracking.watchId = navigator.geolocation.watchPosition(
+        pos => {
+          distanceTracking.lastPos = pos.coords;
+          userLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy };
+          distancesEnabled = true;
+          runFiltering();
+          // nakon prvog očitanja možemo ažurirati label čipa
+          upsertActiveChip('distance', 'Udaljenost: aktivno', stopDistanceTracking);
+        },
+        async err => {
+          console.warn('watchPosition error:', err);
+          // prikaži help i očisti stanje
+          const mapped = await mapGeoError(err);
+          showUnifiedGeoHelp(() => startDistanceTracking());
+          stopDistanceTracking({ silent: true });
+        },
+        { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
+      );
+    } catch {
+      // fallback: bez watch-a, ali bar se jednom izračuna
+      runFiltering();
+    }
+  });
+}
+
+function stopDistanceTracking(opts = { silent: false }) {
+  if (distanceTracking.watchId != null) {
+    try { navigator.geolocation.clearWatch(distanceTracking.watchId); } catch {}
+  }
+  distanceTracking.watchId = null;
+  distanceTracking.active = false;
+  distanceTracking.lastPos = null;
+
+  // Poništi UI odabire vezane za udaljenost
+  const radiusSel = document.getElementById('radiusSelect');
+  if (radiusSel) radiusSel.value = '';
+
+  // Vrati način mjerenja na zračnu liniju
+  const dm = document.getElementById('distanceMode');
+  if (dm) dm.value = 'air';
+
+  // Makni čip
+  removeActiveChip('distance');
+
+  // Ako želiš potpuno prestati koristiti postojeću lokaciju:
+  userLocation = null;
+  distancesEnabled = false;
+
+  if (!opts.silent) runFiltering();
+}
+
   /* =========================================================
      #10.6 AKTIVNI ČIPOVI
      ========================================================= */
@@ -1285,6 +1380,13 @@
         runFiltering();
       });
     }
+  // Udaljenost čip (ako je aktivan radius ili praćenje)
+if (filterState.radius || distanceTracking.active) {
+  const modeLabel = (filterState.distanceMode === 'drive') ? 'vožnje' : 'od vas';
+  const base = filterState.radius ? `Radijus: do ${filterState.radius} km` : 'Udaljenost';
+  const text = distanceTracking.active ? `${base} • praćenje ${modeLabel}` : base;
+  upsertActiveChip('distance', text, stopDistanceTracking);
+}
   }
 
   /* =========================================================
@@ -1540,9 +1642,22 @@
     }
 
     if (['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode', 'modeKm', 'modeElev'].includes(id)) {
-      updateFilterState(stateFromControls());
-      runFiltering();
-    }
+  updateFilterState(stateFromControls());
+
+  // ako je odabran radius -> pokreni praćenje (prikaži čip)
+  if (id === 'radiusSelect') {
+    const hasRadius = !!document.getElementById('radiusSelect')?.value;
+    if (hasRadius && !distanceTracking.active) startDistanceTracking();
+    if (!hasRadius && distanceTracking.active) stopDistanceTracking();
+  }
+
+  // promjena načina mjerenja dok je praćenje aktivno -> samo refreš
+  if (id === 'distanceMode' && distanceTracking.active) {
+    renderActiveChips();
+  }
+
+  runFiltering();
+  }
   });
   document.addEventListener('input', (e)=>{
     if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
