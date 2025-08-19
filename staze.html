@@ -1282,26 +1282,30 @@ function removeActiveChip(id) {
 }
 
   function startDistanceTracking() {
-  // pokaži čip odmah
+  if (distanceTracking.active) {
+    // već aktivno: samo osiguraj lokaciju i refresh
+    ensureLocationThen(() => { distancesEnabled = true; runFiltering(); });
+    upsertActiveChip('distance', 'Udaljenost: aktivno', stopDistanceTracking);
+    return;
+  }
+
+  // 1) Označi kao aktivno ODMAH i prikaži čip
+  distanceTracking.active = true;
   upsertActiveChip('distance', 'Izračunavanje udaljenosti od vas', stopDistanceTracking);
 
+  // 2) Osiguraj lokaciju + pokreni watch
   ensureLocationThen(() => {
-    if (distanceTracking.active) return;
-    distanceTracking.active = true;
-
     try {
       distanceTracking.watchId = navigator.geolocation.watchPosition(
         pos => {
           distanceTracking.lastPos = pos.coords;
           userLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy };
           distancesEnabled = true;
-          runFiltering();
-          // nakon prvog očitanja možemo ažurirati label čipa
           upsertActiveChip('distance', 'Udaljenost: aktivno', stopDistanceTracking);
+          runFiltering();
         },
         async err => {
           console.warn('watchPosition error:', err);
-          // prikaži help i očisti stanje
           const mapped = await mapGeoError(err);
           showUnifiedGeoHelp(() => startDistanceTracking());
           stopDistanceTracking({ silent: true });
@@ -1309,7 +1313,6 @@ function removeActiveChip(id) {
         { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
       );
     } catch {
-      // fallback: bez watch-a, ali bar se jednom izračuna
       runFiltering();
     }
   });
@@ -1592,9 +1595,9 @@ if (filterState.radius || distanceTracking.active) {
       const panel = document.getElementById(id);
       if (panel) panel.classList.add('active');
 
-      if (id==='panel-radius') {
-        ensureLocationThen(()=>{ distancesEnabled = true; runFiltering(); });
-      }
+      if (id === 'panel-radius') {
+  startDistanceTracking();  // odmah pokaži čip + kreni s lociranjem
+    }
     });
   });
 
