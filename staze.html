@@ -1213,11 +1213,25 @@
      #10.4 PODRUČJA (AREAS)
      ========================================================= */
 
-  // Ako AREAS dolazi iz popis-staza.js, koristimo ga; inače ostavi prazno polje.
-  const AREAS = window.AREAS || [];
+  const AREAS = ["Park prirode Blidinje","Velebit","Begunjščica","Klekovača","Sljeme","Medvednica","Dinara",
+                 "Oštrovača","Šator","Kozara","Ivanščica","Kamešnica","Cincar","Vranica","Matinski Vis","Zavelim",
+                 "Golija","Stožer","Ljubuša","Tušnica","Svilaja","Biokovo","Mosor","Raduša","Vran","Čvrsnica","Čabulja",
+                 "Prenj","Crvanj","Matokit","Velež","Visočica","Bjelašnica","Treskavica","Zelengora","Volujak","Maglić",
+                 "Lelija","Durmitor","Komovi","Prokletije","Šar planina","Otok Pag","Poluotok Pelješac","Šipovo",
+                 "Otok Hvar","Otok Brač","Kanjon Badnjevice","Oštrc","Učka","Risnjak","Snježnik","Papuk","Psunj","Kalnik",
+                 "Ugljan","Krk","Cres","Mljet","Nanos","Snežnik (SLO)","Stol (Karavanke)","Krn","Grintovec","Velika planina",
+                 "Vitosha","Rila","Pirin","Stara planina (BG)","Rhodope","Osogovo","Belasica","Strandzha","Kopaonik",
+                 "Stara planina (RS)","Rtanj","Suva planina","Zlatibor","Tara","Fruška gora","Rudnik","Jastrebac","Maljen",
+                 "Homolje","Orjen","Lovćen","Rumija"];
+
   (function fillAreas(){
-    const sel=document.getElementById('areaSelect');
-    AREAS.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o); });
+    const sel = document.getElementById('areaSelect');
+    AREAS.forEach(a => {
+      const o = document.createElement('option');
+      o.value = a;
+      o.textContent = a;
+      sel.appendChild(o);
+    });
   })();
 
   /* =========================================================
