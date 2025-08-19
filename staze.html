@@ -226,40 +226,53 @@
     /* =========================================================
        HERO + NASLOV
        ========================================================= */
-.image-section {
+     .image-section {
   position: relative;
   height: 50vh;
-  overflow: hidden;   /* da video ne strši van */
+  overflow: hidden;
 }
 
-/* overlay ostaje isti */
+/* overlay iznad videa, ali ne blokira klik */
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .55));
-  z-index: 3;
+  background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
+  z-index: 4;
+  pointer-events: none;  /* <<< ključno */
 }
 
-/* svaki video unutar hero sekcije */
+/* svi videi složeni jedan preko drugog */
 .image-section.hero-videos .hero-video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: #000;            /* spriječi blink prije učitavanja */
   opacity: 0;
   transition: opacity .6s ease;
   pointer-events: none;
-  z-index: 1;
+  z-index: 1;                  /* osnovni sloj */
 }
 
-.image-section.hero-videos .hero-video.active,
+/* aktivni je iznad osnovnog */
+.image-section.hero-videos .hero-video.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* sljedeći fade-in ide još iznad aktivnog */
 .image-section.hero-videos .hero-video.next {
   opacity: 1;
+  z-index: 3;
 }
 
-.image-section.hero-videos .hero-video.next {
-  z-index: 2;
+/* optional: pokaži da je klikabilno prebacivanje */
+.image-section.hero-videos { cursor: pointer; }
+
+/* accessibility: smanji animaciju ako je traženo u OS-u */
+@media (prefers-reduced-motion: reduce) {
+  .image-section.hero-videos .hero-video { transition: opacity .1s linear; }
 }
 
     main .header {
