@@ -707,6 +707,7 @@
 .metric-label,
 .metric-value,
 .dist-chip,
+.card-desc,
 .card-footer {
   width: max-content;
   display: inline-block;
@@ -1356,7 +1357,13 @@ function stopDistanceTracking(opts = { silent: false }) {
       host.appendChild(chip);
     }
     if (filterState.area) addChip(`Lokacija: ${filterState.area}`, ()=>{ document.getElementById('areaSelect').value=''; updateFilterState({area:''}); runFiltering(); });
-    if (filterState.radius) addChip(`Radijus: do ${filterState.radius} km`, ()=>{ document.getElementById('radiusSelect').value=''; updateFilterState({radius:''}); runFiltering(); });
+      // Jedinstveni čip za udaljenost (radijus + status praćenja)
+if (filterState.radius || distanceTracking.active) {
+  const modeLabel = (filterState.distanceMode === 'drive') ? 'vožnje' : 'od vas';
+  const base = filterState.radius ? `Radijus: do ${filterState.radius} km` : 'Udaljenost';
+  const text = distanceTracking.active ? `${base} • praćenje ${modeLabel}` : base;
+  upsertActiveChip('distance', text, stopDistanceTracking);
+}
     if (filterState.duration){
       const mapDur={'3':'Do 3 h','5':'Do 5 h','8':'Do 8 h','10':'Do 10 h','>10':'Preko 10 h'};
       addChip(`Trajanje: ${mapDur[filterState.duration]||filterState.duration}`, ()=>{ document.getElementById('durationBucket').value=''; updateFilterState({duration:''}); runFiltering(); });
