@@ -634,7 +634,7 @@
 /* badge (diff-pill) desno u drugom redu */
 .metric-row .diff-pill {
   grid-area: pill;
-  justify-self: end;   /* poravnaj desno */
+  justify-self: start;  
   align-self: center;  /* vertikalno centriraj */
   margin: 0;           /* bez dodatnih rubova, grid rješava razmak */
 }
@@ -690,9 +690,10 @@
       color: #cfe1d9;
       line-height: 1.4;
       font-size: 12px;
-      overflow: anywhere;
-      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      word-break: break-word;
       white-space: normal !important;
+      max-width: 100%;
     }
 
     .card-footer {
