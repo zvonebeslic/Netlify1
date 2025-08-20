@@ -525,12 +525,32 @@
       .trail-card {
   position: relative;
   width: 100%;
-  height: 260px; /* visina kartice */
+  height: 260px;            /* fiksna visina kartice */
   border: 1px solid var(--line);
   border-radius: 12px;
   background: #0f1a15;
   overflow: hidden;
+  cursor: pointer;
   transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.trail-card:active {
+  transform: scale(.98);
+  box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+
+/* CTA u donjem desnom kutu */
+.card-cta-bottom {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  font-size: 11px;
+  color: #cfe9de;
+  pointer-events: none; /* da ne “krade” tap od linka */
 }
 
 .trail-card img {
@@ -565,7 +585,7 @@
 
     .title-line h3 {
       margin: 0;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       letter-spacing: .2px;
     }
@@ -1415,36 +1435,41 @@ if (filterState.radius || distanceTracking.active) {
   : '';
 
     return `
-      <article class="trail-card" data-id="${t.id}">
-        <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
-        <div class="pad">
-          <div class="title-line">
-            <h3>${t.name}</h3>
-            ${distChip}
-          </div>
+      <a href="staze/${t.slug}.html" class="trail-card" data-id="${t.id}">
+  <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
+  <div class="pad">
+    <div class="title-line">
+      <h3>${t.name}</h3>
+      ${distChip}
+    </div>
 
-          <div class="metric-row">
-            <span class="metric-label">Duljina</span>
-            <span class="metric-value">${t.distanceKm} km</span>
-            <span class="diff-pill ${diffKm}" title="Ocjena težine po km">${DIFF_LABELS[diffKm]}</span>
-          </div>
+    <div class="metric-row">
+      <span class="metric-label">Duljina</span>
+      <span class="metric-value">${t.distanceKm} km</span>
+      <span class="diff-pill ${diffKm}" title="Ocjena težine po km">${DIFF_LABELS[diffKm]}</span>
+    </div>
 
-          <div class="metric-row">
-            <span class="metric-label">m/nv</span>
-            <span class="metric-value">${t.elevationM} m</span>
-            <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
-          </div>
+    <div class="metric-row">
+      <span class="metric-label">m/nv</span>
+      <span class="metric-value">${t.elevationM} m</span>
+      <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
+    </div>
 
-          <div class="metric-row">
-            <span class="metric-label">Trajanje</span>
-            <span class="metric-value">${t.durationH} h</span>
-            <span></span>
-          </div>
+    <div class="metric-row">
+      <span class="metric-label">Trajanje</span>
+      <span class="metric-value">${t.durationH} h</span>
+      <span></span>
+    </div>
 
-          <p class="card-desc">${t.description || ''}</p>
-          ${areaFooter}
-        </div>
-      </article>
+    <p class="card-desc">${t.description || ''}</p>
+    ${areaFooter}
+
+    <!-- CTA badge dolje desno -->
+    <span class="card-cta-bottom">
+      ${currentLang==='hr' ? 'klik za više' : 'tap for details'}
+    </span>
+  </div>
+</a>
     `;
   }
   function renderTrails(list){
