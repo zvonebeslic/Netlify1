@@ -1653,11 +1653,15 @@ if (filterState.radius || distanceTracking.active) {
   updateFilterState(stateFromControls());
 
   // ako je odabran radius -> pokreni praćenje (prikaži čip)
-  if (id === 'radiusSelect') {
-    const hasRadius = !!document.getElementById('radiusSelect')?.value;
-    if (hasRadius && !distanceTracking.active) startDistanceTracking();
-    if (!hasRadius && distanceTracking.active) stopDistanceTracking();
+   if (id === 'radiusSelect') {
+  const hasRadius = !!document.getElementById('radiusSelect')?.value;
+  if (hasRadius && !distanceTracking.active) {
+    startDistanceTracking();
+  } else {
+    // Bez ograničenja: praćenje ostaje aktivno; samo osvježi UI
+    renderActiveChips();
   }
+}
 
   // promjena načina mjerenja dok je praćenje aktivno -> samo refreš
   if (id === 'distanceMode' && distanceTracking.active) {
