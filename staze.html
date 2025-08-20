@@ -586,7 +586,7 @@
    ispod red: vrijednost (lijevo) | badge (desno) */
 .metric-row {
   display: grid;
-  grid-template-columns: auto auto;   /* value | pill */
+  grid-template-columns: auto auto 1fr;   /* value | pill */
   grid-template-rows: auto auto;     /* label | (value+pill) */
   grid-template-areas:
     "label label"
@@ -626,7 +626,6 @@
 .metric-row .diff-pill {
   grid-area: pill;
   justify-self: start;  
-  align-self: baseline;  
   margin: 0;           /* bez dodatnih rubova, grid rješava razmak */
 }
 
