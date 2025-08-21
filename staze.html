@@ -792,21 +792,34 @@ a.trail-card:focus-visible {
   height: 24px;
 }
 
-    footer {
-      text-align: center;
-      padding: 20px 10px;
-      margin-top: 40px;
-      border-top: 1px solid var(--line);
-      background: #0e1714;
-      color: #bcd0c7;
-    }
+  footer {
+  background: #111;
+  color: #ccc;
+  text-align: center;
+  padding: 20px 10px;
+  font-size: 14px;
+  position: relative;
+  margin-top: 60px;
+}
 
-    .footer-icons svg {
-      width: 32px;
-      height: 32px;
-      margin: 0 10px;
-      opacity: .85;
-    }
+.footer-icons {
+  margin: 10px 0;
+}
+
+.footer-icons svg {
+  width: 32px;
+  height: 32px;
+  margin: 0 10px;
+  vertical-align: middle;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.footer-icons svg:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+    
   </style>
 </head>
 
