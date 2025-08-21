@@ -576,6 +576,34 @@
       padding: 10px;
     }
 
+    /* === neutraliziraj link overlay za klikabilne kartice === */
+a.trail-card,
+a.trail-card:link,
+a.trail-card:visited {
+  color: inherit;
+  text-decoration: none;
+  background: none;
+}
+
+/* bez sivog/plavog pokrovnog sloja na hover/active */
+a.trail-card:hover,
+a.trail-card:active,
+a.trail-card:focus {
+  background: transparent !important;
+}
+
+/* mobiteli (Chrome/Safari): isključi tap highlight */
+a.trail-card,
+a.trail-card * {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+/* po želji: pristojan fokus umjesto defaultnog */
+a.trail-card:focus-visible {
+  outline: 2px solid var(--brand-2);
+  outline-offset: 2px;
+}
+
     .title-line {
       display: flex;
       align-items: center;
@@ -585,7 +613,7 @@
 
     .title-line h3 {
       margin: 0;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: .2px;
     }
