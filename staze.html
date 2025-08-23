@@ -1491,8 +1491,8 @@ if (filterState.radius || distanceTracking.active) {
 
     return `
       <a href="staze/${t.slug}.html" class="trail-card" data-id="${t.id}">
-  <img src="${t.thumbnail}" alt="${t.name}" loading="lazy"/>
-  <div class="pad">
+      <img src="${t.thumbnail}" alt="${t.alt || t.name}" loading="lazy"/>
+    <div class="pad">
     <div class="title-line">
       <h3>${t.name}</h3>
       ${distChip}
