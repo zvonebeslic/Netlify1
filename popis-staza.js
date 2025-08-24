@@ -187,7 +187,7 @@
     "tags": ["Maglić", "Prijevor", "Sutjeska", "Trnovačko Jezero", "Tara", "Prašuma Perućica", "Vodopad Skakavac"],
     "description": "Planinarska staza koja pri usponu ima i sajle za dodatno osiguranje. Najviši vrh BiH i pogled s njega na visoke crnogorske planine. Travnata prostranstva i Trnovačko jezero kao najljepši biser Balkana.",
     "gpx": "/gps/kozara-mrakovica.gpx",
-    "thumbnail": "images/thumbnails/kozara-mrakovica.jpg",
+    "thumbnail": "images/hiking-trail-maglic-mountain-prijevor-maglic-trnovacko-jezero-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza s Prijevora na Maglić. Kružna tura uz obilazak Trnovačkog jezera."
   },
   {
