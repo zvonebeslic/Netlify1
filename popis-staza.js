@@ -149,7 +149,7 @@
     "tags": ["Prisoje", "Dobrijevac", "Vitrenik", "Tušnica", "Buško jezero", "Livno", "Tomislavgrad"],
     "description": "Uspon na najviši vrh Tušnice, Vitrenik. Staza koja polazi iz Prisoja vodi do najvišeg vrha pored planinarskog doma Dobrijevac te prelijepim grebenom sve do najvišeg vrha Vitrenik (1697m). Pogled na Buško jezero cijelo vrijeme oduzima dah.",
     "gpx": "/gps/ostrovaca-uspon.gpx",
-    "thumbnail": "images/thumbnails/ostrovaca-uspon.jpg",
+    "thumbnail": "images/hiking-trail-tusnica-mountain-prisoje-vitrenik-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza na Vitrenik, planina Tušnica. Staza koja polazi iz Prisoja i vrluda travnatim grebenom planine."
   },
   {
