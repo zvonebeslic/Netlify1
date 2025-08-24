@@ -168,7 +168,7 @@
     "tags": ["Šator planina", "Šatorsko Jezero", "Bosansko Grahovo"],
     "description": "Obilazak Šatorskog jezera i uspon do najvišeg vrha ove planine uz prelijepe vidikovce na veliko jezero. Pristupni put je makadamski.",
     "gpx": "/gps/sator-jezero-vrh.gpx",
-    "thumbnail": "images/thumbnails/sator-jezero-vrh.jpg",
+    "thumbnail": "images/hiking-trail-sator-mountain-satorsko-jezero-veliki-sator-bosnia-and-herzegovina.jpg",
     "alt": "Šatorsko jezero i najviši vrh Šatora na prelijepoj planinarskoj stazi"
   },
   {
