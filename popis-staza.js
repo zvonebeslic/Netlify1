@@ -111,7 +111,7 @@
     "tags": ["Vran planina", "Veliki Vran", "Hajdučke Vrleti", "Hajdučko Vrilo", "Blidinje"],
     "description": "Planinarska staza koja vodi dijelom kroz borovu šumu a zatim po travnatim pašnjacima do najvišeg vrha Vran planine. Polazna točka u blizini poznatog restorana u Parku prirode Blidinje.",
     "gpx": "/gps/medvednica-hunjka.gpx",
-    "thumbnail": "images/thumbnails/medvednica-hunjka.jpg",
+    "thumbnail": "images/hiking-trail-vran-mountain-hajducke-vrleti-veliki-vran-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza do najvišeg vrha Vran Planine. Polazna točka pored popularnog restorana Hajdučke Vrleti u srcu Parka prirode Blidinje."
   },
   {
