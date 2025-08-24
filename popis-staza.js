@@ -130,7 +130,7 @@
     "tags": ["Najviši vrh RH", "Glavaš", "Martinova košara", "Dinara", "Sinjal", "Sklonište Drago Grubać"],
     "description": "Najviši vrh RH sa skloništem i lijepim pogledom. Staza koja polazi blizu izvora rijeke Cetine i preko travnatih strmina vodi grebenom Dinare. Na stazi su srednjovjekovna utvrda i planinarsko sklonište.",
     "gpx": "/gps/dinara-sinjal.gpx",
-    "thumbnail": "images/thumbnails/dinara-sinjal.jpg",
+    "thumbnail": "images/hiking-trail-dinara-mountain-glavas-vrh-hrvatske-croatia.jpg",
     "alt": "Planinarska staza na planini Dinari koja pored jedne srednjovjekovne utvrde i planinarskog skloništa vodi na najviši vrh Hrvatske."
   },
   {
