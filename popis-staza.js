@@ -244,7 +244,7 @@
     "tags": ["Raduša", "Zahum", "Felix staza", "Idovac", "Idovačko jezero", "Rama", "Ramsko jezero", "Diva Grabovčeva"],
     "description": "Planinarska staza na najviši vrh Raduše ispod kojeg se nalazi i istoimeno jezero. Blizu polazne točke se nalazi vidikovac na Ramsko jezero koji svakako vrijedi posjetiti.",
     "gpx": "/gps/cincar-vrh.gpx",
-    "thumbnail": "images/thumbnails/cincar-vrh.jpg",
+    "thumbnail": "images/hiking-trail-radusa-mountain-zahum-idovac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Zahum - Idovac na planini Raduši. Vidikovac na Ramsko jezero u blizini."
   },
   {
