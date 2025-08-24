@@ -206,7 +206,7 @@
     "tags": ["Matokit", "Sveti Rok", "Vrgorac"],
     "description": "Tipična dalmatinska planinarska staza preko kamenjara do na vrh. Staza polazi iz grada Vrgorca i vodi na najviši vrh Matokita, Sveti Rok.",
     "gpx": "/gps/ivanscica-vrh.gpx",
-    "thumbnail": "images/thumbnails/ivanscica-vrh.jpg",
+    "thumbnail": "images/hiking-trail-matokit-mountain-vrgorac-sveti-rok-croatia.jpg",
     "alt": "Planinarska staza Vrgorac - Sveti Rok. Matokit planina."
   },
   {
