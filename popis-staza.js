@@ -225,7 +225,7 @@
     "tags": ["Cincar", "Livno", "Planinarski dom Kruzi", "Izvor Duman", "Divlji konji livno"],
     "description": "Jedinstvena planinarska staza koja od Planinarskog doma Kruzi vodi na najviši vrh Cincara. Staza vodi po visoravni gdje se prolazi pored mnogo krda divljih konja.",
     "gpx": "/gps/kamesnica-konj.gpx",
-    "thumbnail": "images/thumbnails/kamesnica-konj.jpg",
+    "thumbnail": "images/hiking-trail-cincar-mountain-kruzi-cincar-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Kruzi - Cincar. Posjeta divljim konjima na visoravni dok hodate gotovo uvijek moguća."
   },
   {
