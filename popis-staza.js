@@ -253,8 +253,8 @@
     "name": "Radovina - Ločika - Nadkrstac (Vranica)",
     "area": "Vranica",
     "mountain": "Vranica",
-    "distanceKm": 16,
-    "elevationM": 900,
+    "distanceKm": 13.5,
+    "elevationM": 860,
     "durationH": 7,
     "startLat": 43.98,
     "startLon": 17.62,
@@ -340,6 +340,7 @@
     "description": "Jako strma staza do najvišeg vrha Biokova iz sela Milići. Pogledi sa vrha na more i otoke a s druge strane na dalmatinsku zagoru i hercegovačke planine.",
     "gpx": "/gps/stozer-vrh.gpx",
     "thumbnail": "images/hiking-trail-biokovo-mountain-milici-sveti-jure-croatia.jpg",
+    "alt": "Planinarska staza Milići - Sveti Jure na Biokovu."
   },
   {
     "id": 19,
