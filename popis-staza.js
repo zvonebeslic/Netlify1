@@ -432,7 +432,7 @@
     "routeType": "Kružna",
     "destinations": ["Mosor"],
     "tags": ["Umberto Girometta", "Veliki Kabao", "Vickov Stup", "Ljubirna", "Mosor", "Sitno Gornje"],
-    "description": "Kružna staza po Mosoru, krševit teren i lijepi vidici cijelo vrijeme na grebenu. Odmor pored Planinarskog doma Umberto Girometta je nezaobilazan. Pogledi na Jadransko more oko Splita očaravaju",
+    "description": "Kružna staza po Mosoru, krševit teren i lijepi vidici cijelo vrijeme na grebenu. Odmor pored Planinarskog doma Umberto Girometta je nezaobilazan. Pogledi na Jadransko more očaravaju",
     "gpx": "/gps/mosor-vickov-stup.gpx",
     "thumbnail": "images/hiking-trail-mosor-mountain-umberto-girometta-veliki-kabao-vickov-stup-croatia.jpg",
     "alt": "Planinarska staza iznad Splita u Dalmaciji. Kružna tura po Mosoru od Planinarskog doma Umberto Girometta do na Veliki Kabao i Vickov Stup."
