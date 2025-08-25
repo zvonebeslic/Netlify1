@@ -273,7 +273,7 @@
     "area": "Kanjon Badnjevice",
     "mountain": "Kanjon Badnjevice",
     "distanceKm": 7.5,
-    "elevationM": 600,
+    "elevationM": 500,
     "durationH": 4.5,
     "startLat": 43.46956,
     "startLon": 17.16078,
