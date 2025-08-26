@@ -375,7 +375,7 @@
     "routeType": "povratna (isti put)",
     "destinations": ["Čvrsnica"],
     "tags": ["Masna Luka", "Pločno", "Ivica Plazonić", "Čvrsnica", "Blidinje", "Park prirode Blidinje", "Ćužića Kuk"],
-    "description": "Planinarska staza do najvišeg vrha Čvrsnice koja polazi iz Masne Luke pokraj Pl. doma Masna Luka. Sa svojih 2228m, ovaj vrh je teže osvojiti. posljednjih 500m je strmi sipar podno visokih litica.",
+    "description": "Planinarska staza do najvišeg vrha Čvrsnice koja polazi iz Masne Luke pokraj Pl. doma Masna Luka. Sa svojih 2228m, ovaj vrh je teže osvojiti. Posljednjih 500m je strmi sipar podno visokih litica.",
     "gpx": "/gps/tusnica-greben.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-masna-luka-plocno-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja vodi iz Masne Luke na Pločno. Sklad divne prirode u Parku prirode Blidinje."
@@ -394,7 +394,7 @@
     "routeType": "Kružna",
     "destinations": ["Svilaja"],
     "tags": ["Svilaja", "Orlove Stine", "Bat", "Sinj", "Peručko jezero"],
-    "description": "Od Pl. doma Orlove Stine do na najviši vrh vas vodi dobro markirana planinarska staza koja nije posebno teška. S vrha lijepi pogledi na Dinaru, Kamešnicu i Perućko jezero te Petrovo Polje i Mosor. Opcija kružnog povratka je najbolja.",
+    "description": "Od Pl. doma Orlove Stine do na najviši vrh vas vodi dobro markirana planinarska staza koja nije posebno teška. S vrha lijepi pogledi na Dinaru, Kamešnicu i Peručko jezero te Petrovo Polje i Mosor. Opcija kružnog povratka je najbolja.",
     "gpx": "/gps/svilaja-bat.gpx",
     "thumbnail": "images/hiking-trail-svilaja-mountain-orlove-stine-bat-croatia.jpg",
     "alt": "Planinarska staza na najviši vrh planine Svilaje. Sinjska okolica i najbliže planine te Peručko jezero kao na dlanu."
@@ -432,7 +432,7 @@
     "routeType": "Kružna",
     "destinations": ["Mosor"],
     "tags": ["Umberto Girometta", "Veliki Kabal", "Vickov Stup", "Ljubirna", "Mosor", "Sitno Gornje"],
-    "description": "Kružna staza po Mosoru, krševit teren i lijepi vidici cijelo vrijeme na grebenu. Odmor pored Planinarskog doma Umberto Girometta je nezaobilazan. Pogledi na Jadransko more očaravaju",
+    "description": "Kružna staza po Mosoru, krševit teren i lijepi vidici cijelo vrijeme na grebenu. Odmor pored Planinarskog doma Umberto Girometta je nezaobilazan. Pogledi na Jadransko more očaravaju.",
     "gpx": "/gps/mosor-vickov-stup.gpx",
     "thumbnail": "images/hiking-trail-mosor-mountain-umberto-girometta-veliki-kabal-vickov-stup-croatia.jpg",
     "alt": "Planinarska staza iznad Splita u Dalmaciji. Kružna tura po Mosoru od Planinarskog doma Umberto Girometta do na Veliki Kabal i Vickov Stup."
