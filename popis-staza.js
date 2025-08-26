@@ -420,8 +420,8 @@
   },
   {
     "id": 23,
-    "slug": "hiking-trail-umberto-girometta-veliki-kabao-vickov-stup-mosor-mountain-croatia",
-    "name": "Pl. dom Umberto Girometta - Veliki Kabao - Vickov Stup (Mosor)",
+    "slug": "hiking-trail-umberto-girometta-veliki-kabal-vickov-stup-mosor-mountain-croatia",
+    "name": "Pl. dom Umberto Girometta - Veliki Kabal - Vickov Stup (Mosor)",
     "area": "Mosor",
     "mountain": "Mosor",
     "distanceKm": 11,
@@ -431,11 +431,11 @@
     "startLon": 16.60342,
     "routeType": "Kružna",
     "destinations": ["Mosor"],
-    "tags": ["Umberto Girometta", "Veliki Kabao", "Vickov Stup", "Ljubirna", "Mosor", "Sitno Gornje"],
+    "tags": ["Umberto Girometta", "Veliki Kabal", "Vickov Stup", "Ljubirna", "Mosor", "Sitno Gornje"],
     "description": "Kružna staza po Mosoru, krševit teren i lijepi vidici cijelo vrijeme na grebenu. Odmor pored Planinarskog doma Umberto Girometta je nezaobilazan. Pogledi na Jadransko more očaravaju",
     "gpx": "/gps/mosor-vickov-stup.gpx",
-    "thumbnail": "images/hiking-trail-mosor-mountain-umberto-girometta-veliki-kabao-vickov-stup-croatia.jpg",
-    "alt": "Planinarska staza iznad Splita u Dalmaciji. Kružna tura po Mosoru od Planinarskog doma Umberto Girometta do na Veliki Kabao i Vickov Stup."
+    "thumbnail": "images/hiking-trail-mosor-mountain-umberto-girometta-veliki-kabal-vickov-stup-croatia.jpg",
+    "alt": "Planinarska staza iznad Splita u Dalmaciji. Kružna tura po Mosoru od Planinarskog doma Umberto Girometta do na Veliki Kabal i Vickov Stup."
   },
   {
     "id": 24,
