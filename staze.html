@@ -1472,6 +1472,20 @@ if (filterState.radius || distanceTracking.active) {
 }
   }
 
+/* ---------------------------------------------------------
+   #10.2b FORMATIRANJE VREMENA (sati:minute)
+   --------------------------------------------------------- */
+function formatHMM(hoursDecimal) {
+  const val = Number(hoursDecimal);
+  if (!isFinite(val)) return '-';
+  let h = Math.floor(val);
+  let m = Math.round((val - h) * 60);
+  if (m === 60) { h += 1; m = 0; }
+  return `${h}:${m.toString().padStart(2, '0')} h`;
+  // Ako želiš točno "4.30" umjesto "4:30 h", koristi:
+  // return `${h}.${m.toString().padStart(2, '0')}`;
+}
+  
   /* =========================================================
      #10.7 KARTICE (air/drive čip)
      ========================================================= */
@@ -1512,7 +1526,7 @@ if (filterState.radius || distanceTracking.active) {
 
     <div class="metric-row">
       <span class="metric-label">Trajanje</span>
-      <span class="metric-value">${t.durationH} h</span>
+        <span class="metric-value">${formatHMM(t.durationH)}</span>
       <span></span>
     </div>
 
