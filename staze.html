@@ -1781,9 +1781,9 @@ function formatHMM(hoursDecimal) {
     renderTrails(TRAILS);
     renderActiveChips();
   });
-</script>
 
-<script>
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const section = document.querySelector('.image-section.hero-videos');
   if (!section) return;
@@ -1841,6 +1841,35 @@ document.addEventListener('DOMContentLoaded', () => {
   // Pokreni prvi
   playSafe(vids[current]);
 });
+
+
+
+  
+(function addItemListJsonLd(){
+  if (!window.TRAILS || !TRAILS.length) return;
+  var base = (location.origin === 'null' || location.origin === 'file://')
+    ? '' : location.origin.replace(/\/$/, '');
+  var items = TRAILS.map(function(t, i){
+    return {
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": t.name,
+      "url": base + "/staze/" + t.slug + ".html"
+    };
+  });
+  var data = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Planinarske staze",
+    "itemListElement": items
+  };
+  var s = document.createElement("script");
+  s.type = "application/ld+json";
+  s.textContent = JSON.stringify(data);
+  document.head.appendChild(s);
+})();
+
+  
 </script>
   
              
