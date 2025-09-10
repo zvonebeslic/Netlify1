@@ -758,6 +758,24 @@ a.trail-card:focus-visible {
   white-space: nowrap;
 }
 
+ /* ROUTE badge uz trajanje (desno) */
+.metric-row.route-row .pill-right {
+  grid-area: pill;
+  justify-self: end;   /* desni rub reda */
+}
+.route-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.06);
+  vertical-align: middle;
+}
+.route-badge svg { width: 14px; height: 14px; display: block; }   
+
     /* =========================================================
        FOOTER / BACK TO TOP
        ========================================================= */
@@ -1485,6 +1503,32 @@ function formatHMM(hoursDecimal) {
   // Ako želiš točno "4.30" umjesto "4:30 h", koristi:
   // return `${h}.${m.toString().padStart(2, '0')}`;
 }
+
+  /* === ROUTE TYPE BADGE (↺ kružna / ⇄ povratna) — HR only ================ */
+function routeBadgeHTML(routeType) {
+  const rt = (routeType || '').toLowerCase();
+  const isLoop    = /kružna|kruzna|loop|circular/.test(rt);
+  const isOutBack = /povratna|isti put|out.*back/.test(rt);
+
+  const labelHR = isLoop ? 'Kružna tura' : (isOutBack ? 'Povratna (isti put)' : 'Ruta');
+
+  const svgLoop = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+            d="M7 7h7.5a4.5 4.5 0 0 1 0 9H7"/>
+      <path fill="currentColor" d="M7 3.8l3.2 3.2L7 10.2 3.8 7z"/>
+    </svg>`;
+
+  const svgOutBack = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M5 7h9l-2.8-2.8 1.4-1.2L18 8.4 12.6 13.8l-1.4-1.2L14 10H5z"></path>
+      <path fill="currentColor" d="M19 17H10l2.8 2.8-1.4 1.2L6 16.6 11.4 11l1.4 1.2L10 15h9z" opacity=".9"></path>
+    </svg>`;
+
+  const icon = isLoop ? svgLoop : svgOutBack; // ako nije loop, tretiramo kao povratnu
+
+  return `<span class="route-badge" role="img" aria-label="${labelHR}" title="${labelHR}">${icon}</span>`;
+}
   
   /* =========================================================
      #10.7 KARTICE (air/drive čip)
@@ -1524,11 +1568,11 @@ function formatHMM(hoursDecimal) {
       <span class="diff-pill ${diffEl}" title="Ocjena težine po usponu">${DIFF_LABELS[diffEl]}</span>
     </div>
 
-    <div class="metric-row">
-      <span class="metric-label">Trajanje</span>
-        <span class="metric-value">${formatHMM(t.durationH)}</span>
-      <span></span>
-    </div>
+      <div class="metric-row route-row">
+  <span class="metric-label">Trajanje</span>
+  <span class="metric-value">${formatHMM(t.durationH)}</span>
+  <span class="pill-right">${routeBadgeHTML(t.routeType)}</span>
+</div>
 
     <p class="card-desc">${t.description || ''}</p>
     ${areaFooter}
