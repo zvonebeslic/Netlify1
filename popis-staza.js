@@ -557,9 +557,9 @@
     "name": "Makar - Vošac (Biokovo)",
     "area": "Biokovo",
     "mountain": "Biokovo",
-    "distanceKm": ,
-    "elevationM": ,
-    "durationH": ,
+    "distanceKm": 11,
+    "elevationM": 1300,
+    "durationH": 8,
     "startLat": ,
     "startLon": ,
     "routeType": "Povratna (isti put)",
@@ -576,9 +576,9 @@
     "name": "Lupoglav iz Mostarske Bijele (Prenj)",
     "area": "Prenj",
     "mountain": "Prenj",
-    "distanceKm": ,
-    "elevationM": ,
-    "durationH": ,
+    "distanceKm": 21,
+    "elevationM": 2000,
+    "durationH": 13,
     "startLat": ,
     "startLon": ,
     "routeType": "Povratna (isti put)",
@@ -627,6 +627,7 @@
     "thumbnail": "images/hiking-trail-prenj-mountain-konjicka-bijela-osobac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja iz Konjičke Bijele vodi na vrh Osobac na Prenj planini. Planinarska staza u blizini Konjica u Bosni i Hercegovini."
   },
+  ];
   {
     "id": ,
     "slug": "hiking-trail--mountain-bosnia-and-herzegovina",
@@ -646,4 +647,3 @@
     "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
     "alt": ""
   },
-  ];
