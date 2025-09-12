@@ -628,22 +628,3 @@
     "alt": "Planinarska staza koja iz Konjičke Bijele vodi na vrh Osobac na Prenj planini. Planinarska staza u blizini Konjica u Bosni i Hercegovini."
   },
   ];
-  {
-    "id": ,
-    "slug": "hiking-trail--mountain-bosnia-and-herzegovina",
-    "name": "",
-    "area": "",
-    "mountain": "",
-    "distanceKm": ,
-    "elevationM": ,
-    "durationH": ,
-    "startLat": ,
-    "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
-    "destinations": [""],
-    "tags": ["", "", "", "", "", "", ""],
-    "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
-    "alt": ""
-  },
