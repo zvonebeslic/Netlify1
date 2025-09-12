@@ -90,7 +90,7 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Kamešnica"],
     "tags": ["Kamešnica", "Konj", "Pešino Vrilo", "Livno", "Buško Jezero", "Livanjsko Polje", "Podgradina"],
-    "description": "Uspon na Konja. Staza koja vodi uz žubor potoka. Planinarsko sklonište i izvor, bukova šuma i neodoljiv vidikovac. Štenja grebenom do vrha.",
+    "description": "Uspon na Konja. Staza koja vodi uz žubor potoka. Planinarsko sklonište i izvor, bukova šuma i neodoljiv vidikovac. Šetnja grebenom do vrha.",
     "gpx": "/gps/sljeme-tomislavac.gpx",
     "thumbnail": "images/hiking-trail-kamesnica-mountain-podgradina-konj-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Podgradina - Konj na planini Kamešnici. Atrakcija u okolici Livna."
@@ -584,7 +584,7 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Prenj"],
     "tags": ["Prenj", "Mostarska Bijela", "Grabovčići", "Barni Do", "Lupoglav", "Mostar"],
-    "description": "Najteža planinarska staza u BiH a možda i na cijelom Balkanu. Uspon na Lupoglav iz Mostarske Bijele i natrag u jednom danu zahtjeva ogroman napor. Lijepa šuma i vizure Prenja s vrha su kao nagrada za sav trud.",
+    "description": "Najteža planinarska staza u BiH a možda i na cijelom Balkanu. Uspon na Lupoglav iz Mostarske Bijele i natrag u jednom danu zahtijeva ogroman napor. Lijepa šuma i vizure Prenja s vrha su kao nagrada za sav trud.",
     "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-prenj-mountain-mostarska-bijela-lupoglav-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja iz Mostarske Bijele vodi na Lupoglav. Planinarska staza na Prenju blizu Mostara."
@@ -626,5 +626,5 @@
     "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-prenj-mountain-konjicka-bijela-osobac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja iz Konjičke Bijele vodi na vrh Osobac na Prenj planini. Planinarska staza u blizini Konjica u Bosni i Hercegovini."
-  },
+  }
   ];
