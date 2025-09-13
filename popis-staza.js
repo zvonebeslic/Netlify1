@@ -179,7 +179,7 @@
     "mountain": "Maglić",
     "distanceKm": 13.5,
     "elevationM": 1200,
-    "durationH": 7,
+    "durationH": 7.5,
     "startLat": 43.28775,
     "startLon": 18.71666,
     "routeType": "Kružna",
