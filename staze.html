@@ -1593,6 +1593,42 @@ function routeBadgeHTML(routeType) {
   /* =========================================================
      #10.8 FILTRIRANJE (drive/air podrška)
      ========================================================= */
+   // === SORT "lakše → teže" (poštuje durationH; inače procjena) ===
+function effortHours(t) {
+  if (typeof t.durationH === 'number') return t.durationH;
+  if (typeof t.durationH === 'string') {
+    const v = parseFloat(t.durationH.replace(',', '.'));
+    if (!Number.isNaN(v)) return v;
+  }
+  // Procjena ako nema trajanja: 1h/4km + 1h/500m uspona
+  const km = typeof t.distanceKm === 'number' ? t.distanceKm : 0;
+  const up = typeof t.elevationM === 'number' ? t.elevationM : 0;
+  return (km / 4) + (up / 500);
+}
+
+// Primarni ključ: effortHours (manje = lakše)
+// Tie-breakeri: manji uspon → kraća km → (ako oboje isto) bliže → alfabet
+function byEase(a, b) {
+  const ea = effortHours(a);
+  const eb = effortHours(b);
+  if (ea !== eb) return ea - eb;
+
+  const ua = (typeof a.elevationM === 'number') ? a.elevationM : Number.MAX_SAFE_INTEGER;
+  const ub = (typeof b.elevationM === 'number') ? b.elevationM : Number.MAX_SAFE_INTEGER;
+  if (ua !== ub) return ua - ub;
+
+  const ka = (typeof a.distanceKm === 'number') ? a.distanceKm : Number.MAX_SAFE_INTEGER;
+  const kb = (typeof b.distanceKm === 'number') ? b.distanceKm : Number.MAX_SAFE_INTEGER;
+  if (ka !== kb) return ka - kb;
+
+  // ako su dvije ture “jednako teške”, koristi udaljenost kao dodatni tie-breaker
+  const da = (typeof a._distShownKm === 'number') ? a._distShownKm : Number.MAX_SAFE_INTEGER;
+  const db = (typeof b._distShownKm === 'number') ? b._distShownKm : Number.MAX_SAFE_INTEGER;
+  if (da !== db) return da - db;
+
+  return String(a.name || '').localeCompare(String(b.name || ''));
+}
+  
   function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
   function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
   function matchesPOI(t,q){
@@ -1716,9 +1752,12 @@ function routeBadgeHTML(routeType) {
     if (userLocation) distancesEnabled = true;
     list = await attachDistances(list);
 
-    if (distancesEnabled){
-      list.sort((a,b)=> (a._distShownKm ?? 1e9) - (b._distShownKm ?? 1e9));
+    if (distancesEnabled) {
+    list.sort((a,b)=> (a._distShownKm ?? 1e9) - (b._distShownKm ?? 1e9));
     }
+      else {
+    list.sort(byEase);
+      }
 
     renderTrails(list);
     renderActiveChips();
