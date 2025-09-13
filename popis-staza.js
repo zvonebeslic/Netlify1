@@ -546,7 +546,7 @@
     "routeType": "Kružna",
     "destinations": ["Durmitor"],
     "tags": ["Durmitor", "Zeleni Vir", "Bobotov Kuk", "Crno Jezero", "Đevojka", "Katun Lokvice", "Sedlo", "Škrčko jezero", "Žabljak"],
-    "description": "Planinarenje jednom od najljepših planina na Balkanu, Durmitoru, vrijedi svakog koraka. Ova planinarska staza polazi sa sedla do najvišeg vrha, Bobotova Kuka. Silazak natrag je na drugu stranu prema Crnom Jezeru i srcu grada Žabljaka. Ovakvim silaskom se spusti 1250m/nv dok se prema gore prijeđe 950m/nv.",
+    "description": "Planinarenje jednom od najljepših planina na Balkanu, Durmitoru, vrijedi svakog koraka. Ova planinarska staza polazi sa sedla do najvišeg vrha, Bobotova Kuka. Natrag ide na drugu stranu prema Crnom Jezeru i gradu Žabljaku. Ovim silaskom se spusti 1250m/nv dok se prema gore prijeđe 950m/nv.",
     "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-durmitor-mountain-sedlo-bobotov-kuk-crno-jezero-montenegro.jpg",
     "alt": "Planinarska staza na Durmitoru u Crnoj Gori. Najljepša planinarska staza u Crnoj Gori u blizini grada Žabljaka."
@@ -565,7 +565,7 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Biokovo"],
     "tags": ["Makar", "Biokovo", "Vošac", "Makarska", "Park prirode Biokovo"],
-    "description": "Planinarska staza koja vodi južnim, strmijim licem Biokova. Iz mjesta Makar, iznad Makarske pa sve do na vrh Vošac se ide uz litice označenim planinarskim putem koji je jako dobro napravljen. Čista uživancija dok se uspinje uz litice a Makarska rivijera kao na dlanu.",
+    "description": "Planinarska staza koja vodi južnim, strmijim licem Biokova. Iz mjesta Makar, iznad Makarske pa sve do na vrh Vošac se ide uz litice označenim planinarskim putem. Čista uživancija dok se uspinje uz litice a Makarska rivijera kao na dlanu.",
     "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-biokovo-mountain-makar-vosac-croatia.jpg",
     "alt": "Planinarska staza koja iz mjesta Makar, iznad Makarske vodi do vrha Vošac na Biokovu."
@@ -603,7 +603,7 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Čvrsnica"],
     "tags": ["Čvrsnica", "Fratrova Kapa", "Veliki Kuk", "Vilinac", "Vitlenica", "Zaglavlje", "Vidikovac"],
-    "description": "Znate li da Veliki Kuk ima čak 1300m visoke litice? A znate li da na te litice vodi i jedna planinarska staza? Veliki Kuk je možda i najimpresivnije mjesto na cijelim Dinaridima. Stajati na vrhu, uz rub tih litica je neponovljiv osjećaj. Prolazi se i pored Pl. doma Vilinac kraj kojeg je i izvor.",
+    "description": "Znate li da Veliki Kuk ima čak 1300m visoke litice? A znate li da na te litice vodi i jedna planinarska staza? Veliki Kuk je najimpresivnije mjesto na cijelim Dinaridima. Stajati na vrhu, uz rub tih litica je neponovljiv osjećaj. Prolazi se i pored Pl. doma Vilinac kraj kojeg je i izvor.",
     "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-vitlenica-veliki-kuk-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja sa Vitlenice vodi do ruba najviših litica na Balkanu. Litice Velikog Kuka na Čvrsnici."
@@ -622,7 +622,7 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Prenj"],
     "tags": ["Prenj", "Konjička Bijela", "Jezerce", "Osobac", "Konjic", "Taraš"],
-    "description": "Jedna jako zahtjevna planinarska staza koja vodi iz dna Konjičke Bijele do na vrh Osobac. Cijelo vrijeme jako strmo dok se ne iziđe do Pl. skloništa Jezerce pored kojeg izvire i čista planinska voda. Tu su u blizini i divlji konji a šetnja dolinama pruža najljepše od Prenj planine, baš kao i pogled s vrha.",
+    "description": "Zahtjevna planinarska staza koja vodi iz dna Konjičke Bijele do na vrh Osobac. Cijelo vrijeme jako strmo dok se ne iziđe do Pl. skloništa Jezerce pored kojeg izvire i planinska voda. U blizini su i divlji konji a dolina pruža najljepše od Prenj planine, baš kao i pogled s vrha.",
     "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-prenj-mountain-konjicka-bijela-osobac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja iz Konjičke Bijele vodi na vrh Osobac na Prenj planini. Planinarska staza u blizini Konjica u Bosni i Hercegovini."
