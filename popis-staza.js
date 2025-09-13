@@ -103,7 +103,7 @@
     "mountain": "Vran",
     "distanceKm": 8,
     "elevationM": 840,
-    "durationH": 4.5,
+    "durationH": 5,
     "startLat": 43.65428,
     "startLon": 17.52940,
     "routeType": "Povratna (isti put)",
