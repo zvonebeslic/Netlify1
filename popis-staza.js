@@ -698,9 +698,9 @@
     "routeType": "Kružna",
     "destinations": ["Visočica"],
     "tags": ["Visočica", "Bivak Zoran Šimić", "Parić", "Vito", "Detelaš", "Stećci"],
-    "description": "",
+    "description": "Tri vrha, oštar greben, nekropole stećaka, bivak Zoran Šimić s lijepim pogledom i divna prostrana dolina. Sve to u jednoj kružnoj stazi. Najbolje vrijeme za ići je 5-i ili 6-i mjesec, jer su potoci na Visočici tada bujni zbog topljenja snijega",
     "thumbnail": "images/hiking-trail-visocica-mountain-paric-detelas-vito-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza na planini Visočici koja vodi do vrha Vito."
   },
   {
     "id": 40,
@@ -716,9 +716,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Omiš"],
     "tags": ["Omiš", "Imber", "Dalmacija", "Luda Kuća", "Kula", "Cetina"],
-    "description": "",
+    "description": "Kameni krš Omiške Dinare odmah iznad lijepog grada Omiša. Luda Kuća uz stazu do na najviši vrh Kula. S jedne strane Jadransko more i Otoci a s druge omiško zaleđe i dalmatinska zagora.",
     "thumbnail": "images/hiking-trail-omiska-dinara-mountain-omis-kula-croatia.jpg",
-    "alt": ""
+    "alt": "Planinarska staza iznad grada Omiša koja vodi na najviši vrh Omiške Dinare."
   },
   {
     "id": 41,
@@ -734,9 +734,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Omiš"],
     "tags": ["Fortica", "Omiš", "Omiška Dinara"],
-    "description": "",
+    "description": "Jedna kratka planinarska staza koja kroz borovu šumu vodi do tvrđave Fortica. Iz grada Omiša do tvrđave se dođe za manje od sat vremena. Najidealnije za promatrati zalazak sunca.",
     "thumbnail": "images/hiking-trail-omiska-dinara-mountain-fortica-fortress-croatia.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja vodi iz grada Omisa do tvrđave Fortica."
   },
   {
     "id": 42,
@@ -752,9 +752,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Omiš"],
     "tags": ["Gata", "Čisla", "Pazjatva", "Omiš", "Omiško Zaleđe", "Cetina"],
-    "description": "",
+    "description": "Omiško zaleđe krije mnoge tajne ali i lijepa, skrovita mjesta. Jedno takvo je i špilja Pazjatva s koje se pruža lijep pogled na završni kilometar rijeke Cetine prije ušća u Jadransko More.",
     "thumbnail": "images/hiking-trail-omis-city-pazjatva-cave-croatia.jpg",
-    "alt": ""
+    "alt": "Staza koja vodi do šplije Pazjatva u zaleđu grada Omiša, iznad rijeke Cetine."
   },
   {
     "id": 43,
@@ -770,9 +770,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Zavelim"],
     "tags": ["Podzavelim", "Vir", "Kolakovac", "Zavelim"],
-    "description": "",
+    "description": "Ako ste za jedno kraće planinarenje s otvorenim vidicima cijelo vrijeme, onda je ova staza s južne strane Zavelima savršen izbor. S vrha se dobro vide dijelovi dalmatinske zagore i visoke bosanske i hercegovače planine.",
     "thumbnail": "images/hiking-trail-zavelim-mountain-podzavelim-kolakovac-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja iz Podzavelima vodi na Kolakovac, najviši vrh Zavelima."
   },
   {
     "id": 44,
@@ -788,9 +788,9 @@
     "routeType": "Kružna",
     "destinations": ["Kanjon Brine"],
     "tags": ["Ričina", "Stećci", "Kanjon Brine", "Radovanj", "Posušje", "Tribistovo"],
-    "description": "",
+    "description": "Šarolika, netipična planinarska staza kakvu  nećete naći nigdje drugo. Dubok kanjon, hodanje uskim putem uz litice, prolazak kroz malene tunele i mogućnost Via Ferrate su samo dio onoga što ova staza ima. Povratak natrag dosta lakšim putem.",
     "thumbnail": "images/hiking-trail-posusje-city-brina-canyon-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja vodi Kanjonom Brine u blizini Posušja."
   },
   {
     "id": 45,
@@ -806,9 +806,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Velež"],
     "tags": ["Mostar", "Podvelež", "Brasina", "Velež"],
-    "description": "",
+    "description": "U blizini Mostara i skywalka Fortica se nalazi i početna točka staze koja vodi na Brasinu, jedan od vrhova Veleža. Na vrhu su razoreni ostaci nekadašnje tv i radio postaje uništeni u ratu.",
     "thumbnail": "images/hiking-trail-velez-mountain-podvelez-brasina-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "planinarska staza koja iz Podveleža vodi na vrh Brasina, blizu Mostara."
   },
   {
     "id": 46,
@@ -824,9 +824,9 @@
     "routeType": "Kružna",
     "destinations": ["Lib"],
     "tags": ["Vrlokuk", "Seonica", "Omolje", "Smiljevača", "Kongora", "Studena", "lib"],
-    "description": "",
+    "description": "Tematska planinarska staza koja uz lijepu šetnju priča priče iz prošlosti. Povijesno važna planina i jako lijepa tura njenim obroncima do izletišta Studena s izvorom.",
     "thumbnail": "images/hiking-trail-lib-mountain-staza-hrvatskih-kraljeva-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja vodi obroncima Lib planine nazvana Staza Hrvatskih Kraljeva."
   },
   {
     "id": 47,
@@ -842,9 +842,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Vran"],
     "tags": ["Diva Grabovčeva", "Veliki Vran", "Vran", "Kedžara", "Prskalov Dolac"],
-    "description": "",
+    "description": "S Kedžare do na Veliki Vran se dolazi jednom dobro označenom planinarskom stazom. Pogledi na Čvrsnicu dok se penjete prema gore plijene pažnjom.",
     "thumbnail": "images/hiking-trail-vran-mountain-kedzara-veliki-vran-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja s Kedžare vodi na najviši vrh Vran planine, Veliki Vran."
   },
   {
     "id": 48,
@@ -860,9 +860,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Kamešnica"],
     "tags": ["Vaganj", "Kurtagića Dolac", "Kamešnica", "Vilinske Stine", "Edo Retelj"],
-    "description": "",
+    "description": "Najbolji način za iskoristiti dan za vikend a ne umoriti se mnogo je šetnja do Kurtagića Doca. U blizini Pl. skloništa su Vilinske Stine koje se moraju posjetiti.",
     "thumbnail": "images/hiking-trail-kamesnica-mountain-vaganj-kurtagica-dolac-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja s Vagnja vodi do Kurtagića Doca na planini Kamešnici."
   },
   {
     "id": 49,
@@ -878,9 +878,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Kamešnica"],
     "tags": ["Kamešnica", "Edo Retelj", "Vaganj", "Burnjača", "Garjeta", "Kurtagića Dolac", "Vilinske Stine"],
-    "description": "",
+    "description": "Planinarenjem do Kurtagića Doce se prolazi lijepim i pitomim dijelom Kamešnice. No ako to nije dovoljno produžite još dalje do Burnjače i Garjete preko visokog grebena.",
     "thumbnail": "images/hiking-trail-kamesnica-mountain-burnjaca-garjeta-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja s Vagnja, preko Kurtagića Doca vodi na Burnjaču i Garjetu na planini Kamešnici."
   },
   {
     "id": 50,
@@ -896,9 +896,9 @@
     "routeType": "Kružna",
     "destinations": ["Biokovo"],
     "tags": ["Bartulovići", "Pozjata", "Šćirovac", "Sv. Ilija", "Bast", "Biokovo"],
-    "description": "",
+    "description": "Spremni za jedan ozbiljan planinarski izazov? Ako jeste onda će uspon na ove vrhove iz smjera Bartulovića sa spustom u Bast testirati vaše psiho-fizičke planinarske sposobnosti.",
     "thumbnail": "images/hiking-trail-biokovo-mountain-scirovac-sveti-ilija-croatia.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja spaja vrhove Šćirovac i Sv. Ilija na Biokovu."
   },
   {
     "id": 51,
@@ -914,9 +914,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Radovanj"],
     "tags": ["Gornji Jukići", "Posušje", "Velika Gradina", "Snjižnica", "Radovanj"],
-    "description": "",
+    "description": "Iznad Posušja, prateći makadamski put se uspinje i planinarska staza koja vodi na vrh iznad grada. Pored odašiljača i antena na vrhu se lijepo uprizoruju i zalasci sunca.",
     "thumbnail": "images/hiking-trail-radovanj-mountain-posusje-velika-gradina-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja iz Posušja vodi na Veliku Gradinu, jedan od dva vrha Radovnja."
   },
   {
     "id": 52,
@@ -932,9 +932,9 @@
     "routeType": "Kružna",
     "destinations": ["Stožer"],
     "tags": ["Kupreška Kuća", "Snježna Kraljica", "Stožer", "Kupres"],
-    "description": "",
+    "description": "Iznenadili bi se koliko je ova tura životopisna i puna sadržaja. Usponom uz padine Ski-Staze, kafe barom na vrhu i silaskom uz jako dotjeranu planinarsku stazu pod krošnjama će upotpuniti vaš dan. Na pola puta prema dolje je i vrelo s pitkom vodom.",
     "thumbnail": "images/hiking-trail-stozer-mountain-kupres-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Kružna planinarska staza koja vss vodi po planini Stožer iznad Kupresa."
   },
   {
     "id": 53,
@@ -950,9 +950,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Matinski Vis"],
     "tags": ["Žepče", "Matinski Vis", "Sv. Bernard"],
-    "description": "",
+    "description": "Lijep planinarski dom na Matinskom Visu je polazna točka za više lijepih staza. Ova vodi na najviši vrh na kojem je i kapelica sv. Bernarda. Na vrhu su i znakovi za oprez od minskih polja.",
     "thumbnail": "images/hiking-trail-zepce-city-matinski-vis-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja od planinarskog dom vodi na najvišu točku Matinskog Visa u Žepču."
   },
   {
     "id": 54,
@@ -968,9 +968,9 @@
     "routeType": "Povratna (isti put)",
     "destinations": ["Čvrsnica"],
     "tags": ["Munika", "Orlovača", "Čvrsnica", "Blidinje", "Veliki Vilinac"],
-    "description": "",
+    "description": "Manje poznati predio Čvrsnice između Mandine Plane i Orlovače krije i lijep dubok kanjon. Njime prolazi i staza kojom se može i na Veliki Vilinac. Na stazi je i Kenjčevo Vrelo.",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-munika-veliki-vilinac-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja od planinarske kuće Munika vodi na Veliki Vilinac ns planini Čvrsnici."
   },
   {
     "id": 55,
@@ -986,9 +986,9 @@
     "routeType": "Kružna",
     "destinations": ["Čvrsnica"],
     "tags": ["Diva Grabovica", "Žlijeb", "Tise", "Trinjača", "Strmenica", "Hajdučka Vrata", "Veliki Vilinac", "Pršulje", "Masna Luka"],
-    "description": "",
+    "description": "Ovakva planinarska tura je samo za najizdržljivije. Strmenici kao da nikada nema kraja a silazak u Masnu Luku traje kao vječnost.",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-diva-grabovica-strmenica-masna-luka-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja iz Dive Grabovice, preko Žlijeba, Strmenice, Hajdučkih Vrata i Velikog Vilinca vodi u Masnu Luku."
   },
   {
     "id": 56,
@@ -1004,8 +1004,8 @@
     "routeType": "Kružna",
     "destinations": ["Dinara"],
     "tags": ["Sajkovići", "Mery Staza", "Troglav", "Dinara"],
-    "description": "",
+    "description": "Planinarska staza koja iznad sela Sajkovići, Mery stazom vodi na najviši vrh Dinare, Troglav. Uspon kroz Kuolar podno najviših vrhova a spust natrag lakšom dionicom.",
     "thumbnail": "images/hiking-trail-dinara-mountain-sajkovici-troglav-bosnia-and-herzegovina.jpg",
-    "alt": ""
+    "alt": "Planinarska staza koja iznad sela Sajkovići, Mery stazom vodi na najviši vrh Dinare, Troglav."
   }
   ];
