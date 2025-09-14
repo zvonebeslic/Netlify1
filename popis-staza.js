@@ -721,5 +721,24 @@
     "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-imotski-city-lokvicicka-jezera-croatia.jpg",
     "alt": "Planinarska staza koja prolazi pored Lokvičićkih jezera u blizini Imotskog."
-  }
+  },
+  {
+    "id": ,
+    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "name": "",
+    "area": "",
+    "mountain": "",
+    "distanceKm": ,
+    "elevationM": ,
+    "durationH": ,
+    "startLat": ,
+    "startLon": ,
+    "routeType": "Povratna (isti put) Kružna",
+    "destinations": [""],
+    "tags": ["", "", "", "", ""],
+    "description": "",
+    "gpx": "/gps/visocica-vito.gpx",
+    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "alt": ""
+  },
   ];
