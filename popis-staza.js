@@ -15,7 +15,6 @@
     "destinations": ["Čvrsnica"],
     "tags": ["Čvrsnica", "Jelinak", "Park prirode Blidinje", "Blidinje", "Barzonja"],
     "description": "Uspon na Jelinak s Barzonje. Planinarenje grebenom s prelijepim vidicima na Blidinjsko Jezero, Vran Planinu i više predjele Čvrsnice. Greben Jelinka je ujedno i najljepši vidikovac na Blidinjsko jezero kojeg će te pronaći u Parku prirode Blidinje.",
-    "gpx": "/gps/triglav-planika.gpx",
     "thumbnail": "images/hiking-trail-jelinak-cvrsnica-blidinje-nature-park-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza na vrh Jelinak u Parku prirode Blidinje s lijepim pogledom na Blidinjsko jezero."
   },
@@ -34,7 +33,6 @@
     "destinations": ["Hajdučka Vrata"],
     "tags": ["Planinarski dom Vilinac", "Hajdučka Vrata", "Zaglavlje", "Vitlenica", "Park Prirode Blidinje", "Trinjača", "Via Dinarica", "Čvrsnica"],
     "description": "Uspon do Hajdučkih Vrata najljepšom planinarskom stazom i pogled iza Vrata na kanjon dubok 1800m. Ova staza pri povratku ostavlja dojam kao da hodate nekom drugom zbog raznolikog planinskog pejzaža Čvrsnice.",
-    "gpx": "/gps/velebit-premuziceva.gpx",
     "thumbnail": "images/hiking-trail-hajducka-vrata-cvrsnica-blidinje-nature-park-bosnia-and-herzegovina.jpg",
     "alt": "Najpopularnija planinarska staza na Balkanu do Hajdučkih Vrata u srcu Hercegovine. Najljepše planinarske staze u Bosni i Hercegovini."
   },
@@ -53,7 +51,6 @@
     "destinations": ["Prenj"],
     "tags": ["Prenj", "Zelena Glava", "Bijele Vode", "Jezerce", "Rujište", "Mostar", "Adnan Krilić"],
     "description": "Uspon na Zelenu Glavu s Rujišta. Dugotrajna staza koja prolazi lijepom dolinom u srcu Prenj planine. Zadnji koraci osigurani sajlom. Pogled s najvišeg vrha se prostire do svih prenjskih 2000-njaka. Mogućnost spavanja u Pl. domu Adnan Krilić i u Pl. skloništu Jezerce.",
-    "gpx": "/gps/begunjscica-vrh.gpx",
     "thumbnail": "images/hiking-trail-zelena-glava-prenj-mountain-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza s Rujišta na Zelenu Glavu na Prenj planini koja je prava atrakcija u blizini Mostara."
   },
@@ -72,7 +69,6 @@
     "destinations": ["Biokovo"],
     "tags": ["Biokovo", "Pakline", "Šuplja Stina", "Nevistina Stina", "Gornja Brela", "Biokovo Nature Park"],
     "description": "Jedna od najljepših planinarskih staza u Hrvatskoj. Svaki korak donosi nešto novo. Sklonište na Paklinama s pogledom na more kao iz snova.",
-    "gpx": "/gps/klekovaca-greben.gpx",
     "thumbnail": "images/hiking-trail-biokovo-mountain-gornja-brela-pakline-croatia.jpg",
     "alt": "Najljepša planinarska staza na Biokovu te u Dalmaciji koja vodi na Pakline s pogledom na more i litice s druge strane. Najljepše planinarske staze u Hrvatskoj."
   },
@@ -91,7 +87,6 @@
     "destinations": ["Kamešnica"],
     "tags": ["Kamešnica", "Konj", "Pešino Vrilo", "Livno", "Buško Jezero", "Livanjsko Polje", "Podgradina"],
     "description": "Uspon na Konja. Staza koja vodi uz žubor potoka. Planinarsko sklonište i izvor, bukova šuma i neodoljiv vidikovac. Šetnja grebenom do vrha.",
-    "gpx": "/gps/sljeme-tomislavac.gpx",
     "thumbnail": "images/hiking-trail-kamesnica-mountain-podgradina-konj-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Podgradina - Konj na planini Kamešnici. Atrakcija u okolici Livna."
   },
@@ -110,7 +105,6 @@
     "destinations": ["Vran"],
     "tags": ["Vran planina", "Veliki Vran", "Hajdučke Vrleti", "Hajdučko Vrilo", "Blidinje"],
     "description": "Planinarska staza koja vodi dijelom kroz borovu šumu a zatim po travnatim pašnjacima do najvišeg vrha Vran planine. Polazna točka u blizini poznatog restorana u Parku prirode Blidinje.",
-    "gpx": "/gps/medvednica-hunjka.gpx",
     "thumbnail": "images/hiking-trail-vran-mountain-hajducke-vrleti-veliki-vran-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza do najvišeg vrha Vran Planine. Polazna točka pored popularnog restorana Hajdučke Vrleti u srcu Parka prirode Blidinje."
   },
@@ -129,7 +123,6 @@
     "destinations": ["Dinara"],
     "tags": ["Najviši vrh RH", "Glavaš", "Martinova košara", "Dinara", "Sinjal", "Sklonište Drago Grubać"],
     "description": "Najviši vrh RH sa skloništem i lijepim pogledom. Staza koja polazi blizu izvora rijeke Cetine i preko travnatih strmina vodi grebenom Dinare. Na stazi su srednjovjekovna utvrda i planinarsko sklonište.",
-    "gpx": "/gps/dinara-sinjal.gpx",
     "thumbnail": "images/hiking-trail-dinara-mountain-glavas-vrh-hrvatske-croatia.jpg",
     "alt": "Planinarska staza na planini Dinari koja pored jedne srednjovjekovne utvrde i planinarskog skloništa vodi na najviši vrh Hrvatske."
   },
@@ -148,7 +141,6 @@
     "destinations": ["Tušnica"],
     "tags": ["Prisoje", "Dobrijevac", "Vitrenik", "Tušnica", "Buško jezero", "Livno", "Tomislavgrad"],
     "description": "Uspon na najviši vrh Tušnice, Vitrenik. Staza koja polazi iz Prisoja vodi do najvišeg vrha pored planinarskog doma Dobrijevac te prelijepim grebenom sve do najvišeg vrha Vitrenik (1697m). Pogled na Buško jezero cijelo vrijeme oduzima dah.",
-    "gpx": "/gps/ostrovaca-uspon.gpx",
     "thumbnail": "images/hiking-trail-tusnica-mountain-prisoje-vitrenik-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza na Vitrenik, planina Tušnica. Staza koja polazi iz Prisoja i vrluda travnatim grebenom planine."
   },
@@ -167,7 +159,6 @@
     "destinations": ["Šator"],
     "tags": ["Šator planina", "Šatorsko Jezero", "Bosansko Grahovo"],
     "description": "Obilazak Šatorskog jezera i uspon do najvišeg vrha ove planine uz prelijepe vidikovce na veliko jezero. Pristupni put je makadamski.",
-    "gpx": "/gps/sator-jezero-vrh.gpx",
     "thumbnail": "images/hiking-trail-sator-mountain-satorsko-jezero-veliki-sator-bosnia-and-herzegovina.jpg",
     "alt": "Šatorsko jezero i najviši vrh Šatora na prelijepoj planinarskoj stazi"
   },
@@ -186,7 +177,6 @@
     "destinations": ["Maglić"],
     "tags": ["Maglić", "Prijevor", "Sutjeska", "Trnovačko Jezero", "Tara", "Prašuma Perućica", "Vodopad Skakavac", "Tjentište"],
     "description": "Planinarska staza koja pri usponu ima i sajle za dodatno osiguranje. Najviši vrh BiH i pogled s njega na visoke crnogorske planine. Travnata prostranstva i Trnovačko jezero kao najljepši biser Balkana.",
-    "gpx": "/gps/kozara-mrakovica.gpx",
     "thumbnail": "images/hiking-trail-maglic-mountain-prijevor-maglic-trnovacko-jezero-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza s Prijevora na Maglić. Kružna tura uz obilazak Trnovačkog jezera."
   },
@@ -205,7 +195,6 @@
     "destinations": ["Matokit"],
     "tags": ["Matokit", "Sveti Rok", "Vrgorac"],
     "description": "Tipična dalmatinska planinarska staza preko kamenjara do na vrh. Staza polazi iz grada Vrgorca i vodi na najviši vrh Matokita, Sveti Rok.",
-    "gpx": "/gps/ivanscica-vrh.gpx",
     "thumbnail": "images/hiking-trail-matokit-mountain-vrgorac-sveti-rok-croatia.jpg",
     "alt": "Planinarska staza Vrgorac - Sveti Rok. Matokit planina."
   },
@@ -224,7 +213,6 @@
     "destinations": ["Cincar"],
     "tags": ["Cincar", "Livno", "Planinarski dom Kruzi", "Izvor Duman", "Divlji konji livno"],
     "description": "Jedinstvena planinarska staza koja od Planinarskog doma Kruzi vodi na najviši vrh Cincara. Staza vodi po visoravni gdje se prolazi pored mnogo krda divljih konja.",
-    "gpx": "/gps/kamesnica-konj.gpx",
     "thumbnail": "images/hiking-trail-cincar-mountain-kruzi-cincar-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Kruzi - Cincar. Posjeta divljim konjima na visoravni dok hodate gotovo uvijek moguća."
   },
@@ -243,7 +231,6 @@
     "destinations": ["Raduša"],
     "tags": ["Raduša", "Zahum", "Felix staza", "Idovac", "Idovačko jezero", "Rama", "Ramsko jezero", "Diva Grabovčeva"],
     "description": "Planinarska staza na najviši vrh Raduše ispod kojeg se nalazi i istoimeno jezero. Blizu polazne točke se nalazi vidikovac na Ramsko jezero koji svakako vrijedi posjetiti.",
-    "gpx": "/gps/cincar-vrh.gpx",
     "thumbnail": "images/hiking-trail-radusa-mountain-zahum-idovac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Zahum - Idovac na planini Raduši. Vidikovac na Ramsko jezero u blizini."
   },
@@ -262,7 +249,6 @@
     "destinations": ["Vranica"],
     "tags": ["Radovina", "Uskoplje", "Ločika", "Krstac", "Nadkrstac", "Vranica", "Prokoško jezero"],
     "description": "Lijepa kružna tura po najvišim obroncima planine Vranice. Od Planinarskog doma Radovina, preko Ločike do najvišeg vrha Nadkrstac. Mnogo izvora i lijep vidikovac na Prokoško jezero.",
-    "gpx": "/gps/vranica-nadkrstac.gpx",
     "thumbnail": "images/hiking-trail-vranica-mountain-radovina-locika-nadkrstac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Radovina - Ločika - Nadkrstac s vidikovcem na Prokoško jezero."  
   },
@@ -281,7 +267,6 @@
     "destinations": ["Kanjon Badnjevice"],
     "tags": ["Imotska Krajina", "Turska Kula", "Proložac", "Imotski", "Kanjon Badnjevice", "Ričice", "Bumbari i komarci", "Suvaja"],
     "description": "Lijepa kružna staza koja vodi cijelim kanjonom Badnjevice blizu Imotskog. Prolazak kroz staru tursku kulu i hodanje po rubu litica daju jedinstven doživljaj.",
-    "gpx": "/gps/matinski-vis.gpx",
     "thumbnail": "images/hiking-trail-kanjon-badnjevice-imotski-croatia.jpg",
     "alt": "Planinarska staza kroz Kanjon Badnjevice u blizini Imotskog."
   },
@@ -300,7 +285,6 @@
     "destinations": ["Zavelim"],
     "tags": ["Zavelim", "Močila", "Zagorje", "Roško Polje", "Kolakovac"],
     "description": "Kružna planinarska staza koja od Močila vodi do na najviši vrh Zavelima, Kolakovac. Postoji vrelo na polaznoj točki. Široki pogledi sa vrha na sve strane.",
-    "gpx": "/gps/zavelim-vrh.gpx",
     "thumbnail": "images/hiking-trail-zavelim-mountain-mocila-kolakovac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Močila - Kolakovac na Zavelim planini."
   },
@@ -319,7 +303,6 @@
     "destinations": ["Oštrc"],
     "tags": ["Tribistovo", "Tribistovsko jezero", "Šimića pećina", "Vučipolje", "Ružićki potok", "Oštrc"],
     "description": "Staza koja vodi od velikog Tribistovskog jezera do na vrh Oštrca. prolazi pored Šimića pećine te vrluda duž Ružićkog potoka kojeg krase mnogi mali vodopadi.",
-    "gpx": "/gps/golija-greben.gpx",
     "thumbnail": "images/hiking-trail-ostrc-mountain-tribistovo-simica-pecina-ruzicki-potok-ostrc-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza Tribistovsko jezero - Šimića pećina - Ružićki potok - Veliki Oštrc."
   },
@@ -338,7 +321,6 @@
     "destinations": ["Biokovo"],
     "tags": ["Biokovo", "Milići", "Zagvozd", "Sveti Jure", "Repetitor"],
     "description": "Jako strma staza do najvišeg vrha Biokova iz sela Milići. Pogledi sa vrha na more i otoke a s druge strane na dalmatinsku zagoru i hercegovačke planine.",
-    "gpx": "/gps/stozer-vrh.gpx",
     "thumbnail": "images/hiking-trail-biokovo-mountain-milici-sveti-jure-croatia.jpg",
     "alt": "Planinarska staza Milići - Sveti Jure na Biokovu."
   },
@@ -357,7 +339,6 @@
     "destinations": ["Prenj"],
     "tags": ["Dragan Selo", "Prenj", "Glogošnica", "Dževlanuša", "Podsubaša", "Cetina", "Velevijevac", "Izgorjela Gruda", "Sklonište Kada", "Jablanica"],
     "description": "Jedna od najlakših a ujedno i najljepših staza na Prenju. Polazi iz Dragan Sela te uz Draganjsku Rijeku izlazi do vrha Velevijevac s kojeg se lijepo vide litice Cetine i Izgorjele Grude. Pl. sklonište Kada na najljepšoj mogućoj lokaciji.",
-    "gpx": "/gps/ljubusa-prijevoj.gpx",
     "thumbnail": "images/hiking-trail-prenj-mountain-dragan-selo-skloniste-kada-bosnia-and-herzegovina.jpg",
     "alt": "Najljepša planinarska staza u Bosni i Hercegovini koja iz Dragan Sela vodi do skloništa Kada na Prenj planini."
   },
@@ -376,7 +357,6 @@
     "destinations": ["Čvrsnica"],
     "tags": ["Masna Luka", "Pločno", "Ivica Plazonić", "Čvrsnica", "Blidinje", "Park prirode Blidinje", "Ćužića Kuk"],
     "description": "Planinarska staza do najvišeg vrha Čvrsnice koja polazi iz Masne Luke pokraj Pl. doma Masna Luka. Sa svojih 2228m, ovaj vrh je teže osvojiti. Posljednjih 500m je strmi sipar podno visokih litica.",
-    "gpx": "/gps/tusnica-greben.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-masna-luka-plocno-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja vodi iz Masne Luke na Pločno. Sklad divne prirode u Parku prirode Blidinje."
   },
@@ -395,7 +375,6 @@
     "destinations": ["Svilaja"],
     "tags": ["Svilaja", "Orlove Stine", "Bat", "Sinj", "Peručko jezero"],
     "description": "Od Pl. doma Orlove Stine do na najviši vrh vas vodi dobro markirana planinarska staza koja nije posebno teška. S vrha lijepi pogledi na Dinaru, Kamešnicu i Peručko jezero te Petrovo Polje i Mosor. Opcija kružnog povratka je najbolja.",
-    "gpx": "/gps/svilaja-bat.gpx",
     "thumbnail": "images/hiking-trail-svilaja-mountain-orlove-stine-bat-croatia.jpg",
     "alt": "Planinarska staza na najviši vrh planine Svilaje. Sinjska okolica i najbliže planine te Peručko jezero kao na dlanu."
   },
@@ -414,7 +393,6 @@
     "destinations": ["Otok Pag"],
     "tags": ["Metajna", "Otok Pag", "Life on Mars trail"],
     "description": "Jedinstvena planinarska staza koja je spojila ugodnu šetnju, zanimljiv pustinjski krajolik otoka Paga, neodoljive poglede na Velebit te najljepše uvale i plaže je upravo Life on Mars trail. Postoji i opcija za Via Ferratu a tu je i visoka stijena za penjanje.",
-    "gpx": "/gps/biokovo-sv-jure.gpx",
     "thumbnail": "images/hiking-trail-pag-island-life-on-mars-trail-croatia.jpg",
     "alt": "Jedinstvena planinarska staza Life on Mars Trail na Otoku Pagu."
   },
@@ -433,7 +411,6 @@
     "destinations": ["Mosor"],
     "tags": ["Umberto Girometta", "Veliki Kabal", "Vickov Stup", "Ljubirna", "Mosor", "Sitno Gornje"],
     "description": "Kružna staza po Mosoru, krševit teren i lijepi vidici cijelo vrijeme na grebenu. Odmor pored Planinarskog doma Umberto Girometta je nezaobilazan. Pogledi na Jadransko more očaravaju.",
-    "gpx": "/gps/mosor-vickov-stup.gpx",
     "thumbnail": "images/hiking-trail-mosor-mountain-umberto-girometta-veliki-kabal-vickov-stup-croatia.jpg",
     "alt": "Planinarska staza iznad Splita u Dalmaciji. Kružna tura po Mosoru od Planinarskog doma Umberto Girometta do na Veliki Kabal i Vickov Stup."
   },
@@ -452,7 +429,6 @@
     "destinations": ["Velež"],
     "tags": ["Velež", "Kokorina", "Podveležje", "Mostar", "Botin", "Srce Veleža"],
     "description": "Planinarska staza koja vodi na najviši vrh Veleža. Bukova šuma, kamena prostranstva, duboke rupe i visoke litice spojene u jedinstvenu stazu blizu Mostara. Postoji i opcija za skraćenu verziju ako se džipom prijeđe dosta loš makadam kojeg ima više kilometara.",
-    "gpx": "/gps/radusa-idovac.gpx",
     "thumbnail": "images/hiking-trail-velez-mountain-kokorina-botin-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza u blizini Mostara na planini Velež. Lijepa staza raznolikih krajobraza koja vodi na najviši vrh Botin."
   },
@@ -471,7 +447,6 @@
     "destinations": ["Čvrsnica"],
     "tags": ["Risovac", "Blidinje", "Veliki Vilinac", "Park prirode Blidinje", "Ćurdina staza", "Mali Vilinac", "Čvrsnica", "Krš"],
     "description": "Manje poznata staza koja pored nove Crkve na Risovcu vodi na Mali i Veliki Vilinac. Na ovoj stazi su mnoge opcije za uraditi lijepu kružnu turu jer se siječe s drugim markiranim stazama.",
-    "gpx": "/gps/vran-veliki.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-risovac-veliki-vilinac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza za Veliki Vilinac na planini Čvrsnici koja vodi Ćurdinom stazom."
   },
@@ -490,7 +465,6 @@
     "destinations": ["Vran"],
     "tags": ["Vran", "Omrčenica", "Mali Vran", "Mijatova pećina", "Tomislavgrad"],
     "description": "Visoka borova šuma uz maleno vikend naselje na Omrčenici je ujedno i polazna točka do na vrh Mali Vran. Sa vrha se proteže lijep pogled na planine oko Tomislavgrada dok se s druge strane lijepo vide vizure litica Velike Čvrsnice.",
-    "gpx": "/gps/cvrsnica-hajducka-vrata.gpx",
     "thumbnail": "images/hiking-trail-vran-mountain-omrcenica-mali-vran-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja s Omrčenice vodi na Mali Vran."
   },
@@ -509,7 +483,6 @@
     "destinations": ["Čabulja"],
     "tags": ["Mostar", "Vrdi", "Bogodol", "Miljenko Bošnjak", "Gonđuša", "Velika Vlajina", "Čabulja"],
     "description": "Najljepši vidikovac na Kanjoj Drežanke se može doživjeti upravo s vrha Velika Vlajina na Čabulji. Litice koje se strmoglavo spuštaju u dolinu dok vi stojite na rubu su nezaboravno iskustvo u planinarskom svijetu.",
-    "gpx": "/gps/cabulja-vlajna.gpx",
     "thumbnail": "images/hiking-trail-cabulja-mountain-bogodol-velika-vlajina-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja iz Bogodola vodi na najviši vrh Čabulje, Veliku Vlajinu."
   },
@@ -528,7 +501,6 @@
     "destinations": ["Čabulja"],
     "tags": ["Vrdi", "Vilino Polje", "Medvjed", "Čabulja", "Dobrulj", "Drežnica"],
     "description": "Šarolika planinarska staza koja vodi uz litice Čabulje podno vrha Medvjed. Lijepi vidikovci, bujna šuma, izvori i zlatne ribice spojeni u jedno. Kružno spuštanje je najbolja opcija.",
-    "gpx": "/gps/prenj-zelena-glava.gpx",
     "thumbnail": "images/hiking-trail-cabulja-mountain-vilino-polje-medvjed-bosnia-and-herzegovina.jpg",
     "alt": "Šarolika planinarska staza koja vodi na vrh Medvjed na Čabulji."
   },
@@ -547,7 +519,6 @@
     "destinations": ["Durmitor"],
     "tags": ["Durmitor", "Zeleni Vir", "Bobotov Kuk", "Crno Jezero", "Đevojka", "Katun Lokvice", "Sedlo", "Škrčko jezero", "Žabljak"],
     "description": "Hodanje jednom od najljepših planina na Balkanu, Durmitoru, vrijedi svakog koraka. Ova staza polazi sa sedla do najvišeg vrha, Bobotova Kuka. Natrag ide na drugu stranu prema Crnom Jezeru. Ovim silaskom se spusti 1250m/nv dok se prema gore prijeđe 950m/nv.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-durmitor-mountain-sedlo-bobotov-kuk-crno-jezero-montenegro.jpg",
     "alt": "Planinarska staza na Durmitoru u Crnoj Gori. Najljepša planinarska staza u Crnoj Gori u blizini grada Žabljaka."
   },
@@ -566,7 +537,6 @@
     "destinations": ["Biokovo"],
     "tags": ["Makar", "Biokovo", "Vošac", "Makarska", "Park prirode Biokovo"],
     "description": "Planinarska staza koja vodi južnim, strmijim licem Biokova. Iz mjesta Makar, iznad Makarske pa sve do na vrh Vošac se ide uz litice označenim planinarskim putem. Čista uživancija dok se uspinje uz litice a Makarska rivijera kao na dlanu.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-biokovo-mountain-makar-vosac-croatia.jpg",
     "alt": "Planinarska staza koja iz mjesta Makar, iznad Makarske vodi do vrha Vošac na Biokovu."
   },
@@ -585,7 +555,6 @@
     "destinations": ["Prenj"],
     "tags": ["Prenj", "Mostarska Bijela", "Grabovčići", "Barni Do", "Lupoglav", "Mostar"],
     "description": "Najteža planinarska staza u BiH a možda i na cijelom Balkanu. Uspon na Lupoglav iz Mostarske Bijele i natrag u jednom danu zahtijeva ogroman napor. Lijepa šuma i vizure Prenja s vrha su kao nagrada za sav trud.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-prenj-mountain-mostarska-bijela-lupoglav-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja iz Mostarske Bijele vodi na Lupoglav. Planinarska staza na Prenju blizu Mostara."
   },
@@ -604,7 +573,6 @@
     "destinations": ["Čvrsnica"],
     "tags": ["Čvrsnica", "Fratrova Kapa", "Veliki Kuk", "Vilinac", "Vitlenica", "Zaglavlje", "Vidikovac"],
     "description": "Znate li da Veliki Kuk ima čak 1300m visoke litice? A znate li da na te litice vodi planinarska staza? Veliki Kuk je najimpresivnije mjesto na cijelim Dinaridima. Stajati na vrhu, uz rub tih litica je neponovljiv osjećaj. Prolazi se i pored Pl. doma Vilinac gdje je i izvor.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-vitlenica-veliki-kuk-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja sa Vitlenice vodi do ruba najviših litica na Balkanu. Litice Velikog Kuka na Čvrsnici."
   },
@@ -623,7 +591,6 @@
     "destinations": ["Prenj"],
     "tags": ["Prenj", "Konjička Bijela", "Jezerce", "Osobac", "Konjic", "Taraš"],
     "description": "Zahtjevna planinarska staza koja vodi iz Konjičke Bijele do vrha Osobac. Cijelo vrijeme jako strmo dok se ne iziđe do Pl. skloništa Jezerce pored kojeg izvire i planinska voda. U blizini su i divlji konji a dolina pruža najljepše od Prenj planine, baš kao i pogled s vrha.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-prenj-mountain-konjicka-bijela-osobac-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja iz Konjičke Bijele vodi na vrh Osobac na Prenj planini. Planinarska staza u blizini Konjica u Bosni i Hercegovini."
   },
@@ -642,7 +609,6 @@
     "destinations": ["Šipovo"],
     "tags": ["Šipovo", "Pliva", "Izvori", "Janjske Otoke", "Vaganska Pećina"],
     "description": "Kružna, ne-markirana staza koja spaja tri lijepa izvora rijeke Plive. Iako nema markacija, staza je dobro utabana. Tri jaka izvora vode u okrilju bujne šume.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-sipovo-city-tri-izvora-plive-bosnia-and-herzegovina.jpg",
     "alt": "obilazak tri izvora Rijeke Plive pored Šipova. U blizini su i Janjske Otoke."
   },
@@ -661,7 +627,6 @@
     "destinations": ["Čvrsnica"],
     "tags": ["Čvrsnica", "Blidinje", "Masna Luka", "Badnji", "Vidikovac", "Munika", "Orlovača", "Lisac"],
     "description": "Jako lijep vidikovac na Masnu Luku koji se nalazi svega 40min hodanja od vikendica u podnožju Čvrsnice. Pogled na Crkvu sv. Ilije i više predjele Čvrsnice uz malo planinarenja.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-vidikovac-iznad-masne-luke-bosnia-and-herzegovina.jpg",
     "alt": "Vidikovac na Čvrsnici s kojeg se pruža pogled na Masnu Luku u Parku prirode Blidinje."
   },
@@ -680,7 +645,6 @@
     "destinations": ["Čvrsnica"],
     "tags": ["Diva Grabovica", "Žlijeb", "Čvrsnica", "Plasa", "Tise", "Mustafa Begović"],
     "description": "Planinarska staza koja vodi do jako lijepog vidikovca na Čvrsnici. U srcu Kanjona Diva Grabovica, malo iznad 1000m/nv se smjestilo ovo mjesto do kojeg vodi put koji je idealan čak i za početnike. Pogled se prostire na visoke litice koje krase ovaj kanjon.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-diva-grabovica-zlijeb-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja vodi do vidikovca na Žlijebu, na planini Čvrsnici."
   },
@@ -699,7 +663,6 @@
     "destinations": ["Čvrsnica"],
     "tags": ["Vitlenica", "Peštibrdo", "Vilinac", "Ledeno Jezero", "Peharovi stanovi", "Kulidžanov stan", "Čvrsnica", "Janjičar vrelo"],
     "description": "Ova tura je pravi izazov za sve planinare. Dijelom što je jako zahtjevno a dijelom što dio puta nije obilježen. Peštibrdo je najudaljeniji dio Čvrsnice a po mnogima i najljepši.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-cvrsnica-mountain-vitlenica-pestibrdo-bosnia-and-herzegovina.jpg",
     "alt": "Planinarska staza koja sa Vitlenice vodi na Peštibrdo, na planini Čvrsnici."
   },
@@ -718,7 +681,6 @@
     "destinations": ["Imotski"],
     "tags": ["Imotski", "Lokvičićka Jezera", "Proložac", "Prološko Blato", "Dalmatinska Zagora"],
     "description": "Da dalmatinska zagora krije mnoga čuda pokazati će vam i ova lijepo osmišljena planinarska staza koja prolazi pored nekoliko većih i manjih jezera u blizini Imotskog.",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-imotski-city-lokvicicka-jezera-croatia.jpg",
     "alt": "Planinarska staza koja prolazi pored Lokvičićkih jezera u blizini Imotskog."
   },
@@ -737,7 +699,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-visocica-mountain-paric-detelas-vito-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
@@ -756,7 +717,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-omiska-dinara-mountain-omis-kula-croatia.jpg",
     "alt": ""
   },
@@ -775,7 +735,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-omiska-dinara-mountain-fortica-fortress-croatia.jpg",
     "alt": ""
   },
@@ -794,7 +753,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-omis-city-pazjatva-cave-croatia.jpg",
     "alt": ""
   },
@@ -813,13 +771,12 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail-zavelim-mountain-podzavelim-kolakovac-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
   {
     "id": 44,
-    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "slug": "hiking-trail-brina-canyon-posusje-city-bosnia-and-herzegovina",
     "name": "Kanjon Brine (kroz tunele)",
     "area": "",
     "mountain": "",
@@ -828,17 +785,16 @@
     "durationH": ,
     "startLat": ,
     "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
+    "routeType": "Kružna",
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "thumbnail": "images/hiking-trail-posusje-city-brina-canyon-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
   {
     "id": 45,
-    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "slug": "hiking-trail-podvelez-brasina-velez-mountain-bosnia-and-herzegovina",
     "name": "Podvelež - Brasina (Velež)",
     "area": "",
     "mountain": "",
@@ -847,17 +803,16 @@
     "durationH": ,
     "startLat": ,
     "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
+    "routeType": "Povratna (isti put)",
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "thumbnail": "images/hiking-trail-velez-mountain-podvelez-brasina-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
   {
     "id": 46,
-    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "slug": "hiking-trail-staza-hrvatskih-kraljeva-lib-mountain-bosnia-and-herzegovina",
     "name": "Staza Hrvatskih Kraljeva (Lib)",
     "area": "",
     "mountain": "",
@@ -866,17 +821,16 @@
     "durationH": ,
     "startLat": ,
     "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
+    "routeType": "Kružna",
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "thumbnail": "images/hiking-trail-lib-mountain-staza-hrvatskih-kraljeva-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
   {
     "id": 47,
-    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "slug": "hiking-trail-kedzara-veliki-vran-vran-mountain-bosnia-and-herzegovina",
     "name": "Kedžara - Veliki Vran (Vran)",
     "area": "",
     "mountain": "",
@@ -885,17 +839,16 @@
     "durationH": ,
     "startLat": ,
     "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
+    "routeType": "Povratna (isti put)",
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "thumbnail": "images/hiking-trail-vran-mountain-kedzara-veliki-vran-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
   {
     "id": 48,
-    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "slug": "hiking-trail-vaganj-kurtagica-dolac-kamesnica-mountain-bosnia-and-herzegovina",
     "name": "Vaganj - Kurtagića Dolac (Kamešnica)",
     "area": "",
     "mountain": "",
@@ -904,17 +857,16 @@
     "durationH": ,
     "startLat": ,
     "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
+    "routeType": "Povratna (isti put)",
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "thumbnail": "images/hiking-trail-kamesnica-mountain-vaganj-kurtagica-dolac-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
   {
     "id": 49,
-    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "slug": "hiking-trail-burnjaca-garjeta-kamesnica-mountain-bosnia-and-herzegovina",
     "name": "Burnjača i Garjeta (Kamešnica)",
     "area": "",
     "mountain": "",
@@ -923,17 +875,16 @@
     "durationH": ,
     "startLat": ,
     "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
+    "routeType": "Povratna (isti put)",
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "thumbnail": "images/hiking-trail-kamesnica-mountain-burnjaca-garjeta-bosnia-and-herzegovina.jpg",
     "alt": ""
   },
   {
     "id": 50,
-    "slug": "hiking-trail---mountain-bosnia-and-herzegovina",
+    "slug": "hiking-trail-scirovac-sveti-ilija-biokovo-mountain-croatia",
     "name": "Šćirovac i sv. Ilija (Biokovo)",
     "area": "",
     "mountain": "",
@@ -942,12 +893,11 @@
     "durationH": ,
     "startLat": ,
     "startLon": ,
-    "routeType": "Povratna (isti put) Kružna",
+    "routeType": "Kružna",
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
-    "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
+    "thumbnail": "images/hiking-trail-biokovo-mountain-scirovac-sveti-ilija-croatia.jpg",
     "alt": ""
   },
   {
@@ -965,7 +915,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
     "alt": ""
   },
@@ -984,7 +933,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
     "alt": ""
   },
@@ -1003,7 +951,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
     "alt": ""
   },
@@ -1022,7 +969,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
     "alt": ""
   },
@@ -1041,7 +987,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
     "alt": ""
   },
@@ -1060,7 +1005,6 @@
     "destinations": [""],
     "tags": ["", "", "", "", ""],
     "description": "",
-    "gpx": "/gps/visocica-vito.gpx",
     "thumbnail": "images/hiking-trail--mountain--bosnia-and-herzegovina.jpg",
     "alt": ""
   }
