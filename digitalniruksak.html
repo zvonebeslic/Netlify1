@@ -43,6 +43,7 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
+    .hidden{ display:none !important; }
 
     /* ---------------------------------
        2) HEADER
@@ -57,8 +58,8 @@
     header.page-head .intro { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
 
     /* ---------------------------------
-       3) LAYOUT / GRID / KARTICE
-       --------------------------------- */
+      3) LAYOUT / GRID / KARTE
+      --------------------------------- */
     main { max-width: 1180px; margin: 0 auto; padding: 22px 18px 28px; }
     .tools-grid {
       display: grid; gap: 18px;
@@ -107,7 +108,7 @@
     #camThumb { max-width: 260px; border-radius: 10px; border: 1px solid var(--line); }
 
     /* ---------------------------------
-       5) KOMPAS + GPX PRAĆENJE
+       5) PANEL: KOMPAS + GPX PRAĆENJE
        --------------------------------- */
     .compass-wrap { display: grid; gap: 12px; }
     .compass-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -124,17 +125,10 @@
     }
     .arrow.warn { border-bottom-color: #e09f3e; }
     .arrow.bad  { border-bottom-color: #e44747; }
-    .deg-pill { padding: .45em .7em; border-radius: 999px; background: #2b2f36; color: #fff; font-weight: 700; font-size: 14px; border: 1px solid var(--line); }
-    .value { font-variant-numeric: tabular-nums; }
     .compass-legend { font-size: 12px; color: var(--muted); }
-    .field { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    input[type="number"], input[type="time"], input[type="file"], input[type="url"], input[type="text"]{
-      background: #0f1114; border: 1px solid var(--line); border-radius: 10px; color: #fff; padding: .55em .65em; outline: none;
-    }
-    input[type="number"]{ width: 120px; }
 
     /* ---------------------------------
-       6) MINI STRELICA WIDGET (donji lijevi kut)
+       6) MINI STRELICA WIDGET + OFFTRACK BAR + SIGNAL
        --------------------------------- */
     #miniCompass {
       position: fixed; left: 12px; bottom: 12px; z-index: 9999;
@@ -155,6 +149,32 @@
     #miniCompass .mini-needle.bad  { border-bottom-color: #e44747; }
     #miniCompass .mini-info { text-align: center; font-size: 12px; color: var(--muted); margin-top: 4px; }
     #miniCompass[hidden]{ display:none; }
+
+    /* Offtrack status traka (žuta/crvena) */
+    #offtrackBar{
+      position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%);
+      z-index: 9998; width: 280px; height: 24px; border-radius: 999px; overflow: hidden;
+      border:1px solid rgba(0,0,0,.25); background:rgba(0,0,0,.08);
+      display:flex; align-items:center; justify-content:flex-start; visibility:hidden;
+      backdrop-filter: blur(6px);
+    }
+    #offtrackBar .barFill{
+      position:absolute; left:0; top:0; bottom:0; width:0%; transition: width .25s ease;
+    }
+    #offtrackBar .barLabel{
+      position:relative; z-index:1; width:100%; text-align:center;
+      font: 600 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial; color:#0a0a0a; text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    }
+    #offtrackBar.yellow .barFill{ background: rgba(245, 208, 66, .85); }   /* žuta */
+    #offtrackBar.red    .barFill{ background: rgba(239, 68, 68, .9); }     /* crvena */
+
+    /* Badge: nema GPS signala */
+    #signalBadge{
+      position:fixed; left:50%; bottom:140px; transform:translateX(-50%);
+      z-index:10000; padding:10px 14px; border-radius:999px;
+      background:rgba(120,120,120,.15); border:1px solid rgba(120,120,120,.4);
+      backdrop-filter: blur(6px); color:#fff; font:600 14px/1 system-ui;
+    }
   </style>
 </head>
 
@@ -282,9 +302,9 @@
                 <ul>
                   <li><b>Najprije:</b> sigurno mjesto, pozovi <b>112</b>.</li>
                   <li><b>Ne diše normalno?</b> Kreni s KPR: dlan na sredinu prsnog koša, drugi dlan preko, laktovi ravno.</li>
-                  <li><b>Ritam:</b> 100–120 u minuti (kao brža pjesma), <b>dubina 5–6 cm</b>. Pusti da se prsa vrate gore.</li>
+                  <li><b>Ritam:</b> 100–120 u minuti (brže), <b>dubina 5–6 cm</b>. Pusti da se prsa vrate gore.</li>
                   <li><b>Omjer:</b> 30 pritisaka : 2 udaha (samo ako znaš i imaš masku). Inače <b>samo pritisci</b>.</li>
-                  <li>Nastavi dok ne stignu spasioci ili se osoba ne počne normalno micati/disati.</li>
+                  <li>Nastavi dok ne stignu spasioci ili se osoba ne počne micati/disati.</li>
                 </ul>
               </div>
             </div>
@@ -296,7 +316,7 @@
                   <li><b>Stisni direktno</b> na mjesto krvarenja čistom gazom/tkaninom najmanje <b>10 minuta</b> bez provjeravanja.</li>
                   <li>Ako promoči, <b>dodaj</b> još gaze preko (ne skidaj prvu).</li>
                   <li>Za udove: <b>kompresivni zavoj</b> ili turniket (zabilježi vrijeme).</li>
-                  <li>Ukloni vidljive površinske predmete (grančica i sl.), ali <b>ne vadi duboko zabodene</b>.</li>
+                  <li>Ukloni vidljive površinske predmete, ali <b>ne vadi duboko zabodene</b>.</li>
                 </ul>
               </div>
             </div>
@@ -306,9 +326,9 @@
               <div class="aid-body" style="display:none">
                 <ul>
                   <li>Makni od vjetra i vlage; skini mokro, stavi suho i toplo slojevito.</li>
-                  <li><b>Astrofolija:</b> srebrna strana <b>prema tijelu grije</b> (zlatna vani).</li>
+                  <li><b>Astrofolija:</b> srebrna strana <b>prema tijelu</b> grije.</li>
                   <li>Topli napici ako je pri svijesti; bez alkohola.</li>
-                  <li>Nježno rukovanje (zbog srca), zagrijavanje postepeno; hitan transport.</li>
+                  <li>Nježno rukovanje, postepeno zagrijavanje; hitan transport.</li>
                 </ul>
               </div>
             </div>
@@ -353,7 +373,7 @@
           <ul>
             <li>Astrofolija: <b>srebrna prema tijelu</b> grije.</li>
             <li>KPR: <b>30:2</b> (ako znaš), inače samo pritisci; 100–120/min; 5–6 cm.</li>
-            <li>Krvarenje: <b>stisni i drži 10 min</b>; dodaj preko ako promoči.</li>
+            <li>Krvarenje: <b>stisni i drži 10 min</b> — dodaj preko ako promoči.</li>
           </ul>
           <div class="chip" style="margin-top:10px">📞 112 — hitna pomoć i spašavanje</div>
         </div>
@@ -383,6 +403,13 @@
     <!-- PANEL: Pametna strelica -->
     <section id="panelArrow" class="tool-panel" hidden>
       <h4>Pametna strelica — kompas + GPX (file/URL)</h4>
+
+      <!-- Status traka za odmak (žuta/crvena) -->
+      <div id="offtrackBar" aria-hidden="true">
+        <div class="barFill"></div>
+        <div class="barLabel">Odmak: —</div>
+      </div>
+
       <div class="compass-wrap">
         <div class="compass-row">
           <div class="compass" aria-label="Kompas">
@@ -390,10 +417,9 @@
             <div id="arrowNeedle" class="arrow" style="transform: rotate(0deg);"></div>
           </div>
           <div>
-            <div class="deg-pill">Tvoj heading: <span id="valueHeading" class="value">—</span>°</div>
-            <div class="deg-pill" style="margin-top:8px">Ciljni azimut: <span id="valueTarget" class="value">0</span>°</div>
-            <div class="deg-pill" style="margin-top:8px">Okreni još: <span id="valueDelta" class="value">—</span>°</div>
-            <div class="compass-legend" id="deltaHint" style="margin-top:6px"><span class="ok">Poravnato ✓</span></div>
+            <div class="chip" id="trackStatusPill">GPS: —</div>
+            <div class="chip" id="onTrackChip">🧭 status: —</div>
+            <div class="chip" id="offDistChip">↔︎ udaljenost: —</div>
           </div>
         </div>
 
@@ -412,18 +438,12 @@
           </div>
           <div class="field">
             <label for="alertMeters">Prag (m) zvuka:</label>
-            <input id="alertMeters" type="number" min="5" step="5" value="30" />
+            <input id="alertMeters" type="number" min="5" step="5" value="10" />
             <button class="btn" id="toggleTrackBtn">Pokreni praćenje</button>
           </div>
         </div>
 
-        <div class="status-line" style="margin-top:6px">
-          <span class="deg-pill" id="trackStatusPill">GPX: —</span>
-          <span class="chip" id="onTrackChip">🧭 status: —</span>
-          <span class="chip" id="offDistChip">↔︎ udaljenost: —</span>
-        </div>
-
-        <p class="hint" style="margin-top:6px">Možeš i dodati parametar u URL: <code>?gpx=https://…/ruta.gpx</code></p>
+        <p class="hint" style="margin-top:6px">Možeš dodati i parametar u URL: <code>?gpx=https://…/ruta.gpx</code></p>
 
         <div><button class="btn" id="arrowClose">Zatvori</button></div>
       </div>
@@ -482,7 +502,7 @@
           <div class="hint">Opcija: dopusti lokaciju pa ću pokušati auto-postaviti zalazak (grubo).</div>
         </div>
         <div>
-          <div class="deg-pill" id="sunLeft">Preostalo: —</div>
+          <div class="chip" id="sunLeft">Preostalo: —</div>
         </div>
       </div>
     </section>
@@ -494,6 +514,11 @@
       <div id="miniNeedle" class="mini-needle"></div>
     </div>
     <div class="mini-info"><span id="miniMeters">— m</span></div>
+  </div>
+
+  <!-- STATUS: Nema GPS signala -->
+  <div id="signalBadge" class="hidden" role="status" aria-live="polite">
+    Nema GPS signala
   </div>
 
   <!-- =========================================================
@@ -534,7 +559,7 @@
        Akordeon (Digitalna pomoć)
        --------------------------------- */
     (function () {
-      const acc = qs('#aidAcc'); if (!acc) return;
+      const acc = document.getElementById('aidAcc'); if (!acc) return;
       acc.querySelectorAll('.aid-head').forEach(btn => {
         btn.addEventListener('click', () => {
           const body = btn.parentElement.querySelector('.aid-body');
@@ -545,7 +570,7 @@
     })();
 
     /* ---------------------------------
-       Kamera — auto-pejzaž (isto kao prije, sitno očišćeno)
+       Kamera — auto-pejzaž (tvoj kod, očišćen)
        --------------------------------- */
     const camClose = qs('#camClose'), camVideo = qs('#camVideo'),
           camCanvas = qs('#camCanvas'), camCtx = camCanvas?.getContext?.('2d', { willReadFrequently: true }),
@@ -613,32 +638,88 @@
 
     /* ---------------------------------
        Pametna strelica + GPX (file/URL/parametar)
+       LOGIKA: bez “krivi smjer”; žuta 5–10 m; crvena >10 m + 3× beep; strelica samo kad >5 m.
        --------------------------------- */
     const arrowClose = qs('#arrowClose'), arrowNeedle = qs('#arrowNeedle'),
-          valueHeading = qs('#valueHeading'), valueTarget = qs('#valueTarget'),
-          valueDelta = qs('#valueDelta'), deltaHint = qs('#deltaHint'),
           gpxInput = qs('#gpxInput'), loadGpxBtn = qs('#loadGpxBtn'),
           gpxUrl = qs('#gpxUrl'), loadUrlBtn = qs('#loadUrlBtn'),
           alertMetersInput = qs('#alertMeters'), toggleTrackBtn = qs('#toggleTrackBtn'),
           trackStatusPill = qs('#trackStatusPill'), onTrackChip = qs('#onTrackChip'), offDistChip = qs('#offDistChip');
 
-    let deviceHeading = null, targetAzimuth = 0, arrowOpenFlag = false, useAOS = false;
-    let gpxTrack = null, watchId = null, alertMeters = 30;
-    let audioCtx = null, offBeepArmed = false;
+    const mini = qs('#miniCompass'), miniNeedle = qs('#miniNeedle'), miniMeters = qs('#miniMeters');
+    const offBar = qs('#offtrackBar'), offFill = offBar.querySelector('.barFill'), offLbl = offBar.querySelector('.barLabel');
+    const signalEl = qs('#signalBadge');
 
-    function setTargetAzimuth(deg){ targetAzimuth=((deg%360)+360)%360; valueTarget.textContent=targetAzimuth.toFixed(0); updateArrow(); }
-    function angularDelta(current,target){ return ((target-current+540)%360)-180; }
-    function updateArrow(){
-      if(deviceHeading==null) return;
-      const d = angularDelta(deviceHeading, targetAzimuth);
-      valueDelta.textContent = Math.abs(d).toFixed(0);
-      deltaHint.textContent = d>0 ? 'Okreći udesno →' : (d<0 ? 'Okreći ulijevo ←' : 'Poravnato ✓');
-      deltaHint.className = d===0 ? 'ok' : 'warn';
-      arrowNeedle.style.transform = `rotate(${d}deg)`;
+    // Pragovi (fiksno po dogovoru)
+    const OK_THRESHOLD_M = 5;      // ≤ 5 m = na stazi (nema strelice, nema trake)
+    const YELLOW_MIN_M   = 5;      // 5–10 m = žuta linija
+    const YELLOW_MAX_M   = 10;
+    const RED_THRESHOLD_M= 10;     // >10 m = crvena linija + 3× beep
+    const SMOOTHING      = 0.25;
+    const EARTH_R        = 6371000;
+
+    let deviceHeading = null, arrowOpenFlag = false, useAOS = false;
+    let gpxTrack = null, watchId = null, alertMeters = 10;
+    let audioCtx = null;
+    let lastAngleDeg = null;
+    let lastFixAt = 0;
+    const NO_FIX_AFTER_MS = 8000;
+
+    // Audio: 3× beep (rate limited)
+    let lastRedBeepAt = 0;
+    const RED_BEEP_COOLDOWN_MS = 10000;
+    document.addEventListener('touchstart', ()=>{ try{ audioCtx?.resume(); }catch(e){} }, {once:true});
+    document.addEventListener('click',      ()=>{ try{ audioCtx?.resume(); }catch(e){} }, {once:true});
+
+    function tripleBeep(){
+      const now = Date.now();
+      if (now - lastRedBeepAt < RED_BEEP_COOLDOWN_MS) return;
+      lastRedBeepAt = now;
+      audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+      const gap = 160;
+      singleBeep(880, 140);
+      setTimeout(()=>singleBeep(880,140), gap+140);
+      setTimeout(()=>singleBeep(880,140), (gap+140)*2);
+    }
+    function singleBeep(freq=880,durMs=140){
+      try{
+        const ctx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+        audioCtx = ctx;
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type='sine'; o.frequency.value=freq; g.gain.value=0.0001; o.connect(g); g.connect(ctx.destination);
+        const t0=ctx.currentTime; g.gain.exponentialRampToValueAtTime(0.35, t0+0.02);
+        g.gain.setValueAtTime(0.35, t0+durMs/1000-0.03); g.gain.exponentialRampToValueAtTime(0.0001, t0+durMs/1000);
+        o.start(t0); o.stop(t0+durMs/1000+0.02);
+      }catch(e){}
+    }
+
+    function showMini(){ mini.hidden=false; }
+    function hideMini(){ mini.hidden=true; }
+    function setMiniColor(mode){
+      miniNeedle.classList.remove('warn','bad');
+      if(mode==='ok'){ miniNeedle.style.borderBottomColor='#2aa96b'; }
+      else if(mode==='warn'){ miniNeedle.classList.add('warn'); }
+      else if(mode==='bad'){ miniNeedle.classList.add('bad'); }
+    }
+    function setArrowColor(mode){
+      arrowNeedle.classList.remove('warn','bad');
+      if(mode==='ok'){ arrowNeedle.style.borderBottomColor='#2aa96b'; }
+      else if(mode==='warn'){ arrowNeedle.classList.add('warn'); }
+      else if(mode==='bad'){ arrowNeedle.classList.add('bad'); }
+    }
+    function showSignalMissing(isMissing){
+      signalEl.classList.toggle('hidden', !isMissing);
+      // kad nema signala, sakrij UI navođenja
+      if(isMissing){
+        offBar.style.visibility='hidden';
+        arrowNeedle.style.display='none';
+        hideMini();
+      }
     }
 
     function openArrow(){
       arrowOpenFlag = true;
+
       // AbsoluteOrientationSensor (ako postoji)
       try{
         if('AbsoluteOrientationSensor' in window){
@@ -647,14 +728,14 @@
             const [x,y,z,w] = aos.quaternion;
             const siny = 2*(w*z + x*y), cosy = 1-2*(y*y + z*z);
             let yaw = Math.atan2(siny, cosy) * 180/Math.PI; yaw = (yaw+360)%360;
-            deviceHeading = yaw; valueHeading.textContent = deviceHeading.toFixed(0); updateArrow();
+            deviceHeading = yaw; updateArrowRotation();
           }); aos.start(); useAOS = true;
         }
       }catch(e){ useAOS = false; }
+
       // Fallback: DeviceOrientation
       if(!useAOS){
         if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
-          // iOS — prikaži gumb unutar panela
           const btn = document.createElement('button');
           btn.textContent = 'Omogući kompas (iOS)';
           btn.className = 'btn ghost';
@@ -669,6 +750,7 @@
           window.addEventListener('deviceorientation', onOrient, true);
         }
       }
+
       // auto-učitaj GPX iz URL parametra ?gpx=
       const urlParam = new URL(location.href).searchParams.get('gpx');
       if(urlParam) { loadGpxFromUrl(urlParam); }
@@ -679,9 +761,11 @@
       if(typeof e.webkitCompassHeading === 'number' && !Number.isNaN(e.webkitCompassHeading)) heading = e.webkitCompassHeading; // iOS
       else if(typeof e.alpha==='number') heading = 360 - e.alpha; // Android approx
       if(heading==null) return;
-      deviceHeading = ((heading%360)+360)%360; valueHeading.textContent = deviceHeading.toFixed(0); updateArrow();
+      deviceHeading = ((heading%360)+360)%360;
+      updateArrowRotation();
     }
 
+    // Učitavanje GPX
     loadGpxBtn?.addEventListener('click', async ()=>{
       const f = gpxInput?.files?.[0];
       if(!f){ trackStatusPill.textContent='GPX: nema datoteke'; return; }
@@ -718,13 +802,11 @@
       trackStatusPill.textContent = label;
       onTrackChip.textContent = '🧭 status: GPX spreman — klikni “Pokreni praćenje”';
       offDistChip.textContent = '↔︎ udaljenost: —';
-      // vizualno naglasi gumb
-      toggleTrackBtn.classList.add('alt');
-      setTimeout(()=>toggleTrackBtn.classList.remove('alt'), 1800);
+      toggleTrackBtn.classList.add('alt'); setTimeout(()=>toggleTrackBtn.classList.remove('alt'), 1800);
     }
 
     toggleTrackBtn?.addEventListener('click', ()=>{
-      alertMeters = Math.max(5, Number(alertMetersInput.value)||30);
+      alertMeters = Math.max(5, Number(alertMetersInput.value)||10);
       if(watchId==null){
         if(!gpxTrack || gpxTrack.length<2){ trackStatusPill.textContent='GPX: učitaj trag prvo'; return; }
         startGeoWatch(); toggleTrackBtn.textContent='Zaustavi praćenje';
@@ -733,13 +815,8 @@
       }
     });
 
-    // Geo + math helpers
+    // Geo / matematika
     const R = 6371000, toRad = x => x*Math.PI/180;
-    function bearingBetween(lat1,lon1,lat2,lon2){
-      const φ1=toRad(lat1), φ2=toRad(lat2), Δλ=toRad(lon2-lon1);
-      const y=Math.sin(Δλ)*Math.cos(φ2), x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
-      return ((Math.atan2(y,x)*180/Math.PI)+360)%360;
-    }
     function haversine(lat1,lon1,lat2,lon2){
       const dφ=toRad(lat2-lat1), dλ=toRad(lon2-lon1);
       const a=Math.sin(dφ/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dλ/2)**2;
@@ -747,7 +824,7 @@
     }
     function toXY(lat,lon,lat0){ const x=toRad(lon)*Math.cos(toRad(lat0))*R, y=toRad(lat)*R; return {x,y}; }
     function nearestPointOnTrack(p,track){
-      let best={lat:track[0].lat,lon:track[0].lon,distM:Infinity,segIndex:0};
+      let best={lat:track[0].lat,lon:track[0].lon,distM:Infinity,segIndex:0,t:0};
       const lat0=p.lat, P=toXY(p.lat,p.lon,lat0);
       for(let i=0;i<track.length-1;i++){
         const A=toXY(track[i].lat,track[i].lon,lat0), B=toXY(track[i+1].lat,track[i+1].lon,lat0);
@@ -756,60 +833,119 @@
         const Qx=A.x+t*ABx, Qy=A.y+t*ABy;
         const lon=(Qx/(R*Math.cos(toRad(lat0))))*(180/Math.PI), lat=(Qy/R)*(180/Math.PI);
         const d=haversine(p.lat,p.lon,lat,lon);
-        if(d<best.distM) best={lat,lon,distM:d,segIndex:i};
+        if(d<best.distM) best={lat,lon,distM:d,segIndex:i,t};
       } return best;
     }
+    function bearingBetween(lat1,lon1,lat2,lon2){
+      const φ1=toRad(lat1), φ2=toRad(lat2), Δλ=toRad(lon2-lon1);
+      const y=Math.sin(Δλ)*Math.cos(φ2), x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+      return ((Math.atan2(y,x)*180/Math.PI)+360)%360;
+    }
+    function angularDelta(current,target){ return ((target-current+540)%360)-180; }
 
     function startGeoWatch(){
       try{
         watchId = navigator.geolocation.watchPosition(onPos, onGeoErr, { enableHighAccuracy:true, maximumAge:1000, timeout:10000 });
         trackStatusPill.textContent='GPS: praćenje uključeno';
-        offBeepArmed = true; showMini();
+        showMini();
+        // watchdog
+        setInterval(()=>{
+          if (!lastFixAt || (Date.now() - lastFixAt) > NO_FIX_AFTER_MS){
+            showSignalMissing(true);
+          }
+        }, 2000);
       }catch(e){ trackStatusPill.textContent='GPS: ne mogu pokrenuti'; }
     }
     function stopGeoWatch(){
       if(watchId!=null){ navigator.geolocation.clearWatch(watchId); watchId=null; }
       trackStatusPill.textContent='GPS: zaustavljeno'; setArrowColor('ok'); hideMini();
+      offBar.style.visibility='hidden';
+      showSignalMissing(false);
     }
-    function onGeoErr(err){ trackStatusPill.textContent='GPS greška: '+(err?.message||''); }
+    function onGeoErr(err){ trackStatusPill.textContent='GPS greška: '+(err?.message||''); showSignalMissing(true); }
 
     function onPos(pos){
+      lastFixAt = Date.now();
+      showSignalMissing(false);
+
       const lat=pos.coords.latitude, lon=pos.coords.longitude;
       if(!gpxTrack || gpxTrack.length<2) return;
-      const nearest=nearestPointOnTrack({lat,lon}, gpxTrack), dist=nearest.distM;
-      if(dist<=alertMeters*0.6){ setArrowColor('ok'); onTrackChip.textContent='🧭 status: na tragu ✓'; }
-      else if(dist<=alertMeters){ setArrowColor('warn'); onTrackChip.textContent='🧭 status: blizu ruba'; }
-      else {
-        setArrowColor('bad'); onTrackChip.textContent='🧭 status: izvan traga';
-        if(offBeepArmed){ offBeepArmed=false; beepOnce(1200,300); setTimeout(()=>offBeepArmed=true,8000); }
+
+      // 1) najbliža točka na liniji
+      const nearest=nearestPointOnTrack({lat,lon}, gpxTrack);
+      const dist=nearest.distM;
+
+      // 2) status traka (žuta/crvena/skrivena) + tekst “Odmak”
+      updateOfftrackBar(dist);
+
+      // 3) strelica: samo kad je dist > 5 m → ciljaj najbližu točku (mrvicu naprijed da se ne "lijepi")
+      updateArrowAndMini(lat, lon, nearest, dist);
+    }
+
+    // UI: status traka
+    function formatDistance(m){
+      if (m >= 1000) return (m/1000).toFixed(2) + ' km';
+      if (m >= 100)  return Math.round(m) + ' m';
+      return Math.max(1, Math.round(m)) + ' m';
+    }
+    function updateOfftrackBar(distM){
+      if (distM <= OK_THRESHOLD_M){
+        offBar.style.visibility='hidden';
+        onTrackChip.textContent='🧭 status: na tragu ✓';
+        setArrowColor('ok');
+        return;
       }
-      offDistChip.textContent = `↔︎ udaljenost: ${dist.toFixed(0)} m`;
+      offBar.style.visibility='visible';
+      offLbl.textContent = 'Odmak: ' + formatDistance(distM);
+      const pct = Math.max(15, Math.min(100, ((distM-OK_THRESHOLD_M)/(RED_THRESHOLD_M))*100));
+      offFill.style.width = pct.toFixed(0) + '%';
 
+      if (distM > RED_THRESHOLD_M){
+        offBar.classList.remove('yellow'); offBar.classList.add('red');
+        onTrackChip.textContent='🧭 status: izvan traga';
+        setArrowColor('bad');
+        tripleBeep(); // 3× beep s cooldownom
+      } else {
+        offBar.classList.remove('red'); offBar.classList.add('yellow');
+        onTrackChip.textContent='🧭 status: blizu ruba';
+        setArrowColor('warn');
+      }
+      offDistChip.textContent = `↔︎ udaljenost: ${Math.round(distM)} m`;
+    }
+
+    // UI: strelica + mini
+    function updateArrowRotation(){
+      // ova funkcija samo preračuna CSS rotaciju prema zadnjem bearingu (računamo u updateArrowAndMini)
+      // rotacija se radi u updateArrowAndMini jer tamo znamo ciljni bearing
+    }
+    function updateArrowAndMini(lat, lon, nearest, distM){
+      // strelica vidljiva samo kad si izvan 5 m
+      const showArrow = distM > OK_THRESHOLD_M;
+      arrowNeedle.style.display = showArrow ? 'block' : 'none';
+
+      // mini widget uvijek je vidljiv kad je tracking ON (osim kad nema signala)
+      miniMeters.textContent = `${Math.round(distM)} m`;
+      if (distM <= OK_THRESHOLD_M) setMiniColor('ok');
+      else if (distM <= YELLOW_MAX_M) setMiniColor('warn');
+      else setMiniColor('bad');
+
+      if (!showArrow || deviceHeading==null) return;
+
+      // cilj: najbliža točka (projekcija) — mala projekcija “naprijed” duž segmenta radi intuitivnosti
       const forwardIdx = Math.min(gpxTrack.length-1, nearest.segIndex+1);
-      const tgt = gpxTrack[forwardIdx];
-      const bearing = bearingBetween(lat,lon, tgt.lat,tgt.lon);
-      setTargetAzimuth(bearing);
+      const tgt = gpxTrack[forwardIdx] || {lat:nearest.lat, lon:nearest.lon};
+      const bearing = bearingBetween(lat, lon, tgt.lat, tgt.lon);
 
-      miniMeters.textContent = `${dist.toFixed(0)} m`;
-      updateMiniRotation(angularDelta(deviceHeading ?? 0, bearing));
-      if(dist<=alertMeters*0.6) setMiniColor('ok'); else if(dist<=alertMeters) setMiniColor('warn'); else setMiniColor('bad');
-    }
+      // delta kut (smjer skretanja)
+      let d = angularDelta(deviceHeading, bearing);
+      if (lastAngleDeg==null) lastAngleDeg = d;
+      let delta = d - lastAngleDeg;
+      if (delta>180) delta -= 360;
+      if (delta<-180) delta += 360;
+      lastAngleDeg = (lastAngleDeg + SMOOTHING*delta + 360) % 360;
 
-    function setArrowColor(mode){
-      arrowNeedle.classList.remove('warn','bad');
-      if(mode==='ok'){ arrowNeedle.style.borderBottomColor='#2aa96b'; }
-      else if(mode==='warn'){ arrowNeedle.classList.add('warn'); }
-      else if(mode==='bad'){ arrowNeedle.classList.add('bad'); }
-    }
-    function beepOnce(freq=1000,durMs=250){
-      try{
-        audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
-        const t=audioCtx.currentTime, osc=audioCtx.createOscillator(), g=audioCtx.createGain();
-        osc.frequency.value=freq; osc.type='sine'; g.gain.value=0.0001; osc.connect(g); g.connect(audioCtx.destination);
-        osc.start(); g.gain.exponentialRampToValueAtTime(0.2, t+0.02);
-        g.gain.setValueAtTime(0.2, t+durMs/1000-0.04); g.gain.exponentialRampToValueAtTime(0.0001, t+durMs/1000);
-        osc.stop(t+durMs/1000+0.01);
-      }catch(e){}
+      arrowNeedle.style.transform = `rotate(${lastAngleDeg}deg)`;
+      miniNeedle.style.transform  = `rotate(${lastAngleDeg}deg)`;
     }
 
     qs('#arrowClose')?.addEventListener('click', ()=>{
@@ -817,18 +953,8 @@
     });
 
     /* ---------------------------------
-       MINI WIDGET (prikaz, boja, drag)
+       MINI: drag & pozicioniranje
        --------------------------------- */
-    const mini = qs('#miniCompass'), miniNeedle = qs('#miniNeedle'), miniMeters = qs('#miniMeters');
-    function showMini(){ if(mini) mini.hidden=false; }
-    function hideMini(){ if(mini) mini.hidden=true; }
-    function setMiniColor(mode){
-      miniNeedle.classList.remove('warn','bad');
-      if(mode==='ok') miniNeedle.style.borderBottomColor='#2aa96b';
-      else if(mode==='warn') miniNeedle.classList.add('warn');
-      else if(mode==='bad') miniNeedle.classList.add('bad');
-    }
-    function updateMiniRotation(d){ if(Number.isFinite(d)) miniNeedle.style.transform=`rotate(${d}deg)`; }
     (function enableMiniDrag(){
       if(!mini) return;
       let sx=0, sy=0, ox=mini.offsetLeft, oy=mini.offsetTop, dragging=false;
@@ -879,7 +1005,7 @@
       const t = qs('#sunsetTime').value;
       if(!t){ sunLeft.textContent='Preostalo: — (postavi zalazak)'; return; }
       const [hh,mm] = t.split(':').map(Number);
-      const now = new Date(); const tgt = new Date(); tgt.setHours(hh,mm,0,0);
+      const tgt = new Date(); tgt.setHours(hh,mm,0,0);
       clearInterval(sunTimer);
       const tick = ()=>{
         const ms = tgt - new Date();
@@ -906,7 +1032,6 @@
     async function playSOS(){
       if(sosPlay) return; sosPlay=true;
       while(sosPlay){
-        // S O S: ••• ——— •••
         await sosBeep(900,150); await sleep(120);
         await sosBeep(900,150); await sleep(120);
         await sosBeep(900,150); await sleep(300);
