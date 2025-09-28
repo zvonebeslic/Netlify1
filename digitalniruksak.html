@@ -10,76 +10,82 @@
   <title>Mountain Adventures — Digitalni ruksak</title>
 
   <meta name="description"
-        content="Digitalni ruksak: praktični alati za planinare — auto-poboljšanje pejzaža kamerom i pametna strelica (kompas) spremna za GPS integraciju." />
+        content="Digitalni ruksak: praktični alati za planinare — digitalna pomoć, auto-pejzaž kamera, pametna strelica, offline karte/GPX, check-lista i SOS." />
 
-  <!-- Ikone / fontovi (po želji zadrži svoj skup) -->
   <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <!-- Ako koristiš globalni season.css / style.css, ostavi i njih -->
-  <!-- <link rel="stylesheet" href="style.css" /> -->
-  <!-- <link rel="stylesheet" href="season.css" /> -->
 
   <style>
     /* =========================================================
-       #02 STILOVI (čitko, red po red)
-       - Lagani, samodostatni stilovi za ovu stranicu
-       - Uskladi po potrebi s tvojim globalnim .content-box itd.
+       #02 STILOVI — "digitalni ruksak" raspored
        ========================================================= */
-
     :root{
-      --bg:#0e0f10; --fg:#e9eef2; --muted:#9aa6b2; --card:#121416; --line:#1f2327; --accent:#2a7;
+      --bg:#0e0f10; --fg:#e9eef2; --muted:#9aa6b2; --card:#121416; --line:#1f2327;
+      --accent:#2aa96b; --accent-2:#3aa0ff; --accent-3:#e44747; --ok:#86d486; --warn:#f2c14e;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; background:var(--bg); color:var(--fg);
-      font: 500 16px/1.55 Montserrat, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      font:500 16px/1.55 Montserrat, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
 
+    /* Lokalan page header (tvoj globalni header/footer/season neka ostane odvojeno) */
     header.page-head{
       position:sticky; top:0; z-index:10;
-      background:linear-gradient(#131519,#0e0f10);
+      background:linear-gradient(#14171b,#0e0f10);
       border-bottom:1px solid var(--line);
       padding:16px 18px;
     }
-    header.page-head h1{margin:0; font-size:20px; letter-spacing:.2px}
+    header.page-head h1{margin:0; font-size:22px; letter-spacing:.2px}
+    header.page-head .intro{margin:6px 0 0 0; color:var(--muted); font-size:14px}
 
-    main{max-width:1100px; margin:0 auto; padding:18px}
-    .intro{
-      color:var(--muted); font-size:14px; margin:6px 0 18px 0;
-    }
+    main{max-width:1180px; margin:0 auto; padding:22px 18px 28px}
 
-    /* Grid kartica alata */
+    /* GRID: Veći, uredni boxevi (drugačije od staze.html) */
     .tools-grid{
-      display:grid; gap:16px;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      display:grid; gap:18px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      align-items:stretch;
     }
-
     .tool-card{
-      background:var(--card); border:1px solid var(--line);
-      border-radius:14px; padding:14px; position:relative;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px 16px 14px;
+      position:relative;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 8px 24px rgba(0,0,0,.25);
     }
-    .tool-card h3{margin:0 0 8px 0; font-size:18px}
-    .tool-card p{margin:0 0 8px 0; color:var(--muted); font-size:14px}
-    .tool-card ul{margin:8px 0 12px 18px; padding:0; color:var(--muted); font-size:14px}
-    .tool-card .btn-row{display:flex; gap:8px; flex-wrap:wrap}
+    .tool-card .eyebrow{font-size:12px; color:var(--muted); letter-spacing:.4px; text-transform:uppercase}
+    .tool-card h3{margin:6px 0 8px 0; font-size:19px}
+    .tool-card p{margin:0 0 10px 0; color:var(--muted); font-size:14px}
+    .tool-card ul{margin:8px 0 12px 20px; color:var(--muted); font-size:14px}
+    .btn-row{display:flex; gap:8px; flex-wrap:wrap}
     .btn{
-      appearance:none; border:0; border-radius:10px; padding:.65em 1.05em; font-weight:600;
+      appearance:none; border:0; border-radius:12px; padding:.7em 1.05em; font-weight:700;
       background:var(--accent); color:#fff; cursor:pointer; text-decoration:none; display:inline-block;
     }
     .btn.ghost{background:#2b2f36}
+    .btn.alt{background:var(--accent-2)}
+    .btn.alert{background:var(--accent-3)}
     .hint{color:var(--muted); font-size:12px}
 
-    /* Sekcije alata (expand paneli na istoj stranici) */
+    /* Sekcijski paneli (otvaraju se ispod grid-a) */
     section.tool-panel{
-      margin-top:24px; background:var(--card); border:1px solid var(--line);
-      border-radius:14px; padding:14px;
+      margin-top:22px; background:var(--card); border:1px solid var(--line);
+      border-radius:16px; padding:16px;
     }
-    section.tool-panel h4{margin:0 0 10px 0; font-size:16px}
-    .divider{height:1px; background:var(--line); margin:16px 0}
+    section.tool-panel h4{margin:0 0 10px 0; font-size:18px}
+    .divider{height:1px; background:var(--line); margin:14px 0 16px}
+    .two-col{display:grid; gap:14px; grid-template-columns: 1fr; }
+    @media (min-width:800px){ .two-col{ grid-template-columns: .9fr 1.1fr; } }
 
-    /* Kamera — panel */
+    /* Ikonice/čipovi za “ruksak” osjećaj */
+    .chip{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); padding:.35em .7em; border-radius:999px; font-size:12px; color:var(--muted)}
+    .ok{color:var(--ok)} .warn{color:var(--warn)}
+
+    /* Kamera panel */
     .camera-wrap{display:grid; gap:12px}
     video#camVideo{width:100%; aspect-ratio:9/16; max-height:78vh; background:#000; border-radius:12px}
     canvas#camCanvas{display:none}
@@ -87,131 +93,338 @@
     .dot{width:12px; height:12px; border-radius:50%; background:#a33; box-shadow:0 0 6px #600}
     .dot.ok{background:#3c3; box-shadow:0 0 8px #2a2}
     #camMsg{min-width:220px; color:var(--muted)}
-    #camThumb{max-width:240px; border-radius:10px; border:1px solid var(--line)}
+    #camThumb{max-width:260px; border-radius:10px; border:1px solid var(--line)}
 
-    /* Pametna strelica — panel */
+    /* Kompas panel */
     .compass-wrap{display:grid; gap:12px}
     .compass-row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
     .compass{
-      width:140px; height:140px; border-radius:50%;
+      width:160px; height:160px; border-radius:50%;
       border:1px solid var(--line); background:radial-gradient(transparent 58%, #1b1f25 59%);
       display:grid; place-items:center; position:relative;
     }
     .compass .tick{
-      position:absolute; inset:6px; border-radius:50%;
+      position:absolute; inset:8px; border-radius:50%;
       border:1px dashed #2a2f36;
     }
     .arrow{
       width:0; height:0; border-left:12px solid transparent; border-right:12px solid transparent;
-      border-bottom:38px solid #e44747; /* crveni vrh */
+      border-bottom:44px solid #e44747;
       filter: drop-shadow(0 2px 2px rgba(0,0,0,.45));
       transform-origin: 50% 90%;
       transition: transform .18s ease-out;
     }
     .deg-pill{
-      padding:.45em .7em; border-radius:999px; background:#2b2f36; color:#fff; font-weight:600; font-size:14px;
+      padding:.45em .7em; border-radius:999px; background:#2b2f36; color:#fff; font-weight:700; font-size:14px;
       border:1px solid var(--line);
     }
     .value{font-variant-numeric:tabular-nums}
     .compass-legend{font-size:12px; color:var(--muted)}
-    .field{display:flex; gap:8px; align-items:center}
-    input[type="number"]{
-      width:100px; background:#0f1114; border:1px solid var(--line); border-radius:10px;
+    .field{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    input[type="number"], input[type="time"]{
+      width:120px; background:#0f1114; border:1px solid var(--line); border-radius:10px;
       color:#fff; padding:.55em .65em; outline:none;
     }
-    .pill-ok { color:#8dd48d }
-    .pill-warn { color:#f2c14e }
+
+    /* Digitalna pomoć (akordeon) */
+    .aid-accordion{border:1px solid var(--line); border-radius:12px; overflow:hidden}
+    .aid-item + .aid-item{border-top:1px solid var(--line)}
+    .aid-head{
+      width:100%; background:#171a1f; color:#fff; font-weight:700; text-align:left;
+      padding:12px 14px; border:0; display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+    }
+    .aid-body{padding:12px 14px; color:var(--muted); display:none}
+    .aid-body ul{margin:8px 0 0 20px}
+    .aid-head .mini{font-size:12px; color:var(--muted); font-weight:500}
+    .aid-head.open{background:#1b2026}
+
+    /* Check-lista */
+    .checklist{display:grid; gap:8px}
+    .check-item{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:10px}
+    .check-item input{transform:scale(1.2)}
+    .check-item label{flex:1}
+
+    /* SOS zvuk */
+    .sos-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
   </style>
 </head>
 
 <body>
   <!-- =========================================================
-       #03 TIJELO (sadržaj stranice)
+       #03 NASLOV STRANICE (lokalni)
        ========================================================= -->
   <header class="page-head">
     <h1 data-hr="Digitalni ruksak" data-en="Digital Toolkit">Digitalni ruksak</h1>
     <p class="intro"
-       data-hr="Brzi alati za teren: kamera s auto-poboljšanjem i pametna strelica spremna za GPS."
-       data-en="Quick field tools: auto-enhance camera and a GPS-ready smart arrow.">
-       Brzi alati za teren: kamera s auto-poboljšanjem i pametna strelica spremna za GPS.
+       data-hr="Uredno složeni alati za teren: digitalna pomoć, kamera s auto-pejzažem, pametna strelica, offline karte/GPX, check-lista i SOS."
+       data-en="Neatly packed field tools: digital first-aid, auto-landscape camera, smart arrow, offline maps/GPX, checklist and SOS.">
+       Uredno složeni alati za teren: digitalna pomoć, kamera s auto-pejzažem, pametna strelica, offline karte/GPX, check-lista i SOS.
     </p>
   </header>
 
   <main>
-    <!-- GRID: kartice alata -->
+    <!-- =========================================================
+         GRID: RASPORED ALATA (1. pomoć → 2. kamera → 3. strelica → ostalo)
+         ========================================================= -->
     <section class="tools-grid" aria-label="Alati">
-      <!-- TOOL CARD: Kamera — Auto-pejzaž -->
+      <!-- 1) DIGITALNA POMOĆ -->
+      <article class="tool-card content-box" id="tool-aid">
+        <div class="eyebrow" data-hr="Prioritet" data-en="Priority">Prioritet</div>
+        <h3 class="tool-title"
+            data-hr="Digitalna pomoć (brzi vodiči)"
+            data-en="Digital First-Aid (Quick Guides)">Digitalna pomoć (brzi vodiči)</h3>
+
+        <p class="tool-desc"
+           data-hr="Sažeti protokoli i podsjetnici za hitne situacije na planini. Uvijek najprije osiguraj mjesto i pozovi 112."
+           data-en="Compact protocols and reminders for mountain emergencies. First secure the scene and call 112.">
+           Sažeti protokoli i podsjetnici za hitne situacije na planini. Najprije osiguraj mjesto i pozovi 112.
+        </p>
+
+        <div class="btn-row">
+          <button class="btn alt" id="openAidPanel" data-hr="Otvori vodiče" data-en="Open guides">Otvori vodiče</button>
+          <span class="chip">⛰️ <span data-hr="Podsjetnici pri ruci" data-en="Pocket reminders">Podsjetnici pri ruci</span></span>
+        </div>
+      </article>
+
+      <!-- 2) KAMERA — Auto-pejzaž -->
       <article class="tool-card content-box" id="tool-camera">
+        <div class="eyebrow">Foto</div>
         <h3 class="tool-title"
             data-hr="Kamera — Auto-pejzaž"
             data-en="Camera — Auto Landscape">Kamera — Auto-pejzaž</h3>
 
         <p class="tool-desc"
-           data-hr="Otvori kameru, pričekaj da se kadar umiri, a web automatski pojača kontrast, boje i oštrinu prije snimanja."
-           data-en="Open the camera, wait until the frame is steady, then the web auto-boosts contrast, color and sharpness before capture.">
-           Otvori kameru, pričekaj mirno držanje, pa web automatski poboljša sliku.
+           data-hr="Otvori kameru; kad se kadar umiri, automatski pojača kontrast, boje i oštrinu prije snimanja."
+           data-en="Open camera; when steady, it auto-boosts contrast, color and sharpness before capture.">
+           Otvori kameru; miran kadar → automatsko poboljšanje → snimka.
         </p>
 
         <ul>
           <li data-hr="Auto-stabilnost (snima kad je mirno)" data-en="Auto-stability (captures when steady)">Auto-stabilnost (snima kad je mirno)</li>
-          <li data-hr="Auto-kontrast i blago oštrenje" data-en="Auto-contrast and mild sharpening">Auto-kontrast i blago oštrenje</li>
+          <li data-hr="Auto-kontrast i blago oštrenje" data-en="Auto-contrast & mild sharpening">Auto-kontrast i blago oštrenje</li>
           <li data-hr="Radi na HTTPS/localhost" data-en="Works on HTTPS/localhost">Radi na HTTPS/localhost</li>
         </ul>
 
         <div class="btn-row">
-          <button class="btn" id="openCamPanel"
-                  data-hr="Otvori alat"
-                  data-en="Open tool">Otvori alat</button>
+          <button class="btn" id="openCamPanel" data-hr="Otvori alat" data-en="Open tool">Otvori alat</button>
           <a class="btn ghost" href="tools/camera-auto-enhance.html"
-             data-hr="Otvori u novoj kartici"
-             data-en="Open in new tab">Otvori u novoj kartici</a>
+             data-hr="U novoj kartici" data-en="Open in new tab">U novoj kartici</a>
         </div>
 
         <p class="hint"
            data-hr="Privatnost: ništa se ne šalje na server dok ne preuzmeš sliku."
-           data-en="Privacy: nothing is uploaded to the server unless you download/share it.">
+           data-en="Privacy: nothing is uploaded until you download/share.">
            Privatnost: ništa se ne šalje na server dok ne preuzmeš sliku.
         </p>
       </article>
 
-      <!-- TOOL CARD: Pametna strelica (kompas) -->
+      <!-- 3) PAMETNA STRELICA (kompas) -->
       <article class="tool-card content-box" id="tool-arrow">
+        <div class="eyebrow">Orijentacija</div>
         <h3 class="tool-title"
             data-hr="Pametna strelica (kompas)"
             data-en="Smart Arrow (Compass)">Pametna strelica (kompas)</h3>
 
         <p class="tool-desc"
-           data-hr="Orijentiraj se prema cilju. Trenutno radi s orijentacijom telefona i ručnim unosom azimuta cilja; kasnije dodaj GPS/heading."
-           data-en="Orient toward a target. Works now with device orientation + manual target azimuth; add GPS/heading later.">
-           Orijentiraj se prema cilju. Radi s orijentacijom telefona + ručnim unosom azimuta; spremno za GPS.
+           data-hr="Orijentiraj se prema cilju. Sada: orijentacija uređaja + ručni azimut; kasnije: GPS heading i bearing do lat/lon."
+           data-en="Orient toward a target. Now: device orientation + manual azimuth; later: GPS heading and bearing to lat/lon.">
+           Orijentacija uređaja + ručni azimut; spremno za GPS heading/bearing.
         </p>
 
         <ul>
           <li data-hr="Kompas iz orijentacije uređaja" data-en="Compass from device orientation">Kompas iz orijentacije uređaja</li>
           <li data-hr="Ručni azimut cilja (°)" data-en="Manual target azimuth (°)">Ručni azimut cilja (°)</li>
-          <li data-hr="GPS-ready: dodaj lat/lon i heading" data-en="GPS-ready: plug lat/lon + heading">GPS-ready: dodaj lat/lon i heading</li>
+          <li data-hr="GPS-ready (heading, bearing)" data-en="GPS-ready (heading, bearing)">GPS-ready (heading, bearing)</li>
         </ul>
 
         <div class="btn-row">
-          <button class="btn" id="openArrowPanel"
-                  data-hr="Otvori alat"
-                  data-en="Open tool">Otvori alat</button>
+          <button class="btn" id="openArrowPanel" data-hr="Otvori alat" data-en="Open tool">Otvori alat</button>
         </div>
 
         <p class="hint"
            data-hr="Savjet: držati telefon uspravno (portrait) i kalibrirati kompas laganim ‘∞’ pokretima."
-           data-en="Tip: hold the phone upright (portrait) and calibrate the compass with gentle ‘∞’ motions.">
-           Savjet: telefon uspravno (portrait) i kalibrirati kompas laganim ‘∞’ pokretima.
+           data-en="Tip: hold upright (portrait) and calibrate with gentle ‘∞’ motions.">
+           Savjet: telefon uspravno; kalibracija ‘∞’.
         </p>
+      </article>
+
+      <!-- 4) OFFLINE KARTE & GPX (stub za kasnije povezivanje) -->
+      <article class="tool-card content-box" id="tool-offline">
+        <div class="eyebrow">Navigacija</div>
+        <h3 data-hr="Offline karte & GPX" data-en="Offline Maps & GPX">Offline karte & GPX</h3>
+        <p data-hr="Spremi područje za offline i učitaj GPX trag (viewer dolazi)."
+           data-en="Save area for offline and load GPX track (viewer coming).">
+           Spremi područje za offline i učitaj GPX trag (viewer uskoro).
+        </p>
+        <div class="btn-row">
+          <button class="btn ghost" id="openOfflinePanel" data-hr="Brzi savjeti" data-en="Quick tips">Brzi savjeti</button>
+        </div>
+      </article>
+
+      <!-- 5) PLANINARSKI DNEVNIK (sigurnosni upis) -->
+      <article class="tool-card content-box" id="tool-log">
+        <div class="eyebrow">Sigurnost</div>
+        <h3 data-hr="Planinarski dnevnik" data-en="Hiker Logbook">Planinarski dnevnik</h3>
+        <p data-hr="Zapiši rutu, vrijeme polaska i planirani smjer — koristan trag ako nešto pođe po zlu."
+           data-en="Record route, start time and intended direction — helpful trace if things go wrong.">
+           Zapiši rutu, vrijeme polaska i smjer — trag za sigurnost.
+        </p>
+        <div class="btn-row">
+          <button class="btn ghost" id="openLogPanel" data-hr="Otvori dnevnik" data-en="Open logbook">Otvori dnevnik</button>
+        </div>
+      </article>
+
+      <!-- 6) CHECK-LISTA PRIJE POLASKA -->
+      <article class="tool-card content-box" id="tool-check">
+        <div class="eyebrow">Priprema</div>
+        <h3 data-hr="Check-lista prije polaska" data-en="Pre-hike Checklist">Check-lista prije polaska</h3>
+        <p data-hr="Brzo prođi kroz osnove: voda, prva pomoć, slojevi, svjetlo, GPX, baterija…"
+           data-en="Run through essentials: water, first-aid, layers, light, GPX, battery…">
+           Osnove: voda, prva pomoć, slojevi, svjetlo, GPX, baterija…
+        </p>
+        <div class="btn-row">
+          <button class="btn ghost" id="openChecklistPanel" data-hr="Otvori listu" data-en="Open list">Otvori listu</button>
+        </div>
+      </article>
+
+      <!-- 7) DNEVNO SVJETLO / ZALAZAK -->
+      <article class="tool-card content-box" id="tool-light">
+        <div class="eyebrow">Vrijeme</div>
+        <h3 data-hr="Dnevno svjetlo" data-en="Daylight">Dnevno svjetlo</h3>
+        <p data-hr="Unesi zalazak i prati koliko je ostalo svjetla (brzi podsjetnik)."
+           data-en="Enter sunset time and track remaining daylight (quick reminder).">
+           Unesi zalazak i prati preostalo svjetlo.
+        </p>
+        <div class="btn-row">
+          <button class="btn ghost" id="openSunPanel" data-hr="Tajmer svjetla" data-en="Light timer">Tajmer svjetla</button>
+        </div>
+      </article>
+
+      <!-- 8) SOS ZVIŽDALJKA (ton) -->
+      <article class="tool-card content-box" id="tool-sos">
+        <div class="eyebrow">SOS</div>
+        <h3>SOS zviždaljka</h3>
+        <p data-hr="Pokreni glasan ton (••• — — — •••) ako treba privući pažnju. Uvijek prioritet: 112."
+           data-en="Fire a loud tone (••• — — — •••) if you must draw attention. Priority: 112.">
+           Pokreni glasan ton (••• — — — •••) za privlačenje pažnje. Prioritet: 112.
+        </p>
+        <div class="btn-row">
+          <button class="btn alert" id="playSOS" data-hr="Pokreni SOS" data-en="Play SOS">Pokreni SOS</button>
+          <button class="btn ghost" id="stopSOS" data-hr="Zaustavi" data-en="Stop">Zaustavi</button>
+        </div>
       </article>
     </section>
 
     <!-- =========================================================
-         PANEL 1: Kamera — Auto-pejzaž (inline)
+         PANELI (otvaraju se ispod grida)
          ========================================================= -->
+
+    <!-- PANEL: Digitalna pomoć -->
+    <section id="panelAid" class="tool-panel" hidden>
+      <h4>Digitalna pomoć — brzi vodiči</h4>
+      <div class="two-col">
+        <div>
+          <div class="chip">ℹ️ <span>Podsjetnik, ne zamjena za obuku</span></div>
+          <div class="divider"></div>
+
+          <div class="aid-accordion" id="aidAcc">
+            <!-- KPR -->
+            <div class="aid-item">
+              <button class="aid-head">
+                <span>🚑 KPR (odrasli)</span>
+                <span class="mini">30 pritisaka : 2 udisaja</span>
+              </button>
+              <div class="aid-body">
+                <ul>
+                  <li>Procijeni sigurnost, pozovi 112.</li>
+                  <li>Provjeri disanje (max 10 s). Nema/abnormalno → započni KPR.</li>
+                  <li>Ruke sredina prsnog koša, dubina ~5–6 cm, ritam ~100–120/min.</li>
+                  <li>Omjer 30:2 (ako znaš ventilaciju). Inače kontinuirane kompresije.</li>
+                  <li>Zamjena spasioca svake 2 min ako je moguće.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Hipotermija -->
+            <div class="aid-item">
+              <button class="aid-head">
+                <span>🧊 Hipotermija</span>
+                <span class="mini">Postepeno ugrijavanje, bez naglih pokreta</span>
+              </button>
+              <div class="aid-body">
+                <ul>
+                  <li>Skloni od vjetra/vlage; skini mokru odjeću, stavi suhu/izolaciju.</li>
+                  <li>Astrofolija: SREBRNA PREMA UNUTRA za grijanje (zlatna vani).</li>
+                  <li>Topli napici ako je pri svijesti; izbjegavati alkohol.</li>
+                  <li>Nježno rukovanje (rizik aritmija), hitan transport.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Krvarenje -->
+            <div class="aid-item">
+              <button class="aid-head">
+                <span>🩹 Krvarenje</span>
+                <span class="mini">Direktan pritisak, podizanje, kompresivni zavoj</span>
+              </button>
+              <div class="aid-body">
+                <ul>
+                  <li>Direktan pritisak gazom 10+ min, ne gledati prerano.</li>
+                  <li>Ako natopi, dodaj gazu (ne skidati prvu), kompresivni zavoj.</li>
+                  <li>Turniket samo za masivna krvarenja udova, bilježi vrijeme.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Uganuća / prijelomi -->
+            <div class="aid-item">
+              <button class="aid-head">
+                <span>🦴 Uganuće / Prijelom</span>
+                <span class="mini">Imobilizacija u položaju zatečenom</span>
+              </button>
+              <div class="aid-body">
+                <ul>
+                  <li>RICE: odmor, led (ne direktno), kompresija, elevacija.</li>
+                  <li>Imobiliziraj zglobove iznad i ispod; provjeri cirkulaciju distalno.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Signalizacija -->
+            <div class="aid-item">
+              <button class="aid-head">
+                <span>📢 Signalizacija & 112</span>
+                <span class="mini">Lokacija, broj unesrećenih, stanje</span>
+              </button>
+              <div class="aid-body">
+                <ul>
+                  <li>Standard SOS: 6 signala u min, pauza 1 min, ponovi.</li>
+                  <li>Telefonom: opis lokacije (GPX/koordinate), što se dogodilo, koliko osoba, stanje, vrijeme.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="hint">Ovo su sažeti podsjetnici. Formalna edukacija prve pomoći je preporučena.</div>
+        </div>
+
+        <div>
+          <h4 style="margin-top:0">Brzi podsjetnici</h4>
+          <ul>
+            <li>Astrofolija: <b>srebrna strana prema tijelu grije</b> (zlatna vani).</li>
+            <li>KPR odrasli: <b>30:2</b>, 100–120/min, dubina 5–6 cm.</li>
+            <li>Hipotermija: nježno rukovanje, postepeno zagrijavanje.</li>
+            <li>Krvarenje: direktan pritisak, kompresija, turniket za masivna.</li>
+          </ul>
+          <div style="margin-top:10px" class="chip">📞 112 — hitna pomoć i spašavanje</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL: Kamera — Auto-pejzaž -->
     <section id="panelCamera" class="tool-panel" hidden>
-      <h4 data-hr="Kamera — Auto-pejzaž (ugrađeno)"
-          data-en="Camera — Auto Landscape (inline)">Kamera — Auto-pejzaž (ugrađeno)</h4>
+      <h4>Kamera — Auto-pejzaž (ugrađeno)</h4>
       <div class="camera-wrap">
         <video id="camVideo" autoplay playsinline></video>
         <canvas id="camCanvas"></canvas>
@@ -219,32 +432,21 @@
         <div class="toolbar">
           <div id="camDot" class="dot" title="Pokazatelj mirnoće"></div>
           <div id="camMsg">Tražim stabilnost…</div>
-          <button id="camManual" class="btn ghost"
-                  data-hr="Snimi sada" data-en="Capture now">Snimi sada</button>
-          <button id="camAuto" class="btn"
-                  data-hr="Auto snimanje: ON" data-en="Auto capture: ON">Auto snimanje: ON</button>
-          <button id="camClose" class="btn ghost"
-                  data-hr="Zatvori" data-en="Close">Zatvori</button>
+          <button id="camManual" class="btn ghost">Snimi sada</button>
+          <button id="camAuto" class="btn">Auto snimanje: ON</button>
+          <button id="camClose" class="btn ghost">Zatvori</button>
         </div>
 
         <div class="result">
           <img id="camThumb" alt="Pregled snimljene fotografije" />
-          <div class="hint"
-               data-hr="Radi samo na HTTPS/localhost. Slika ostaje u tvom pregledniku dok je ne preuzmeš."
-               data-en="Works on HTTPS/localhost only. Image stays in your browser until you download it.">
-            Radi samo na HTTPS/localhost. Slika ostaje u tvom pregledniku dok je ne preuzmeš.
-          </div>
+          <div class="hint">Radi samo na HTTPS/localhost. Slika ostaje u tvom pregledniku dok je ne preuzmeš.</div>
         </div>
       </div>
     </section>
 
-    <!-- =========================================================
-         PANEL 2: Pametna strelica (kompas) — GPS-ready
-         ========================================================= -->
+    <!-- PANEL: Pametna strelica -->
     <section id="panelArrow" class="tool-panel" hidden>
-      <h4 data-hr="Pametna strelica (kompas) — GPS-ready"
-          data-en="Smart Arrow (Compass) — GPS-ready">Pametna strelica (kompas) — GPS-ready</h4>
-
+      <h4>Pametna strelica (kompas) — GPS-ready</h4>
       <div class="compass-wrap">
         <div class="compass-row">
           <div class="compass" aria-label="Kompas">
@@ -253,20 +455,11 @@
           </div>
 
           <div>
-            <div class="deg-pill">
-              <span data-hr="Tvoj heading:" data-en="Your heading:">Tvoj heading:</span>
-              <span id="valueHeading" class="value">—</span>°
-            </div>
-            <div class="deg-pill" style="margin-top:8px">
-              <span data-hr="Ciljni azimut:" data-en="Target azimuth:">Ciljni azimut:</span>
-              <span id="valueTarget" class="value">0</span>°
-            </div>
-            <div class="deg-pill" style="margin-top:8px">
-              <span data-hr="Okreni još:" data-en="Turn remaining:">Okreni još:</span>
-              <span id="valueDelta" class="value">—</span>°
-            </div>
+            <div class="deg-pill">Tvoj heading: <span id="valueHeading" class="value">—</span>°</div>
+            <div class="deg-pill" style="margin-top:8px">Ciljni azimut: <span id="valueTarget" class="value">0</span>°</div>
+            <div class="deg-pill" style="margin-top:8px">Okreni još: <span id="valueDelta" class="value">—</span>°</div>
             <div class="compass-legend" style="margin-top:6px">
-              <span id="deltaHint" class="pill-warn" data-hr="Približi smjer" data-en="Align to target">Približi smjer</span>
+              <span id="deltaHint" class="warn">Približi smjer</span>
             </div>
           </div>
         </div>
@@ -275,46 +468,86 @@
 
         <div class="compass-row">
           <div class="field">
-            <label for="targetInput" data-hr="Ciljni azimut (°)" data-en="Target azimuth (°)">Ciljni azimut (°)</label>
+            <label for="targetInput">Ciljni azimut (°)</label>
             <input id="targetInput" type="number" min="0" max="359" step="1" value="0" />
-            <button class="btn ghost" id="setTargetBtn"
-                    data-hr="Postavi" data-en="Set">Postavi</button>
+            <button class="btn ghost" id="setTargetBtn">Postavi</button>
           </div>
 
-          <!-- Mjesto gdje ćemo kasnije dodati GPS -->
           <div class="field">
-            <button class="btn ghost" id="gpsStubBtn"
-                    data-hr="(Kasnije) koristi GPS heading"
-                    data-en="(Later) use GPS heading">
-              (Kasnije) koristi GPS heading
-            </button>
+            <button class="btn ghost" id="gpsStubBtn">(Kasnije) koristi GPS heading</button>
           </div>
         </div>
 
-        <p class="hint">
-          <span data-hr="Napomena: ovaj alat koristi orijentaciju uređaja (kompas). Za precizan rad kalibriraj kompas i izbjegavaj magnetne smetnje. GPS heading će biti dodan kad uključiš Geolocation u projektu."
-                data-en="Note: this tool uses device orientation (compass). Calibrate the compass and avoid magnetic interference. GPS heading will be added when you enable Geolocation in the project.">
-            Napomena: koristi orijentaciju uređaja (kompas). GPS heading dodajemo kad uključiš Geolocation.
-          </span>
-        </p>
+        <p class="hint">Napomena: koristi orijentaciju uređaja (kompas). GPS heading/bearing dodajemo kad uključiš Geolocation.</p>
 
         <div>
-          <button class="btn" id="arrowClose" data-hr="Zatvori" data-en="Close">Zatvori</button>
+          <button class="btn" id="arrowClose">Zatvori</button>
         </div>
       </div>
     </section>
+
+    <!-- PANEL: Offline karte & GPX -->
+    <section id="panelOffline" class="tool-panel" hidden>
+      <h4>Offline karte & GPX — brzi savjeti</h4>
+      <ul>
+        <li>Prije polaska, u aplikaciji (npr. OSMAnd / Organic Maps) preuzmi regiju za offline.</li>
+        <li>GPX tragove spremi lokalno (interni storage) i testno otvori.</li>
+        <li>Uključi “Battery Saver friendly” postavke i ponesi power bank.</li>
+      </ul>
+      <div class="hint">Viewer GPX-a planiramo dodati kao poseban alat (render na karti).</div>
+    </section>
+
+    <!-- PANEL: Planinarski dnevnik -->
+    <section id="panelLog" class="tool-panel" hidden>
+      <h4>Planinarski dnevnik (sigurnosni upis)</h4>
+      <div class="two-col">
+        <div>
+          <div class="checklist">
+            <div class="check-item"><input type="checkbox" id="lg-route"><label for="lg-route">Ruta / naziv staze</label></div>
+            <div class="check-item"><input type="checkbox" id="lg-start"><label for="lg-start">Vrijeme polaska</label></div>
+            <div class="check-item"><input type="checkbox" id="lg-dir"><label for="lg-dir">Planirani smjer / točke</label></div>
+            <div class="check-item"><input type="checkbox" id="lg-buddy"><label for="lg-buddy">Osoba koja zna plan (kontakt)</label></div>
+          </div>
+        </div>
+        <div>
+          <p class="hint">Ovo služi kao brzi podsjetnik. Kasnije možemo dodati lokalno spremanje u `localStorage` ili export u .txt.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL: Check-lista -->
+    <section id="panelChecklist" class="tool-panel" hidden>
+      <h4>Check-lista prije polaska</h4>
+      <div class="checklist">
+        <div class="check-item"><input type="checkbox" id="cl-water"><label for="cl-water">Voda + hrana</label></div>
+        <div class="check-item"><input type="checkbox" id="cl-firstaid"><label for="cl-firstaid">Prva pomoć + astrofolija</label></div>
+        <div class="check-item"><input type="checkbox" id="cl-layers"><label for="cl-layers">Slojevi / kišna zaštita</label></div>
+        <div class="check-item"><input type="checkbox" id="cl-light"><label for="cl-light">Svjetlo (čeona) + baterije</label></div>
+        <div class="check-item"><input type="checkbox" id="cl-gpx"><label for="cl-gpx">GPX učitan / offline karta</label></div>
+        <div class="check-item"><input type="checkbox" id="cl-battery"><label for="cl-battery">Mobitel 100% + power bank</label></div>
+      </div>
+      <div class="hint" style="margin-top:8px">Po želji dodamo “Spremi listu” (localStorage) i “Reset”.</div>
+    </section>
+
+    <!-- PANEL: Dnevno svjetlo -->
+    <section id="panelSun" class="tool-panel" hidden>
+      <h4>Dnevno svjetlo — tajmer do zalaska</h4>
+      <div class="field" style="margin-bottom:10px">
+        <label for="sunsetInput">Zalazak (HH:MM)</label>
+        <input type="time" id="sunsetInput" />
+        <button class="btn ghost" id="sunSetNow">Postavi na +2h</button>
+      </div>
+      <div class="deg-pill">Preostalo svjetla: <span id="lightRemain" class="value">—</span></div>
+      <p class="hint" style="margin-top:8px">Jednostavan podsjetnik bez automatskog izračuna astronomije (to možemo dodati kasnije uz geolokaciju).</p>
+    </section>
+
   </main>
 
   <!-- =========================================================
-       #04 SCRIPT (funkcionalnosti alata)
-       - 4A jezik (minimalni helper; koristi tvoj globalni toggle ako već postoji)
-       - 4B Kamera — Auto-pejzaž
-       - 4C Pametna strelica — GPS-ready
+       #04 SCRIPT — jezik + logika panela + (kamera, strelica, SOS, svjetlo)
        ========================================================= -->
   <script>
-  /* -------------------------
-     4A) Minimalni jezični helper (ako već imaš globalni, ukloni ovo)
-     ------------------------- */
+  /* 4A) Minimalni jezični helper (ako već imaš globalni, ukloni) */
   (function applyLang(){
     try{
       const lang = document.documentElement.lang || 'hr';
@@ -325,37 +558,71 @@
     }catch(e){}
   })();
 
-  /* -------------------------
-     4B) Kamera — Auto-pejzaž (inline panel)
-     ------------------------- */
-  const openCamPanel = document.getElementById('openCamPanel');
-  const panelCamera  = document.getElementById('panelCamera');
-  const camClose     = document.getElementById('camClose');
+  /* 4B) Otvaranje/zatvaranje panela (generički) */
+  const qs = (s)=>document.querySelector(s);
+  const show = (el)=>{ el.hidden=false; el.scrollIntoView({behavior:'smooth', block:'start'}); };
+  const hide = (el)=>{ el.hidden=true; };
 
+  // Gumbi za panele
+  const openAidPanel = qs('#openAidPanel');
+  const openCamPanel = qs('#openCamPanel');
+  const openArrowPanel = qs('#openArrowPanel');
+  const openOfflinePanel = qs('#openOfflinePanel');
+  const openLogPanel = qs('#openLogPanel');
+  const openChecklistPanel = qs('#openChecklistPanel');
+  const openSunPanel = qs('#openSunPanel');
+
+  const panelAid = qs('#panelAid');
+  const panelCamera = qs('#panelCamera');
+  const panelArrow = qs('#panelArrow');
+  const panelOffline = qs('#panelOffline');
+  const panelLog = qs('#panelLog');
+  const panelChecklist = qs('#panelChecklist');
+  const panelSun = qs('#panelSun');
+
+  openAidPanel?.addEventListener('click', ()=>show(panelAid));
+  openCamPanel?.addEventListener('click', async ()=>{ show(panelCamera); await startCam(); });
+  openArrowPanel?.addEventListener('click', ()=>{ show(panelArrow); openArrow(); });
+  openOfflinePanel?.addEventListener('click', ()=>show(panelOffline));
+  openLogPanel?.addEventListener('click', ()=>show(panelLog));
+  openChecklistPanel?.addEventListener('click', ()=>show(panelChecklist));
+  openSunPanel?.addEventListener('click', ()=>show(panelSun));
+
+  /* 4C) Digitalna pomoć — akordeon */
+  (function aidAccordion(){
+    const acc = document.getElementById('aidAcc');
+    if(!acc) return;
+    acc.querySelectorAll('.aid-head').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const body = btn.parentElement.querySelector('.aid-body');
+        const open = btn.classList.toggle('open');
+        body.style.display = open ? 'block' : 'none';
+      });
+    });
+  })();
+
+  /* 4D) Kamera — Auto-pejzaž (ista logika kao tvoja, malo dotjerano) */
+  const camClose = document.getElementById('camClose');
   const camVideo = document.getElementById('camVideo');
   const camCanvas= document.getElementById('camCanvas');
-  const camCtx   = camCanvas.getContext('2d', { willReadFrequently:true });
+  const camCtx   = camCanvas?.getContext?.('2d', { willReadFrequently:true });
   const camDot   = document.getElementById('camDot');
   const camMsg   = document.getElementById('camMsg');
   const camThumb = document.getElementById('camThumb');
   const camManual= document.getElementById('camManual');
-  const camAuto  = document.getElementById('camAuto');
+  const camAutoBtn  = document.getElementById('camAuto');
 
   const STABILITY_FRAMES = 8;
   const DIFF_THRESHOLD   = 6;
   const CAPTURE_WIDTH    = 2048;
   let camAutoMode = true, camPrev = null, camSteady = 0, camLastAuto = 0, camLoopOn=false;
 
-  openCamPanel.addEventListener('click', async ()=>{
-    panelCamera.hidden = false;
-    await startCam();
-  });
-  camClose.addEventListener('click', stopCam);
-  camAuto.addEventListener('click', ()=>{
+  camClose?.addEventListener('click', stopCam);
+  camAutoBtn?.addEventListener('click', ()=>{
     camAutoMode = !camAutoMode;
-    camAuto.textContent = camAutoMode ? 'Auto snimanje: ON' : 'Auto snimanje: OFF';
+    camAutoBtn.textContent = camAutoMode ? 'Auto snimanje: ON' : 'Auto snimanje: OFF';
   });
-  camManual.addEventListener('click', captureCam);
+  camManual?.addEventListener('click', captureCam);
 
   async function startCam(){
     if(camLoopOn) return;
@@ -368,11 +635,11 @@
       camLoopOn = true;
       requestAnimationFrame(camLoop);
     }catch(e){
-      camMsg.textContent = 'Greška s kamerom: ' + e.message;
+      if(camMsg) camMsg.textContent = 'Greška s kamerom: ' + e.message;
     }
   }
   function stopCam(){
-    panelCamera.hidden = true;
+    if(panelCamera) hide(panelCamera);
     camLoopOn = false;
     try{
       camVideo.pause();
@@ -420,7 +687,6 @@
     }
     img.data.set(out); return img;
   }
-
   async function camLoop(){
     if(!camLoopOn) return;
     if(camVideo.readyState >= 2){
@@ -445,10 +711,8 @@
     }
     requestAnimationFrame(camLoop);
   }
-
   async function captureCam(){
     camMsg.textContent='Snimam i obrađujem…';
-    // pokušaj ImageCapture
     try{
       const track = camVideo.srcObject?.getVideoTracks?.()[0];
       if(track && window.ImageCapture){
@@ -471,8 +735,6 @@
         }
       }
     }catch(e){ /* fallback dolje */ }
-
-    // fallback: frame iz videa
     const ratio = (camVideo.videoWidth||1080)/(camVideo.videoHeight||1920);
     const W = Math.min(CAPTURE_WIDTH, camVideo.videoWidth || 1280);
     const H = Math.round(W/ratio);
@@ -487,47 +749,36 @@
     camMsg.innerHTML = 'Gotovo. <a style="margin-left:10px" download="mountain-adventures-photo.jpg" href="'+url+'">Preuzmi</a>';
   }
 
-  /* -------------------------
-     4C) Pametna strelica — GPS-ready
-     - Sada: koristi orijentaciju uređaja (kompas) + ručni cilj (azimut u °)
-     - Kasnije: spoji na Geolocation (heading) i/ili bearing do lat/lon
-     ------------------------- */
-  const openArrowPanel = document.getElementById('openArrowPanel');
-  const panelArrow     = document.getElementById('panelArrow');
-  const arrowClose     = document.getElementById('arrowClose');
-
+  /* 4E) Pametna strelica — senzor + meta */
+  const arrowClose = document.getElementById('arrowClose');
   const arrowNeedle = document.getElementById('arrowNeedle');
   const valueHeading= document.getElementById('valueHeading');
   const valueTarget = document.getElementById('valueTarget');
   const valueDelta  = document.getElementById('valueDelta');
   const deltaHint   = document.getElementById('deltaHint');
-
   const targetInput  = document.getElementById('targetInput');
   const setTargetBtn = document.getElementById('setTargetBtn');
   const gpsStubBtn   = document.getElementById('gpsStubBtn');
 
-  let targetAzimuth = 0;     // cilj (0..359°)
-  let deviceHeading = null;  // heading iz senzora (0..359°)
-  let arrowOpen = false;
+  let targetAzimuth = 0, deviceHeading = null, arrowOpenFlag = false;
 
-  openArrowPanel.addEventListener('click', ()=>{
-    panelArrow.hidden = false; arrowOpen = true;
-    // traži permission za iOS 13+ ako treba
+  function openArrow(){
+    arrowOpenFlag = true;
     if (typeof(DeviceOrientationEvent) !== 'undefined' &&
         typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission().then(state=>{
         if(state === 'granted') window.addEventListener('deviceorientation', onOrient, true);
-      }).catch(()=>{ /* korisnik odbio */ });
+      }).catch(()=>{});
     }else{
       window.addEventListener('deviceorientation', onOrient, true);
     }
-  });
-  arrowClose.addEventListener('click', ()=>{
-    panelArrow.hidden = true; arrowOpen = false;
+  }
+  arrowClose?.addEventListener('click', ()=>{
+    hide(panelArrow); arrowOpenFlag = false;
     window.removeEventListener('deviceorientation', onOrient, true);
   });
 
-  setTargetBtn.addEventListener('click', ()=>{
+  setTargetBtn?.addEventListener('click', ()=>{
     const v = Number(targetInput.value);
     if(Number.isFinite(v)){
       targetAzimuth = ((v%360)+360)%360;
@@ -535,56 +786,128 @@
       updateArrow();
     }
   });
-
-  gpsStubBtn.addEventListener('click', ()=>{
-    alert('GPS heading dolazi kasnije: ovdje će se čitati navigator.geolocation + heading gdje je podržan, i/ili računati bearing prema cilju (lat/lon).');
+  gpsStubBtn?.addEventListener('click', ()=>{
+    alert('GPS heading dolazi kasnije: čitanje navigator.geolocation + heading (gdje je podržano) ili bearing do lat/lon.');
   });
 
   function onOrient(e){
-    if(!arrowOpen) return;
-    // alpha: 0..360 (stupnjevi), ali referenca može varirati po uređaju
-    // Najjednostavnije: uzmi compassHeading (webkitCompassHeading) ako postoji
+    if(!arrowOpenFlag) return;
     let heading = null;
     if(typeof e.webkitCompassHeading === 'number' && !Number.isNaN(e.webkitCompassHeading)){
-      heading = e.webkitCompassHeading; // 0 = North, raste prema East (iOS)
+      heading = e.webkitCompassHeading; // iOS
     }else if(typeof e.alpha === 'number'){
-      // Fallback za Android: alpha ~ relativno okretanje; bez kalibracije nije savršen kompas.
-      // Pretpostavimo da je alpha ≈ kompas orijentacija (nije 100% točno).
-      heading = 360 - e.alpha; // približno pretvori da 0=North
+      heading = 360 - e.alpha; // približno za Android
     }
     if(heading == null) return;
     deviceHeading = ((heading%360)+360)%360;
     valueHeading.textContent = deviceHeading.toFixed(0);
     updateArrow();
   }
-
   function updateArrow(){
     if(deviceHeading == null) return;
-    const delta = angularDelta(deviceHeading, targetAzimuth); // za koliko stupnjeva treba okrenuti
+    const delta = angularDelta(deviceHeading, targetAzimuth);
     valueDelta.textContent = Math.abs(delta).toFixed(0);
     deltaHint.textContent = delta > 0 ? 'Okreći udesno →' : (delta < 0 ? 'Okreći ulijevo ←' : 'Poravnato ✓');
-    deltaHint.className = delta === 0 ? 'pill-ok' : 'pill-warn';
-
-    // Strelica pokazuje NA cilj → rotiramo VRH strelice u smjeru razlike
-    // Kako vizualno: ako korisnik gleda na sjever (0°), a cilj je 90°, strelica treba desno (90°).
+    deltaHint.className = delta === 0 ? 'ok' : 'warn';
     arrowNeedle.style.transform = `rotate(${delta}deg)`;
   }
-
-  // pomoćna: koliko stupnjeva (signed shortest path) treba okrenuti heading -> target
   function angularDelta(current, target){
-    let d = ((target - current + 540) % 360) - 180; // u rasponu (-180, 180]
-    return d;
+    return ((target - current + 540) % 360) - 180; // (-180,180]
   }
 
-  // (Opcionalno za kasnije)
-  // function bearingBetween(lat1, lon1, lat2, lon2){
-  //   const toRad = (x)=>x*Math.PI/180;
-  //   const φ1=toRad(lat1), φ2=toRad(lat2), Δλ=toRad(lon2-lon1);
-  //   const y = Math.sin(Δλ)*Math.cos(φ2);
-  //   const x = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
-  //   let θ = Math.atan2(y,x)*180/Math.PI; // -180..180
-  //   return (θ+360)%360;
-  // }
+  /* 4F) SOS zviždaljka — ••• ——— ••• uz WebAudio */
+  let sosCtx=null, sosOsc=null, sosGain=null, sosPlaying=false;
+  const playBtn = document.getElementById('playSOS');
+  const stopBtn = document.getElementById('stopSOS');
+
+  playBtn?.addEventListener('click', async ()=>{
+    if(sosPlaying) return;
+    sosCtx = new (window.AudioContext || window.webkitAudioContext)();
+    sosGain = sosCtx.createGain();
+    sosGain.gain.value = 0.0001;
+    sosGain.connect(sosCtx.destination);
+
+    sosOsc = sosCtx.createOscillator();
+    sosOsc.type='square';
+    sosOsc.frequency.value = 4000; // 4 kHz, probijajući
+    sosOsc.connect(sosGain);
+    sosOsc.start();
+
+    // obrazac: ••• (3 kratka) ——— (3 duga) ••• (3 kratka)
+    sosPlaying = true;
+    const now = sosCtx.currentTime;
+    const short=0.15, long=0.45, gap=0.12, blockGap=0.35;
+
+    function beep(at, dur){
+      sosGain.gain.cancelScheduledValues(at);
+      sosGain.gain.setValueAtTime(0.001, at);
+      sosGain.gain.exponentialRampToValueAtTime(0.2, at+0.02);
+      sosGain.gain.setValueAtTime(0.2, at+dur-0.04);
+      sosGain.gain.exponentialRampToValueAtTime(0.001, at+dur);
+    }
+
+    let t=now+0.05;
+    // •••
+    for(let i=0;i<3;i++){ beep(t,short); t+=short+gap; }
+    t+=blockGap;
+    // ———
+    for(let i=0;i<3;i++){ beep(t,long); t+=long+gap; }
+    t+=blockGap;
+    // •••
+    for(let i=0;i<3;i++){ beep(t,short); t+=short+gap; }
+
+    // loop svakih ~6 s dok ne stane
+    function loop(){
+      if(!sosPlaying) return;
+      let tn = sosCtx.currentTime+0.3;
+      // ponovi uz isti obrazac
+      for(let i=0;i<3;i++){ beep(tn,short); tn+=short+gap; }
+      tn+=blockGap;
+      for(let i=0;i<3;i++){ beep(tn,long); tn+=long+gap; }
+      tn+=blockGap;
+      for(let i=0;i<3;i++){ beep(tn,short); tn+=short+gap; }
+      setTimeout(loop, 6000);
+    }
+    setTimeout(loop, 2200);
+  });
+
+  stopBtn?.addEventListener('click', ()=>{
+    sosPlaying=false;
+    try{
+      sosOsc?.stop();
+      sosOsc?.disconnect();
+      sosGain?.disconnect();
+      sosCtx?.close();
+    }catch(e){}
+    sosCtx=sosOsc=sosGain=null;
+  });
+
+  /* 4G) Dnevno svjetlo — jednostavan tajmer do zalaska */
+  const sunsetInput = document.getElementById('sunsetInput');
+  const lightRemain = document.getElementById('lightRemain');
+  const sunSetNowBtn = document.getElementById('sunSetNow');
+
+  function updateLight(){
+    if(!sunsetInput?.value){ lightRemain.textContent='—'; return; }
+    const [hh,mm] = sunsetInput.value.split(':').map(Number);
+    const now = new Date();
+    const sunset = new Date();
+    sunset.setHours(hh||0, mm||0, 0, 0);
+    const diffMs = sunset - now;
+    if(diffMs<=0){ lightRemain.textContent='0h 00m'; return; }
+    const h = Math.floor(diffMs/3600000);
+    const m = Math.floor((diffMs%3600000)/60000);
+    lightRemain.textContent = `${h}h ${String(m).padStart(2,'0')}m`;
+  }
+  sunsetInput?.addEventListener('change', updateLight);
+  setInterval(updateLight, 30000);
+  sunSetNowBtn?.addEventListener('click', ()=>{
+    const now = new Date();
+    const later = new Date(now.getTime()+2*3600000);
+    sunsetInput.value = `${String(later.getHours()).padStart(2,'0')}:${String(later.getMinutes()).padStart(2,'0')}`;
+    updateLight();
+  });
+
   </script>
 </body>
 </html>
