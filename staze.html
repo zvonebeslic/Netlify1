@@ -1628,6 +1628,47 @@ function byEase(a, b) {
 
   return String(a.name || '').localeCompare(String(b.name || ''));
 }
+
+    // === POMOĆNI PARSERI I KOMPARATORI (km/mnv) ===
+function num(v, d = 1e12) {
+  if (typeof v === 'number') return v;
+  if (typeof v === 'string') {
+    const n = parseFloat(v.replace(',', '.'));
+    return Number.isFinite(n) ? n : d;
+  }
+  return d;
+}
+
+// A B po km, pa po mnv, pa fallback na byEase (stabilno)
+function byKmThenMnv(a, b) {
+  const ak = num(a.distanceKm), bk = num(b.distanceKm);
+  if (ak !== bk) return ak - bk;
+  const am = num(a.elevationM), bm = num(b.elevationM);
+  if (am !== bm) return am - bm;
+  return byEase(a, b);
+}
+
+// A B samo po km (uz fallback)
+function byKm(a, b) {
+  const ak = num(a.distanceKm), bk = num(b.distanceKm);
+  if (ak !== bk) return ak - bk;
+  return byEase(a, b);
+}
+
+// A B samo po mnv (uz fallback)
+function byMnv(a, b) {
+  const am = num(a.elevationM), bm = num(b.elevationM);
+  if (am !== bm) return am - bm;
+  return byEase(a, b);
+}
+
+// A B po _distShownKm (udaljenost), uz fallback
+function byDistance(a, b) {
+  const ad = typeof a._distShownKm === 'number' ? a._distShownKm : 1e12;
+  const bd = typeof b._distShownKm === 'number' ? b._distShownKm : 1e12;
+  if (ad !== bd) return ad - bd;
+  return byEase(a, b);
+}
   
   function matchesDuration(t,b){ if(!b) return true; const d=t.durationH||0; if(b==='>10') return d>10; return d <= parseFloat(b); }
   function matchesArea(t,a){ if(!a) return true; return t.area===a || t.mountain===a; }
@@ -1752,12 +1793,27 @@ function byEase(a, b) {
     if (userLocation) distancesEnabled = true;
     list = await attachDistances(list);
 
-    if (distancesEnabled) {
-    list.sort((a,b)=> (a._distShownKm ?? 1e9) - (b._distShownKm ?? 1e9));
-    }
-      else {
-    list.sort(byEase);
-      }
+    // Odaberi strategiju sortiranja
+const wantDistanceSort = Boolean(filterState.radius) && distancesEnabled;
+
+// Ako korisnik cilja radijus → sortiraj po udaljenosti.
+// Inače po km/mnv ovisno o uključenim checkboxovima; ako ništa — byEase.
+if (wantDistanceSort) {
+  list.sort(byDistance);
+} else {
+  const useKm   = !!filterState.modeKm;
+  const useMnv  = !!filterState.modeElev;
+
+  if (useKm && useMnv) {
+    list.sort(byKmThenMnv);   // primarno km, sekundarno m/nv
+  } else if (useKm) {
+    list.sort(byKm);          // samo km
+  } else if (useMnv) {
+    list.sort(byMnv);         // samo m/nv
+  } else {
+    list.sort(byEase);        // fallback
+  }
+}
 
     renderTrails(list);
     renderActiveChips();
@@ -1860,10 +1916,9 @@ function byEase(a, b) {
      #10.10 INIT
      ========================================================= */
   document.addEventListener('DOMContentLoaded', ()=>{
-    // TRAILS dolazi iz popis-staza.js
-    renderTrails(TRAILS);
-    renderActiveChips();
-  });
+  runFiltering();        // odmah filtriraj + sortiraj po pravilima gore
+  renderActiveChips();
+});
 
 
 
