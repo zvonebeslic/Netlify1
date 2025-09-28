@@ -89,28 +89,34 @@
     .compass-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .compass{
       width:150px;height:150px;border-radius:50%;border:1px solid var(--line);
-      background:radial-gradient(transparent 58%, #1b1f25 59%);
+      background:
+        radial-gradient(closest-side, rgba(255,255,255,.06), rgba(0,0,0,0) 60%),
+        radial-gradient(transparent 58%, #1b1f25 59%);
       display:grid;place-items:center;position:relative;perspective:800px;
     }
     .compass .tick{position:absolute;inset:8px;border-radius:50%;border:1px dashed #2a2f36}
-    /* 3D tijelo strelice: mala “pera” + tijelo da ima volumen */
+
+    /* 3D strelica – ljepši izgled i volumeni */
     .arrow3d{
-      width:60px;height:10px;position:relative;transform-style:preserve-3d;
-      transition:transform .14s ease-out, opacity .14s ease-out;
+      width:68px;height:12px;position:relative;transform-style:preserve-3d;
+      transition:transform .14s ease-out, opacity .14s ease-out, filter .2s ease-out;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.35));
     }
-    .arrow3d::before{
-      content:"";position:absolute;right:-12px;top:-10px;
-      border-left:12px solid #2aa96b;border-top:10px solid transparent;border-bottom:10px solid transparent;
-      transform:translateZ(0.5px);
-      filter:drop-shadow(0 2px 2px rgba(0,0,0,.45));
+    .arrow3d::after{ /* tijelo */
+      content:"";position:absolute;left:0;top:2px;bottom:2px;width:58px;border-radius:6px;
+      background:linear-gradient(180deg,#36c286,#1e915f);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 0 rgba(0,0,0,.2);
+      transform:translateZ(0.6px);
     }
-    .arrow3d::after{
-      content:"";position:absolute;left:0;top:0;bottom:0;width:60px;background:#2aa96b;border-radius:4px;
-      box-shadow:0 1px 2px rgba(0,0,0,.35);
-      transform:translateZ(0.3px);
+    .arrow3d::before{ /* vrh */
+      content:"";position:absolute;right:-14px;top:-6px;border-left:14px solid #36c286;
+      border-top:12px solid transparent;border-bottom:12px solid transparent;transform:translateZ(0.8px);
+      filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));
     }
-    .arrow3d.warn::before,.arrow3d.warn::after{background:#e09f3e;border-left-color:#e09f3e}
-    .arrow3d.bad::before,.arrow3d.bad::after{background:#e44747;border-left-color:#e44747}
+    .arrow3d.warn::after{background:linear-gradient(180deg,#f4c35f,#c78f2a)}
+    .arrow3d.warn::before{border-left-color:#f4c35f}
+    .arrow3d.bad::after{background:linear-gradient(180deg,#ff7a7a,#d84e4e)}
+    .arrow3d.bad::before{border-left-color:#ff7a7a}
 
     .status-line{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .field{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -615,8 +621,11 @@
     let audioCtx=null, offBeepArmed=false;
     let lastKnownLat=null, lastKnownLon=null;
 
-    // Level-lock kutovi
-    let lastAngleDeg=0; const SMOOTHING=0.18;
+    // Level-lock & smoothing
+    let lastAngleDeg=0;
+    const SMOOTHING=0.18;        // nisko → življe; visoko → tromije
+    const DEAD_BAND_DEG=3;       // ne diraj ispod ±3° (anti-jitter)
+    const MAX_ROT_SPEED_DPS=240; // cap rotacije u deg/sec
 
     // pragovi
     const OK_THRESHOLD_M=5, YELLOW_MAX_M=10;
@@ -628,6 +637,10 @@
     // rezervna kazeta
     let headingTape=[]; let hbOn=false; let hbIdx=null; const HEADING_SAMPLE_MS=1000;
     let lastHeadingSampleAt=0, gpsLostSince=null, tapeTick=null; const GPS_LOST_MODAL_AFTER_MS=120000;
+
+    // GPS heading fallback (COG)
+    let lastFix=null; // {lat,lon,t}
+    const COG_MIN_SPEED=0.5; // m/s
 
     // Helpers
     const toRad=x=>x*RAD;
@@ -652,13 +665,11 @@
         [ -cX*sY,              sX,              cX*cY            ]
       ];
     }
-    // Izvuci yaw/pitch/roll iz device->world matrice (konvencija: yaw oko Z, pitch oko X, roll oko Y)
     function extractYPR(M){
-      // R matrica pretpostavljeno bez singulariteta:
       const r11=M[0][0], r12=M[0][1], r13=M[0][2];
       const r21=M[1][0], r22=M[1][1], r23=M[1][2];
       const r31=M[2][0], r32=M[2][1], r33=M[2][2];
-      const pitch = Math.asin(-r31);                   // [-pi/2, pi/2]
+      const pitch = Math.asin(-r31);
       const roll  = Math.atan2(r32, r33);
       const yaw   = Math.atan2(r21, r11);
       return { yaw: yaw*DEG, pitch: pitch*DEG, roll: roll*DEG };
@@ -691,7 +702,7 @@
         if(d<best.distM) best={lat,lon,distM:d,segIndex:i};
       } return best;
     }
-    function angularDelta(current,target){ return ((target-current+540)%360)-180; }
+    function clamp(v,min,max){ return Math.min(max,Math.max(min,v)); }
 
     function beep3(){
       try{
@@ -709,6 +720,8 @@
     /* Strelica: set boje */
     function setArrowMode(mode){
       arrowEl.classList.remove('warn','bad');
+      arrowEl.style.filter = (mode==='bad') ? 'drop-shadow(0 0 10px rgba(228,71,71,.45))' :
+                             (mode==='warn')? 'drop-shadow(0 0 10px rgba(242,193,78,.35))' : 'drop-shadow(0 10px 14px rgba(0,0,0,.35))';
       if(mode==='ok'){ /* default zelena */ }
       else if(mode==='warn'){ arrowEl.classList.add('warn'); }
       else if(mode==='bad'){ arrowEl.classList.add('bad'); }
@@ -717,7 +730,7 @@
     function hideMini(){ mini.hidden=true; }
     function setMiniColor(mode){
       miniNeedle.classList.remove('warn','bad');
-      if(mode==='ok') miniNeedle.classList.remove('warn','bad');
+      if(mode==='ok') { /* zelena */ }
       else if(mode==='warn') miniNeedle.classList.add('warn');
       else if(mode==='bad') miniNeedle.classList.add('bad');
     }
@@ -819,6 +832,7 @@
     function stopGeoWatch(){
       if(watchId!=null){ navigator.geolocation.clearWatch(watchId); watchId=null; }
       trackStatusPill.textContent='GPS: zaustavljeno'; hideMini(); hideGpsBanner(); stopTapeTick();
+      lastFix=null;
     }
     function onGeoErr(err){
       trackStatusPill.textContent='GPS greška: '+(err?.message||'');
@@ -836,6 +850,10 @@
     tapeCancel?.addEventListener('click', ()=>{ tapeModalBack.style.display='none'; });
     tapeConfirm?.addEventListener('click', ()=>{ tapeModalBack.style.display='none'; startTapeMode(); });
 
+    // Distance smoothing (LPF)
+    let distLP=null;
+    const DIST_ALPHA=0.35;
+
     function onPos(pos){
       hideGpsBanner();
       if(hbOn){ hbOn=false; stopTapeTick(); }
@@ -843,7 +861,7 @@
       const lat=pos.coords.latitude, lon=pos.coords.longitude, acc=pos.coords.accuracy;
       lastKnownLat=lat; lastKnownLon=lon;
 
-      // kazeta (svake 1 s) — world yaw
+      // heading kazeta (svake 1 s)
       const now=Date.now();
       if(now-lastHeadingSampleAt>=HEADING_SAMPLE_MS){
         lastHeadingSampleAt=now;
@@ -858,34 +876,58 @@
 
       if(!gpxTrack || gpxTrack.length<2){ arrowEl.style.opacity='1'; return; }
 
-      // najbliža točka staze (TOČNO na stazu)
+      // najbliža točka staze
       const nearest=nearestPointOnTrack({lat,lon}, gpxTrack);
-      const dist=nearest.distM;
-      updateOffTrackUI(dist);
 
-      // cilj yaw: projekcija prema toj najbližoj točki
+      // ignoriraj ekstremno lošu točnost
+      if(Number.isFinite(acc) && acc>50){
+        onTrackChip.textContent='🧭 status: GPS netočan (>50 m)';
+        return;
+      }
+
+      // distancija (LPF zbog mirnoće UI-a)
+      let dist=nearest.distM;
+      distLP = distLP==null ? dist : (DIST_ALPHA*dist + (1-DIST_ALPHA)*distLP);
+      updateOffTrackUI(distLP);
+
+      // cilj yaw = prema najbližoj točki staze
       const vWorld=enuVector(lat,lon,nearest.lat,nearest.lon);
       const yawTarget=(Math.atan2(vWorld[0], vWorld[1])*DEG+360)%360;
 
-      // uređaj yaw/pitch/roll (svjetski)
-      const {yaw, pitch, roll}=deviceWorldYawPitchRoll();
+      // heading uređaja ili GPS COG
+      const useGPSCourse = Number.isFinite(pos.coords.speed) && pos.coords.speed>=COG_MIN_SPEED && lastFix;
+      let yawDevice = deviceWorldYawPitchRoll().yaw;
+      if(useGPSCourse){
+        const cog = bearingBetween(lastFix.lat,lastFix.lon,lat,lon);
+        // blend: kad se hoda, 70% COG + 30% kompas (stabilnije)
+        yawDevice = (0.7*cog + 0.3*yawDevice + 360)%360;
+      }
+      // spremi last fix
+      lastFix = {lat,lon,t:now};
 
-      // delta yaw
-      let dYaw=((yawTarget - yaw + 540) % 360) - 180;
+      // delta yaw s deadbandom i capom
+      let dYaw = ((yawTarget - yawDevice + 540) % 360) - 180;
+      if(Math.abs(dYaw) < DEAD_BAND_DEG){
+        dYaw = 0;
+      }
+      // ograniči maksimalnu promjenu po frameu (~60fps) na MAX_ROT_SPEED_DPS
+      const maxStep = MAX_ROT_SPEED_DPS / 60;
+      dYaw = clamp(dYaw, -maxStep, maxStep);
 
-      // glatko
-      let delta=dYaw - lastAngleDeg; if(delta>180) delta-=360; if(delta<-180) delta+=360;
+      // glatko (kritično bez preletavanja)
+      let delta = dYaw - lastAngleDeg; if(delta>180) delta-=360; if(delta<-180) delta+=360;
       lastAngleDeg=(lastAngleDeg + SMOOTHING*delta + 360)%360;
 
       // 3D transform: kompenziraj pitch/roll → strelica ostaje vodoravna
+      const {pitch, roll}=deviceWorldYawPitchRoll();
       arrowEl.style.opacity='1';
       arrowEl.style.transform = `rotateX(${-pitch}deg) rotateY(${-roll}deg) rotateZ(${lastAngleDeg}deg)`;
 
-      // mini
-      miniMeters.textContent=`${dist.toFixed(0)} m`;
-      const miniRot = lastAngleDeg; // isto kao glavna Z rotacija
+      // mini HUD – kvantizacija 5° radi mirnoće
+      miniMeters.textContent=`${distLP.toFixed(0)} m`;
+      const miniRot = Math.round(lastAngleDeg/5)*5;
       miniNeedle.style.transform=`rotate(${miniRot}deg)`;
-      if(dist<=OK_THRESHOLD_M) setMiniColor('ok'); else if(dist<=YELLOW_MAX_M) setMiniColor('warn'); else setMiniColor('bad');
+      if(distLP<=OK_THRESHOLD_M) setMiniColor('ok'); else if(distLP<=YELLOW_MAX_M) setMiniColor('warn'); else setMiniColor('bad');
 
       // backtrack ako je aktivan
       if(backtrackOn) doBacktrackStep(lat,lon);
@@ -913,12 +955,22 @@
 
       const vWorld=enuVector(lat,lon,tgt.lat,tgt.lon);
       const yawTarget=(Math.atan2(vWorld[0], vWorld[1])*DEG+360)%360;
-      const {yaw,pitch,roll}=deviceWorldYawPitchRoll();
-      let dYaw=((yawTarget - yaw + 540) % 360) - 180;
+
+      // koristi isti heading blend (COG ako se hoda)
+      let yawDevice = deviceWorldYawPitchRoll().yaw;
+      if(lastFix){ const cog=bearingBetween(lastFix.lat,lastFix.lon,lat,lon); yawDevice=(0.7*cog+0.3*yawDevice+360)%360; }
+
+      let dYaw=((yawTarget - yawDevice + 540) % 360) - 180;
+      if(Math.abs(dYaw)<DEAD_BAND_DEG) dYaw=0;
+      const maxStep = MAX_ROT_SPEED_DPS/60;
+      dYaw=clamp(dYaw,-maxStep,maxStep);
+
       let delta=dYaw - lastAngleDeg; if(delta>180) delta-=360; if(delta<-180) delta+=360;
       lastAngleDeg=(lastAngleDeg + SMOOTHING*delta + 360)%360;
+
+      const {pitch,roll}=deviceWorldYawPitchRoll();
       arrowEl.style.transform=`rotateX(${-pitch}deg) rotateY(${-roll}deg) rotateZ(${lastAngleDeg}deg)`;
-      miniNeedle.style.transform=`rotate(${lastAngleDeg}deg)`;
+      miniNeedle.style.transform=`rotate(${Math.round(lastAngleDeg/5)*5}deg)`;
       miniMeters.textContent=`${Math.round(distM)} m`;
 
       if(distM<=AUTO_ADVANCE_RADIUS){ backIdx=Math.max(0, backIdx-1); }
@@ -942,10 +994,12 @@
         const targetYaw=(sample.yawWorldDeg+180)%360;
         const {yaw,pitch,roll}=deviceWorldYawPitchRoll();
         let dYaw=((targetYaw - yaw + 540) % 360) - 180;
+        if(Math.abs(dYaw)<DEAD_BAND_DEG) dYaw=0;
+        const maxStep = MAX_ROT_SPEED_DPS/60; dYaw=clamp(dYaw,-maxStep,maxStep);
         let delta=dYaw - lastAngleDeg; if(delta>180) delta-=360; if(delta<-180) delta+=360;
         lastAngleDeg=(lastAngleDeg + SMOOTHING*delta + 360)%360;
         arrowEl.style.transform=`rotateX(${-pitch}deg) rotateY(${-roll}deg) rotateZ(${lastAngleDeg}deg)`;
-        miniNeedle.style.transform=`rotate(${lastAngleDeg}deg)`;
+        miniNeedle.style.transform=`rotate(${Math.round(lastAngleDeg/5)*5}deg)`;
         offDistChip.textContent='↔︎ udaljenost: —';
         hbIdx=Math.max(0,hbIdx-1);
       }, 220);
@@ -967,7 +1021,6 @@
     });
 
     /* Banner i modal */
-    function hideGpsBanner(){ gpsBanner.style.display='none'; gpsLostSince=null; }
     bannerHide?.addEventListener('click', hideGpsBanner);
     tapeCancel?.addEventListener('click', ()=>{ tapeModalBack.style.display='none'; });
     tapeConfirm?.addEventListener('click', ()=>{ tapeModalBack.style.display='none'; startTapeMode(); });
