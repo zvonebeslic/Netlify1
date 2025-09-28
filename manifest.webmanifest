@@ -1,18 +1,23 @@
 {
-  "id": "/digitalniruksak",
-  "name": "Mountain Adventures — Strelica",
-  "short_name": "Strelica",
+  "name": "Mountain Adventures — Digitalni ruksak",
+  "short_name": "Ruksak",
   "start_url": "/digitalniruksak.html",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#0e0f10",
   "theme_color": "#0e0f10",
   "icons": [
-    { "src": "images/mountain-adventures-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "images/mountain-adventures-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "images/mountain-adventures-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "images/mountain-adventures-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ],
-  "categories": ["navigation", "sports", "utilities"]
+    {
+      "src": "images/mountain-adventures-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/mountain-adventures-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
