@@ -1,5 +1,5 @@
 // ======= PWA offline service worker (cache-first + network-first za GPX) =======
-const CACHE_VERSION = 'v1.1.1';
+const CACHE_VERSION = 'v1.1.2';
 const CACHE_NAME = `ma-ruksak-${CACHE_VERSION}`;
 const OFFLINE_FALLBACK = '/digitalniruksak.html';
 
@@ -15,7 +15,7 @@ const PRECACHE_ASSETS = [
   // '/style.css',
   // '/app.js',
   // '/tools/camera-auto-enhance.html',
-  // '/gpx/moja-ruta.gpx',       // lokalni GPX → dostupan i offline
+  // '/gpx/moja-ruta.gpx'        // lokalni GPX → dostupan i offline
 ];
 
 // 2) Ekstenzije koje tretiramo kao statiku (cache-first)
@@ -31,7 +31,7 @@ const CROSS_ORIGIN_SWRE = /^(https?:)?\/\/(fonts\.gstatic\.com|fonts\.googleapis
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // Koristi {cache:'reload'} da preskoči stari HTTP cache i uzme svježe
+    // Preskoči HTTP cache i uzmi svježe artefakte
     await cache.addAll(PRECACHE_ASSETS.map(u => new Request(u, { cache: 'reload' })));
     await self.skipWaiting();
   })());
@@ -40,7 +40,7 @@ self.addEventListener('install', (event) => {
 // ------- Activate -------
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
-    // počisti stare cacheve
+    // očisti stare cacheve
     const keys = await caches.keys();
     await Promise.all(keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve())));
 
@@ -87,7 +87,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3) Statika (same-origin html/css/js/img/json/...) – cache-first
+  // 3) Statika (same-origin) – cache-first
   if (sameOrigin && (STATIC_EXT.test(url.pathname) || url.pathname === '/')) {
     event.respondWith(cacheFirst(req));
     return;
@@ -97,14 +97,12 @@ self.addEventListener('fetch', (event) => {
   if (isHtmlNavigation(req)) {
     event.respondWith((async () => {
       try {
-        // pokušaj iskoristiti preloaded response (ako ga je browser već povukao)
+        // iskoristi preloaded response ako postoji
         const preloaded = await event.preloadResponse;
         if (preloaded) return preloaded;
 
-        // standardni network pokušaj
         return await fetch(req);
       } catch (_) {
-        // offline fallback
         const cache = await caches.open(CACHE_NAME);
         return (await cache.match(OFFLINE_FALLBACK, { ignoreSearch: true }))
           || new Response('Offline', { status: 503 });
