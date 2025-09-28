@@ -2,321 +2,540 @@
 <html lang="hr">
 <head>
   <!-- =========================================================
-       #01 META / ASSETI
+       #00 META / PWA
        ========================================================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <title>Mountain Adventures — Digitalni ruksak</title>
-
-  <meta name="description"
-        content="Digitalni ruksak: praktični alati za planinare — digitalna pomoć, auto-pejzaž kamera, pametna strelica, offline karte/GPX, check-lista i SOS." />
-
+  <meta name="description" content="Digitalni ruksak: digitalna pomoć, pejzažno snimanje uživo, pametna strelica s GPX praćenjem, check-lista, dnevno svjetlo i SOS." />
   <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0e0f10" />
 
+  <!-- =========================================================
+       #01 STILOVI (uredno, čitko, s komentarima)
+       ========================================================= -->
   <style>
-    /* =========================================================
-       #02 STILOVI — "digitalni ruksak" raspored
-       ========================================================= */
-    :root{
-      --bg:#0e0f10; --fg:#e9eef2; --muted:#9aa6b2; --card:#121416; --line:#1f2327;
-      --accent:#2aa96b; --accent-2:#3aa0ff; --accent-3:#e44747; --ok:#86d486; --warn:#f2c14e;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:var(--bg); color:var(--fg);
-      font:500 16px/1.55 Montserrat, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    /* ---------------------------------
+       1) GLOBAL / VARS / RESET
+       --------------------------------- */
+    :root {
+      --bg: #0e0f10;
+      --fg: #e9eef2;
+      --muted: #9aa6b2;
+      --card: #121416;
+      --line: #1f2327;
+      --accent: #2aa96b;
+      --accent-2: #3aa0ff;
+      --accent-3: #e44747;
+      --ok: #86d486;
+      --warn: #f2c14e;
+      --bad: #ff6b6b;
     }
 
-    /* Lokalan page header (tvoj globalni header/footer/season neka ostane odvojeno) */
-    header.page-head{
-      position:sticky; top:0; z-index:10;
-      background:linear-gradient(#14171b,#0e0f10);
-      border-bottom:1px solid var(--line);
-      padding:16px 18px;
+    * {
+      box-sizing: border-box;
     }
-    header.page-head h1{margin:0; font-size:22px; letter-spacing:.2px}
-    header.page-head .intro{margin:6px 0 0 0; color:var(--muted); font-size:14px}
 
-    main{max-width:1180px; margin:0 auto; padding:22px 18px 28px}
+    html,
+    body {
+      height: 100%;
+    }
 
-    /* GRID: Veći, uredni boxevi (drugačije od staze.html) */
-    .tools-grid{
-      display:grid; gap:18px;
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 500 16px/1.55 Montserrat, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ---------------------------------
+       2) HEADER
+       --------------------------------- */
+    header.page-head {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(#14171b, #0e0f10);
+      border-bottom: 1px solid var(--line);
+      padding: 16px 18px;
+    }
+
+    header.page-head h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0.2px;
+    }
+
+    header.page-head .intro {
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ---------------------------------
+       3) LAYOUT / GRID / KARTICE
+       --------------------------------- */
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px 18px 28px;
+    }
+
+    .tools-grid {
+      display: grid;
+      gap: 18px;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      align-items:stretch;
+      align-items: stretch;
     }
-    .tool-card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:16px 16px 14px;
-      position:relative;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 8px 24px rgba(0,0,0,.25);
-    }
-    .tool-card .eyebrow{font-size:12px; color:var(--muted); letter-spacing:.4px; text-transform:uppercase}
-    .tool-card h3{margin:6px 0 8px 0; font-size:19px}
-    .tool-card p{margin:0 0 10px 0; color:var(--muted); font-size:14px}
-    .tool-card ul{margin:8px 0 12px 20px; color:var(--muted); font-size:14px}
-    .btn-row{display:flex; gap:8px; flex-wrap:wrap}
-    .btn{
-      appearance:none; border:0; border-radius:12px; padding:.7em 1.05em; font-weight:700;
-      background:var(--accent); color:#fff; cursor:pointer; text-decoration:none; display:inline-block;
-    }
-    .btn.ghost{background:#2b2f36}
-    .btn.alt{background:var(--accent-2)}
-    .btn.alert{background:var(--accent-3)}
-    .hint{color:var(--muted); font-size:12px}
 
-    /* Sekcijski paneli (otvaraju se ispod grid-a) */
-    section.tool-panel{
-      margin-top:22px; background:var(--card); border:1px solid var(--line);
-      border-radius:16px; padding:16px;
+    .tool-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+        0 8px 24px rgba(0, 0, 0, 0.25);
     }
-    section.tool-panel h4{margin:0 0 10px 0; font-size:18px}
-    .divider{height:1px; background:var(--line); margin:14px 0 16px}
-    .two-col{display:grid; gap:14px; grid-template-columns: 1fr; }
-    @media (min-width:800px){ .two-col{ grid-template-columns: .9fr 1.1fr; } }
 
-    /* Ikonice/čipovi za “ruksak” osjećaj */
-    .chip{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); padding:.35em .7em; border-radius:999px; font-size:12px; color:var(--muted)}
-    .ok{color:var(--ok)} .warn{color:var(--warn)}
-
-    /* Kamera panel */
-    .camera-wrap{display:grid; gap:12px}
-    video#camVideo{width:100%; aspect-ratio:9/16; max-height:78vh; background:#000; border-radius:12px}
-    canvas#camCanvas{display:none}
-    .toolbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
-    .dot{width:12px; height:12px; border-radius:50%; background:#a33; box-shadow:0 0 6px #600}
-    .dot.ok{background:#3c3; box-shadow:0 0 8px #2a2}
-    #camMsg{min-width:220px; color:var(--muted)}
-    #camThumb{max-width:260px; border-radius:10px; border:1px solid var(--line)}
-
-    /* Kompas panel */
-    .compass-wrap{display:grid; gap:12px}
-    .compass-row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
-    .compass{
-      width:160px; height:160px; border-radius:50%;
-      border:1px solid var(--line); background:radial-gradient(transparent 58%, #1b1f25 59%);
-      display:grid; place-items:center; position:relative;
+    .eyebrow {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
     }
-    .compass .tick{
-      position:absolute; inset:8px; border-radius:50%;
-      border:1px dashed #2a2f36;
+
+    .tool-card h3 {
+      margin: 6px 0 8px 0;
+      font-size: 19px;
     }
-    .arrow{
-      width:0; height:0; border-left:12px solid transparent; border-right:12px solid transparent;
-      border-bottom:44px solid #e44747;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.45));
+
+    .tool-card p {
+      margin: 0 0 10px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tool-card ul {
+      margin: 8px 0 12px 20px;
+      padding: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 0.7em 1.05em;
+      font-weight: 700;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn.ghost {
+      background: #2b2f36;
+    }
+
+    .btn.alt {
+      background: var(--accent-2);
+    }
+
+    .btn.alert {
+      background: var(--accent-3);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    section.tool-panel {
+      margin-top: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    section.tool-panel h4 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 14px 0 16px;
+    }
+
+    .two-col {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 800px) {
+      .two-col {
+        grid-template-columns: 0.9fr 1.1fr;
+      }
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      padding: 0.35em 0.7em;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .ok {
+      color: var(--ok);
+    }
+
+    .warn {
+      color: var(--warn);
+    }
+
+    .bad {
+      color: var(--bad);
+    }
+
+    /* ---------------------------------
+       4) KAMERA (pejzažno snimanje uživo)
+       --------------------------------- */
+    .camera-wrap {
+      display: grid;
+      gap: 12px;
+    }
+
+    video#camVideo {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      max-height: 78vh;
+      background: #000;
+      border-radius: 12px;
+    }
+
+    canvas#camCanvas {
+      display: none;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #a33;
+      box-shadow: 0 0 6px #600;
+    }
+
+    .dot.ok {
+      background: #3c3;
+      box-shadow: 0 0 8px #2a2;
+    }
+
+    #camMsg {
+      min-width: 220px;
+      color: var(--muted);
+    }
+
+    #camThumb {
+      max-width: 260px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+    }
+
+    /* ---------------------------------
+       5) KOMPAS + GPX PRAĆENJE
+       --------------------------------- */
+    .compass-wrap {
+      display: grid;
+      gap: 12px;
+    }
+
+    .compass-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .compass {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: radial-gradient(transparent 58%, #1b1f25 59%);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .compass .tick {
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px dashed #2a2f36;
+    }
+
+    .arrow {
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 44px solid #2aa96b;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.45));
       transform-origin: 50% 90%;
-      transition: transform .18s ease-out;
-    }
-    .deg-pill{
-      padding:.45em .7em; border-radius:999px; background:#2b2f36; color:#fff; font-weight:700; font-size:14px;
-      border:1px solid var(--line);
-    }
-    .value{font-variant-numeric:tabular-nums}
-    .compass-legend{font-size:12px; color:var(--muted)}
-    .field{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-    input[type="number"], input[type="time"]{
-      width:120px; background:#0f1114; border:1px solid var(--line); border-radius:10px;
-      color:#fff; padding:.55em .65em; outline:none;
+      transition: transform 0.18s ease-out, border-bottom-color 0.2s ease-out;
     }
 
-    /* Digitalna pomoć (akordeon) */
-    .aid-accordion{border:1px solid var(--line); border-radius:12px; overflow:hidden}
-    .aid-item + .aid-item{border-top:1px solid var(--line)}
-    .aid-head{
-      width:100%; background:#171a1f; color:#fff; font-weight:700; text-align:left;
-      padding:12px 14px; border:0; display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+    .arrow.warn {
+      border-bottom-color: #e09f3e;
     }
-    .aid-body{padding:12px 14px; color:var(--muted); display:none}
-    .aid-body ul{margin:8px 0 0 20px}
-    .aid-head .mini{font-size:12px; color:var(--muted); font-weight:500}
-    .aid-head.open{background:#1b2026}
 
-    /* Check-lista */
-    .checklist{display:grid; gap:8px}
-    .check-item{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:10px}
-    .check-item input{transform:scale(1.2)}
-    .check-item label{flex:1}
+    .arrow.bad {
+      border-bottom-color: #e44747;
+    }
 
-    /* SOS zvuk */
-    .sos-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .deg-pill {
+      padding: 0.45em 0.7em;
+      border-radius: 999px;
+      background: #2b2f36;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .value {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .compass-legend {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .field {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    input[type="number"],
+    input[type="time"],
+    input[type="file"] {
+      background: #0f1114;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: #fff;
+      padding: 0.55em 0.65em;
+      outline: none;
+    }
+
+    input[type="number"] {
+      width: 120px;
+    }
+
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* ---------------------------------
+       6) MINI STRELICA WIDGET (donji lijevi kut)
+       --------------------------------- */
+    #miniCompass {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      z-index: 9999;
+      width: 84px;
+      height: 84px;
+      border-radius: 16px;
+      padding: 8px;
+      background: rgba(18, 20, 22, 0.9);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      touch-action: none;
+      user-select: none;
+    }
+
+    #miniCompass .mini-ring {
+      width: 100%;
+      height: 56px;
+      border-radius: 999px;
+      border: 1px dashed #2a2f36;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #miniCompass .mini-needle {
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 28px solid #2aa96b;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.45));
+      transform-origin: 50% 90%;
+      transition: transform 0.18s ease-out, border-bottom-color 0.2s ease-out;
+    }
+
+    #miniCompass .mini-needle.warn {
+      border-bottom-color: #e09f3e;
+    }
+
+    #miniCompass .mini-needle.bad {
+      border-bottom-color: #e44747;
+    }
+
+    #miniCompass .mini-info {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
   </style>
 </head>
 
 <body>
   <!-- =========================================================
-       #03 NASLOV STRANICE (lokalni)
+       #02 HEADER (lokalni naslov)
        ========================================================= -->
   <header class="page-head">
-    <h1 data-hr="Digitalni ruksak" data-en="Digital Toolkit">Digitalni ruksak</h1>
-    <p class="intro"
-       data-hr="Uredno složeni alati za teren: digitalna pomoć, kamera s auto-pejzažem, pametna strelica, offline karte/GPX, check-lista i SOS."
-       data-en="Neatly packed field tools: digital first-aid, auto-landscape camera, smart arrow, offline maps/GPX, checklist and SOS.">
-       Uredno složeni alati za teren: digitalna pomoć, kamera s auto-pejzažem, pametna strelica, offline karte/GPX, check-lista i SOS.
-    </p>
+    <h1>Digitalni ruksak</h1>
+    <p class="intro">Uredno složeni alati: digitalna pomoć, pejzažno snimanje uživo, pametna strelica s GPX praćenjem, offline savjeti, check-lista, dnevno svjetlo i SOS.</p>
   </header>
 
+  <!-- =========================================================
+       #03 MAIN (kartice alata)
+       ========================================================= -->
   <main>
-    <!-- =========================================================
-         GRID: RASPORED ALATA (1. pomoć → 2. kamera → 3. strelica → ostalo)
-         ========================================================= -->
     <section class="tools-grid" aria-label="Alati">
       <!-- 1) DIGITALNA POMOĆ -->
-      <article class="tool-card content-box" id="tool-aid">
-        <div class="eyebrow" data-hr="Prioritet" data-en="Priority">Prioritet</div>
-        <h3 class="tool-title"
-            data-hr="Digitalna pomoć (brzi vodiči)"
-            data-en="Digital First-Aid (Quick Guides)">Digitalna pomoć (brzi vodiči)</h3>
-
-        <p class="tool-desc"
-           data-hr="Sažeti protokoli i podsjetnici za hitne situacije na planini. Uvijek najprije osiguraj mjesto i pozovi 112."
-           data-en="Compact protocols and reminders for mountain emergencies. First secure the scene and call 112.">
-           Sažeti protokoli i podsjetnici za hitne situacije na planini. Najprije osiguraj mjesto i pozovi 112.
-        </p>
-
+      <article class="tool-card" id="tool-aid">
+        <div class="eyebrow">Prioritet</div>
+        <h3>Digitalna pomoć (brzi vodiči)</h3>
+        <p>Sažeti protokoli za teren. Najprije osiguraj mjesto i pozovi 112.</p>
         <div class="btn-row">
-          <button class="btn alt" id="openAidPanel" data-hr="Otvori vodiče" data-en="Open guides">Otvori vodiče</button>
-          <span class="chip">⛰️ <span data-hr="Podsjetnici pri ruci" data-en="Pocket reminders">Podsjetnici pri ruci</span></span>
+          <button class="btn alt" id="openAidPanel">Otvori vodiče</button>
+          <span class="chip">⛰️ Podsjetnici pri ruci</span>
         </div>
       </article>
 
-      <!-- 2) KAMERA — Auto-pejzaž -->
-      <article class="tool-card content-box" id="tool-camera">
+      <!-- 2) KAMERA — Pejzažno snimanje uživo -->
+      <article class="tool-card" id="tool-camera">
         <div class="eyebrow">Foto</div>
-        <h3 class="tool-title"
-            data-hr="Kamera — Auto-pejzaž"
-            data-en="Camera — Auto Landscape">Kamera — Auto-pejzaž</h3>
-
-        <p class="tool-desc"
-           data-hr="Otvori kameru; kad se kadar umiri, automatski pojača kontrast, boje i oštrinu prije snimanja."
-           data-en="Open camera; when steady, it auto-boosts contrast, color and sharpness before capture.">
-           Otvori kameru; miran kadar → automatsko poboljšanje → snimka.
-        </p>
-
+        <h3>Pejzažno snimanje uživo</h3>
+        <p>Miran kadar → automatsko pojačanje (kontrast/boja/oštrina) → snimka.</p>
         <ul>
-          <li data-hr="Auto-stabilnost (snima kad je mirno)" data-en="Auto-stability (captures when steady)">Auto-stabilnost (snima kad je mirno)</li>
-          <li data-hr="Auto-kontrast i blago oštrenje" data-en="Auto-contrast & mild sharpening">Auto-kontrast i blago oštrenje</li>
-          <li data-hr="Radi na HTTPS/localhost" data-en="Works on HTTPS/localhost">Radi na HTTPS/localhost</li>
+          <li>Auto-stabilnost (snima kad je mirno)</li>
+          <li>Auto-kontrast & blago oštrenje</li>
+          <li>Radi na HTTPS/localhost</li>
         </ul>
-
         <div class="btn-row">
-          <button class="btn" id="openCamPanel" data-hr="Otvori alat" data-en="Open tool">Otvori alat</button>
-          <a class="btn ghost" href="tools/camera-auto-enhance.html"
-             data-hr="U novoj kartici" data-en="Open in new tab">U novoj kartici</a>
+          <button class="btn" id="openCamPanel">Otvori alat</button>
+          <a class="btn ghost" href="tools/camera-auto-enhance.html">U novoj kartici</a>
         </div>
-
-        <p class="hint"
-           data-hr="Privatnost: ništa se ne šalje na server dok ne preuzmeš sliku."
-           data-en="Privacy: nothing is uploaded until you download/share.">
-           Privatnost: ništa se ne šalje na server dok ne preuzmeš sliku.
-        </p>
+        <p class="hint">Privatnost: ništa se ne šalje na server dok ne preuzmeš sliku.</p>
       </article>
 
-      <!-- 3) PAMETNA STRELICA (kompas) -->
-      <article class="tool-card content-box" id="tool-arrow">
+      <!-- 3) PAMETNA STRELICA — kompas + GPX praćenje -->
+      <article class="tool-card" id="tool-arrow">
         <div class="eyebrow">Orijentacija</div>
-        <h3 class="tool-title"
-            data-hr="Pametna strelica (kompas)"
-            data-en="Smart Arrow (Compass)">Pametna strelica (kompas)</h3>
-
-        <p class="tool-desc"
-           data-hr="Orijentiraj se prema cilju. Sada: orijentacija uređaja + ručni azimut; kasnije: GPS heading i bearing do lat/lon."
-           data-en="Orient toward a target. Now: device orientation + manual azimuth; later: GPS heading and bearing to lat/lon.">
-           Orijentacija uređaja + ručni azimut; spremno za GPS heading/bearing.
-        </p>
-
+        <h3>Pametna strelica (kompas) — GPX praćenje</h3>
+        <p>Učitaj GPX, uključi praćenje. Zelena = na stazi, žuta/crvena = izvan staze, zvuk na prag.</p>
         <ul>
-          <li data-hr="Kompas iz orijentacije uređaja" data-en="Compass from device orientation">Kompas iz orijentacije uređaja</li>
-          <li data-hr="Ručni azimut cilja (°)" data-en="Manual target azimuth (°)">Ručni azimut cilja (°)</li>
-          <li data-hr="GPS-ready (heading, bearing)" data-en="GPS-ready (heading, bearing)">GPS-ready (heading, bearing)</li>
+          <li>Kompas (tilt-kompenziran gdje je podržano)</li>
+          <li>Udaljenost do najbliže točke traga</li>
+          <li>Podesiv prag + zvuk upozorenja</li>
         </ul>
-
         <div class="btn-row">
-          <button class="btn" id="openArrowPanel" data-hr="Otvori alat" data-en="Open tool">Otvori alat</button>
+          <button class="btn" id="openArrowPanel">Otvori alat</button>
         </div>
-
-        <p class="hint"
-           data-hr="Savjet: držati telefon uspravno (portrait) i kalibrirati kompas laganim ‘∞’ pokretima."
-           data-en="Tip: hold upright (portrait) and calibrate with gentle ‘∞’ motions.">
-           Savjet: telefon uspravno; kalibracija ‘∞’.
-        </p>
+        <p class="hint">iOS traži dopuštenje za Motion & Orientation; najbolje radi na HTTPS-u.</p>
       </article>
 
-      <!-- 4) OFFLINE KARTE & GPX (stub za kasnije povezivanje) -->
-      <article class="tool-card content-box" id="tool-offline">
+      <!-- Ostale kartice -->
+      <article class="tool-card" id="tool-offline">
         <div class="eyebrow">Navigacija</div>
-        <h3 data-hr="Offline karte & GPX" data-en="Offline Maps & GPX">Offline karte & GPX</h3>
-        <p data-hr="Spremi područje za offline i učitaj GPX trag (viewer dolazi)."
-           data-en="Save area for offline and load GPX track (viewer coming).">
-           Spremi područje za offline i učitaj GPX trag (viewer uskoro).
-        </p>
+        <h3>Offline karte & GPX</h3>
+        <p>Preuzmi regiju u OSMand/Organic Maps, GPX spremi lokalno.</p>
         <div class="btn-row">
-          <button class="btn ghost" id="openOfflinePanel" data-hr="Brzi savjeti" data-en="Quick tips">Brzi savjeti</button>
+          <button class="btn ghost" id="openOfflinePanel">Brzi savjeti</button>
         </div>
       </article>
 
-      <!-- 5) PLANINARSKI DNEVNIK (sigurnosni upis) -->
-      <article class="tool-card content-box" id="tool-log">
+      <article class="tool-card" id="tool-log">
         <div class="eyebrow">Sigurnost</div>
-        <h3 data-hr="Planinarski dnevnik" data-en="Hiker Logbook">Planinarski dnevnik</h3>
-        <p data-hr="Zapiši rutu, vrijeme polaska i planirani smjer — koristan trag ako nešto pođe po zlu."
-           data-en="Record route, start time and intended direction — helpful trace if things go wrong.">
-           Zapiši rutu, vrijeme polaska i smjer — trag za sigurnost.
-        </p>
+        <h3>Planinarski dnevnik</h3>
+        <p>Zapiši rutu, vrijeme polaska i planirani smjer.</p>
         <div class="btn-row">
-          <button class="btn ghost" id="openLogPanel" data-hr="Otvori dnevnik" data-en="Open logbook">Otvori dnevnik</button>
+          <button class="btn ghost" id="openLogPanel">Otvori dnevnik</button>
         </div>
       </article>
 
-      <!-- 6) CHECK-LISTA PRIJE POLASKA -->
-      <article class="tool-card content-box" id="tool-check">
+      <article class="tool-card" id="tool-check">
         <div class="eyebrow">Priprema</div>
-        <h3 data-hr="Check-lista prije polaska" data-en="Pre-hike Checklist">Check-lista prije polaska</h3>
-        <p data-hr="Brzo prođi kroz osnove: voda, prva pomoć, slojevi, svjetlo, GPX, baterija…"
-           data-en="Run through essentials: water, first-aid, layers, light, GPX, battery…">
-           Osnove: voda, prva pomoć, slojevi, svjetlo, GPX, baterija…
-        </p>
+        <h3>Check-lista prije polaska</h3>
+        <p>Voda, prva pomoć, slojevi, svjetlo, GPX, baterija…</p>
         <div class="btn-row">
-          <button class="btn ghost" id="openChecklistPanel" data-hr="Otvori listu" data-en="Open list">Otvori listu</button>
+          <button class="btn ghost" id="openChecklistPanel">Otvori listu</button>
         </div>
       </article>
 
-      <!-- 7) DNEVNO SVJETLO / ZALAZAK -->
-      <article class="tool-card content-box" id="tool-light">
+      <article class="tool-card" id="tool-light">
         <div class="eyebrow">Vrijeme</div>
-        <h3 data-hr="Dnevno svjetlo" data-en="Daylight">Dnevno svjetlo</h3>
-        <p data-hr="Unesi zalazak i prati koliko je ostalo svjetla (brzi podsjetnik)."
-           data-en="Enter sunset time and track remaining daylight (quick reminder).">
-           Unesi zalazak i prati preostalo svjetlo.
-        </p>
+        <h3>Dnevno svjetlo</h3>
+        <p>Unesi zalazak i prati preostalo svjetlo.</p>
         <div class="btn-row">
-          <button class="btn ghost" id="openSunPanel" data-hr="Tajmer svjetla" data-en="Light timer">Tajmer svjetla</button>
+          <button class="btn ghost" id="openSunPanel">Tajmer svjetla</button>
         </div>
       </article>
 
-      <!-- 8) SOS ZVIŽDALJKA (ton) -->
-      <article class="tool-card content-box" id="tool-sos">
+      <article class="tool-card" id="tool-sos">
         <div class="eyebrow">SOS</div>
         <h3>SOS zviždaljka</h3>
-        <p data-hr="Pokreni glasan ton (••• — — — •••) ako treba privući pažnju. Uvijek prioritet: 112."
-           data-en="Fire a loud tone (••• — — — •••) if you must draw attention. Priority: 112.">
-           Pokreni glasan ton (••• — — — •••) za privlačenje pažnje. Prioritet: 112.
-        </p>
+        <p>Glasan ton (••• — — — •••) za privlačenje pažnje. 112 je prioritet.</p>
         <div class="btn-row">
-          <button class="btn alert" id="playSOS" data-hr="Pokreni SOS" data-en="Play SOS">Pokreni SOS</button>
-          <button class="btn ghost" id="stopSOS" data-hr="Zaustavi" data-en="Stop">Zaustavi</button>
+          <button class="btn alert" id="playSOS">Pokreni SOS</button>
+          <button class="btn ghost" id="stopSOS">Zaustavi</button>
         </div>
       </article>
     </section>
 
     <!-- =========================================================
-         PANELI (otvaraju se ispod grida)
+         PANELI
          ========================================================= -->
 
     <!-- PANEL: Digitalna pomoć -->
@@ -324,107 +543,74 @@
       <h4>Digitalna pomoć — brzi vodiči</h4>
       <div class="two-col">
         <div>
-          <div class="chip">ℹ️ <span>Podsjetnik, ne zamjena za obuku</span></div>
+          <div class="chip">ℹ️ Podsjetnik, ne zamjena za obuku</div>
           <div class="divider"></div>
 
           <div class="aid-accordion" id="aidAcc">
-            <!-- KPR -->
             <div class="aid-item">
-              <button class="aid-head">
-                <span>🚑 KPR (odrasli)</span>
-                <span class="mini">30 pritisaka : 2 udisaja</span>
-              </button>
-              <div class="aid-body">
+              <button class="aid-head">🚑 KPR (odrasli) <span class="mini" style="color: var(--muted); font-size: 12px;">30:2 / 100–120/min</span></button>
+              <div class="aid-body" style="display: none;">
                 <ul>
                   <li>Procijeni sigurnost, pozovi 112.</li>
-                  <li>Provjeri disanje (max 10 s). Nema/abnormalno → započni KPR.</li>
-                  <li>Ruke sredina prsnog koša, dubina ~5–6 cm, ritam ~100–120/min.</li>
-                  <li>Omjer 30:2 (ako znaš ventilaciju). Inače kontinuirane kompresije.</li>
-                  <li>Zamjena spasioca svake 2 min ako je moguće.</li>
+                  <li>Provjeri disanje (≤10 s) → KPR ako nema/abnormalno.</li>
+                  <li>Ruke sredina prsnog koša; 5–6 cm; 100–120/min.</li>
+                  <li>30:2 (ako znaš ventilaciju) ili kontinuirane kompresije.</li>
                 </ul>
               </div>
             </div>
 
-            <!-- Hipotermija -->
             <div class="aid-item">
-              <button class="aid-head">
-                <span>🧊 Hipotermija</span>
-                <span class="mini">Postepeno ugrijavanje, bez naglih pokreta</span>
-              </button>
-              <div class="aid-body">
+              <button class="aid-head">🧊 Hipotermija <span class="mini" style="color: var(--muted); font-size: 12px;">srebrna strana astrofolije prema tijelu</span></button>
+              <div class="aid-body" style="display: none;">
                 <ul>
-                  <li>Skloni od vjetra/vlage; skini mokru odjeću, stavi suhu/izolaciju.</li>
-                  <li>Astrofolija: SREBRNA PREMA UNUTRA za grijanje (zlatna vani).</li>
-                  <li>Topli napici ako je pri svijesti; izbjegavati alkohol.</li>
-                  <li>Nježno rukovanje (rizik aritmija), hitan transport.</li>
+                  <li>Skloni od vjetra/vlage; suha/izolacijska odjeća.</li>
+                  <li>Topli napici ako je pri svijesti; bez alkohola.</li>
+                  <li>Nježno rukovanje; hitan transport.</li>
                 </ul>
               </div>
             </div>
 
-            <!-- Krvarenje -->
             <div class="aid-item">
-              <button class="aid-head">
-                <span>🩹 Krvarenje</span>
-                <span class="mini">Direktan pritisak, podizanje, kompresivni zavoj</span>
-              </button>
-              <div class="aid-body">
+              <button class="aid-head">🩹 Krvarenje <span class="mini" style="color: var(--muted); font-size: 12px;">direktan pritisak, kompresija</span></button>
+              <div class="aid-body" style="display: none;">
                 <ul>
-                  <li>Direktan pritisak gazom 10+ min, ne gledati prerano.</li>
-                  <li>Ako natopi, dodaj gazu (ne skidati prvu), kompresivni zavoj.</li>
-                  <li>Turniket samo za masivna krvarenja udova, bilježi vrijeme.</li>
+                  <li>Direktan pritisak 10+ min; ne dizati prerano.</li>
+                  <li>Ako natopi, dodaj gazu (ne skidati prvu).</li>
+                  <li>Turniket za masivna krvarenja udova; bilježi vrijeme.</li>
                 </ul>
               </div>
             </div>
 
-            <!-- Uganuća / prijelomi -->
             <div class="aid-item">
-              <button class="aid-head">
-                <span>🦴 Uganuće / Prijelom</span>
-                <span class="mini">Imobilizacija u položaju zatečenom</span>
-              </button>
-              <div class="aid-body">
+              <button class="aid-head">📢 Signalizacija & 112 <span class="mini" style="color: var(--muted); font-size: 12px;">lokacija, broj, stanje</span></button>
+              <div class="aid-body" style="display: none;">
                 <ul>
-                  <li>RICE: odmor, led (ne direktno), kompresija, elevacija.</li>
-                  <li>Imobiliziraj zglobove iznad i ispod; provjeri cirkulaciju distalno.</li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Signalizacija -->
-            <div class="aid-item">
-              <button class="aid-head">
-                <span>📢 Signalizacija & 112</span>
-                <span class="mini">Lokacija, broj unesrećenih, stanje</span>
-              </button>
-              <div class="aid-body">
-                <ul>
-                  <li>Standard SOS: 6 signala u min, pauza 1 min, ponovi.</li>
-                  <li>Telefonom: opis lokacije (GPX/koordinate), što se dogodilo, koliko osoba, stanje, vrijeme.</li>
+                  <li>SOS: 6 signala/min, pauza 1 min, ponovi.</li>
+                  <li>Telefon: koordinate/GPX, što, koliko osoba, stanje, vrijeme.</li>
                 </ul>
               </div>
             </div>
           </div>
 
           <div class="divider"></div>
-          <div class="hint">Ovo su sažeti podsjetnici. Formalna edukacija prve pomoći je preporučena.</div>
+          <div class="hint">Sažeti podsjetnici — preporučena je formalna obuka prve pomoći.</div>
         </div>
 
         <div>
-          <h4 style="margin-top:0">Brzi podsjetnici</h4>
+          <h4 style="margin-top: 0;">Brzi podsjetnici</h4>
           <ul>
-            <li>Astrofolija: <b>srebrna strana prema tijelu grije</b> (zlatna vani).</li>
-            <li>KPR odrasli: <b>30:2</b>, 100–120/min, dubina 5–6 cm.</li>
-            <li>Hipotermija: nježno rukovanje, postepeno zagrijavanje.</li>
-            <li>Krvarenje: direktan pritisak, kompresija, turniket za masivna.</li>
+            <li>Astrofolija: <b>srebrna prema tijelu grije</b> (zlatna vani).</li>
+            <li>KPR: <b>30:2</b>, 100–120/min, 5–6 cm.</li>
+            <li>Krvarenje: pritisak, kompresija, turniket po potrebi.</li>
           </ul>
-          <div style="margin-top:10px" class="chip">📞 112 — hitna pomoć i spašavanje</div>
+          <div class="chip" style="margin-top: 10px;">📞 112 — hitna pomoć i spašavanje</div>
         </div>
       </div>
     </section>
 
-    <!-- PANEL: Kamera — Auto-pejzaž -->
+    <!-- PANEL: Kamera -->
     <section id="panelCamera" class="tool-panel" hidden>
-      <h4>Kamera — Auto-pejzaž (ugrađeno)</h4>
+      <h4>Pejzažno snimanje uživo (ugrađeno)</h4>
       <div class="camera-wrap">
         <video id="camVideo" autoplay playsinline></video>
         <canvas id="camCanvas"></canvas>
@@ -446,20 +632,20 @@
 
     <!-- PANEL: Pametna strelica -->
     <section id="panelArrow" class="tool-panel" hidden>
-      <h4>Pametna strelica (kompas) — GPS-ready</h4>
+      <h4>Pametna strelica — kompas + GPX</h4>
       <div class="compass-wrap">
         <div class="compass-row">
           <div class="compass" aria-label="Kompas">
             <div class="tick"></div>
-            <div id="arrowNeedle" class="arrow" style="transform: rotate(0deg)"></div>
+            <div id="arrowNeedle" class="arrow" style="transform: rotate(0deg);"></div>
           </div>
 
           <div>
             <div class="deg-pill">Tvoj heading: <span id="valueHeading" class="value">—</span>°</div>
-            <div class="deg-pill" style="margin-top:8px">Ciljni azimut: <span id="valueTarget" class="value">0</span>°</div>
-            <div class="deg-pill" style="margin-top:8px">Okreni još: <span id="valueDelta" class="value">—</span>°</div>
-            <div class="compass-legend" style="margin-top:6px">
-              <span id="deltaHint" class="warn">Približi smjer</span>
+            <div class="deg-pill" style="margin-top: 8px;">Ciljni azimut: <span id="valueTarget" class="value">0</span>°</div>
+            <div class="deg-pill" style="margin-top: 8px;">Okreni još: <span id="valueDelta" class="value">—</span>°</div>
+            <div class="compass-legend" style="margin-top: 6px;">
+              <span id="deltaHint" class="ok">Poravnato ✓</span>
             </div>
           </div>
         </div>
@@ -468,446 +654,677 @@
 
         <div class="compass-row">
           <div class="field">
-            <label for="targetInput">Ciljni azimut (°)</label>
-            <input id="targetInput" type="number" min="0" max="359" step="1" value="0" />
-            <button class="btn ghost" id="setTargetBtn">Postavi</button>
+            <label for="gpxInput">GPX trag:</label>
+            <input id="gpxInput" type="file" accept=".gpx,application/gpx+xml" />
+            <button class="btn ghost" id="loadGpxBtn">Učitaj</button>
           </div>
 
           <div class="field">
-            <button class="btn ghost" id="gpsStubBtn">(Kasnije) koristi GPS heading</button>
+            <label for="alertMeters">Prag (m) za zvuk:</label>
+            <input id="alertMeters" type="number" min="5" step="5" value="30" />
+            <button class="btn ghost" id="toggleTrackBtn">Pokreni praćenje</button>
           </div>
         </div>
 
-        <p class="hint">Napomena: koristi orijentaciju uređaja (kompas). GPS heading/bearing dodajemo kad uključiš Geolocation.</p>
+        <div class="status-line" style="margin-top: 6px;">
+          <span class="deg-pill" id="trackStatusPill">GPX: —</span>
+          <span class="chip" id="onTrackChip">🧭 status: —</span>
+          <span class="chip" id="offDistChip">↔︎ udaljenost: —</span>
+        </div>
+
+        <p class="hint" style="margin-top: 6px;">Kad je učitan GPX i praćenje uključeno, strelica te vodi prema najbližoj točki traga; zvuk kad prijeđeš prag.</p>
 
         <div>
           <button class="btn" id="arrowClose">Zatvori</button>
         </div>
       </div>
     </section>
-
-    <!-- PANEL: Offline karte & GPX -->
-    <section id="panelOffline" class="tool-panel" hidden>
-      <h4>Offline karte & GPX — brzi savjeti</h4>
-      <ul>
-        <li>Prije polaska, u aplikaciji (npr. OSMAnd / Organic Maps) preuzmi regiju za offline.</li>
-        <li>GPX tragove spremi lokalno (interni storage) i testno otvori.</li>
-        <li>Uključi “Battery Saver friendly” postavke i ponesi power bank.</li>
-      </ul>
-      <div class="hint">Viewer GPX-a planiramo dodati kao poseban alat (render na karti).</div>
-    </section>
-
-    <!-- PANEL: Planinarski dnevnik -->
-    <section id="panelLog" class="tool-panel" hidden>
-      <h4>Planinarski dnevnik (sigurnosni upis)</h4>
-      <div class="two-col">
-        <div>
-          <div class="checklist">
-            <div class="check-item"><input type="checkbox" id="lg-route"><label for="lg-route">Ruta / naziv staze</label></div>
-            <div class="check-item"><input type="checkbox" id="lg-start"><label for="lg-start">Vrijeme polaska</label></div>
-            <div class="check-item"><input type="checkbox" id="lg-dir"><label for="lg-dir">Planirani smjer / točke</label></div>
-            <div class="check-item"><input type="checkbox" id="lg-buddy"><label for="lg-buddy">Osoba koja zna plan (kontakt)</label></div>
-          </div>
-        </div>
-        <div>
-          <p class="hint">Ovo služi kao brzi podsjetnik. Kasnije možemo dodati lokalno spremanje u `localStorage` ili export u .txt.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANEL: Check-lista -->
-    <section id="panelChecklist" class="tool-panel" hidden>
-      <h4>Check-lista prije polaska</h4>
-      <div class="checklist">
-        <div class="check-item"><input type="checkbox" id="cl-water"><label for="cl-water">Voda + hrana</label></div>
-        <div class="check-item"><input type="checkbox" id="cl-firstaid"><label for="cl-firstaid">Prva pomoć + astrofolija</label></div>
-        <div class="check-item"><input type="checkbox" id="cl-layers"><label for="cl-layers">Slojevi / kišna zaštita</label></div>
-        <div class="check-item"><input type="checkbox" id="cl-light"><label for="cl-light">Svjetlo (čeona) + baterije</label></div>
-        <div class="check-item"><input type="checkbox" id="cl-gpx"><label for="cl-gpx">GPX učitan / offline karta</label></div>
-        <div class="check-item"><input type="checkbox" id="cl-battery"><label for="cl-battery">Mobitel 100% + power bank</label></div>
-      </div>
-      <div class="hint" style="margin-top:8px">Po želji dodamo “Spremi listu” (localStorage) i “Reset”.</div>
-    </section>
-
-    <!-- PANEL: Dnevno svjetlo -->
-    <section id="panelSun" class="tool-panel" hidden>
-      <h4>Dnevno svjetlo — tajmer do zalaska</h4>
-      <div class="field" style="margin-bottom:10px">
-        <label for="sunsetInput">Zalazak (HH:MM)</label>
-        <input type="time" id="sunsetInput" />
-        <button class="btn ghost" id="sunSetNow">Postavi na +2h</button>
-      </div>
-      <div class="deg-pill">Preostalo svjetla: <span id="lightRemain" class="value">—</span></div>
-      <p class="hint" style="margin-top:8px">Jednostavan podsjetnik bez automatskog izračuna astronomije (to možemo dodati kasnije uz geolokaciju).</p>
-    </section>
-
   </main>
 
+  <!-- MINI STRELICA WIDGET (plutajući, donji lijevi kut) -->
+  <div id="miniCompass" aria-label="Mini strelica" hidden>
+    <div class="mini-ring">
+      <div id="miniNeedle" class="mini-needle"></div>
+    </div>
+    <div class="mini-info">
+      <span id="miniMeters">— m</span>
+    </div>
+  </div>
+
   <!-- =========================================================
-       #04 SCRIPT — jezik + logika panela + (kamera, strelica, SOS, svjetlo)
+       #04 SCRIPT (funkcionalnosti)
        ========================================================= -->
   <script>
-  /* 4A) Minimalni jezični helper (ako već imaš globalni, ukloni) */
-  (function applyLang(){
-    try{
-      const lang = document.documentElement.lang || 'hr';
-      document.querySelectorAll('[data-hr],[data-en]').forEach(el=>{
-        const t = el.getAttribute(lang === 'en' ? 'data-en' : 'data-hr');
-        if(t) el.textContent = t;
+    /* ---------------------------------
+       PWA: service worker registracija
+       --------------------------------- */
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    /* ---------------------------------
+       Helperi
+       --------------------------------- */
+    const qs = (s) => document.querySelector(s);
+    const show = (el) => { el.hidden = false; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    const hide = (el) => { el.hidden = true; };
+
+    /* ---------------------------------
+       Paneli — otvaranje
+       --------------------------------- */
+    const panelAid = qs('#panelAid');
+    const panelCamera = qs('#panelCamera');
+    const panelArrow = qs('#panelArrow');
+
+    qs('#openAidPanel')?.addEventListener('click', () => show(panelAid));
+    qs('#openCamPanel')?.addEventListener('click', async () => { show(panelCamera); await startCam(); });
+    qs('#openArrowPanel')?.addEventListener('click', () => { show(panelArrow); openArrow(); });
+
+    /* ---------------------------------
+       Akordeon (Digitalna pomoć)
+       --------------------------------- */
+    (function () {
+      const acc = qs('#aidAcc');
+      if (!acc) return;
+      acc.querySelectorAll('.aid-head').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const body = btn.parentElement.querySelector('.aid-body');
+          const open = btn.classList.toggle('open');
+          body.style.display = open ? 'block' : 'none';
+        });
       });
-    }catch(e){}
-  })();
+    })();
 
-  /* 4B) Otvaranje/zatvaranje panela (generički) */
-  const qs = (s)=>document.querySelector(s);
-  const show = (el)=>{ el.hidden=false; el.scrollIntoView({behavior:'smooth', block:'start'}); };
-  const hide = (el)=>{ el.hidden=true; };
+    /* ---------------------------------
+       Kamera — auto-pejzaž
+       --------------------------------- */
+    const camClose = qs('#camClose');
+    const camVideo = qs('#camVideo');
+    const camCanvas = qs('#camCanvas');
+    const camCtx = camCanvas?.getContext?.('2d', { willReadFrequently: true });
+    const camDot = qs('#camDot');
+    const camMsg = qs('#camMsg');
+    const camThumb = qs('#camThumb');
+    const camManual = qs('#camManual');
+    const camAutoBtn = qs('#camAuto');
 
-  // Gumbi za panele
-  const openAidPanel = qs('#openAidPanel');
-  const openCamPanel = qs('#openCamPanel');
-  const openArrowPanel = qs('#openArrowPanel');
-  const openOfflinePanel = qs('#openOfflinePanel');
-  const openLogPanel = qs('#openLogPanel');
-  const openChecklistPanel = qs('#openChecklistPanel');
-  const openSunPanel = qs('#openSunPanel');
+    const STABILITY_FRAMES = 8;
+    const DIFF_THRESHOLD = 6;
+    const CAPTURE_WIDTH = 2048;
 
-  const panelAid = qs('#panelAid');
-  const panelCamera = qs('#panelCamera');
-  const panelArrow = qs('#panelArrow');
-  const panelOffline = qs('#panelOffline');
-  const panelLog = qs('#panelLog');
-  const panelChecklist = qs('#panelChecklist');
-  const panelSun = qs('#panelSun');
+    let camAutoMode = true;
+    let camPrev = null;
+    let camSteady = 0;
+    let camLastAuto = 0;
+    let camLoopOn = false;
 
-  openAidPanel?.addEventListener('click', ()=>show(panelAid));
-  openCamPanel?.addEventListener('click', async ()=>{ show(panelCamera); await startCam(); });
-  openArrowPanel?.addEventListener('click', ()=>{ show(panelArrow); openArrow(); });
-  openOfflinePanel?.addEventListener('click', ()=>show(panelOffline));
-  openLogPanel?.addEventListener('click', ()=>show(panelLog));
-  openChecklistPanel?.addEventListener('click', ()=>show(panelChecklist));
-  openSunPanel?.addEventListener('click', ()=>show(panelSun));
-
-  /* 4C) Digitalna pomoć — akordeon */
-  (function aidAccordion(){
-    const acc = document.getElementById('aidAcc');
-    if(!acc) return;
-    acc.querySelectorAll('.aid-head').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const body = btn.parentElement.querySelector('.aid-body');
-        const open = btn.classList.toggle('open');
-        body.style.display = open ? 'block' : 'none';
-      });
+    camClose?.addEventListener('click', stopCam);
+    camAutoBtn?.addEventListener('click', () => {
+      camAutoMode = !camAutoMode;
+      camAutoBtn.textContent = camAutoMode ? 'Auto snimanje: ON' : 'Auto snimanje: OFF';
     });
-  })();
+    camManual?.addEventListener('click', captureCam);
 
-  /* 4D) Kamera — Auto-pejzaž (ista logika kao tvoja, malo dotjerano) */
-  const camClose = document.getElementById('camClose');
-  const camVideo = document.getElementById('camVideo');
-  const camCanvas= document.getElementById('camCanvas');
-  const camCtx   = camCanvas?.getContext?.('2d', { willReadFrequently:true });
-  const camDot   = document.getElementById('camDot');
-  const camMsg   = document.getElementById('camMsg');
-  const camThumb = document.getElementById('camThumb');
-  const camManual= document.getElementById('camManual');
-  const camAutoBtn  = document.getElementById('camAuto');
-
-  const STABILITY_FRAMES = 8;
-  const DIFF_THRESHOLD   = 6;
-  const CAPTURE_WIDTH    = 2048;
-  let camAutoMode = true, camPrev = null, camSteady = 0, camLastAuto = 0, camLoopOn=false;
-
-  camClose?.addEventListener('click', stopCam);
-  camAutoBtn?.addEventListener('click', ()=>{
-    camAutoMode = !camAutoMode;
-    camAutoBtn.textContent = camAutoMode ? 'Auto snimanje: ON' : 'Auto snimanje: OFF';
-  });
-  camManual?.addEventListener('click', captureCam);
-
-  async function startCam(){
-    if(camLoopOn) return;
-    try{
-      const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }, audio:false });
-      camVideo.srcObject = stream;
-      await camVideo.play();
-      camCanvas.width  = Math.min(1280, camVideo.videoWidth  || 1280);
-      camCanvas.height = Math.min(720 , camVideo.videoHeight || 720);
-      camLoopOn = true;
-      requestAnimationFrame(camLoop);
-    }catch(e){
-      if(camMsg) camMsg.textContent = 'Greška s kamerom: ' + e.message;
+    async function startCam() {
+      if (camLoopOn) return;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        camVideo.srcObject = stream;
+        await camVideo.play();
+        camCanvas.width = Math.min(1280, camVideo.videoWidth || 1280);
+        camCanvas.height = Math.min(720, camVideo.videoHeight || 720);
+        camLoopOn = true;
+        requestAnimationFrame(camLoop);
+      } catch (e) {
+        camMsg.textContent = 'Greška s kamerom: ' + e.message;
+      }
     }
-  }
-  function stopCam(){
-    if(panelCamera) hide(panelCamera);
-    camLoopOn = false;
-    try{
-      camVideo.pause();
-      const tr = camVideo.srcObject?.getTracks?.() || [];
-      tr.forEach(t=>t.stop());
-      camVideo.srcObject = null;
-    }catch(e){}
-  }
 
-  function lumaAt(data,i){ const r=data[i], g=data[i+1], b=data[i+2]; return 0.2126*r + 0.7152*g + 0.0722*b; }
-  function frameDiff(a,b){
-    const da=a.data, db=b.data; let sum=0, len=da.length/4;
-    for(let p=0,i=0;p<len;p++,i+=4) sum += Math.abs(lumaAt(da,i) - lumaAt(db,i));
-    return sum/len;
-  }
-  function autoContrast(img){
-    const d=img.data, len=d.length/4; let lo=255, hi=0;
-    for(let i=0;i<len;i++){ const idx=i*4; const L=lumaAt(d,idx); if(L<lo)lo=L; if(L>hi)hi=L; }
-    const range=Math.max(1,hi-lo), scale=255/range;
-    for(let i=0;i<len;i++){ const idx=i*4;
-      d[idx]   = Math.min(255, Math.max(0, (d[idx]  -lo)*scale));
-      d[idx+1] = Math.min(255, Math.max(0, (d[idx+1]-lo)*scale));
-      d[idx+2] = Math.min(255, Math.max(0, (d[idx+2]-lo)*scale));
+    function stopCam() {
+      hide(panelCamera);
+      camLoopOn = false;
+      try {
+        camVideo.pause();
+        camVideo.srcObject?.getTracks?.().forEach(t => t.stop());
+        camVideo.srcObject = null;
+      } catch (e) {}
     }
-    return img;
-  }
-  function unsharp(img, amount=0.6, radius=1){
-    const w=img.width, h=img.height, s=img.data, out=new Uint8ClampedArray(s.length);
-    for(let y=0;y<h;y++){
-      for(let x=0;x<w;x++){
-        let r=0,g=0,b=0,c=0;
-        for(let oy=-radius; oy<=radius; oy++){
-          const yy=Math.min(h-1,Math.max(0,y+oy));
-          for(let ox=-radius; ox<=radius; ox++){
-            const xx=Math.min(w-1,Math.max(0,x+ox));
-            const i=(yy*w+xx)*4; r+=s[i]; g+=s[i+1]; b+=s[i+2]; c++;
+
+    function lumaAt(d, i) {
+      return 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+    }
+
+    function frameDiff(a, b) {
+      const da = a.data;
+      const db = b.data;
+      let s = 0;
+      const n = da.length / 4;
+      for (let p = 0, i = 0; p < n; p++, i += 4) {
+        s += Math.abs(lumaAt(da, i) - lumaAt(db, i));
+      }
+      return s / n;
+    }
+
+    function autoContrast(img) {
+      const d = img.data;
+      const n = d.length / 4;
+      let lo = 255;
+      let hi = 0;
+      for (let i = 0; i < n; i++) {
+        const idx = i * 4;
+        const L = lumaAt(d, idx);
+        if (L < lo) lo = L;
+        if (L > hi) hi = L;
+      }
+      const range = Math.max(1, hi - lo);
+      const scale = 255 / range;
+      for (let i = 0; i < n; i++) {
+        const idx = i * 4;
+        d[idx] = Math.min(255, Math.max(0, (d[idx] - lo) * scale));
+        d[idx + 1] = Math.min(255, Math.max(0, (d[idx + 1] - lo) * scale));
+        d[idx + 2] = Math.min(255, Math.max(0, (d[idx + 2] - lo) * scale));
+      }
+      return img;
+    }
+
+    function unsharp(img, amount = 0.6, radius = 1) {
+      const w = img.width;
+      const h = img.height;
+      const s = img.data;
+      const out = new Uint8ClampedArray(s.length);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let r = 0, g = 0, b = 0, c = 0;
+          for (let oy = -radius; oy <= radius; oy++) {
+            const yy = Math.min(h - 1, Math.max(0, y + oy));
+            for (let ox = -radius; ox <= radius; ox++) {
+              const xx = Math.min(w - 1, Math.max(0, x + ox));
+              const i = (yy * w + xx) * 4;
+              r += s[i];
+              g += s[i + 1];
+              b += s[i + 2];
+              c++;
+            }
+          }
+          const i = (y * w + x) * 4;
+          const br = r / c;
+          const bg = g / c;
+          const bb = b / c;
+          out[i] = Math.min(255, Math.max(0, s[i] + amount * (s[i] - br)));
+          out[i + 1] = Math.min(255, Math.max(0, s[i + 1] + amount * (s[i + 1] - bg)));
+          out[i + 2] = Math.min(255, Math.max(0, s[i + 2] + amount * (s[i + 2] - bb)));
+          out[i + 3] = s[i + 3];
+        }
+      }
+      img.data.set(out);
+      return img;
+    }
+
+    async function camLoop() {
+      if (!camLoopOn) return;
+      if (camVideo.readyState >= 2) {
+        camCtx.drawImage(camVideo, 0, 0, camCanvas.width, camCanvas.height);
+        const cur = camCtx.getImageData(0, 0, camCanvas.width, camCanvas.height);
+        if (camPrev) {
+          const diff = frameDiff(cur, camPrev);
+          if (diff < DIFF_THRESHOLD) {
+            camSteady++;
+            camDot.classList.add('ok');
+            camMsg.textContent = `Mirno — ${camSteady}/${STABILITY_FRAMES}`;
+          } else {
+            camSteady = 0;
+            camDot.classList.remove('ok');
+            camMsg.textContent = `Nemirno (${Math.round(diff)}), drži mirnije`;
+          }
+          if (camSteady >= STABILITY_FRAMES && camAutoMode) {
+            const now = Date.now();
+            if (now - camLastAuto > 3000) {
+              camLastAuto = now;
+              await captureCam();
+            }
+            camSteady = 0;
           }
         }
-        const i=(y*w+x)*4, br=r/c, bg=g/c, bb=b/c;
-        out[i]   = Math.min(255, Math.max(0, s[i]   + amount*(s[i]  -br)));
-        out[i+1] = Math.min(255, Math.max(0, s[i+1] + amount*(s[i+1]-bg)));
-        out[i+2] = Math.min(255, Math.max(0, s[i+2] + amount*(s[i+2]-bb)));
-        out[i+3] = s[i+3];
+        camPrev = cur;
       }
+      requestAnimationFrame(camLoop);
     }
-    img.data.set(out); return img;
-  }
-  async function camLoop(){
-    if(!camLoopOn) return;
-    if(camVideo.readyState >= 2){
-      camCtx.drawImage(camVideo, 0,0, camCanvas.width, camCanvas.height);
-      const cur = camCtx.getImageData(0,0,camCanvas.width,camCanvas.height);
-      if(camPrev){
-        const diff = frameDiff(cur, camPrev);
-        if(diff < DIFF_THRESHOLD){
-          camSteady++; camDot.classList.add('ok');
-          camMsg.textContent = `Mirno — ${camSteady}/${STABILITY_FRAMES}`;
-        }else{
-          camSteady=0; camDot.classList.remove('ok');
-          camMsg.textContent = `Nemirno (${Math.round(diff)}), drži mirnije`;
+
+    async function captureCam() {
+      camMsg.textContent = 'Snimam i obrađujem…';
+      try {
+        const track = camVideo.srcObject?.getVideoTracks?.()[0];
+        if (track && window.ImageCapture) {
+          const ic = new ImageCapture(track);
+          if (ic.takePhoto) {
+            const blob = await ic.takePhoto();
+            const bmp = await createImageBitmap(blob);
+            const r = bmp.width / bmp.height;
+            const W = Math.min(CAPTURE_WIDTH, bmp.width);
+            const H = Math.round(W / r);
+            camCanvas.width = W;
+            camCanvas.height = H;
+            camCtx.drawImage(bmp, 0, 0, W, H);
+            camCtx.filter = 'contrast(1.06) saturate(1.08)';
+            camCtx.drawImage(camCanvas, 0, 0);
+            camCtx.filter = 'none';
+            let id = camCtx.getImageData(0, 0, W, H);
+            id = autoContrast(id);
+            id = unsharp(id, 0.6, 1);
+            camCtx.putImageData(id, 0, 0);
+            const url = camCanvas.toDataURL('image/jpeg', 0.92);
+            camThumb.src = url;
+            camMsg.innerHTML = 'Gotovo (ImageCapture). <a style="margin-left:10px" download="mountain-adventures-photo.jpg" href="' + url + '">Preuzmi</a>';
+            return;
+          }
         }
-        if(camSteady>=STABILITY_FRAMES && camAutoMode){
-          const now=Date.now();
-          if(now - camLastAuto > 3000){ camLastAuto=now; await captureCam(); }
-          camSteady=0;
-        }
-      }
-      camPrev = cur;
+      } catch (e) { /* fallback dolje */ }
+
+      const r = (camVideo.videoWidth || 1080) / (camVideo.videoHeight || 1920);
+      const W = Math.min(CAPTURE_WIDTH, camVideo.videoWidth || 1280);
+      const H = Math.round(W / r);
+      camCanvas.width = W;
+      camCanvas.height = H;
+      camCtx.drawImage(camVideo, 0, 0, W, H);
+      camCtx.filter = 'contrast(1.06) saturate(1.08)';
+      camCtx.drawImage(camCanvas, 0, 0);
+      camCtx.filter = 'none';
+      let id = camCtx.getImageData(0, 0, W, H);
+      id = autoContrast(id);
+      id = unsharp(id, 0.6, 1);
+      camCtx.putImageData(id, 0, 0);
+      const url = camCanvas.toDataURL('image/jpeg', 0.92);
+      camThumb.src = url;
+      camMsg.innerHTML = 'Gotovo. <a style="margin-left:10px" download="mountain-adventures-photo.jpg" href="' + url + '">Preuzmi</a>';
     }
-    requestAnimationFrame(camLoop);
-  }
-  async function captureCam(){
-    camMsg.textContent='Snimam i obrađujem…';
-    try{
-      const track = camVideo.srcObject?.getVideoTracks?.()[0];
-      if(track && window.ImageCapture){
-        const ic = new ImageCapture(track);
-        if(ic.takePhoto){
-          const blob = await ic.takePhoto();
-          const bmp = await createImageBitmap(blob);
-          const ratio = bmp.width / bmp.height;
-          const W = Math.min(CAPTURE_WIDTH, bmp.width), H = Math.round(W/ratio);
-          camCanvas.width=W; camCanvas.height=H;
-          camCtx.drawImage(bmp,0,0,W,H);
-          camCtx.filter='contrast(1.06) saturate(1.08)'; camCtx.drawImage(camCanvas,0,0); camCtx.filter='none';
-          let id = camCtx.getImageData(0,0,W,H);
-          id = autoContrast(id); id = unsharp(id,0.6,1);
-          camCtx.putImageData(id,0,0);
-          const url = camCanvas.toDataURL('image/jpeg', 0.92);
-          camThumb.src = url;
-          camMsg.innerHTML = 'Gotovo (ImageCapture). <a style="margin-left:10px" download="mountain-adventures-photo.jpg" href="'+url+'">Preuzmi</a>';
-          return;
-        }
-      }
-    }catch(e){ /* fallback dolje */ }
-    const ratio = (camVideo.videoWidth||1080)/(camVideo.videoHeight||1920);
-    const W = Math.min(CAPTURE_WIDTH, camVideo.videoWidth || 1280);
-    const H = Math.round(W/ratio);
-    camCanvas.width=W; camCanvas.height=H;
-    camCtx.drawImage(camVideo,0,0,W,H);
-    camCtx.filter='contrast(1.06) saturate(1.08)'; camCtx.drawImage(camCanvas,0,0); camCtx.filter='none';
-    let id = camCtx.getImageData(0,0,W,H);
-    id = autoContrast(id); id = unsharp(id,0.6,1);
-    camCtx.putImageData(id,0,0);
-    const url = camCanvas.toDataURL('image/jpeg', 0.92);
-    camThumb.src = url;
-    camMsg.innerHTML = 'Gotovo. <a style="margin-left:10px" download="mountain-adventures-photo.jpg" href="'+url+'">Preuzmi</a>';
-  }
 
-  /* 4E) Pametna strelica — senzor + meta */
-  const arrowClose = document.getElementById('arrowClose');
-  const arrowNeedle = document.getElementById('arrowNeedle');
-  const valueHeading= document.getElementById('valueHeading');
-  const valueTarget = document.getElementById('valueTarget');
-  const valueDelta  = document.getElementById('valueDelta');
-  const deltaHint   = document.getElementById('deltaHint');
-  const targetInput  = document.getElementById('targetInput');
-  const setTargetBtn = document.getElementById('setTargetBtn');
-  const gpsStubBtn   = document.getElementById('gpsStubBtn');
+    /* ---------------------------------
+       Pametna strelica + GPX
+       --------------------------------- */
+    const arrowClose = qs('#arrowClose');
+    const arrowNeedle = qs('#arrowNeedle');
+    const valueHeading = qs('#valueHeading');
+    const valueTarget = qs('#valueTarget');
+    const valueDelta = qs('#valueDelta');
+    const deltaHint = qs('#deltaHint');
 
-  let targetAzimuth = 0, deviceHeading = null, arrowOpenFlag = false;
+    const gpxInput = qs('#gpxInput');
+    const loadGpxBtn = qs('#loadGpxBtn');
+    const alertMetersInput = qs('#alertMeters');
+    const toggleTrackBtn = qs('#toggleTrackBtn');
 
-  function openArrow(){
-    arrowOpenFlag = true;
-    if (typeof(DeviceOrientationEvent) !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-      DeviceOrientationEvent.requestPermission().then(state=>{
-        if(state === 'granted') window.addEventListener('deviceorientation', onOrient, true);
-      }).catch(()=>{});
-    }else{
-      window.addEventListener('deviceorientation', onOrient, true);
-    }
-  }
-  arrowClose?.addEventListener('click', ()=>{
-    hide(panelArrow); arrowOpenFlag = false;
-    window.removeEventListener('deviceorientation', onOrient, true);
-  });
+    const trackStatusPill = qs('#trackStatusPill');
+    const onTrackChip = qs('#onTrackChip');
+    const offDistChip = qs('#offDistChip');
 
-  setTargetBtn?.addEventListener('click', ()=>{
-    const v = Number(targetInput.value);
-    if(Number.isFinite(v)){
-      targetAzimuth = ((v%360)+360)%360;
+    let targetAzimuth = 0;
+    let deviceHeading = null;
+    let arrowOpenFlag = false;
+    let useAOS = false;
+
+    let gpxTrack = null;
+    let watchId = null;
+    let alertMeters = 30;
+
+    let audioCtx = null;
+    let audioOsc = null;
+    let audioGain = null;
+    let offBeepArmed = false;
+
+    function setTargetAzimuth(deg) {
+      targetAzimuth = ((deg % 360) + 360) % 360;
       valueTarget.textContent = targetAzimuth.toFixed(0);
       updateArrow();
     }
-  });
-  gpsStubBtn?.addEventListener('click', ()=>{
-    alert('GPS heading dolazi kasnije: čitanje navigator.geolocation + heading (gdje je podržano) ili bearing do lat/lon.');
-  });
 
-  function onOrient(e){
-    if(!arrowOpenFlag) return;
-    let heading = null;
-    if(typeof e.webkitCompassHeading === 'number' && !Number.isNaN(e.webkitCompassHeading)){
-      heading = e.webkitCompassHeading; // iOS
-    }else if(typeof e.alpha === 'number'){
-      heading = 360 - e.alpha; // približno za Android
-    }
-    if(heading == null) return;
-    deviceHeading = ((heading%360)+360)%360;
-    valueHeading.textContent = deviceHeading.toFixed(0);
-    updateArrow();
-  }
-  function updateArrow(){
-    if(deviceHeading == null) return;
-    const delta = angularDelta(deviceHeading, targetAzimuth);
-    valueDelta.textContent = Math.abs(delta).toFixed(0);
-    deltaHint.textContent = delta > 0 ? 'Okreći udesno →' : (delta < 0 ? 'Okreći ulijevo ←' : 'Poravnato ✓');
-    deltaHint.className = delta === 0 ? 'ok' : 'warn';
-    arrowNeedle.style.transform = `rotate(${delta}deg)`;
-  }
-  function angularDelta(current, target){
-    return ((target - current + 540) % 360) - 180; // (-180,180]
-  }
-
-  /* 4F) SOS zviždaljka — ••• ——— ••• uz WebAudio */
-  let sosCtx=null, sosOsc=null, sosGain=null, sosPlaying=false;
-  const playBtn = document.getElementById('playSOS');
-  const stopBtn = document.getElementById('stopSOS');
-
-  playBtn?.addEventListener('click', async ()=>{
-    if(sosPlaying) return;
-    sosCtx = new (window.AudioContext || window.webkitAudioContext)();
-    sosGain = sosCtx.createGain();
-    sosGain.gain.value = 0.0001;
-    sosGain.connect(sosCtx.destination);
-
-    sosOsc = sosCtx.createOscillator();
-    sosOsc.type='square';
-    sosOsc.frequency.value = 4000; // 4 kHz, probijajući
-    sosOsc.connect(sosGain);
-    sosOsc.start();
-
-    // obrazac: ••• (3 kratka) ——— (3 duga) ••• (3 kratka)
-    sosPlaying = true;
-    const now = sosCtx.currentTime;
-    const short=0.15, long=0.45, gap=0.12, blockGap=0.35;
-
-    function beep(at, dur){
-      sosGain.gain.cancelScheduledValues(at);
-      sosGain.gain.setValueAtTime(0.001, at);
-      sosGain.gain.exponentialRampToValueAtTime(0.2, at+0.02);
-      sosGain.gain.setValueAtTime(0.2, at+dur-0.04);
-      sosGain.gain.exponentialRampToValueAtTime(0.001, at+dur);
+    function angularDelta(current, target) {
+      return ((target - current + 540) % 360) - 180;
     }
 
-    let t=now+0.05;
-    // •••
-    for(let i=0;i<3;i++){ beep(t,short); t+=short+gap; }
-    t+=blockGap;
-    // ———
-    for(let i=0;i<3;i++){ beep(t,long); t+=long+gap; }
-    t+=blockGap;
-    // •••
-    for(let i=0;i<3;i++){ beep(t,short); t+=short+gap; }
-
-    // loop svakih ~6 s dok ne stane
-    function loop(){
-      if(!sosPlaying) return;
-      let tn = sosCtx.currentTime+0.3;
-      // ponovi uz isti obrazac
-      for(let i=0;i<3;i++){ beep(tn,short); tn+=short+gap; }
-      tn+=blockGap;
-      for(let i=0;i<3;i++){ beep(tn,long); tn+=long+gap; }
-      tn+=blockGap;
-      for(let i=0;i<3;i++){ beep(tn,short); tn+=short+gap; }
-      setTimeout(loop, 6000);
+    function updateArrow() {
+      if (deviceHeading == null) return;
+      const d = angularDelta(deviceHeading, targetAzimuth);
+      valueDelta.textContent = Math.abs(d).toFixed(0);
+      deltaHint.textContent = d > 0 ? 'Okreći udesno →' : (d < 0 ? 'Okreći ulijevo ←' : 'Poravnato ✓');
+      deltaHint.className = d === 0 ? 'ok' : 'warn';
+      arrowNeedle.style.transform = `rotate(${d}deg)`;
     }
-    setTimeout(loop, 2200);
-  });
 
-  stopBtn?.addEventListener('click', ()=>{
-    sosPlaying=false;
-    try{
-      sosOsc?.stop();
-      sosOsc?.disconnect();
-      sosGain?.disconnect();
-      sosCtx?.close();
-    }catch(e){}
-    sosCtx=sosOsc=sosGain=null;
-  });
+    function openArrow() {
+      arrowOpenFlag = true;
 
-  /* 4G) Dnevno svjetlo — jednostavan tajmer do zalaska */
-  const sunsetInput = document.getElementById('sunsetInput');
-  const lightRemain = document.getElementById('lightRemain');
-  const sunSetNowBtn = document.getElementById('sunSetNow');
+      // Tilt-kompenzirani heading (AbsoluteOrientationSensor), ako postoji
+      try {
+        if ('AbsoluteOrientationSensor' in window) {
+          const aos = new AbsoluteOrientationSensor({ frequency: 30, referenceFrame: 'device' });
+          aos.addEventListener('reading', () => {
+            const [x, y, z, w] = aos.quaternion;
+            const siny = 2 * (w * z + x * y);
+            const cosy = 1 - 2 * (y * y + z * z);
+            let yaw = Math.atan2(siny, cosy) * 180 / Math.PI;
+            yaw = (yaw + 360) % 360;
+            deviceHeading = yaw;
+            valueHeading.textContent = deviceHeading.toFixed(0);
+            updateArrow();
+          });
+          aos.start();
+          useAOS = true;
+        }
+      } catch (e) {
+        useAOS = false;
+      }
 
-  function updateLight(){
-    if(!sunsetInput?.value){ lightRemain.textContent='—'; return; }
-    const [hh,mm] = sunsetInput.value.split(':').map(Number);
-    const now = new Date();
-    const sunset = new Date();
-    sunset.setHours(hh||0, mm||0, 0, 0);
-    const diffMs = sunset - now;
-    if(diffMs<=0){ lightRemain.textContent='0h 00m'; return; }
-    const h = Math.floor(diffMs/3600000);
-    const m = Math.floor((diffMs%3600000)/60000);
-    lightRemain.textContent = `${h}h ${String(m).padStart(2,'0')}m`;
-  }
-  sunsetInput?.addEventListener('change', updateLight);
-  setInterval(updateLight, 30000);
-  sunSetNowBtn?.addEventListener('click', ()=>{
-    const now = new Date();
-    const later = new Date(now.getTime()+2*3600000);
-    sunsetInput.value = `${String(later.getHours()).padStart(2,'0')}:${String(later.getMinutes()).padStart(2,'0')}`;
-    updateLight();
-  });
+      // Fallback: deviceorientation (iOS/Android)
+      if (!useAOS) {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission().then(state => {
+            if (state === 'granted') window.addEventListener('deviceorientation', onOrient, true);
+          }).catch(() => {});
+        } else {
+          window.addEventListener('deviceorientation', onOrient, true);
+        }
+      }
+    }
 
+    function onOrient(e) {
+      if (!arrowOpenFlag) return;
+      let heading = null;
+      if (typeof e.webkitCompassHeading === 'number' && !Number.isNaN(e.webkitCompassHeading)) {
+        heading = e.webkitCompassHeading; // iOS
+      } else if (typeof e.alpha === 'number') {
+        heading = 360 - e.alpha; // Android approx
+      }
+      if (heading == null) return;
+      deviceHeading = ((heading % 360) + 360) % 360;
+      valueHeading.textContent = deviceHeading.toFixed(0);
+      updateArrow();
+    }
+
+    loadGpxBtn?.addEventListener('click', async () => {
+      const f = gpxInput?.files?.[0];
+      if (!f) {
+        trackStatusPill.textContent = 'GPX: nema datoteke';
+        return;
+      }
+      try {
+        const txt = await f.text();
+        gpxTrack = parseGpxToTrack(txt);
+        trackStatusPill.textContent = `GPX: ${gpxTrack.length} točaka`;
+        onTrackChip.textContent = '🧭 status: čeka GPS…';
+        offDistChip.textContent = '↔︎ udaljenost: —';
+      } catch (e) {
+        trackStatusPill.textContent = 'GPX: greška pri učitavanju';
+        console.error(e);
+      }
+    });
+
+    function parseGpxToTrack(xml) {
+      const dom = new DOMParser().parseFromString(xml, 'application/xml');
+      let pts = [...dom.querySelectorAll('trkpt')].map(n => ({ lat: +n.getAttribute('lat'), lon: +n.getAttribute('lon') }));
+      if (!pts.length) {
+        pts = [...dom.querySelectorAll('rtept')].map(n => ({ lat: +n.getAttribute('lat'), lon: +n.getAttribute('lon') }));
+      }
+      return pts;
+    }
+
+    toggleTrackBtn?.addEventListener('click', () => {
+      alertMeters = Math.max(5, Number(alertMetersInput.value) || 30);
+      if (watchId == null) {
+        if (!gpxTrack || gpxTrack.length < 2) {
+          trackStatusPill.textContent = 'GPX: učitaj trag prvo';
+          return;
+        }
+        startGeoWatch();
+        toggleTrackBtn.textContent = 'Zaustavi praćenje';
+      } else {
+        stopGeoWatch();
+        toggleTrackBtn.textContent = 'Pokreni praćenje';
+      }
+    });
+
+    function startGeoWatch() {
+      try {
+        watchId = navigator.geolocation.watchPosition(onPos, onGeoErr, { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 });
+        trackStatusPill.textContent = 'GPS: praćenje uključeno';
+        offBeepArmed = true;
+        showMini();
+      } catch (e) {
+        trackStatusPill.textContent = 'GPS: ne mogu pokrenuti';
+      }
+    }
+
+    function stopGeoWatch() {
+      if (watchId != null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      trackStatusPill.textContent = 'GPS: zaustavljeno';
+      setArrowColor('ok');
+      hideMini();
+    }
+
+    function onGeoErr(err) {
+      trackStatusPill.textContent = 'GPS greška: ' + (err?.message || '');
+    }
+
+    const R = 6371000;
+    const toRad = (x) => x * Math.PI / 180;
+
+    function bearingBetween(lat1, lon1, lat2, lon2) {
+      const φ1 = toRad(lat1);
+      const φ2 = toRad(lat2);
+      const Δλ = toRad(lon2 - lon1);
+      const y = Math.sin(Δλ) * Math.cos(φ2);
+      const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+      return ((Math.atan2(y, x) * 180 / Math.PI) + 360) % 360;
+    }
+
+    function haversine(lat1, lon1, lat2, lon2) {
+      const dφ = toRad(lat2 - lat1);
+      const dλ = toRad(lon2 - lon1);
+      const a = Math.sin(dφ / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dλ / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    function toXY(lat, lon, lat0) {
+      const x = toRad(lon) * Math.cos(toRad(lat0)) * R;
+      const y = toRad(lat) * R;
+      return { x, y };
+    }
+
+    function nearestPointOnTrack(p, track) {
+      let best = { lat: track[0].lat, lon: track[0].lon, distM: Infinity, segIndex: 0 };
+      const lat0 = p.lat;
+      const P = toXY(p.lat, p.lon, lat0);
+      for (let i = 0; i < track.length - 1; i++) {
+        const A = toXY(track[i].lat, track[i].lon, lat0);
+        const B = toXY(track[i + 1].lat, track[i + 1].lon, lat0);
+        const ABx = B.x - A.x;
+        const ABy = B.y - A.y;
+        const APx = P.x - A.x;
+        const APy = P.y - A.y;
+        const ab2 = ABx * ABx + ABy * ABy || 1;
+        let t = (APx * ABx + APy * ABy) / ab2;
+        t = Math.max(0, Math.min(1, t));
+        const Qx = A.x + t * ABx;
+        const Qy = A.y + t * ABy;
+        const lon = (Qx / (R * Math.cos(toRad(lat0)))) * (180 / Math.PI);
+        const lat = (Qy / R) * (180 / Math.PI);
+        const d = haversine(p.lat, p.lon, lat, lon);
+        if (d < best.distM) {
+          best = { lat, lon, distM: d, segIndex: i };
+        }
+      }
+      return best;
+    }
+
+    function onPos(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      if (!gpxTrack || gpxTrack.length < 2) return;
+
+      const nearest = nearestPointOnTrack({ lat, lon }, gpxTrack);
+      const dist = nearest.distM;
+
+      if (dist <= alertMeters * 0.6) {
+        setArrowColor('ok');
+        onTrackChip.textContent = '🧭 status: na tragu ✓';
+      } else if (dist <= alertMeters) {
+        setArrowColor('warn');
+        onTrackChip.textContent = '🧭 status: blizu ruba';
+      } else {
+        setArrowColor('bad');
+        onTrackChip.textContent = '🧭 status: izvan traga';
+        if (offBeepArmed) {
+          offBeepArmed = false;
+          beepOnce(1200, 300);
+          setTimeout(() => offBeepArmed = true, 8000);
+        }
+      }
+
+      offDistChip.textContent = `↔︎ udaljenost: ${dist.toFixed(0)} m`;
+
+      const forwardIdx = Math.min(gpxTrack.length - 1, nearest.segIndex + 1);
+      const tgt = gpxTrack[forwardIdx];
+      const bearing = bearingBetween(lat, lon, tgt.lat, tgt.lon);
+      setTargetAzimuth(bearing);
+
+      miniMeters.textContent = `${dist.toFixed(0)} m`;
+      updateMiniRotation(angularDelta(deviceHeading ?? 0, bearing));
+      if (dist <= alertMeters * 0.6) setMiniColor('ok');
+      else if (dist <= alertMeters) setMiniColor('warn');
+      else setMiniColor('bad');
+    }
+
+    function setArrowColor(mode) {
+      arrowNeedle.classList.remove('warn', 'bad');
+      if (mode === 'ok') {
+        arrowNeedle.style.borderBottomColor = '#2aa96b';
+      } else if (mode === 'warn') {
+        arrowNeedle.classList.add('warn');
+      } else if (mode === 'bad') {
+        arrowNeedle.classList.add('bad');
+      }
+    }
+
+    function beepOnce(freq = 1000, durMs = 250) {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const t = audioCtx.currentTime;
+        audioOsc = audioCtx.createOscillator();
+        audioGain = audioCtx.createGain();
+        audioOsc.frequency.value = freq;
+        audioOsc.type = 'sine';
+        audioGain.gain.value = 0.0001;
+        audioOsc.connect(audioGain);
+        audioGain.connect(audioCtx.destination);
+        audioOsc.start();
+        audioGain.gain.exponentialRampToValueAtTime(0.2, t + 0.02);
+        audioGain.gain.setValueAtTime(0.2, t + durMs / 1000 - 0.04);
+        audioGain.gain.exponentialRampToValueAtTime(0.0001, t + durMs / 1000);
+        audioOsc.stop(t + durMs / 1000 + 0.01);
+      } catch (e) {}
+    }
+
+    qs('#arrowClose')?.addEventListener('click', () => {
+      hide(panelArrow);
+      arrowOpenFlag = false;
+      window.removeEventListener('deviceorientation', onOrient, true);
+      stopGeoWatch();
+    });
+
+    /* ---------------------------------
+       MINI WIDGET (prikaz, boja, drag)
+       --------------------------------- */
+    const mini = qs('#miniCompass');
+    const miniNeedle = qs('#miniNeedle');
+    const miniMeters = qs('#miniMeters');
+
+    function showMini() {
+      if (mini) mini.hidden = false;
+    }
+
+    function hideMini() {
+      if (mini) mini.hidden = true;
+    }
+
+    function setMiniColor(mode) {
+      miniNeedle.classList.remove('warn', 'bad');
+      if (mode === 'ok') {
+        miniNeedle.style.borderBottomColor = '#2aa96b';
+      } else if (mode === 'warn') {
+        miniNeedle.classList.add('warn');
+      } else if (mode === 'bad') {
+        miniNeedle.classList.add('bad');
+      }
+    }
+
+    function updateMiniRotation(d) {
+      if (Number.isFinite(d)) {
+        miniNeedle.style.transform = `rotate(${d}deg)`;
+      }
+    }
+
+    (function enableMiniDrag() {
+      if (!mini) return;
+      let sx = 0;
+      let sy = 0;
+      let ox = mini.offsetLeft;
+      let oy = mini.offsetTop;
+      let dragging = false;
+
+      function start(ev) {
+        dragging = true;
+        const pt = ev.touches ? ev.touches[0] : ev;
+        sx = pt.clientX;
+        sy = pt.clientY;
+        ox = mini.offsetLeft;
+        oy = mini.offsetTop;
+        ev.preventDefault();
+      }
+
+      function move(ev) {
+        if (!dragging) return;
+        const pt = ev.touches ? ev.touches[0] : ev;
+        const dx = pt.clientX - sx;
+        const dy = pt.clientY - sy;
+        mini.style.left = Math.max(6, ox + dx) + 'px';
+        mini.style.top = Math.max(6, oy + dy) + 'px';
+      }
+
+      function end() {
+        dragging = false;
+      }
+
+      mini.addEventListener('mousedown', start);
+      mini.addEventListener('touchstart', start, { passive: false });
+      window.addEventListener('mousemove', move);
+      window.addEventListener('touchmove', move, { passive: false });
+      window.addEventListener('mouseup', end);
+      window.addEventListener('touchend', end);
+    })();
+
+    /* ---------------------------------
+       Pauza u pozadini (štedi bateriju)
+       --------------------------------- */
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        if (watchId != null) {
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+        }
+        if (!useAOS) {
+          window.removeEventListener('deviceorientation', onOrient, true);
+        }
+      } else {
+        if (!useAOS) {
+          window.addEventListener('deviceorientation', onOrient, true);
+        }
+        if (gpxTrack && gpxTrack.length > 1 && toggleTrackBtn?.textContent?.includes('Zaustavi')) {
+          startGeoWatch();
+        }
+      }
+    });
   </script>
 </body>
 </html>
