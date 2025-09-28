@@ -33,7 +33,7 @@
       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     }
 
-    /* NAVBAR (kao u staze.html stil) */
+    /* NAVBAR */
     .navbar{
       position:sticky;top:0;z-index:1000;
       background:linear-gradient(#14171b,#0e0f10);border-bottom:1px solid var(--line);
@@ -126,13 +126,23 @@
     input[type="number"]{width:110px}
 
     /* Mini strelica (HUD) */
-    #miniCompass{position:fixed;left:10px;bottom:10px;z-index:9999;width:78px;height:78px;border-radius:14px;padding:8px;background:rgba(18,20,22,.9);border:1px solid var(--line);backdrop-filter:blur(6px);box-shadow:0 8px 24px rgba(0,0,0,.35);touch-action:none;user-select:none}
+    #miniCompass{
+      position:fixed;left:10px;bottom:10px;z-index:9999;width:78px;height:78px;border-radius:14px;padding:8px;
+      background:rgba(18,20,22,.9);border:1px solid var(--line);backdrop-filter:blur(6px);box-shadow:0 8px 24px rgba(0,0,0,.35);
+      touch-action:none;user-select:none
+    }
     #miniCompass .mini-ring{width:100%;height:52px;border-radius:999px;border:1px dashed #2a2f36;display:grid;place-items:center;position:relative;overflow:hidden}
     #miniCompass .mini-needle{width:40px;height:6px;background:#2aa96b;border-radius:4px;transform-origin:0% 50%;transition:transform .14s ease-out, background .2s ease-out}
     #miniCompass .mini-needle.warn{background:#e09f3e}
     #miniCompass .mini-needle.bad{background:#e44747}
     #miniCompass .mini-info{text-align:center;font-size:11px;color:var(--muted);margin-top:4px}
     #miniCompass[hidden]{display:none}
+    /* gumb za pop-up */
+    .mini-pop{
+      position:absolute;top:6px;right:6px;border:1px solid var(--line);background:#222833;color:#cfd6de;
+      border-radius:8px;font-size:12px;line-height:1;padding:4px 6px;cursor:pointer;opacity:.9
+    }
+    .mini-pop:hover{opacity:1}
 
     /* Banner & modal */
     .banner{position:fixed;left:0;right:0;bottom:0;background:#2b2f36;border-top:1px solid var(--line);padding:8px 12px;display:flex;align-items:center;gap:8px;z-index:10000}
@@ -470,6 +480,7 @@
 
   <!-- MINI STRELICA WIDGET (HUD) -->
   <div id="miniCompass" aria-label="Mini strelica" hidden>
+    <button id="miniPop" class="mini-pop" title="Pop-up prozorčić (ako je podržano)">⇱</button>
     <div class="mini-ring"><div id="miniNeedle" class="mini-needle"></div></div>
     <div class="mini-info"><span id="miniMeters">— m</span></div>
   </div>
@@ -602,6 +613,7 @@
 
     /* =========================================================
        STRELICA 3D (level-lock) + GPX + Backtrack + Rezervna kazeta
+       + MINI POP-UP (Document Picture-in-Picture)
        ========================================================= */
     // UI refs
     const arrowEl=qs('#arrow3d'),
@@ -612,7 +624,10 @@
           gpsBanner=qs('#gpsBanner'), bannerHide=qs('#bannerHide'),
           tapeModalBack=qs('#tapeModalBack'), tapeConfirm=qs('#tapeConfirm'), tapeCancel=qs('#tapeCancel');
 
-    const mini=qs('#miniCompass'), miniNeedle=qs('#miniNeedle'), miniMeters=qs('#miniMeters');
+    const mini=qs('#miniCompass'), miniNeedle=qs('#miniNeedle'), miniMeters=qs('#miniMeters'), miniPopBtn=qs('#miniPop');
+
+    // PiP refs
+    let pipWin=null, pipNeedle=null, pipMeters=null;
 
     // Stanje
     const R=6371000, RAD=Math.PI/180, DEG=180/Math.PI;
@@ -623,9 +638,9 @@
 
     // Level-lock & smoothing
     let lastAngleDeg=0;
-    const SMOOTHING=0.18;        // nisko → življe; visoko → tromije
-    const DEAD_BAND_DEG=3;       // ne diraj ispod ±3° (anti-jitter)
-    const MAX_ROT_SPEED_DPS=240; // cap rotacije u deg/sec
+    const SMOOTHING=0.18;
+    const DEAD_BAND_DEG=3;
+    const MAX_ROT_SPEED_DPS=240;
 
     // pragovi
     const OK_THRESHOLD_M=5, YELLOW_MAX_M=10;
@@ -728,16 +743,83 @@
     }
     function showMini(){ mini.hidden=false; }
     function hideMini(){ mini.hidden=true; }
-    function setMiniColor(mode){
-      miniNeedle.classList.remove('warn','bad');
-      if(mode==='ok') { /* zelena */ }
-      else if(mode==='warn') miniNeedle.classList.add('warn');
-      else if(mode==='bad') miniNeedle.classList.add('bad');
+
+    // PiP: otvori plutajući prozor s mini HUD-om
+    async function openMiniPiP(){
+      if(!('documentPictureInPicture' in window)){
+        alert('Pop-up nije podržan u ovom pregledniku. Mini HUD ostaje fiksno prikazan.');
+        return;
+      }
+      try{
+        // Dimenzije malog prozorčića
+        const pip = await documentPictureInPicture.requestWindow({ width: 160, height: 140 });
+        pipWin = pip;
+
+        // Minimalni stil + markup u PiP
+        pip.document.body.style.margin = '0';
+        pip.document.body.innerHTML = `
+          <style>
+            body{background:rgba(18,20,22,.98); color:#cfd6de; font:500 12px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+            .wrap{padding:8px 8px 6px; width:100%; box-sizing:border-box;}
+            .ring{width:100%; height:60px; border-radius:999px; border:1px dashed #2a2f36; display:grid; place-items:center; position:relative; overflow:hidden; }
+            #pipNeedle{ width:48px; height:6px; background:#2aa96b; border-radius:4px; transform-origin:0% 50%; transition:transform .14s ease-out, background .2s ease-out; }
+            #pipNeedle.warn{ background:#e09f3e }
+            #pipNeedle.bad{ background:#e44747 }
+            .info{ text-align:center; margin-top:6px; font-size:12px; color:#9aa6b2; }
+          </style>
+          <div class="wrap">
+            <div class="ring"><div id="pipNeedle"></div></div>
+            <div class="info"><span id="pipMeters">— m</span></div>
+          </div>
+        `;
+        pipNeedle = pip.document.getElementById('pipNeedle');
+        pipMeters = pip.document.getElementById('pipMeters');
+
+        // Kad se PiP zatvori, očisti reference
+        pip.addEventListener('pagehide', ()=>{ pipWin=null; pipNeedle=null; pipMeters=null; });
+
+        // Inicijalno preslikaj stanje iz glavnog HUD-a
+        if(miniNeedle && pipNeedle){
+          pipNeedle.style.transform = miniNeedle.style.transform;
+          pipNeedle.className = miniNeedle.className.replace('mini-needle','');
+        }
+        if(miniMeters && pipMeters){
+          pipMeters.textContent = miniMeters.textContent;
+        }
+      }catch(e){
+        console.error('PiP error:', e);
+        alert('Ne mogu otvoriti pop-up (Document Picture-in-Picture).');
+      }
     }
 
+    // Sinkronizacija PiP-a s HUD-om
+    function syncPipRotation(deg){
+      if(pipNeedle){ pipNeedle.style.transform = `rotate(${deg}deg)`; }
+    }
+    function syncPipMeters(text){
+      if(pipMeters){ pipMeters.textContent = text; }
+    }
+    function syncPipMode(mode){
+      if(!pipNeedle) return;
+      pipNeedle.classList.remove('warn','bad');
+      if(mode==='warn') pipNeedle.classList.add('warn');
+      else if(mode==='bad') pipNeedle.classList.add('bad');
+    }
+
+    function setMiniColor(mode){
+      miniNeedle.classList.remove('warn','bad');
+      if(mode==='ok'){ /* zelena default */ }
+      else if(mode==='warn') miniNeedle.classList.add('warn');
+      else if(mode==='bad') miniNeedle.classList.add('bad');
+      syncPipMode(mode);
+    }
+
+    miniPopBtn?.addEventListener('click', openMiniPiP);
+
     /* Mrvice */
-    function loadCrumbs(){ try{ breadcrumbs=JSON.parse(localStorage.getItem('ma_crumbs')||'[]')||[]; }catch{ breadcrumbs=[]; } }
+    let breadcrumbs=[]; function loadCrumbs(){ try{ breadcrumbs=JSON.parse(localStorage.getItem('ma_crumbs')||'[]')||[]; }catch{ breadcrumbs=[]; } }
     function saveCrumbs(){ try{ localStorage.setItem('ma_crumbs', JSON.stringify(breadcrumbs)); }catch{} }
+    let lastCrumb=null; const CRUMB_MIN_DIST=10, CRUMB_MAX_ACC=35, CRUMB_MIN_INTERVAL_MS=30000, AUTO_ADVANCE_RADIUS=8;
     function pushCrumb(lat,lon,acc){ const c={lat,lon,t:Date.now(),acc:acc??null}; breadcrumbs.push(c); lastCrumb=c; if(breadcrumbs.length>2000) breadcrumbs.shift(); saveCrumbs(); }
     function maybeAddCrumb(lat,lon,acc){
       if(!Number.isFinite(lat)||!Number.isFinite(lon)) return;
@@ -784,6 +866,10 @@
     }
 
     /* GPX učitavanje */
+    const trackStatusPill=qs('#trackStatusPill'), onTrackChip=qs('#onTrackChip'), offDistChip=qs('#offDistChip');
+    const gpxInput=qs('#gpxInput'), loadGpxBtn=qs('#loadGpxBtn'), gpxUrl=qs('#gpxUrl'), loadUrlBtn=qs('#loadUrlBtn');
+    const alertMetersInput=qs('#alertMeters'), toggleTrackBtn=qs('#toggleTrackBtn');
+
     loadGpxBtn?.addEventListener('click', async ()=>{
       const f=gpxInput?.files?.[0]; if(!f){ trackStatusPill.textContent='GPX: nema datoteke'; return; }
       try{ const txt=await f.text(); gpxTrack=parseGpxToTrack(txt); afterGpxLoaded(`GPX (file): ${gpxTrack.length} točaka`); }
@@ -814,6 +900,7 @@
     }
 
     /* Praćenje / GPS */
+    let watchId=null, alertMeters=30;
     toggleTrackBtn?.addEventListener('click', ()=>{
       alertMeters=Math.max(5, Number(alertMetersInput.value)||30);
       if(watchId==null){
@@ -834,6 +921,10 @@
       trackStatusPill.textContent='GPS: zaustavljeno'; hideMini(); hideGpsBanner(); stopTapeTick();
       lastFix=null;
     }
+
+    /* GPS banner & tape modal */
+    const gpsBanner=qs('#gpsBanner'), bannerHide=qs('#bannerHide');
+    const tapeModalBack=qs('#tapeModalBack'), tapeConfirm=qs('#tapeConfirm'), tapeCancel=qs('#tapeCancel');
     function onGeoErr(err){
       trackStatusPill.textContent='GPS greška: '+(err?.message||'');
       if(!gpsLostSince) gpsLostSince=Date.now();
@@ -853,6 +944,19 @@
     // Distance smoothing (LPF)
     let distLP=null;
     const DIST_ALPHA=0.35;
+
+    // mini HUD helpers to update + PiP sync
+    function setMiniRotation(deg){
+      miniNeedle.style.transform=`rotate(${deg}deg)`;
+      syncPipRotation(deg);
+    }
+    function setMiniMeters(text){
+      miniMeters.textContent=text;
+      syncPipMeters(text);
+    }
+
+    let lastKnownLat=null, lastKnownLon=null;
+    let gpsLostSince=null;
 
     function onPos(pos){
       hideGpsBanner();
@@ -899,7 +1003,6 @@
       let yawDevice = deviceWorldYawPitchRoll().yaw;
       if(useGPSCourse){
         const cog = bearingBetween(lastFix.lat,lastFix.lon,lat,lon);
-        // blend: kad se hoda, 70% COG + 30% kompas (stabilnije)
         yawDevice = (0.7*cog + 0.3*yawDevice + 360)%360;
       }
       // spremi last fix
@@ -907,14 +1010,11 @@
 
       // delta yaw s deadbandom i capom
       let dYaw = ((yawTarget - yawDevice + 540) % 360) - 180;
-      if(Math.abs(dYaw) < DEAD_BAND_DEG){
-        dYaw = 0;
-      }
-      // ograniči maksimalnu promjenu po frameu (~60fps) na MAX_ROT_SPEED_DPS
+      if(Math.abs(dYaw) < DEAD_BAND_DEG){ dYaw = 0; }
       const maxStep = MAX_ROT_SPEED_DPS / 60;
       dYaw = clamp(dYaw, -maxStep, maxStep);
 
-      // glatko (kritično bez preletavanja)
+      // glatko
       let delta = dYaw - lastAngleDeg; if(delta>180) delta-=360; if(delta<-180) delta+=360;
       lastAngleDeg=(lastAngleDeg + SMOOTHING*delta + 360)%360;
 
@@ -924,9 +1024,9 @@
       arrowEl.style.transform = `rotateX(${-pitch}deg) rotateY(${-roll}deg) rotateZ(${lastAngleDeg}deg)`;
 
       // mini HUD – kvantizacija 5° radi mirnoće
-      miniMeters.textContent=`${distLP.toFixed(0)} m`;
+      setMiniMeters(`${distLP.toFixed(0)} m`);
       const miniRot = Math.round(lastAngleDeg/5)*5;
-      miniNeedle.style.transform=`rotate(${miniRot}deg)`;
+      setMiniRotation(miniRot);
       if(distLP<=OK_THRESHOLD_M) setMiniColor('ok'); else if(distLP<=YELLOW_MAX_M) setMiniColor('warn'); else setMiniColor('bad');
 
       // backtrack ako je aktivan
@@ -956,7 +1056,6 @@
       const vWorld=enuVector(lat,lon,tgt.lat,tgt.lon);
       const yawTarget=(Math.atan2(vWorld[0], vWorld[1])*DEG+360)%360;
 
-      // koristi isti heading blend (COG ako se hoda)
       let yawDevice = deviceWorldYawPitchRoll().yaw;
       if(lastFix){ const cog=bearingBetween(lastFix.lat,lastFix.lon,lat,lon); yawDevice=(0.7*cog+0.3*yawDevice+360)%360; }
 
@@ -970,8 +1069,10 @@
 
       const {pitch,roll}=deviceWorldYawPitchRoll();
       arrowEl.style.transform=`rotateX(${-pitch}deg) rotateY(${-roll}deg) rotateZ(${lastAngleDeg}deg)`;
-      miniNeedle.style.transform=`rotate(${Math.round(lastAngleDeg/5)*5}deg)`;
-      miniMeters.textContent=`${Math.round(distM)} m`;
+
+      const miniRot = Math.round(lastAngleDeg/5)*5;
+      setMiniRotation(miniRot);
+      setMiniMeters(`${Math.round(distM)} m`);
 
       if(distM<=AUTO_ADVANCE_RADIUS){ backIdx=Math.max(0, backIdx-1); }
       onTrackChip.textContent='🧭 status: povratak istim putem';
@@ -999,8 +1100,11 @@
         let delta=dYaw - lastAngleDeg; if(delta>180) delta-=360; if(delta<-180) delta+=360;
         lastAngleDeg=(lastAngleDeg + SMOOTHING*delta + 360)%360;
         arrowEl.style.transform=`rotateX(${-pitch}deg) rotateY(${-roll}deg) rotateZ(${lastAngleDeg}deg)`;
-        miniNeedle.style.transform=`rotate(${Math.round(lastAngleDeg/5)*5}deg)`;
-        offDistChip.textContent='↔︎ udaljenost: —';
+
+        const miniRot = Math.round(lastAngleDeg/5)*5;
+        setMiniRotation(miniRot);
+        setMiniMeters('— m');
+
         hbIdx=Math.max(0,hbIdx-1);
       }, 220);
     }
@@ -1021,11 +1125,6 @@
     });
 
     /* Banner i modal */
-    bannerHide?.addEventListener('click', hideGpsBanner);
-    tapeCancel?.addEventListener('click', ()=>{ tapeModalBack.style.display='none'; });
-    tapeConfirm?.addEventListener('click', ()=>{ tapeModalBack.style.display='none'; startTapeMode(); });
-
-    /* Offline savjeti, dnevnik, checklista */
     const logView=qs('#logView');
     function refreshLogView(){ const saved=localStorage.getItem('ma_log')||''; logView.textContent=saved?saved:'—'; }
     refreshLogView();
