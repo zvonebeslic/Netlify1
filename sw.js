@@ -1,22 +1,21 @@
-// ======= PWA offline service worker (cache-first) =======
-const CACHE_VERSION = 'v1.1.0';
+// ======= PWA offline service worker (cache-first + network-first za GPX) =======
+const CACHE_VERSION = 'v1.1.1';
 const CACHE_NAME = `ma-ruksak-${CACHE_VERSION}`;
 const OFFLINE_FALLBACK = '/digitalniruksak.html';
 
 // 1) Precache "osnovu" aplikacije (DOPUNI svojim fajlovima!)
 const PRECACHE_ASSETS = [
-  '/',                       // root (ako serviraš kao /)
-  OFFLINE_FALLBACK,          // glavna stranica
+  '/',                           // root (ako serviraš s korijena; po potrebi ukloni)
+  OFFLINE_FALLBACK,              // glavna stranica (fallback za offline)
   '/manifest.webmanifest',
   '/images/mountain-adventures.svg',
-  // Ako koristiš svoje ikone:
   '/images/mountain-adventures-192.png',
   '/images/mountain-adventures-512.png',
-  // Ako imaš izdvojene CSS/JS/alat stranice, navedi ih ovdje, npr.:
+  // Primjeri dodatne statike / alata (po potrebi odkomentiraj/dodaj):
   // '/style.css',
-  // '/season.css',
+  // '/app.js',
   // '/tools/camera-auto-enhance.html',
-  // '/gpx/moja-ruta.gpx',   // GPX lokalno → bit će dostupan i offline
+  // '/gpx/moja-ruta.gpx',       // lokalni GPX → dostupan i offline
 ];
 
 // 2) Ekstenzije koje tretiramo kao statiku (cache-first)
@@ -28,35 +27,44 @@ const GPX_EXT = /\.gpx(?:$|\?)/i;
 // 4) Cross-origin (npr. Google Fonts) – stale-while-revalidate
 const CROSS_ORIGIN_SWRE = /^(https?:)?\/\/(fonts\.gstatic\.com|fonts\.googleapis\.com)\//i;
 
-// ------- Install / Activate -------
+// ------- Install -------
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // Koristi Request(..., {cache:'reload'}) da preskoči stari HTTP cache i uzme svježe
+    // Koristi {cache:'reload'} da preskoči stari HTTP cache i uzme svježe
     await cache.addAll(PRECACHE_ASSETS.map(u => new Request(u, { cache: 'reload' })));
     await self.skipWaiting();
   })());
 });
 
+// ------- Activate -------
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     // počisti stare cacheve
     const keys = await caches.keys();
     await Promise.all(keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve())));
+
+    // ✅ Navigation Preload (brži first paint na sporoj mreži)
+    if ('navigationPreload' in self.registration) {
+      try { await self.registration.navigationPreload.enable(); } catch {}
+    }
+
     await self.clients.claim();
   })());
 });
 
 // Omogući ručni "skip waiting" iz appa (po želji)
 self.addEventListener('message', (event) => {
-  if (event.data === 'SKIP_WAITING') self.skipWaiting();
+  if (event?.data === 'SKIP_WAITING' || event?.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // ------- Fetch strategije -------
-// - statika (same-origin, html/css/js/img/...): CACHE-FIRST
+// - statika (same-origin): CACHE-FIRST
 // - .gpx: NETWORK-FIRST -> fallback cache
 // - fonts.google*: STALE-WHILE-REVALIDATE
-// - HTML navigacije: NETWORK → fallback na OFFLINE_FALLBACK iz cachea
+// - HTML navigacije: pokušaj preloaded/NETWORK → fallback na OFFLINE_FALLBACK
 // - default: NETWORK → fallback cache (ako postoji)
 
 self.addEventListener('fetch', (event) => {
@@ -79,24 +87,33 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3) Statika (same-origin html/css/js/img/json/...): cache-first
+  // 3) Statika (same-origin html/css/js/img/json/...) – cache-first
   if (sameOrigin && (STATIC_EXT.test(url.pathname) || url.pathname === '/')) {
     event.respondWith(cacheFirst(req));
     return;
   }
 
-  // 4) HTML navigacije (SPA/MPA) – detektiraj Accept: text/html
+  // 4) HTML navigacije
   if (isHtmlNavigation(req)) {
-    event.respondWith(
-      fetch(req).catch(async () => {
+    event.respondWith((async () => {
+      try {
+        // pokušaj iskoristiti preloaded response (ako ga je browser već povukao)
+        const preloaded = await event.preloadResponse;
+        if (preloaded) return preloaded;
+
+        // standardni network pokušaj
+        return await fetch(req);
+      } catch (_) {
+        // offline fallback
         const cache = await caches.open(CACHE_NAME);
-        return (await cache.match(OFFLINE_FALLBACK)) || new Response('Offline', { status: 503 });
-      })
-    );
+        return (await cache.match(OFFLINE_FALLBACK, { ignoreSearch: true }))
+          || new Response('Offline', { status: 503 });
+      }
+    })());
     return;
   }
 
-  // 5) Default – mreža, pa cache fallback (ako imamo)
+  // 5) Default – mreža → cache fallback (ako imamo)
   event.respondWith(
     fetch(req).catch(async () => {
       const cache = await caches.open(CACHE_NAME);
@@ -114,7 +131,7 @@ async function cacheFirst(req) {
 
   const resp = await fetch(req);
   // Keširaj samo OK (200) ili opaque (CORS) odgovore
-  if (resp && (resp.ok || resp.type === 'opaqueredirect' || resp.type === 'opaque')) {
+  if (resp && (resp.ok || resp.type === 'opaque' || resp.type === 'opaqueredirect')) {
     cache.put(req, resp.clone());
   }
   return resp;
@@ -148,7 +165,6 @@ async function staleWhileRevalidate(req) {
 }
 
 function isHtmlNavigation(req) {
-  // Navigacija ili običan GET s HTML prihvatom
   if (req.mode === 'navigate') return true;
   const accept = req.headers.get('accept') || '';
   return accept.includes('text/html');
