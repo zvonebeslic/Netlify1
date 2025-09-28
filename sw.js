@@ -1,169 +1,146 @@
-// ======= PWA offline service worker (cache-first + network-first za GPX) =======
-const CACHE_VERSION = 'v1.1.2';
-const CACHE_NAME = `ma-ruksak-${CACHE_VERSION}`;
-const OFFLINE_FALLBACK = '/digitalniruksak.html';
+// sw.js
+// ---------------------------------------------
+// PWA Service Worker za "Digitalni ruksak"
+// - Cache-first za statiku (isti origin)
+// - Network-first za navigacije (index.html fallback offline)
+// - Network-first za vanjske GPX URL-ove (CORS), uz cache fallback
+// - Čišćenje starih cacheva po verziji
+// ---------------------------------------------
 
-// 1) Precache "osnovu" aplikacije (DOPUNI svojim fajlovima!)
-const PRECACHE_ASSETS = [
-  '/',                           // root (ako serviraš s korijena; po potrebi ukloni)
-  OFFLINE_FALLBACK,              // glavna stranica (fallback za offline)
-  '/manifest.webmanifest',
-  '/images/mountain-adventures.svg',
-  '/images/mountain-adventures-192.png',
-  '/images/mountain-adventures-512.png',
-  // Primjeri dodatne statike / alata (po potrebi odkomentiraj/dodaj):
-  // '/style.css',
-  // '/app.js',
-  // '/tools/camera-auto-enhance.html',
-  // '/gpx/moja-ruta.gpx'        // lokalni GPX → dostupan i offline
+// Ako je site u podmapi, npr. https://domena.com/ruksak/,
+// postavi BASE = '/ruksak/' i u index.html registriraj:
+// navigator.serviceWorker.register('./sw.js', { scope: './' });
+const BASE = '/';
+
+const CACHE_VERSION = 'v1.1.4';
+const STATIC_CACHE = `static-${CACHE_VERSION}`;
+
+// Pomoćna za sastavljanje putanja
+const p = (path) => (BASE.endsWith('/') ? BASE + path.replace(/^\//, '') : BASE + '/' + path.replace(/^\//, ''));
+
+// Precache—mora pokriti početnu (i `/` i `index.html`), manifest i osnovne assete.
+// Dodaj ovdje nove statičke datoteke (slike, dodatne stranice…) koje želiš offline.
+const PRECACHE_URLS = [
+  BASE,                 // npr. '/' ili '/ruksak/'
+  p('index.html'),
+  p('manifest.webmanifest'),
+  p('images/mountain-adventures.svg'),
+  p('images/mountain-adventures-192.png'),
+  p('tools/camera-auto-enhance.html')
 ];
 
-// 2) Ekstenzije koje tretiramo kao statiku (cache-first)
-const STATIC_EXT = /\.(?:html|css|js|mjs|json|png|svg|jpg|jpeg|gif|webp|ico|woff2?|webmanifest)$/i;
+// Utility: treba li cache-ati ovu vrstu resursa?
+function isStaticDestination(req) {
+  const d = req.destination;
+  return d === 'document' || d === 'script' || d === 'style' || d === 'image' || d === 'font';
+}
 
-// 3) GPX – mreža-prva, uz fallback iz cachea (svjež trag, ali radi i offline)
-const GPX_EXT = /\.gpx(?:$|\?)/i;
-
-// 4) Cross-origin (npr. Google Fonts) – stale-while-revalidate
-const CROSS_ORIGIN_SWRE = /^(https?:)?\/\/(fonts\.gstatic\.com|fonts\.googleapis\.com)\//i;
-
-// ------- Install -------
+/* INSTALL: precache */
 self.addEventListener('install', (event) => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    // Preskoči HTTP cache i uzmi svježe artefakte
-    await cache.addAll(PRECACHE_ASSETS.map(u => new Request(u, { cache: 'reload' })));
-    await self.skipWaiting();
-  })());
-});
-
-// ------- Activate -------
-self.addEventListener('activate', (event) => {
-  event.waitUntil((async () => {
-    // očisti stare cacheve
-    const keys = await caches.keys();
-    await Promise.all(keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve())));
-
-    // ✅ Navigation Preload (brži first paint na sporoj mreži)
-    if ('navigationPreload' in self.registration) {
-      try { await self.registration.navigationPreload.enable(); } catch {}
-    }
-
-    await self.clients.claim();
-  })());
-});
-
-// Omogući ručni "skip waiting" iz appa (po želji)
-self.addEventListener('message', (event) => {
-  if (event?.data === 'SKIP_WAITING' || event?.data?.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
-
-// ------- Fetch strategije -------
-// - statika (same-origin): CACHE-FIRST
-// - .gpx: NETWORK-FIRST -> fallback cache
-// - fonts.google*: STALE-WHILE-REVALIDATE
-// - HTML navigacije: pokušaj preloaded/NETWORK → fallback na OFFLINE_FALLBACK
-// - default: NETWORK → fallback cache (ako postoji)
-
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  const url = new URL(req.url);
-  const sameOrigin = url.origin === self.location.origin;
-
-  // keširanje ima smisla samo za GET
-  if (req.method !== 'GET') return;
-
-  // 1) GPX – network-first
-  if (GPX_EXT.test(url.pathname)) {
-    event.respondWith(networkFirst(req));
-    return;
-  }
-
-  // 2) Cross-origin Google Fonts – SWR
-  if (CROSS_ORIGIN_SWRE.test(req.url)) {
-    event.respondWith(staleWhileRevalidate(req));
-    return;
-  }
-
-  // 3) Statika (same-origin) – cache-first
-  if (sameOrigin && (STATIC_EXT.test(url.pathname) || url.pathname === '/')) {
-    event.respondWith(cacheFirst(req));
-    return;
-  }
-
-  // 4) HTML navigacije
-  if (isHtmlNavigation(req)) {
-    event.respondWith((async () => {
-      try {
-        // iskoristi preloaded response ako postoji
-        const preloaded = await event.preloadResponse;
-        if (preloaded) return preloaded;
-
-        return await fetch(req);
-      } catch (_) {
-        const cache = await caches.open(CACHE_NAME);
-        return (await cache.match(OFFLINE_FALLBACK, { ignoreSearch: true }))
-          || new Response('Offline', { status: 503 });
-      }
-    })());
-    return;
-  }
-
-  // 5) Default – mreža → cache fallback (ako imamo)
-  event.respondWith(
-    fetch(req).catch(async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const match = await cache.match(req, { ignoreSearch: true });
-      return match || Response.error();
-    })
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
   );
 });
 
-// ------- Helperi (strategije) -------
-async function cacheFirst(req) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(req, { ignoreSearch: true });
-  if (cached) return cached;
+/* ACTIVATE: cleanup starih cacheva */
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((k) => k !== STATIC_CACHE)
+          .map((k) => caches.delete(k))
+      )
+    ).then(() => self.clients.claim())
+  );
+});
 
-  const resp = await fetch(req);
-  // Keširaj samo OK (200) ili opaque (CORS) odgovore
-  if (resp && (resp.ok || resp.type === 'opaque' || resp.type === 'opaqueredirect')) {
-    cache.put(req, resp.clone());
+/* FETCH strategije */
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+
+  // Samo GET kontroliramo
+  if (req.method !== 'GET') return;
+
+  const url = new URL(req.url);
+  const sameOrigin = url.origin === self.location.origin;
+
+  // 0) Navigacije (SPA/MPA): network-first s fallbackom na cache-ani index.html
+  // Ovo osigurava da app radi i offline kod osvježavanja / dubokih linkova.
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      (async () => {
+        try {
+          const net = await fetch(req);
+          // (Opcionalno) cache-ati svježi index
+          const copy = net.clone();
+          try {
+            const cache = await caches.open(STATIC_CACHE);
+            cache.put(p('index.html'), copy);
+          } catch {}
+          return net;
+        } catch {
+          // Offline fallback: pokušaj prvo precache-ani 'index.html', ako ne, onda BASE
+          const cachedIndex = await caches.match(p('index.html'));
+          if (cachedIndex) return cachedIndex;
+          const cachedBase = await caches.match(BASE);
+          return cachedBase || new Response('Offline: index nije u cache-u.', { status: 503 });
+        }
+      })()
+    );
+    return;
   }
-  return resp;
-}
 
-async function networkFirst(req) {
-  const cache = await caches.open(CACHE_NAME);
-  try {
-    const resp = await fetch(req, { cache: 'no-store' });
-    if (resp && (resp.ok || resp.type === 'opaque' || resp.type === 'opaqueredirect')) {
-      cache.put(req, resp.clone());
-    }
-    return resp;
-  } catch (e) {
-    const cached = await cache.match(req, { ignoreSearch: true });
-    if (cached) return cached;
-    throw e;
+  // 1) Isti origin – statika: cache-first + runtime cache
+  if (sameOrigin && isStaticDestination(req)) {
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req).then((res) => {
+          // Cache-aj uspješne odgovore
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(STATIC_CACHE).then((c) => c.put(req, copy));
+          }
+          return res;
+        });
+      })
+    );
+    return;
   }
-}
 
-async function staleWhileRevalidate(req) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(req, { ignoreSearch: true });
-  const networkPromise = fetch(req).then((resp) => {
-    if (resp && (resp.ok || resp.type === 'opaque' || resp.type === 'opaqueredirect')) {
-      cache.put(req, resp.clone());
-    }
-    return resp;
-  }).catch(() => null);
-  return cached || networkPromise || fetch(req);
-}
+  // 2) Vanjski GPX (CORS) – network-first s fallbackom na cache (ako je ikada spremljen)
+  const isGpxLike =
+    req.url.toLowerCase().endsWith('.gpx') ||
+    req.headers.get('Accept')?.toLowerCase().includes('application/gpx+xml');
 
-function isHtmlNavigation(req) {
-  if (req.mode === 'navigate') return true;
-  const accept = req.headers.get('accept') || '';
-  return accept.includes('text/html');
-}
+  if (!sameOrigin && isGpxLike) {
+    event.respondWith(
+      (async () => {
+        try {
+          const net = await fetch(req, { mode: 'cors' });
+          // (Ne cache-amo namjerno GPX iz vana osim ako baš želiš — onda dodaš put u runtime cache)
+          return net;
+        } catch {
+          const cached = await caches.match(req);
+          return cached || new Response('GPX nedostupan offline.', { status: 503 });
+        }
+      })()
+    );
+    return;
+  }
+
+  // 3) Ostalo – pass-through (ili lako SWR ako želiš)
+  // Primjer SWR (zakomentirano):
+  // event.respondWith((async ()=>{
+  //   const cache = await caches.open(STATIC_CACHE);
+  //   const cached = await cache.match(req);
+  //   const fetchPromise = fetch(req).then(res => {
+  //     if (res.ok && isStaticDestination(req)) cache.put(req, res.clone());
+  //     return res;
+  //   }).catch(()=>null);
+  //   return cached || fetchPromise || new Response('Offline.', { status: 503 });
+  // })());
+});
