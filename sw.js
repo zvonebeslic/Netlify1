@@ -23,6 +23,7 @@ const p = (path) => (BASE.endsWith('/') ? BASE + path.replace(/^\//, '') : BASE 
 const PRECACHE_URLS = [
   BASE,                 // npr. '/' ili '/ruksak/'
   p('index.html'),
+  p('digitalniruksak.html'),
   p('manifest.webmanifest'),
   p('images/mountain-adventures.svg'),
   p('images/mountain-adventures-192.png'),
