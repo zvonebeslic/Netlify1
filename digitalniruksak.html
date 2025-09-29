@@ -501,9 +501,9 @@
        ========================================================= -->
   <script>
     /* PWA SW */
-    if ('serviceWorker' in navigator){
-      navigator.serviceWorker.register('/sw.js').catch(()=>{});
-    }
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js', { scope: './' });
+}
 
     /* Helpers / paneli */
     const qs = s => document.querySelector(s);
