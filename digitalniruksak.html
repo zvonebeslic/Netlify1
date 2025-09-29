@@ -404,6 +404,67 @@
         <div><button class="btn" id="arrowClose">Zatvori</button></div>
       </div>
     </section>
+
+    <!-- PANEL: Offline savjeti (DODANO) -->
+    <section id="panelOffline" class="tool-panel" hidden>
+      <h4>Offline savjeti</h4>
+      <ul>
+        <li>U aplikaciji <b>Organic Maps</b> ili <b>OSMand</b> preuzmi regiju za offline.</li>
+        <li>GPX spremi lokalno na uređaj i otvori iz aplikacije (bez interneta).</li>
+        <li>Uključi “Airplane mode” + GPS radi štednje baterije.</li>
+      </ul>
+      <button class="btn ghost" onclick="this.closest('section').hidden=true">Zatvori</button>
+    </section>
+
+    <!-- PANEL: Dnevnik (DODANO) -->
+    <section id="panelLog" class="tool-panel" hidden>
+      <h4>Planinarski dnevnik</h4>
+      <div class="two-col">
+        <div>
+          <div class="field"><label for="logRoute">Ruta:</label><input id="logRoute" type="text" placeholder="npr. Barzonja → Jelinak" /></div>
+          <div class="field"><label for="logStart">Polazak:</label><input id="logStart" type="time" /></div>
+          <div class="field"><label for="logPeople">Osoba/e:</label><input id="logPeople" type="text" placeholder="npr. 2 + pas" /></div>
+          <div class="field"><label for="logNote">Napomena:</label><input id="logNote" type="text" placeholder="smjer kretanja, vremenska prognoza…" /></div>
+          <div class="btn-row"><button class="btn" id="logSave">Spremi</button><button class="btn ghost" id="logClear">Obriši</button></div>
+        </div>
+        <div>
+          <h4 style="margin-top:0">Zadnji zapis</h4>
+          <pre id="logView" style="white-space:pre-wrap;background:#0f1114;border:1px solid var(--line);border-radius:8px;padding:8px;min-height:90px"></pre>
+        </div>
+      </div>
+      <button class="btn ghost" onclick="this.closest('section').hidden=true">Zatvori</button>
+    </section>
+
+    <!-- PANEL: Check-lista (DODANO) -->
+    <section id="panelChecklist" class="tool-panel" hidden>
+      <h4>Check-lista prije polaska</h4>
+      <div id="checkList" class="two-col">
+        <label><input type="checkbox"> Voda (min. 2 L)</label>
+        <label><input type="checkbox"> Hrana/energetske pločice</label>
+        <label><input type="checkbox"> Topli slojevi / kabanica</label>
+        <label><input type="checkbox"> Prva pomoć / astrofolija</label>
+        <label><input type="checkbox"> Svjetlo + baterije</label>
+        <label><input type="checkbox"> GPX + offline karta</label>
+        <label><input type="checkbox"> Napunjena baterija / power bank</label>
+      </div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn ghost" id="checkReset">Poništi</button>
+        <button class="btn" onclick="this.closest('section').hidden=true">Zatvori</button>
+      </div>
+    </section>
+
+    <!-- PANEL: Dnevno svjetlo (DODANO) -->
+    <section id="panelSun" class="tool-panel" hidden>
+      <h4>Dnevno svjetlo — tajmer</h4>
+      <div class="field">
+        <label for="sunsetTime">Zalazak:</label>
+        <input id="sunsetTime" type="time" />
+        <button class="btn" id="sunStart">Pokreni</button>
+        <button class="btn ghost" id="sunStop">Zaustavi</button>
+      </div>
+      <div class="chip" id="sunLeft">Preostalo: —</div>
+      <div style="margin-top:8px"><button class="btn ghost" onclick="this.closest('section').hidden=true">Zatvori</button></div>
+    </section>
   </main>
 
   <!-- MINI STRELICA WIDGET (HUD) -->
@@ -446,8 +507,8 @@
 
     /* Helpers / paneli */
     const qs = s => document.querySelector(s);
-    const show = el => { el.hidden=false; el.scrollIntoView({ behavior:'smooth', block:'start' }); };
-    const hide = el => { el.hidden=true; };
+    const show = el => { if(!el) return; el.hidden=false; el.scrollIntoView({ behavior:'smooth', block:'start' }); };
+    const hide = el => { if(!el) return; el.hidden=true; };
 
     const panelAid=qs('#panelAid'), panelCamera=qs('#panelCamera'), panelArrow=qs('#panelArrow'),
           panelOffline=qs('#panelOffline'), panelLog=qs('#panelLog'), panelChecklist=qs('#panelChecklist'), panelSun=qs('#panelSun');
@@ -783,7 +844,8 @@
     // Pop-up: otvaranje/zatvaranje
     openPopupBtn?.addEventListener('click', ()=>{
       try{
-        miniWin = window.open('', 'strelicaPopup', 'width=300,height=180,menubar=0,toolbar=0,location=0,status=0');
+        const feat='width=300,height=180,menubar=0,toolbar=0,location=0,status=0';
+        miniWin = window.open('', 'strelicaPopup', feat);
         if(!miniWin){ alert('Preglednik je blokirao pop-up. Dozvoli pop-up za ovu stranicu.'); return; }
         miniWin.document.write(`
           <!doctype html><html><head>
@@ -1091,6 +1153,26 @@
       window.addEventListener('mousemove', move); window.addEventListener('touchmove', move, {passive:false});
       window.addEventListener('mouseup', end); window.addEventListener('touchend', end);
     })();
+
+    /* Beep pri off-tracku */
+    function beep3(){
+      try{
+        audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+        const sequence = [900,900,900];
+        let t = audioCtx.currentTime;
+        sequence.forEach((f,i)=>{
+          const osc=audioCtx.createOscillator();
+          const gain=audioCtx.createGain();
+          osc.type='sine'; osc.frequency.value=f; osc.connect(gain); gain.connect(audioCtx.destination);
+          gain.gain.setValueAtTime(0.0001, t);
+          gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
+          osc.start(t);
+          osc.stop(t+0.15);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t+0.15);
+          t += 0.27;
+        });
+      }catch(e){}
+    }
   </script>
 </body>
 </html>
