@@ -874,8 +874,6 @@
     }
 
     /* GPX učitavanje */
-    const gpxInput=qs('#gpxInput'), loadGpxBtn=qs('#loadGpxBtn'),
-          gpxUrl=qs('#gpxUrl'), loadUrlBtn=qs('#loadUrlBtn');
     loadGpxBtn?.addEventListener('click', async ()=>{
       const f=gpxInput?.files?.[0]; if(!f){ trackStatusPill.textContent='GPX: nema datoteke'; return; }
       try{ const txt=await f.text(); gpxTrack=parseGpxToTrack(txt); afterGpxLoaded(`GPX (file): ${gpxTrack.length} točaka`); }
