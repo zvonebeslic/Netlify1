@@ -1399,7 +1399,7 @@
     const bannerHide     = qs('#bannerHide');
 
     bannerHide?.addEventListener('click', ()=> gpsBanner.style.display='none');
-    declHelpBtn?.addEventListener('click', ()=> declModalBack.style.display='grid'));
+    declHelpBtn?.addEventListener('click', ()=> declModalBack.style.display='grid');
     declCloseBtn?.addEventListener('click', ()=> declModalBack.style.display='none');
 
     // Stanje i konstante
@@ -1740,6 +1740,43 @@
       }catch(e){}
     }
 
+       // ====================== BACKTRACK ======================
+let backtrackActive = false;
+let backtrackPoints = [];
+let backtrackWatcher = null;
+
+const btStart = document.getElementById('btStart');
+const btStop = document.getElementById('btStop');
+
+btStart?.addEventListener('click', () => {
+  backtrackActive = true;
+  backtrackPoints = [];
+
+  if (navigator.geolocation) {
+    backtrackWatcher = navigator.geolocation.watchPosition(pos => {
+      if (backtrackActive) {
+        backtrackPoints.push([pos.coords.latitude, pos.coords.longitude]);
+        console.log('Dodana točka:', pos.coords.latitude, pos.coords.longitude);
+      }
+    }, err => console.warn('Greška geolokacije:', err), { enableHighAccuracy: true });
+  }
+
+  console.log('Backtrack pokrenut');
+});
+
+btStop?.addEventListener('click', () => {
+  backtrackActive = false;
+
+  if (backtrackWatcher) {
+    navigator.geolocation.clearWatch(backtrackWatcher);
+    backtrackWatcher = null;
+  }
+
+  console.log('Backtrack zaustavljen. Ukupno točaka:', backtrackPoints.length);
+  console.log('Točke backtracka:', backtrackPoints);
+  // Ovdje možeš kasnije nacrtati stazu ili ponuditi export u GPX
+});
+    
     /* =========================================================
        NOĆNO NEBO — UPRAVLJANJE I ISTICANJE ASTERIZAMA
        ========================================================= */
