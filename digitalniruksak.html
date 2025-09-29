@@ -84,9 +84,9 @@
     #camMsg{min-width:200px;color:var(--muted);font-size:12px}
     #camThumb{max-width:220px;border-radius:8px;border:1px solid var(--line)}
 
-    /* Kompas + 3D strelica */
+    /* Kompas + 3D strelica + Libela */
     .compass-wrap{display:grid;gap:10px}
-    .compass-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .compass-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
     .compass{
       width:150px;height:150px;border-radius:50%;border:1px solid var(--line);
       background:
@@ -95,18 +95,42 @@
       display:grid;place-items:center;position:relative;perspective:800px;
     }
     .compass .tick{position:absolute;inset:8px;border-radius:50%;border:1px dashed #2a2f36}
+
+    /* Kompas prsten (Sjever gore) */
+    .compass-ring{
+      position:absolute; inset:0; border-radius:50%;
+      border:2px solid rgba(255,255,255,.18);
+      box-shadow:0 0 24px rgba(0,0,0,.25) inset;
+      transform:rotate(0deg);
+    }
+    .compass-ring .mark{
+      position:absolute; font:700 12px/1 Montserrat,system-ui; letter-spacing:.12em;
+      color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.6); user-select:none;
+    }
+    .compass-ring .n{ top:4px; left:50%; transform:translateX(-50%); }
+    .compass-ring .s{ bottom:4px; left:50%; transform:translateX(-50%); }
+    .compass-ring .e{ right:4px; top:50%; transform:translateY(-50%); }
+    .compass-ring .w{ left:4px; top:50%; transform:translateY(-50%); }
+    .compass-ring .ticks{
+      position:absolute; inset:10px; border-radius:50%;
+      -webkit-mask: radial-gradient(transparent 56%, #000 56.3%);
+              mask: radial-gradient(transparent 56%, #000 56.3%);
+      background: conic-gradient(from 0deg, rgba(255,255,255,.18) 0 1deg, transparent 1deg 9deg);
+    }
+
+    /* 3D strelica */
     .arrow3d{
       width:68px;height:12px;position:relative;transform-style:preserve-3d;
       transition:transform .14s ease-out, opacity .14s ease-out, filter .2s ease-out;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.35));
     }
-    .arrow3d::after{ /* tijelo */
+    .arrow3d::after{
       content:"";position:absolute;left:0;top:2px;bottom:2px;width:58px;border-radius:6px;
       background:linear-gradient(180deg,#36c286,#1e915f);
       box-shadow:inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 0 rgba(0,0,0,.2);
       transform:translateZ(0.6px);
     }
-    .arrow3d::before{ /* vrh */
+    .arrow3d::before{
       content:"";position:absolute;right:-14px;top:-6px;border-left:14px solid #36c286;
       border-top:12px solid transparent;border-bottom:12px solid transparent;transform:translateZ(0.8px);
       filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));
@@ -115,6 +139,26 @@
     .arrow3d.warn::before{border-left-color:#f4c35f}
     .arrow3d.bad::after{background:linear-gradient(180deg,#ff7a7a,#d84e4e)}
     .arrow3d.bad::before{border-left-color:#ff7a7a}
+
+    /* Libela (manji krug) */
+    .level-wrap{ width:140px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .level-ring{
+      position:relative; width:140px; height:140px; border-radius:50%;
+      border:2px solid rgba(255,255,255,.18);
+      box-shadow: inset 0 0 18px rgba(0,0,0,.25);
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.06) 0 55%, transparent 56% 100%);
+      overflow:hidden;
+    }
+    .lvl-cross{ position:absolute; background:rgba(255,255,255,.18); pointer-events:none; }
+    .lvl-h{ left:8%; right:8%; top:50%; height:1px; transform:translateY(-0.5px); }
+    .lvl-v{ top:8%; bottom:8%; left:50%; width:1px; transform:translateX(-0.5px); }
+    .level-bubble{
+      position:absolute; width:26px; height:26px; border-radius:50%;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.85) 0 35%, rgba(255,255,255,.35) 36% 60%, rgba(0,0,0,.15) 61% 100%);
+      box-shadow: 0 2px 6px rgba(0,0,0,.45);
+      left:50%; top:50%; transform:translate(-50%,-50%);
+    }
+    .level-readout{ display:flex; gap:8px; font:600 11px/1.2 Montserrat,system-ui; color:#fff; opacity:.8 }
 
     .status-line{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .field{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -144,6 +188,13 @@
 
     /* FOOTER */
     footer{margin-top:26px;border-top:1px solid var(--line);padding:14px;color:var(--muted);font-size:12px;text-align:center}
+
+    /* Responsivnost: malo stisni na manjim ekranima */
+    @media (max-width: 460px){
+      .level-wrap{ width:120px }
+      .level-ring{ width:120px; height:120px }
+      .compass{ width:150px; height:150px }
+    }
   </style>
 </head>
 
@@ -355,11 +406,33 @@
       <h4>Pametna strelica — GPX (file/URL) + Backtrack</h4>
       <div class="compass-wrap">
         <div class="compass-row">
+          <!-- Kompas + strelica -->
           <div class="compass" aria-label="Kompas">
+            <div class="compass-ring" id="compassRing">
+              <span class="mark n">N</span>
+              <span class="mark e">E</span>
+              <span class="mark s">S</span>
+              <span class="mark w">W</span>
+              <div class="ticks"></div>
+            </div>
             <div class="tick"></div>
             <div id="arrow3d" class="arrow3d" style="opacity:0"></div>
           </div>
-          <div class="hint">Strelica je uvijek vodoravna (level-lock). Cilja točno najbližu točku staze.</div>
+
+          <!-- Libela (mini krug) -->
+          <div class="level-wrap" aria-label="Libela">
+            <div class="level-ring" id="levelRing">
+              <div class="lvl-cross lvl-h"></div>
+              <div class="lvl-cross lvl-v"></div>
+              <div class="level-bubble" id="levelBubble"></div>
+            </div>
+            <div class="level-readout">
+              <span>Pitch: <b id="pitchDeg">0.0°</b></span>
+              <span>Roll: <b id="rollDeg">0.0°</b></span>
+            </div>
+          </div>
+
+          <div class="hint">Kompas drži Sjever gore; libela pokazuje vodoravnost. Strelica cilja najbližu točku staze.</div>
         </div>
 
         <div class="divider"></div>
@@ -500,11 +573,10 @@
        SCRIPT
        ========================================================= -->
   <script>
-    
     /* PWA SW */
-if ('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
-}
+    if ('serviceWorker' in navigator){
+      navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    }
 
     /* Helpers / paneli */
     const qs = s => document.querySelector(s);
@@ -602,6 +674,7 @@ if ('serviceWorker' in navigator){
 
     /* =========================================================
        STRELICA 3D + GPX + Backtrack + Rezervna kazeta + POP-UP
+       + Kompas prsten + Libela
        ========================================================= */
     // UI refs
     const arrowEl=qs('#arrow3d'),
@@ -614,6 +687,13 @@ if ('serviceWorker' in navigator){
           openPopupBtn=qs('#openPopupBtn'), closePopupBtn=qs('#closePopupBtn');
 
     const mini=qs('#miniCompass'), miniNeedle=qs('#miniNeedle'), miniMeters=qs('#miniMeters');
+
+    // NEW: kompas prsten + libela elementi
+    const compassRing = qs('#compassRing');
+    const levelRing   = qs('#levelRing');
+    const levelBubble = qs('#levelBubble');
+    const pitchLbl    = qs('#pitchDeg');
+    const rollLbl     = qs('#rollDeg');
 
     // Pop-up window handle
     let miniWin = null;
@@ -710,16 +790,14 @@ if ('serviceWorker' in navigator){
       arrowEl.classList.remove('warn','bad');
       arrowEl.style.filter = (mode==='bad') ? 'drop-shadow(0 0 10px rgba(228,71,71,.45))' :
                              (mode==='warn')? 'drop-shadow(0 0 10px rgba(242,193,78,.35))' : 'drop-shadow(0 10px 14px rgba(0,0,0,.35))';
-      if(mode==='ok'){ /* default zelena */ }
-      else if(mode==='warn'){ arrowEl.classList.add('warn'); }
+      if(mode==='warn'){ arrowEl.classList.add('warn'); }
       else if(mode==='bad'){ arrowEl.classList.add('bad'); }
     }
     function showMini(){ mini.hidden=false; }
     function hideMini(){ mini.hidden=true; }
     function setMiniColor(mode){
       miniNeedle.classList.remove('warn','bad');
-      if(mode==='ok') { /* zelena */ }
-      else if(mode==='warn') miniNeedle.classList.add('warn');
+      if(mode==='warn') miniNeedle.classList.add('warn');
       else if(mode==='bad') miniNeedle.classList.add('bad');
     }
 
@@ -739,6 +817,28 @@ if ('serviceWorker' in navigator){
     /* Rezervna kazeta: world yaw iz matrice */
     function deviceWorldYPR(){ if(!lastMatrix) return {yaw:0,pitch:0,roll:0}; return extractYPR(lastMatrix); }
 
+    /* NEW: render kompas prstena i libele */
+    function renderCompassAndLevel(){
+      if(!compassRing || !levelRing) return;
+      const {yaw,pitch,roll} = deviceWorldYPR();
+      // Kompas prsten: drži Sjever gore -> rotiraj SUPROTNO od yaw
+      compassRing.style.transform = `rotate(${-yaw}deg)`;
+
+      // Libela: mapiraj pitch/roll u mjehurić
+      const ringRect = levelRing.getBoundingClientRect();
+      const Rb = (ringRect.width/2) - 13; // radijus minus polumjer mjehurića (~13px)
+      const maxTilt = 30; // ° do ruba (osjetljivost)
+      let x = (roll / maxTilt) * Rb;   // roll desno+
+      let y = (pitch / maxTilt) * Rb;  // pitch dolje+
+      const dist = Math.hypot(x,y);
+      if(dist>Rb){ const k=Rb/dist; x*=k; y*=k; }
+      levelBubble.style.left = '50%';
+      levelBubble.style.top  = '50%';
+      levelBubble.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      pitchLbl.textContent = `${pitch.toFixed(1)}°`;
+      rollLbl.textContent  = `${roll.toFixed(1)}°`;
+    }
+
     /* Otvaranje strelice + senzori */
     function openArrow(){
       // AOS
@@ -748,6 +848,7 @@ if ('serviceWorker' in navigator){
           aos.addEventListener('reading', ()=>{
             const [qx,qy,qz,qw]=aos.quaternion;
             lastMatrix=quatToMatrix(qx,qy,qz,qw);
+            renderCompassAndLevel(); // NEW: osvježi prsten i libelu
           });
           aos.start(); useAOS=true;
         }
@@ -769,9 +870,12 @@ if ('serviceWorker' in navigator){
     function onOrient3D(e){
       if(e.alpha==null||e.beta==null||e.gamma==null) return;
       lastMatrix=eulerToMatrix(e.alpha,e.beta,e.gamma);
+      renderCompassAndLevel(); // NEW
     }
 
     /* GPX učitavanje */
+    const gpxInput=qs('#gpxInput'), loadGpxBtn=qs('#loadGpxBtn'),
+          gpxUrl=qs('#gpxUrl'), loadUrlBtn=qs('#loadUrlBtn');
     loadGpxBtn?.addEventListener('click', async ()=>{
       const f=gpxInput?.files?.[0]; if(!f){ trackStatusPill.textContent='GPX: nema datoteke'; return; }
       try{ const txt=await f.text(); gpxTrack=parseGpxToTrack(txt); afterGpxLoaded(`GPX (file): ${gpxTrack.length} točaka`); }
@@ -932,7 +1036,7 @@ if ('serviceWorker' in navigator){
       // mrvice
       maybeAddCrumb(lat,lon,acc);
 
-      if(!gpxTrack || gpxTrack.length<2){ arrowEl.style.opacity='1'; return; }
+      if(!gpxTrack || gpxTrack.length<2){ arrowEl.style.opacity='1'; renderCompassAndLevel(); return; }
 
       // najbliža točka staze
       const nearest=nearestPointOnTrack({lat,lon}, gpxTrack);
@@ -940,6 +1044,7 @@ if ('serviceWorker' in navigator){
       // ignoriraj ekstremno lošu točnost
       if(Number.isFinite(acc) && acc>50){
         onTrackChip.textContent='🧭 status: GPS netočan (>50 m)';
+        renderCompassAndLevel();
         return;
       }
 
@@ -986,6 +1091,9 @@ if ('serviceWorker' in navigator){
       // pop-up sync
       sendToPopup(miniRot, distLP, mode);
 
+      // kompas + libela
+      renderCompassAndLevel();
+
       // backtrack
       if(backtrackOn) doBacktrackStep(lat,lon);
     }
@@ -1007,7 +1115,7 @@ if ('serviceWorker' in navigator){
     function doBacktrackStep(lat,lon){
       if(breadcrumbs.length===0){ return; }
       if(backIdx==null){ backIdx=findNearestCrumbIndex(lat,lon); }
-      if(backIdx<=0){ onTrackChip.textContent='🧭 status: stigao na start'; setArrowMode('ok'); offDistChip.textContent='↔︎ udaljenost: 0 m'; return; }
+      if(backIdx<=0){ onTrackChip.textContent='🧭 status: stigao na start'; setArrowMode('ok'); offDistChip.textContent='↔︎ udaljenost: 0 m'; renderCompassAndLevel(); return; }
       const tgt=breadcrumbs[backIdx]; const distM=haversine(lat,lon,tgt.lat,tgt.lon); updateOffTrackUI(distM);
 
       const vWorld=enuVector(lat,lon,tgt.lat,tgt.lon);
@@ -1032,6 +1140,9 @@ if ('serviceWorker' in navigator){
 
       if(distM<=AUTO_ADVANCE_RADIUS){ backIdx=Math.max(0, backIdx-1); }
       onTrackChip.textContent='🧭 status: povratak istim putem';
+
+      // kompas + libela
+      renderCompassAndLevel();
 
       // pop-up sync
       const mode = distM<=OK_THRESHOLD_M ? 'ok' : (distM<=YELLOW_MAX_M ? 'warn' : 'bad');
@@ -1063,6 +1174,10 @@ if ('serviceWorker' in navigator){
         const miniRot = Math.round(lastAngleDeg/5)*5;
         miniNeedle.style.transform=`rotate(${miniRot}deg)`;
         offDistChip.textContent='↔︎ udaljenost: —';
+
+        // kompas + libela
+        renderCompassAndLevel();
+
         hbIdx=Math.max(0,hbIdx-1);
 
         // pop-up sync
