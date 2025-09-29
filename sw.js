@@ -1,5 +1,5 @@
 // sw.js — root scope, “kao jučer”: offline radi Digitalni ruksak, ostalo ide preko mreže
-const CACHE_VERSION = 'ruksak-1.0.6';
+const CACHE_VERSION = 'ruksak-1.0.7';
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 
 // Offline dokument i asseti (root putanje)
