@@ -1528,21 +1528,25 @@
     }
 
     // EMA za glatkoću rotacije prstena
-    let smooth=0, EMA=0.18;
+    let rafId = null;
+let smooth = 0, EMA = 0.18; // zadrži svoje vrijednosti
 
-    function renderCompassRing(){
-      if(correctedHeading==null) return;
-      const delta = ((((correctedHeading - smooth) + 540) % 360) - 180);
-      smooth = smooth + EMA * delta;
-      compassRing.style.transform = `rotate(${-smooth}deg)`;
+function renderCompassRing(){
+  // Ako imamo heading: ažuriraj rotaciju; ako nemamo: preskoči ovaj frame,
+  // ali NEMOJ prekidati petlju.
+  if (typeof correctedHeading === 'number') {
+    const delta = ((((correctedHeading - smooth) + 540) % 360) - 180);
+    smooth = smooth + EMA * delta;
+    compassRing.style.transform = `rotate(${-smooth}deg)`;
 
-      // vidljivost target strelice ovisi o poravnanju sjevera
-      const off = Math.min(normalize(smooth), 360 - normalize(smooth));
-      const aligned = off <= ALIGN_TOLERANCE;
-      targetArrow.style.opacity = aligned ? 1 : 0;
+    // target strelica samo kad je poravnano sjeverom
+    const off = Math.min(normalize(smooth), 360 - normalize(smooth));
+    const aligned = off <= ALIGN_TOLERANCE;
+    targetArrow.style.opacity = aligned ? 1 : 0;
+  }
 
-      requestAnimationFrame(renderCompassRing);
-    }
+  rafId = requestAnimationFrame(renderCompassRing);
+}
 
     // Primijeni heading (magnetski) -> true/mag + deklinacija + screen offset
     function applyHeading(mag){
@@ -1574,10 +1578,10 @@
 });
 
         function openArrow(){
-  startCompassSensors();   // uvijek pozove helper da upali sve senzore
-  const urlParam=new URL(location.href).searchParams.get('gpx');
-  if(urlParam) loadGpxFromUrl(urlParam);
-  renderCompassRing();
+  startCompassSensors();
+  const urlParam = new URL(location.href).searchParams.get('gpx');
+  if (urlParam) loadGpxFromUrl(urlParam);
+  if (!rafId) renderCompassRing(); // pokreni petlju samo jednom
 }
 
     // GPX parsiranje i učitavanje
