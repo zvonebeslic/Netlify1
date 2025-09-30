@@ -357,6 +357,8 @@
       box-shadow: 0 0 24px rgba(0,0,0,.25) inset;
       transform-origin: 50% 50%;
       transform: rotate(0deg);
+      will-change: transform;
+      backface-visibility: hidden;
     }
 
     .compass-ring .mark {
@@ -1384,410 +1386,475 @@
       camMsg.innerHTML='Gotovo. <a style="margin-left:8px" download="mountain-photo.jpg" href="'+url+'">Preuzmi</a>';
     }
 
-    /* =========================================================
-       KOMPAS/GPX — FIKSNE OZNAKE + FIKSNA IGla + TARGET
-       ========================================================= */
+
+/* =========================================================
+   KOMPAS/GPX — FIKSNE OZNAKE + FIKSNA IGla + TARGET
+   (stabilno, bez treperenja; jedan sensor event; kvantizacija)
+   ========================================================= */
+
     const arrowEl=qs('#arrow3d'),
-          gpxInput=qs('#gpxInput'),
-          loadGpxBtn=qs('#loadGpxBtn'),
-          gpxUrl=qs('#gpxUrl'),
-          loadUrlBtn=qs('#loadUrlBtn'),
-          alertMetersInput=qs('#alertMeters'),
-          toggleTrackBtn=qs('#toggleTrackBtn'),
-          trackStatusPill=qs('#trackStatusPill'),
-          onTrackChip=qs('#onTrackChip'),
-          offDistChip=qs('#offDistChip');
+      gpxInput=qs('#gpxInput'),
+      loadGpxBtn=qs('#loadGpxBtn'),
+      gpxUrl=qs('#gpxUrl'),
+      loadUrlBtn=qs('#loadUrlBtn'),
+      alertMetersInput=qs('#alertMeters'),
+      toggleTrackBtn=qs('#toggleTrackBtn'),
+      trackStatusPill=qs('#trackStatusPill'),
+      onTrackChip=qs('#onTrackChip'),
+      offDistChip=qs('#offDistChip');
 
-    const mini=qs('#miniCompass'),
-          miniNeedle=qs('#miniNeedle'),
-          miniMeters=qs('#miniMeters');
+const mini=qs('#miniCompass'),
+      miniNeedle=qs('#miniNeedle'),
+      miniMeters=qs('#miniMeters');
 
-    const compassRing = qs('#compassRing');
-    const northNeedle = qs('#northNeedle');
-    const targetArrow = qs('#targetArrow');
-    const levelRing   = qs('#levelRing');
-    const levelBubble = qs('#levelBubble');
-    const pitchLbl    = qs('#pitchDeg');
-    const rollLbl     = qs('#rollDeg');
+const compassRing = qs('#compassRing');
+const northNeedle = qs('#northNeedle');
+const targetArrow = qs('#targetArrow');
+const levelRing   = qs('#levelRing');
+const levelBubble = qs('#levelBubble');
+const pitchLbl    = qs('#pitchDeg');
+const rollLbl     = qs('#rollDeg');
 
-    const useTrueNorthEl = qs('#useTrueNorth');
-    const autoDeclEl     = qs('#autoDecl');
-    const declInput      = qs('#declInput');
-    const declModalBack  = qs('#declModalBack');
-    const declHelpBtn    = qs('#declHelp');
-    const declCloseBtn   = qs('#declClose');
-    const iosPermBtn     = qs('#iosPermBtn');
-    const gpsBanner      = qs('#gpsBanner');
-    const bannerHide     = qs('#bannerHide');
+const useTrueNorthEl = qs('#useTrueNorth');
+const autoDeclEl     = qs('#autoDecl');
+const declInput      = qs('#declInput');
+const declModalBack  = qs('#declModalBack');
+const declHelpBtn    = qs('#declHelp');
+const declCloseBtn   = qs('#declClose');
+const iosPermBtn     = qs('#iosPermBtn');
+const gpsBanner      = qs('#gpsBanner');
+const bannerHide     = qs('#bannerHide');
 
-    bannerHide?.addEventListener('click', ()=> gpsBanner.style.display='none');
-    declHelpBtn?.addEventListener('click', ()=> declModalBack.style.display='grid');
-    declCloseBtn?.addEventListener('click', ()=> declModalBack.style.display='none');
+bannerHide?.addEventListener('click', ()=> gpsBanner.style.display='none');
+declHelpBtn?.addEventListener('click', ()=> declModalBack.style.display='grid');
+declCloseBtn?.addEventListener('click', ()=> declModalBack.style.display='none');
 
-    // Stanje i konstante
-    const R=6371000, RAD=Math.PI/180, DEG=180/Math.PI;
-    let gpxTrack=null, watchId=null, alertMeters=30, audioCtx=null, offBeepArmed=false;
-    let lastFix=null, lastKnownLat=null, lastKnownLon=null;
-    let headingDeg=null; // magnetski heading (0..360)
-    let correctedHeading=null; // heading nakon deklinacije i offseta
-    let useTrueNorth = JSON.parse(localStorage.getItem('ma_useTrueNorth') || 'true');
-    let autoDecl     = JSON.parse(localStorage.getItem('ma_autoDecl') || 'true');
-    let declinationDeg = parseFloat(localStorage.getItem('ma_declinationDeg') || '4.3');
-    const ALIGN_TOLERANCE = 5; // koliko smije odstupati od sjevera da bi target bio vidljiv
-    const COG_MIN_SPEED=0.5;
+// Stanje i konstante
+const R=6371000, RAD=Math.PI/180, DEG=180/Math.PI;
+let gpxTrack=null, watchId=null, alertMeters=30, audioCtx=null, offBeepArmed=false;
+let lastFix=null, lastKnownLat=null, lastKnownLon=null;
+let headingDeg=null;          // magnetski heading (0..360)
+let correctedHeading=null;    // heading nakon deklinacije i screen offseta
+let useTrueNorth = JSON.parse(localStorage.getItem('ma_useTrueNorth') || 'true');
+let autoDecl     = JSON.parse(localStorage.getItem('ma_autoDecl') || 'true');
+let declinationDeg = parseFloat(localStorage.getItem('ma_declinationDeg') || '4.3');
+const ALIGN_TOLERANCE = 5;
+const COG_MIN_SPEED = 0.5;
 
-    useTrueNorthEl.checked = useTrueNorth;
-    autoDeclEl.checked = autoDecl;
-    declInput.value = (+declinationDeg).toFixed(1);
+useTrueNorthEl.checked = useTrueNorth;
+autoDeclEl.checked = autoDecl;
+declInput.value = (+declinationDeg).toFixed(1);
 
-    useTrueNorthEl.addEventListener('change', ()=>{
-      useTrueNorth = useTrueNorthEl.checked;
-      localStorage.setItem('ma_useTrueNorth', JSON.stringify(useTrueNorth));
-      if(headingDeg!=null) applyHeading(headingDeg);
-    });
-    autoDeclEl.addEventListener('change', ()=>{
-      autoDecl = autoDeclEl.checked;
-      localStorage.setItem('ma_autoDecl', JSON.stringify(autoDecl));
-    });
-    declInput.addEventListener('change', ()=>{
-      const v=parseFloat(declInput.value);
-      if(Number.isFinite(v)){
-        declinationDeg=v;
-        localStorage.setItem('ma_declinationDeg', String(declinationDeg));
-        if(headingDeg!=null) applyHeading(headingDeg);
-      }
-    });
+useTrueNorthEl.addEventListener('change', ()=>{
+  useTrueNorth = useTrueNorthEl.checked;
+  localStorage.setItem('ma_useTrueNorth', JSON.stringify(useTrueNorth));
+  if(headingDeg!=null) applyHeading(headingDeg);
+});
+autoDeclEl.addEventListener('change', ()=>{
+  autoDecl = autoDeclEl.checked;
+  localStorage.setItem('ma_autoDecl', JSON.stringify(autoDecl));
+});
+declInput.addEventListener('change', ()=>{
+  const v=parseFloat(declInput.value);
+  if(Number.isFinite(v)){
+    declinationDeg=v;
+    localStorage.setItem('ma_declinationDeg', String(declinationDeg));
+    if(headingDeg!=null) applyHeading(headingDeg);
+  }
+});
 
-    // Gruba offline mreža deklinacije (Balkan)
-    const DEC_GRID={ lats:[40,42,44,46], lons:[12,16,20,24], vals:[[2.0,3.0,4.0,4.8],[2.6,3.6,4.6,5.4],[3.0,4.1,5.1,6.0],[3.3,4.4,5.4,6.3]] };
-    function bilerp(x,x0,x1,y,y0,y1,q11,q21,q12,q22){ const tx=(x-x0)/(x1-x0||1), ty=(y-y0)/(y1-y0||1); const a=q11*(1-tx)+q21*tx, b=q12*(1-tx)+q22*tx; return a*(1-ty)+b*ty; }
-    function estimateDeclination(lat,lon){
-      const {lats,lons,vals}=DEC_GRID;
-      lat=Math.max(lats[0],Math.min(lats.at(-1),lat));
-      lon=Math.max(lons[0],Math.min(lons.at(-1),lon));
-      let i=lats.findIndex((v,idx)=>lat>=v&&(idx===lats.length-1||lat<lats[idx+1])); if(i<0) i=lats.length-2;
-      let j=lons.findIndex((v,idx)=>lon>=v&&(idx===lons.length-1||lon<lons[idx+1])); if(j<0) j=lons.length-2;
-      return bilerp(lon,lons[j],lons[j+1],lat,lats[i],lats[i+1], vals[i][j],vals[i][j+1],vals[i+1][j],vals[i+1][j+1]);
-    }
+// Gruba offline mreža deklinacije (Balkan)
+const DEC_GRID={ lats:[40,42,44,46], lons:[12,16,20,24], vals:[[2.0,3.0,4.0,4.8],[2.6,3.6,4.6,5.4],[3.0,4.1,5.1,6.0],[3.3,4.4,5.4,6.3]] };
+function bilerp(x,x0,x1,y,y0,y1,q11,q21,q12,q22){ const tx=(x-x0)/(x1-x0||1), ty=(y-y0)/(y1-y0||1); const a=q11*(1-tx)+q21*tx, b=q12*(1-tx)+q22*tx; return a*(1-ty)+b*ty; }
+function estimateDeclination(lat,lon){
+  const {lats,lons,vals}=DEC_GRID;
+  lat=Math.max(lats[0],Math.min(lats.at(-1),lat));
+  lon=Math.max(lons[0],Math.min(lons.at(-1),lon));
+  let i=lats.findIndex((v,idx)=>lat>=v&&(idx===lats.length-1||lat<lats[idx+1])); if(i<0) i=lats.length-2;
+  let j=lons.findIndex((v,idx)=>lon>=v&&(idx===lons.length-1||lon<lons[idx+1])); if(j<0) j=lons.length-2;
+  return bilerp(lon,lons[j],lons[j+1],lat,lats[i],lats[i+1], vals[i][j],vals[i][j+1],vals[i+1][j],vals[i+1][j+1]);
+}
 
-    // Geometrija
-    const toRad=x=>x*RAD;
-    function toXY(lat,lon,lat0){ const x=(lon*RAD)*Math.cos(lat0*RAD)*R, y=(lat*RAD)*R; return {x,y}; }
-    function haversine(lat1,lon1,lat2,lon2){ const dφ=toRad(lat2-lat1), dλ=toRad(lon2-lon1); const a=Math.sin(dφ/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dλ/2)**2; return 2*R*Math.asin(Math.sqrt(a)); }
-    function bearingBetween(lat1,lon1,lat2,lon2){ const φ1=toRad(lat1), φ2=toRad(lat2), Δλ=toRad(lon2-lon1); const y=Math.sin(Δλ)*Math.cos(φ2); const x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ); return ((Math.atan2(y,x)*DEG)+360)%360; }
-    function nearestPointOnTrack(p,track){
-      let best={lat:track[0].lat,lon:track[0].lon,distM:Infinity,segIndex:0};
-      const lat0=p.lat, P=toXY(p.lat,p.lon,lat0);
-      for(let i=0;i<track.length-1;i++){
-        const A=toXY(track[i].lat,track[i].lon,lat0), B=toXY(track[i+1].lat,track[i+1].lon,lat0);
-        const ABx=B.x-A.x, ABy=B.y-A.y, APx=P.x-A.x, APy=P.y-A.y;
-        const ab2=ABx*ABx + ABy*ABy || 1;
-        let t=(APx*ABx + APy*ABy)/ab2; t=Math.max(0,Math.min(1,t));
-        const Qx=A.x+t*ABx, Qy=A.y+t*ABy;
-        const lon=(Qx/(R*Math.cos(lat0*RAD)))*(180/Math.PI), lat=(Qy/R)*(180/Math.PI);
-        const d=haversine(p.lat,p.lon,lat,lon);
-        if(d<best.distM) best={lat,lon,distM:d,segIndex:i};
-      }
-      return best;
-    }
+// Geometrija
+const toRad=x=>x*RAD;
+function toXY(lat,lon,lat0){ const x=(lon*RAD)*Math.cos(lat0*RAD)*R, y=(lat*RAD)*R; return {x,y}; }
+function haversine(lat1,lon1,lat2,lon2){ const dφ=toRad(lat2-lat1), dλ=toRad(lon2-lon1); const a=Math.sin(dφ/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dλ/2)**2; return 2*R*Math.asin(Math.sqrt(a)); }
+function bearingBetween(lat1,lon1,lat2,lon2){ const φ1=toRad(lat1), φ2=toRad(lat2), Δλ=toRad(lon2-lon1); const y=Math.sin(Δλ)*Math.cos(φ2); const x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ); return ((Math.atan2(y,x)*DEG)+360)%360; }
+function nearestPointOnTrack(p,track){
+  let best={lat:track[0].lat,lon:track[0].lon,distM:Infinity,segIndex:0};
+  const lat0=p.lat, P=toXY(p.lat,p.lon,lat0);
+  for(let i=0;i<track.length-1;i++){
+    const A=toXY(track[i].lat,track[i].lon,lat0), B=toXY(track[i+1].lat,track[i+1].lon,lat0);
+    const ABx=B.x-A.x, ABy=B.y-A.y, APx=P.x-A.x, APy=P.y-A.y;
+    const ab2=ABx*ABx + ABy*ABy || 1;
+    let t=(APx*ABx + APy*ABy)/ab2; t=Math.max(0,Math.min(1,t));
+    const Qx=A.x+t*ABx, Qy=A.y+t*ABy;
+    const lon=(Qx/(R*Math.cos(lat0*RAD)))*(180/Math.PI), lat=(Qy/R)*(180/Math.PI);
+    const d=haversine(p.lat,p.lon,lat,lon);
+    if(d<best.distM) best={lat,lon,distM:d,segIndex:i};
+  }
+  return best;
+}
 
-    // Mini HUD util
-    function setArrowMode(mode){
-      arrowEl.classList.remove('warn','bad');
-      if(mode==='warn'){ arrowEl.classList.add('warn'); }
-      else if(mode==='bad'){ arrowEl.classList.add('bad'); }
-    }
-    function showMini(){ mini.hidden=false; }
-    function hideMini(){ mini.hidden=true; }
-    function setMiniColor(mode){
-      miniNeedle.classList.remove('warn','bad');
-      if(mode==='warn') miniNeedle.classList.add('warn');
-      else if(mode==='bad') miniNeedle.classList.add('bad');
-    }
+// Mini HUD util
+function setArrowMode(mode){
+  arrowEl.classList.remove('warn','bad');
+  if(mode==='warn'){ arrowEl.classList.add('warn'); }
+  else if(mode==='bad'){ arrowEl.classList.add('bad'); }
+}
+function showMini(){ mini.hidden=false; }
+function hideMini(){ mini.hidden=true; }
+function setMiniColor(mode){
+  miniNeedle.classList.remove('warn','bad');
+  if(mode==='warn') miniNeedle.classList.add('warn');
+  else if(mode==='bad') miniNeedle.classList.add('bad');
+}
 
-    // Libela
-    function renderLevel(pitch=0,roll=0){
-      const ringRect = levelRing.getBoundingClientRect();
-      const Rb = (ringRect.width/2) - 13;
-      const maxTilt = 30;
-      let x = (roll / maxTilt) * Rb;
-      let y = (pitch / maxTilt) * Rb;
-      const dist = Math.hypot(x,y);
-      if(dist>Rb){ const k=Rb/dist; x*=k; y*=k; }
-      levelBubble.style.left = '50%';
-      levelBubble.style.top  = '50%';
-      levelBubble.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-      pitchLbl.textContent = `${pitch.toFixed(1)}°`;
-      rollLbl.textContent  = `${roll.toFixed(1)}°`;
-    }
+// Libela
+function renderLevel(pitch=0,roll=0){
+  const ringRect = levelRing.getBoundingClientRect();
+  const Rb = (ringRect.width/2) - 13;
+  const maxTilt = 30;
+  let x = (roll / maxTilt) * Rb;
+  let y = (pitch / maxTilt) * Rb;
+  const dist = Math.hypot(x,y);
+  if(dist>Rb){ const k=Rb/dist; x*=k; y*=k; }
+  levelBubble.style.left = '50%';
+  levelBubble.style.top  = '50%';
+  levelBubble.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+  pitchLbl.textContent = `${pitch.toFixed(1)}°`;
+  rollLbl.textContent  = `${roll.toFixed(1)}°`;
+}
 
-    // Orijentacija ekrana
-    function screenAngle(){
-      const a = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
-      return (typeof a === 'number') ? a : 0;
-    }
+// Orijentacija ekrana
+function screenAngle(){
+  const a = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+  return (typeof a === 'number') ? a : 0;
+}
 
-    // EMA za glatkoću rotacije prstena
-    let rafId = null;
-let smooth = 0, EMA = 0.18; // zadrži svoje vrijednosti
+// === Smoothing + render petlja (anti-flicker) ===
+let rafId = null;
+let smooth = 0, EMA = 0.12;          // malo sporije za glatkije
+let activeOriEvent = null;           // 'deviceorientation' ili 'deviceorientationabsolute'
+let lastHeadTs = 0;                  // debouncing ulaza
 
 function renderCompassRing(){
-  // Ako imamo heading: ažuriraj rotaciju; ako nemamo: preskoči ovaj frame,
-  // ali NEMOJ prekidati petlju.
   if (typeof correctedHeading === 'number') {
     const delta = ((((correctedHeading - smooth) + 540) % 360) - 180);
     smooth = smooth + EMA * delta;
-    compassRing.style.transform = `rotate(${-smooth}deg)`;
 
-    // target strelica samo kad je poravnano sjeverom
-    const off = Math.min(normalize(smooth), 360 - normalize(smooth));
+    // kvantizacija na 0.5° smanjuje treperenje teksta
+    const smoothQuant = Math.round(smooth * 2) / 2;
+
+    // promote to GPU layer
+    compassRing.style.transform = `translateZ(0) rotate(${-smoothQuant}deg)`;
+
+    // vidljivost target strelice ovisi o poravnanju sjevera
+    const off = Math.min(normalize(smoothQuant), 360 - normalize(smoothQuant));
     const aligned = off <= ALIGN_TOLERANCE;
     targetArrow.style.opacity = aligned ? 1 : 0;
   }
-
   rafId = requestAnimationFrame(renderCompassRing);
 }
 
-    // Primijeni heading (magnetski) -> true/mag + deklinacija + screen offset
-    function applyHeading(mag){
-      let h = normalize(mag);
-      if(useTrueNorth){ h = normalize(h + declinationDeg); }
-      h = normalize(h - screenAngle());
-      correctedHeading = h;
-    }
+// Primijeni heading (magnetski) -> true/mag + deklinacija + screen offset
+function applyHeading(mag){
+  let h = normalize(mag);
+  if(useTrueNorth){ h = normalize(h + declinationDeg); }
+  h = normalize(h - screenAngle());
+  correctedHeading = h;
+}
 
-    // Senzori (heading)
-    function onOrient3D(e){
-      if(typeof e.webkitCompassHeading === 'number' && Number.isFinite(e.webkitCompassHeading)){
-        headingDeg = normalize(e.webkitCompassHeading); // iOS već tilt-kompenzirano
-      } else if (typeof e.alpha === 'number'){
-        let deg = normalize(360 - e.alpha); // poravnaj da 0° znači sjever gore
-        headingDeg = deg;
-      } else {
-        return;
-      }
-      applyHeading(headingDeg);
-      // crvena igla ostaje fiksna (ne rotiramo je), samo prsten
-      renderLevel(e.beta?Number(e.beta):0, e.gamma?Number(e.gamma):0);
-    }
+// Senzori (heading) — s debouncingom
+function onOrient3D(e){
+  const now = performance.now();
+  if (now - lastHeadTs < 30) return;  // ~33 fps input
+  lastHeadTs = now;
 
-    // iOS dopuštenje
-      iosPermBtn?.addEventListener('click', async ()=>{
+  if(typeof e.webkitCompassHeading === 'number' && Number.isFinite(e.webkitCompassHeading)){
+    headingDeg = normalize(e.webkitCompassHeading); // iOS tilt-kompenzirano
+  } else if (typeof e.alpha === 'number'){
+    let deg = normalize(360 - e.alpha); // 0° = sjever gore
+    headingDeg = deg;
+  } else {
+    return;
+  }
+  applyHeading(headingDeg);
+  renderLevel(e.beta?Number(e.beta):0, e.gamma?Number(e.gamma):0);
+}
+
+// iOS gumb — samo pozove helper
+iosPermBtn?.addEventListener('click', async ()=>{
   await startCompassSensors();
   iosPermBtn.style.display='none';
 });
 
-        function openArrow(){
-  startCompassSensors();
-  const urlParam = new URL(location.href).searchParams.get('gpx');
-  if (urlParam) loadGpxFromUrl(urlParam);
-  if (!rafId) renderCompassRing(); // pokreni petlju samo jednom
+// Start senzora — koristi točno JEDAN event
+async function startCompassSensors() {
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    alert('Senzori kompasa rade samo na HTTPS/localhost.');
+    return;
+  }
+  try {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const r = await DeviceOrientationEvent.requestPermission();
+      if (r !== 'granted') { alert('Bez dozvole senzora kompas neće raditi na iOS-u.'); return; }
+    }
+  } catch(e) {}
+
+  // biraj apsolutni ako postoji, inače standardni — ali samo jedan
+  if ('ondeviceorientationabsolute' in window) {
+    window.addEventListener('deviceorientationabsolute', onOrient3D, true);
+    activeOriEvent = 'deviceorientationabsolute';
+  } else if ('ondeviceorientation' in window) {
+    window.addEventListener('deviceorientation', onOrient3D, true);
+    activeOriEvent = 'deviceorientation';
+  } else {
+    // fallback
+    window.addEventListener('deviceorientation', onOrient3D, true);
+    activeOriEvent = 'deviceorientation';
+  }
+
+  window.addEventListener('orientationchange', ()=> {
+    if (headingDeg != null) applyHeading(headingDeg);
+  }, {passive:true});
 }
 
-    // GPX parsiranje i učitavanje
-    async function loadGpxFromUrl(url){
-      try{
-        const res=await fetch(url,{mode:'cors'});
-        if(!res.ok) throw new Error('HTTP '+res.status);
-        const txt=await res.text();
-        gpxTrack=parseGpxToTrack(txt);
-        afterGpxLoaded(`GPX (URL): ${gpxTrack.length} točaka`);
-      }catch(e){
-        trackStatusPill.textContent='GPX URL: ne mogu učitati (CORS?)';
-        console.error(e);
-      }
-    }
-    function parseGpxToTrack(xml){
-      const dom=new DOMParser().parseFromString(xml,'application/xml');
-      let pts=[...dom.querySelectorAll('trkpt')].map(n=>({lat:+n.getAttribute('lat'), lon:+n.getAttribute('lon')}));
-      if(!pts.length){
-        pts=[...dom.querySelectorAll('rtept')].map(n=>({lat:+n.getAttribute('lat'), lon:+n.getAttribute('lon')}));
-      }
-      return pts.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
-    }
-    function afterGpxLoaded(label){
-      if(!gpxTrack || gpxTrack.length<2){
-        trackStatusPill.textContent='GPX: premalo točaka'; return;
-      }
-      trackStatusPill.textContent=label;
-      onTrackChip.textContent='🧭 status: GPX spreman — klikni “Pokreni praćenje”';
-      offDistChip.textContent='↔︎ udaljenost: —';
-      toggleTrackBtn.classList.add('alt');
-      setTimeout(()=>toggleTrackBtn.classList.remove('alt'),1400);
-    }
-    loadGpxBtn?.addEventListener('click', async ()=>{
-      const f=gpxInput?.files?.[0];
-      if(!f){ trackStatusPill.textContent='GPX: nema datoteke'; return; }
-      try{ const txt=await f.text(); gpxTrack=parseGpxToTrack(txt); afterGpxLoaded(`GPX (file): ${gpxTrack.length} točaka`); }
-      catch(e){ trackStatusPill.textContent='GPX: greška pri učitavanju'; console.error(e); }
-    });
-    loadUrlBtn?.addEventListener('click', async ()=>{
-      const url=gpxUrl.value.trim();
-      if(!url){ trackStatusPill.textContent='GPX URL: prazno'; return; }
-      await loadGpxFromUrl(url);
-    });
+// Otvaranje kompasa
+function openArrow(){
+  startCompassSensors();                    // upali senzore
+  const urlParam=new URL(location.href).searchParams.get('gpx');
+  if(urlParam) loadGpxFromUrl(urlParam);    // auto-učitaj GPX iz URL-a
+  if (!rafId) renderCompassRing();          // pokreni render petlju samo jednom
+}
 
-    // GPS praćenje + target
-    let distLP=null; const DIST_ALPHA=0.35;
-
-    toggleTrackBtn?.addEventListener('click', ()=>{
-      alertMeters=Math.max(5, Number(alertMetersInput.value)||30);
-      if(watchId==null){
-        if(!gpxTrack || gpxTrack.length<2){ trackStatusPill.textContent='GPX: učitaj trag prvo'; return; }
-        startGeoWatch(); toggleTrackBtn.textContent='Zaustavi praćenje';
-      } else { stopGeoWatch(); toggleTrackBtn.textContent='Pokreni praćenje'; }
-    });
-
-    function startGeoWatch(){
-      try{
-        watchId=navigator.geolocation.watchPosition(onPos,onGeoErr,{enableHighAccuracy:true, maximumAge:1000, timeout:10000});
-        trackStatusPill.textContent='GPS: praćenje uključeno';
-        offBeepArmed=true; showMini();
-      }catch(e){ trackStatusPill.textContent='GPS: ne mogu pokrenuti'; }
-    }
-    function stopGeoWatch(){
-      if(watchId!=null){ navigator.geolocation.clearWatch(watchId); watchId=null; }
-      trackStatusPill.textContent='GPS: zaustavljeno';
-      hideMini(); gpsBanner.style.display='none';
-      lastFix=null;
-    }
-    function onGeoErr(err){
-      trackStatusPill.textContent='GPS greška: '+(err?.message||'');
-      gpsBanner.style.display='flex';
-    }
-
-    function updateOffTrackUI(dist){
-      if(dist<=5){ setArrowMode('ok'); onTrackChip.textContent='🧭 status: na tragu ✓'; }
-      else if(dist<=alertMeters){ setArrowMode('warn'); onTrackChip.textContent='🧭 status: blizu ruba'; }
-      else { setArrowMode('bad'); onTrackChip.textContent='🧭 status: izvan traga'; if(offBeepArmed){ offBeepArmed=false; beep3(); setTimeout(()=>offBeepArmed=true,8000); } }
-      offDistChip.textContent=`↔︎ udaljenost: ${dist.toFixed(0)} m`;
-    }
-
-    function onPos(pos){
-      gpsBanner.style.display='none';
-      const lat=pos.coords.latitude, lon=pos.coords.longitude, acc=pos.coords.accuracy;
-      lastKnownLat=lat; lastKnownLon=lon;
-
-      if(autoDecl && Number.isFinite(lat) && Number.isFinite(lon)){
-        const est=estimateDeclination(lat,lon);
-        if(Number.isFinite(est)){
-          declinationDeg = est; declInput.value = est.toFixed(1);
-          localStorage.setItem('ma_declinationDeg', String(declinationDeg));
-          if(headingDeg!=null) applyHeading(headingDeg);
-        }
-      }
-
-      if(!gpxTrack || gpxTrack.length<2){ return; }
-      if(Number.isFinite(acc) && acc>50){ onTrackChip.textContent='🧭 status: GPS netočan (>50 m)'; return; }
-
-      // najbliža točka staze
-      const nearest=nearestPointOnTrack({lat,lon}, gpxTrack);
-
-      // dist LP glatko
-      let dist=nearest.distM;
-      distLP = distLP==null ? dist : (DIST_ALPHA*dist + (1-DIST_ALPHA)*distLP);
-      updateOffTrackUI(distLP);
-
-      // bearing do cilja
-      const brg = bearingBetween(lat,lon,nearest.lat,nearest.lon);
-
-      // target vidljiv samo kad je poravnanje sjevera (±5°)
-      if(correctedHeading!=null){
-        const off = Math.min(normalize(correctedHeading), 360 - normalize(correctedHeading));
-        const aligned = off <= ALIGN_TOLERANCE;
-        if(aligned){
-          const rel = (brg - correctedHeading + 360) % 360;
-          targetArrow.style.transform = `translate(-50%, -60%) rotate(${rel}deg)`;
-          targetArrow.style.opacity = 1;
-        } else {
-          targetArrow.style.opacity = 0;
-        }
-      }
-
-      // mini HUD
-      miniMeters.textContent=`${distLP.toFixed(0)} m`;
-      if(correctedHeading!=null){
-        const miniRot = Math.round(((brg - correctedHeading + 360)%360)/5)*5;
-        miniNeedle.style.transform=`rotate(${miniRot}deg)`;
-      }
-      const mode = distLP<=5 ? 'ok' : (distLP<=alertMeters ? 'warn' : 'bad');
-      setMiniColor(mode);
-
-      // Blend s COG kad se kreće
-      const spd = Number.isFinite(pos.coords.speed)?pos.coords.speed:0;
-      if(spd>=COG_MIN_SPEED && lastFix){
-        const cog=bearingBetween(lastFix.lat,lastFix.lon,lat,lon);
-        if(headingDeg!=null){
-          let diff=cog-(useTrueNorth?normalize(headingDeg+declinationDeg):headingDeg);
-          if(diff>180) diff-=360; if(diff<-180) diff+=360;
-          const blended=(useTrueNorth?normalize(headingDeg+declinationDeg):headingDeg)+0.4*diff;
-          correctedHeading = normalize(blended - screenAngle());
-        } else {
-          correctedHeading = normalize(cog - screenAngle());
-        }
-      }
-      lastFix = {lat,lon,t:Date.now()};
-    }
-
-    // zatvaranje panela
-    qs('#arrowClose')?.addEventListener('click', ()=>{
-      hide(panelArrow);
-      window.removeEventListener('deviceorientation', onOrient3D, true);
-      if(watchId!=null) navigator.geolocation.clearWatch(watchId);
-    });
-
-    // Beep upozorenje
-    function beep3(){
-      try{
-        audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
-        const seq = [900,900,900]; let t = audioCtx.currentTime;
-        seq.forEach((f)=>{
-          const osc=audioCtx.createOscillator(); const gain=audioCtx.createGain();
-          osc.type='sine'; osc.frequency.value=f; osc.connect(gain); gain.connect(audioCtx.destination);
-          gain.gain.setValueAtTime(0.0001, t); gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
-          osc.start(t); osc.stop(t+0.15);
-          gain.gain.exponentialRampToValueAtTime(0.0001, t+0.15);
-          t += 0.27;
-        });
-      }catch(e){}
-    }
-
-       // ====================== BACKTRACK ======================
-let backtrackActive = false;
-let backtrackPoints = [];
-let backtrackWatcher = null;
-
-const btStart = document.getElementById('btStart');
-const btStop = document.getElementById('btStop');
-
-btStart?.addEventListener('click', () => {
-  backtrackActive = true;
-  backtrackPoints = [];
-
-  if (navigator.geolocation) {
-    backtrackWatcher = navigator.geolocation.watchPosition(pos => {
-      if (backtrackActive) {
-        backtrackPoints.push([pos.coords.latitude, pos.coords.longitude]);
-        console.log('Dodana točka:', pos.coords.latitude, pos.coords.longitude);
-      }
-    }, err => console.warn('Greška geolokacije:', err), { enableHighAccuracy: true });
+/* ---------- GPX parsiranje i učitavanje ---------- */
+async function loadGpxFromUrl(url){
+  try{
+    const res=await fetch(url,{mode:'cors'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const txt=await res.text();
+    gpxTrack=parseGpxToTrack(txt);
+    afterGpxLoaded(`GPX (URL): ${gpxTrack.length} točaka`);
+  }catch(e){
+    trackStatusPill.textContent='GPX URL: ne mogu učitati (CORS?)';
+    console.error(e);
   }
-
-  console.log('Backtrack pokrenut');
+}
+function parseGpxToTrack(xml){
+  const dom=new DOMParser().parseFromString(xml,'application/xml');
+  let pts=[...dom.querySelectorAll('trkpt')].map(n=>({lat:+n.getAttribute('lat'), lon:+n.getAttribute('lon')}));
+  if(!pts.length){
+    pts=[...dom.querySelectorAll('rtept')].map(n=>({lat:+n.getAttribute('lat'), lon:+n.getAttribute('lon')}));
+  }
+  return pts.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
+}
+function afterGpxLoaded(label){
+  if(!gpxTrack || gpxTrack.length<2){
+    trackStatusPill.textContent='GPX: premalo točaka'; return;
+  }
+  trackStatusPill.textContent=label;
+  onTrackChip.textContent='🧭 status: GPX spreman — klikni “Pokreni praćenje”';
+  offDistChip.textContent='↔︎ udaljenost: —';
+  toggleTrackBtn.classList.add('alt');
+  setTimeout(()=>toggleTrackBtn.classList.remove('alt'),1400);
+}
+loadGpxBtn?.addEventListener('click', async ()=>{
+  const f=gpxInput?.files?.[0];
+  if(!f){ trackStatusPill.textContent='GPX: nema datoteke'; return; }
+  try{ const txt=await f.text(); gpxTrack=parseGpxToTrack(txt); afterGpxLoaded(`GPX (file): ${gpxTrack.length} točaka`); }
+  catch(e){ trackStatusPill.textContent='GPX: greška pri učitavanju'; console.error(e); }
+});
+loadUrlBtn?.addEventListener('click', async ()=>{
+  const url=gpxUrl.value.trim();
+  if(!url){ trackStatusPill.textContent='GPX URL: prazno'; return; }
+  await loadGpxFromUrl(url);
 });
 
-btStop?.addEventListener('click', () => {
-  backtrackActive = false;
+/* ---------- GPS praćenje + target ---------- */
+let distLP=null; const DIST_ALPHA=0.35;
 
-  if (backtrackWatcher) {
-    navigator.geolocation.clearWatch(backtrackWatcher);
-    backtrackWatcher = null;
+toggleTrackBtn?.addEventListener('click', ()=>{
+  alertMeters=Math.max(5, Number(alertMetersInput.value)||30);
+  if(watchId==null){
+    if(!gpxTrack || gpxTrack.length<2){ trackStatusPill.textContent='GPX: učitaj trag prvo'; return; }
+    startGeoWatch(); toggleTrackBtn.textContent='Zaustavi praćenje';
+  } else { stopGeoWatch(); toggleTrackBtn.textContent='Pokreni praćenje'; }
+});
+
+function startGeoWatch(){
+  try{
+    watchId=navigator.geolocation.watchPosition(onPos,onGeoErr,{enableHighAccuracy:true, maximumAge:1000, timeout:10000});
+    trackStatusPill.textContent='GPS: praćenje uključeno';
+    offBeepArmed=true; showMini();
+  }catch(e){ trackStatusPill.textContent='GPS: ne mogu pokrenuti'; }
+}
+function stopGeoWatch(){
+  if(watchId!=null){ navigator.geolocation.clearWatch(watchId); watchId=null; }
+  trackStatusPill.textContent='GPS: zaustavljeno';
+  hideMini(); gpsBanner.style.display='none';
+  lastFix=null;
+}
+function onGeoErr(err){
+  trackStatusPill.textContent='GPS greška: '+(err?.message||'');
+  gpsBanner.style.display='flex';
+}
+
+function updateOffTrackUI(dist){
+  if(dist<=5){ setArrowMode('ok'); onTrackChip.textContent='🧭 status: na tragu ✓'; }
+  else if(dist<=alertMeters){ setArrowMode('warn'); onTrackChip.textContent='🧭 status: blizu ruba'; }
+  else { setArrowMode('bad'); onTrackChip.textContent='🧭 status: izvan traga'; if(offBeepArmed){ offBeepArmed=false; beep3(); setTimeout(()=>offBeepArmed=true,8000); } }
+  offDistChip.textContent=`↔︎ udaljenost: ${dist.toFixed(0)} m`;
+}
+
+function onPos(pos){
+  gpsBanner.style.display='none';
+  const lat=pos.coords.latitude, lon=pos.coords.longitude, acc=pos.coords.accuracy;
+  lastKnownLat=lat; lastKnownLon=lon;
+
+  if(autoDecl && Number.isFinite(lat) && Number.isFinite(lon)){
+    const est=estimateDeclination(lat,lon);
+    if(Number.isFinite(est)){
+      declinationDeg = est; declInput.value = est.toFixed(1);
+      localStorage.setItem('ma_declinationDeg', String(declinationDeg));
+      if(headingDeg!=null) applyHeading(headingDeg);
+    }
   }
 
-  console.log('Backtrack zaustavljen. Ukupno točaka:', backtrackPoints.length);
-  console.log('Točke backtracka:', backtrackPoints);
-  // Ovdje možeš kasnije nacrtati stazu ili ponuditi export u GPX
+  if(!gpxTrack || gpxTrack.length<2){ return; }
+  if(Number.isFinite(acc) && acc>50){ onTrackChip.textContent='🧭 status: GPS netočan (>50 m)'; return; }
+
+  const nearest=nearestPointOnTrack({lat,lon}, gpxTrack);
+
+  let dist=nearest.distM;
+  distLP = distLP==null ? dist : (DIST_ALPHA*dist + (1-DIST_ALPHA)*distLP);
+  updateOffTrackUI(distLP);
+
+  const brg = bearingBetween(lat,lon,nearest.lat,nearest.lon);
+
+  if(correctedHeading!=null){
+    const off = Math.min(normalize(correctedHeading), 360 - normalize(correctedHeading));
+    const aligned = off <= ALIGN_TOLERANCE;
+    if(aligned){
+      const rel = (brg - correctedHeading + 360) % 360;
+      targetArrow.style.transform = `translate(-50%, -60%) rotate(${rel}deg)`;
+      targetArrow.style.opacity = 1;
+    } else {
+      targetArrow.style.opacity = 0;
+    }
+  }
+
+  miniMeters.textContent=`${distLP.toFixed(0)} m`;
+  if(correctedHeading!=null){
+    const miniRot = Math.round(((brg - correctedHeading + 360)%360)/5)*5;
+    miniNeedle.style.transform=`rotate(${miniRot}deg)`;
+  }
+  const mode = distLP<=5 ? 'ok' : (distLP<=alertMeters ? 'warn' : 'bad');
+  setMiniColor(mode);
+
+  const spd = Number.isFinite(pos.coords.speed)?pos.coords.speed:0;
+  if(spd>=COG_MIN_SPEED && lastFix){
+    const cog=bearingBetween(lastFix.lat,lastFix.lon,lat,lon);
+    if(headingDeg!=null){
+      let diff=cog-(useTrueNorth?normalize(headingDeg+declinationDeg):headingDeg);
+      if(diff>180) diff-=360; if(diff<-180) diff+=360;
+      const blended=(useTrueNorth?normalize(headingDeg+declinationDeg):headingDeg)+0.4*diff;
+      correctedHeading = normalize(blended - screenAngle());
+    } else {
+      correctedHeading = normalize(cog - screenAngle());
+    }
+  }
+  lastFix = {lat,lon,t:Date.now()};
+
+   window.__btOnPosition(pos.coords.latitude, pos.coords.longitude);
+}
+
+// zatvaranje panela — ukloni listener koji je stvarno dodan
+qs('#arrowClose')?.addEventListener('click', ()=>{
+  hide(panelArrow);
+  if (activeOriEvent) window.removeEventListener(activeOriEvent, onOrient3D, true);
+  if(watchId!=null) navigator.geolocation.clearWatch(watchId);
 });
+
+/* ---------- Beep upozorenje ---------- */
+function beep3(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const seq = [900,900,900]; let t = audioCtx.currentTime;
+    seq.forEach((f)=>{
+      const osc=audioCtx.createOscillator(); const gain=audioCtx.createGain();
+      osc.type='sine'; osc.frequency.value=f; osc.connect(gain); gain.connect(audioCtx.destination);
+      gain.gain.setValueAtTime(0.0001, t); gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
+      osc.start(t); osc.stop(t+0.15);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t+0.15);
+      t += 0.27;
+    });
+  }catch(e){}
+}
+
+
+  // ======== BACKTRACK: stanje + postavke ========
+  let backtrackActive = false;
+  let backtrackPoints = [];
+  const BT_MIN_DIST_M = 8; // minimalni pomak da dodamo novu točku
+
+  const btStartBtn = document.getElementById('btStart');
+  const btStopBtn  = document.getElementById('btStop');
+  const btStatusEl = document.getElementById('btStatus');
+
+  function btUpdateStatus(msg) {
+    if (btStatusEl) btStatusEl.textContent = `↩︎ ${msg}`;
+  }
+
+  // ======== Start / Stop ========
+  function btStart() {
+    backtrackActive = true;
+    backtrackPoints = [];
+    btUpdateStatus('Povratak: snimam…');
+  }
+
+  function btStop() {
+    backtrackActive = false;
+    btUpdateStatus(`Povratak: isključen — točaka: ${backtrackPoints.length}`);
+  }
+
+  btStartBtn?.addEventListener('click', btStart);
+  btStopBtn?.addEventListener('click',  btStop);
+
+  // ======== Hook koji poziva onPos ========
+  window.__btOnPosition = function(lat, lon) {
+    if (!backtrackActive) return;
+    const last = backtrackPoints[backtrackPoints.length - 1];
+    if (!last) {
+      backtrackPoints.push([lat, lon]);
+      return;
+    }
+    const d = haversine(last[0], last[1], lat, lon);
+    if (d >= BT_MIN_DIST_M) {
+      backtrackPoints.push([lat, lon]);
+    }
+  };
+
+  // (Opcionalno) Izvoz u GPX
+  window.exportBacktrackGPX = function() {
+    if (!backtrackPoints.length) { alert('Nema backtrack točaka.'); return; }
+    const gpxPts = backtrackPoints
+      .map(([la,lo]) => `<trkpt lat="${la}" lon="${lo}"></trkpt>`)
+      .join('\n    ');
+    const gpx =
+`<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Digitalni ruksak" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk><name>Backtrack</name><trkseg>
+    ${gpxPts}
+  </trkseg></trk>
+</gpx>`;
+    const blob = new Blob([gpx], {type:'application/gpx+xml'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'backtrack.gpx'; a.click();
+    URL.revokeObjectURL(url);
+  };
     
     /* =========================================================
        NOĆNO NEBO — UPRAVLJANJE I ISTICANJE ASTERIZAMA
