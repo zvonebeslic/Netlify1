@@ -1205,6 +1205,28 @@
     qs('#openBioPanel')?.addEventListener('click', () => show(panelBio));
     qs('#openOfflinePanel')?.addEventListener('click', () => show(panelOffline));
 
+       async function startCompassSensors() {
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    alert('Senzori kompasa rade samo na HTTPS/localhost.');
+    return;
+  }
+  try {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const r = await DeviceOrientationEvent.requestPermission();
+      if (r !== 'granted') {
+        alert('Bez dozvole senzora kompas neće raditi na iOS-u.');
+        return;
+      }
+    }
+  } catch(e) { /* ignore */ }
+  window.addEventListener('deviceorientation', onOrient3D, true);
+  window.addEventListener('deviceorientationabsolute', onOrient3D, true);
+  window.addEventListener('orientationchange', ()=> {
+    if (headingDeg != null) applyHeading(headingDeg);
+  }, {passive:true});
+}
+
     /* =========================================================
        AKORDEON VODIČ
        ========================================================= */
@@ -1546,31 +1568,17 @@
     }
 
     // iOS dopuštenje
-    iosPermBtn?.addEventListener('click', async ()=>{
-      try{
-        if (typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
-          const res=await DeviceOrientationEvent.requestPermission();
-          if(res==='granted'){
-            window.addEventListener('deviceorientation', onOrient3D, true);
-            iosPermBtn.style.display='none';
-          } else {
-            alert('Bez dozvole senzora kompas neće raditi na iOS-u.');
-          }
-        }
-      }catch(e){}
-    });
+      iosPermBtn?.addEventListener('click', async ()=>{
+  await startCompassSensors();
+  iosPermBtn.style.display='none';
+});
 
-    function openArrow(){
-      // auto senzori (osim iOS koji traži klik)
-      if(!(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function')){
-        window.addEventListener('deviceorientation', onOrient3D, true);
-      }
-      // auto GPX iz URL parametra
-      const urlParam=new URL(location.href).searchParams.get('gpx');
-      if(urlParam) loadGpxFromUrl(urlParam);
-      // pokreni render petlju
-      renderCompassRing();
-    }
+        function openArrow(){
+  startCompassSensors();   // uvijek pozove helper da upali sve senzore
+  const urlParam=new URL(location.href).searchParams.get('gpx');
+  if(urlParam) loadGpxFromUrl(urlParam);
+  renderCompassRing();
+}
 
     // GPX parsiranje i učitavanje
     async function loadGpxFromUrl(url){
