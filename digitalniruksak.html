@@ -1857,15 +1857,31 @@ qs('#arrowClose')?.addEventListener('click', ()=>{
 function beep3(){
   try{
     audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
-    const seq = [900,900,900]; let t = audioCtx.currentTime;
+    const seq = [900,900,900]; 
+    let t = audioCtx.currentTime;
     seq.forEach((f)=>{
-      const osc=audioCtx.createOscillator(); const gain=audioCtx.createGain();
-      osc.type='sine'; osc.frequency.value=f; osc.connect(gain); gain.connect(audioCtx.destination);
-      gain.gain.setValueAtTime(0.0001, t); gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
-      osc.start(t); osc.stop(t+0.15);
+      const osc=audioCtx.createOscillator(); 
+      const gain=audioCtx.createGain();
+      osc.type='sine'; 
+      osc.frequency.value=f; 
+      osc.connect(gain); 
+      gain.connect(audioCtx.destination);
+
+      gain.gain.setValueAtTime(0.0001, t); 
+      gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
+
+      osc.start(t); 
+      osc.stop(t+0.15);
       gain.gain.exponentialRampToValueAtTime(0.0001, t+0.15);
+
       t += 0.27;
     });
+
+    // Dodana vibracija (ako je podržana)
+    if (navigator.vibrate) {
+      // uzorak: vibracija 150ms → pauza 120ms → vibracija 150ms → pauza 120ms → vibracija 150ms
+      navigator.vibrate([150, 120, 150, 120, 150]); 
+    }
   }catch(e){}
 }
 
