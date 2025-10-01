@@ -1207,27 +1207,6 @@
     qs('#openBioPanel')?.addEventListener('click', () => show(panelBio));
     qs('#openOfflinePanel')?.addEventListener('click', () => show(panelOffline));
 
-       async function startCompassSensors() {
-  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-    alert('Senzori kompasa rade samo na HTTPS/localhost.');
-    return;
-  }
-  try {
-    if (typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-      const r = await DeviceOrientationEvent.requestPermission();
-      if (r !== 'granted') {
-        alert('Bez dozvole senzora kompas neće raditi na iOS-u.');
-        return;
-      }
-    }
-  } catch(e) { /* ignore */ }
-  window.addEventListener('deviceorientation', onOrient3D, true);
-  window.addEventListener('deviceorientationabsolute', onOrient3D, true);
-  window.addEventListener('orientationchange', ()=> {
-    if (headingDeg != null) applyHeading(headingDeg);
-  }, {passive:true});
-}
 
     /* =========================================================
        AKORDEON VODIČ
@@ -1558,29 +1537,44 @@ function renderCompassRing(){
 }
 
 // Primijeni heading (magnetski) -> true/mag + deklinacija + screen offset
-function applyHeading(mag){
+    function applyHeading(mag, isIOS){
+  // 1) magnetski -> (opcionalno) geografski
   let h = normalize(mag);
-  if(useTrueNorth){ h = normalize(h + declinationDeg); }
-  h = normalize(h - screenAngle());
+  if (useTrueNorth) h = normalize(h + declinationDeg);
+
+  // 2) korekcija za orijentaciju ekrana SAMO na Androidu (alpha), NE iOS webkitCompassHeading
+  if (!isIOS) {
+    h = normalize(h - screenAngle());
+  }
+
   correctedHeading = h;
 }
 
 // Senzori (heading) — s debouncingom
-function onOrient3D(e){
+  function onOrient3D(e){
   const now = performance.now();
   if (now - lastHeadTs < 30) return;  // ~33 fps input
   lastHeadTs = now;
 
-  if(typeof e.webkitCompassHeading === 'number' && Number.isFinite(e.webkitCompassHeading)){
-    headingDeg = normalize(e.webkitCompassHeading); // iOS tilt-kompenzirano
-  } else if (typeof e.alpha === 'number'){
-    let deg = normalize(360 - e.alpha); // 0° = sjever gore
-    headingDeg = deg;
+  let isIOSHeading = false;
+
+  if (typeof e.webkitCompassHeading === 'number' && Number.isFinite(e.webkitCompassHeading)) {
+    headingDeg = normalize(e.webkitCompassHeading); // iOS — već tilt-kompenzirano
+    isIOSHeading = true;
+  } else if (typeof e.alpha === 'number') {
+    headingDeg = normalize(360 - e.alpha);         // Android — 0° = sjever gore
+    isIOSHeading = false;
   } else {
     return;
   }
-  applyHeading(headingDeg);
-  renderLevel(e.beta?Number(e.beta):0, e.gamma?Number(e.gamma):0);
+
+  applyHeading(headingDeg, isIOSHeading);
+
+  // Libela
+  renderLevel(
+    e.beta ? Number(e.beta) : 0,
+    e.gamma ? Number(e.gamma) : 0
+  );
 }
 
 // iOS gumb — samo pozove helper
