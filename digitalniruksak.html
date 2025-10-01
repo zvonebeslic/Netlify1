@@ -1423,6 +1423,36 @@ bannerHide?.addEventListener('click', ()=> gpsBanner.style.display='none');
 declHelpBtn?.addEventListener('click', ()=> declModalBack.style.display='grid');
 declCloseBtn?.addEventListener('click', ()=> declModalBack.style.display='none');
 
+   // ---- NAV STATE: NO_TRACK / ON_PATH / OFF_PATH ----
+const onPathOK = document.getElementById('onPathOK');
+
+const NAV = {
+  NO_TRACK: 'NO_TRACK',   // nema učitane staze -> ne prikazuj strelicu
+  ON_PATH:  'ON_PATH',    // dovoljno blizu staze -> prikaži zelenu kvačicu
+  OFF_PATH: 'OFF_PATH'    // daleko od staze -> prikaži strelicu
+};
+
+let navState = NAV.NO_TRACK;
+const ONPATH_THRESH_M = 20; // prag za “na stazi” (po želji 10–25 m)
+
+function setNavState(state){
+  if (navState === state) return;
+  navState = state;
+  if (navState === NAV.NO_TRACK){
+    targetArrow.style.display = 'none';
+    onPathOK.style.display    = 'none';
+  } else if (navState === NAV.ON_PATH){
+    targetArrow.style.display = 'none';
+    onPathOK.style.display    = 'block';
+  } else { // OFF_PATH
+    onPathOK.style.display    = 'none';
+    targetArrow.style.display = 'block';
+  }
+}
+
+// inicijalno: nema staze
+setNavState(NAV.NO_TRACK);
+    
 // Stanje i konstante
 const R=6371000, RAD=Math.PI/180, DEG=180/Math.PI;
 let gpxTrack=null, watchId=null, alertMeters=30, audioCtx=null, offBeepArmed=false;
@@ -1544,16 +1574,19 @@ let lastHeadTs = 0;                  // debouncing ulaza
     // promote to GPU layer
     compassRing.style.transform = `translateZ(0) rotate(${-smoothQuant}deg)`;
 
-    // vidljivost target strelice ovisi o poravnanju sjevera
-    const off = Math.min(normalize(smoothQuant), 360 - normalize(smoothQuant));
-    const aligned = off <= ALIGN_TOLERANCE;
-    targetArrow.style.opacity = aligned ? 1 : 0;
+    //  — prikaz strelice samo kad je OFF_PATH + poravnato na N —
+const off = Math.min(normalize(smoothQuant), 360 - normalize(smoothQuant));
+const aligned = off <= ALIGN_TOLERANCE;
 
-    // NOVO: rotacija strelice ako imamo zadnji bearing
-    if (aligned && lastBrg != null) {
-      const rel = (lastBrg - smoothQuant + 360) % 360;
-      targetArrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`;
-    }
+if (navState === NAV.OFF_PATH && aligned) {
+  targetArrow.style.opacity = 1;
+  if (lastBrg != null) {
+    const rel = (lastBrg - smoothQuant + 360) % 360; // relativno na prsten
+    targetArrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`;
+  }
+} else {
+  targetArrow.style.opacity = 0;
+}
   }
   rafId = requestAnimationFrame(renderCompassRing);
 }
@@ -1642,6 +1675,8 @@ function openArrow(){
   startCompassSensors();                    // upali senzore
   const urlParam=new URL(location.href).searchParams.get('gpx');
   if(urlParam) loadGpxFromUrl(urlParam);    // auto-učitaj GPX iz URL-a
+  // dok GPX nije učitan, drži state na NO_TRACK
+     setNavState(gpxTrack && gpxTrack.length >= 2 ? NAV.ON_PATH : NAV.NO_TRACK);
   if (!rafId) renderCompassRing();          // pokreni render petlju samo jednom
 }
 
@@ -1683,15 +1718,24 @@ function parseGpxToTrack(xml){
   return pts.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
 }
 function afterGpxLoaded(label){
-  if(!gpxTrack || gpxTrack.length<2){
-    trackStatusPill.textContent='GPX: premalo točaka'; return;
+  if (!gpxTrack || gpxTrack.length < 2) {
+    trackStatusPill.textContent = 'GPX: premalo točaka';
+    // nema valjane staze → ništa ne navodi
+    setNavState(NAV.NO_TRACK);
+    targetArrow.style.opacity = 0; // osiguraj da je skriveno
+    return;
   }
-  trackStatusPill.textContent=label;
-  onTrackChip.textContent='🧭 status: GPX spreman — klikni “Pokreni praćenje”';
-  offDistChip.textContent='↔︎ udaljenost: —';
+
+  trackStatusPill.textContent = label;
+  onTrackChip.textContent = '🧭 status: GPX spreman — klikni “Pokreni praćenje”';
+  offDistChip.textContent = '↔︎ udaljenost: —';
   toggleTrackBtn.classList.add('alt');
-  setTimeout(()=>toggleTrackBtn.classList.remove('alt'),1400);
+  setTimeout(() => toggleTrackBtn.classList.remove('alt'), 1400);
+
+  // GPX je učitan, ali dok ne dođe PRVI GPS fix ne navodimo ništa
+  setNavState(NAV.NO_TRACK);
 }
+    
 loadGpxBtn?.addEventListener('click', async ()=>{
   const f=gpxInput?.files?.[0];
   if(!f){ trackStatusPill.textContent='GPX: nema datoteke'; return; }
@@ -1757,15 +1801,25 @@ function onPos(pos){
   if(!gpxTrack || gpxTrack.length<2){ return; }
   if(Number.isFinite(acc) && acc>50){ onTrackChip.textContent='🧭 status: GPS netočan (>50 m)'; return; }
 
-  const nearest=nearestPointOnTrack({lat,lon}, gpxTrack);
+  const nearest = nearestPointOnTrack({lat, lon}, gpxTrack);
 
-  let dist=nearest.distM;
-  distLP = distLP==null ? dist : (DIST_ALPHA*dist + (1-DIST_ALPHA)*distLP);
-  updateOffTrackUI(distLP);
-  updateArrowColor(distLP);
+let dist = nearest.distM;
+distLP = distLP == null ? dist : (DIST_ALPHA * dist + (1 - DIST_ALPHA) * distLP);
 
-  const brg = bearingBetween(lat,lon,nearest.lat,nearest.lon);
-      lastBrg = brg;
+// 1) State: jesmo li “na stazi” ili “izvan”?
+if (distLP <= ONPATH_THRESH_M) {
+  setNavState(NAV.ON_PATH);     // pokaži zelenu kvačicu
+} else {
+  setNavState(NAV.OFF_PATH);    // prikaži strelicu (vidjet će se tek kad poravnaš N)
+}
+
+// 2) UI pilule i boja strelice (boja je OK prikazati i dok je strelica skrivena)
+updateOffTrackUI(distLP);
+updateArrowColor(distLP);
+
+// 3) Bearing prema najbližoj točki (čuva se za render)
+const brg = bearingBetween(lat, lon, nearest.lat, nearest.lon);
+lastBrg = brg;
 
   miniMeters.textContent=`${distLP.toFixed(0)} m`;
   if(correctedHeading!=null){
