@@ -611,6 +611,10 @@
       display: none;
     }
 
+      #targetArrow { display: none; }
+#onPathOK { display: none; }
+.hidden { display: none !important; }
+
     /* ---------------- Banner / Modal ---------------- */
     .banner {
       position: fixed;
@@ -979,10 +983,19 @@
               <div class="ticks"></div>
             </div>
             <div class="north-needle" id="northNeedle"><div class="tip"></div></div>
-               <svg id="targetArrow" class="target-arrow" viewBox="0 0 100 200" title="Smjer do najbliže točke">
-               <rect x="45" y="40" width="10" height="140" fill="#00e0ff" />
-               <polygon points="50,0 80,40 50,30 20,40" fill="#00e0ff" />
-               </svg>
+               <!-- Strelica koja NAVODI (sakrivena dok nema GPX ili si na stazi) -->
+<svg id="targetArrow" width="72" height="72" viewBox="0 0 72 72" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(0deg); display:none; z-index:5;">
+  <polygon points="36,6 46,30 36,26 26,30" fill="#e53935"/>
+  <rect x="33" y="26" width="6" height="28" rx="3" fill="#e53935"/>
+</svg>
+
+<!-- Zelena kvačica kad si NA stazi -->
+<div id="onPathOK" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:none; z-index:5;">
+  <svg width="64" height="64" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="28" fill="#2e7d32"/>
+    <polyline points="20,33 28,41 46,23" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>
             <div class="tick"></div>
             <div id="arrow3d" class="arrow3d" style="opacity:0"></div>
           </div>
