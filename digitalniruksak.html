@@ -427,17 +427,17 @@
       border-radius: 2px;
     }
 
-      .target-arrow {
+        .target-arrow {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 60px;
-  height: 120px;
+  width: 40px;          /* bilo 60px */
+  height: 80px;         /* bilo 120px */
   transform: translate(-50%, -50%) rotate(0deg);
-  transform-origin: 50% 100%; /* dno strelice kao pivot */
+  transform-origin: 50% 50%;   /* SREDINA strelice */
   filter: drop-shadow(0 0 6px rgba(0,224,255,.5));
   opacity: 1;
-  transition: fill .3s ease, opacity .25s ease;
+  transition: opacity .25s ease;
   pointer-events: none;
 }
 
@@ -1753,6 +1753,7 @@ function onPos(pos){
   let dist=nearest.distM;
   distLP = distLP==null ? dist : (DIST_ALPHA*dist + (1-DIST_ALPHA)*distLP);
   updateOffTrackUI(distLP);
+  updateArrowColor(distLP);
 
   const brg = bearingBetween(lat,lon,nearest.lat,nearest.lon);
 
@@ -1761,7 +1762,7 @@ function onPos(pos){
     const aligned = off <= ALIGN_TOLERANCE;
     if(aligned){
       const rel = (brg - correctedHeading + 360) % 360;
-      targetArrow.style.transform = `translate(-50%, -60%) rotate(${rel}deg)`;
+      targetArrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`;
       targetArrow.style.opacity = 1;
     } else {
       targetArrow.style.opacity = 0;
