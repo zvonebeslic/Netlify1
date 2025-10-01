@@ -431,10 +431,12 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 40px;          /* bilo 60px */
-  height: 80px;         /* bilo 120px */
+  width: 40px;
+  height: 80px;
   transform: translate(-50%, -50%) rotate(0deg);
-  transform-origin: 50% 50%;   /* SREDINA strelice */
+  transform-origin: 50% 50%;
+  transform-box: fill-box;        /* ← bitno za SVG pivot */
+  will-change: transform;         /* glađe */
   filter: drop-shadow(0 0 6px rgba(0,224,255,.5));
   opacity: 1;
   transition: opacity .25s ease;
@@ -1414,6 +1416,7 @@ let gpxTrack=null, watchId=null, alertMeters=30, audioCtx=null, offBeepArmed=fal
 let lastFix=null, lastKnownLat=null, lastKnownLon=null;
 let headingDeg=null;          // magnetski heading (0..360)
 let correctedHeading=null;    // heading nakon deklinacije i screen offseta
+let lastBrg = null;   // zadnji bearing prema najbližoj točki (iz GPS-a)
 let useTrueNorth = JSON.parse(localStorage.getItem('ma_useTrueNorth') || 'true');
 let autoDecl     = JSON.parse(localStorage.getItem('ma_autoDecl') || 'true');
 let declinationDeg = parseFloat(localStorage.getItem('ma_declinationDeg') || '4.3');
@@ -1517,7 +1520,7 @@ let smooth = 0, EMA = 0.12;          // malo sporije za glatkije
 let activeOriEvent = null;           // 'deviceorientation' ili 'deviceorientationabsolute'
 let lastHeadTs = 0;                  // debouncing ulaza
 
-function renderCompassRing(){
+   function renderCompassRing(){
   if (typeof correctedHeading === 'number') {
     const delta = ((((correctedHeading - smooth) + 540) % 360) - 180);
     smooth = smooth + EMA * delta;
@@ -1532,6 +1535,12 @@ function renderCompassRing(){
     const off = Math.min(normalize(smoothQuant), 360 - normalize(smoothQuant));
     const aligned = off <= ALIGN_TOLERANCE;
     targetArrow.style.opacity = aligned ? 1 : 0;
+
+    // NOVO: rotacija strelice ako imamo zadnji bearing
+    if (aligned && lastBrg != null) {
+      const rel = (lastBrg - smoothQuant + 360) % 360;
+      targetArrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`;
+    }
   }
   rafId = requestAnimationFrame(renderCompassRing);
 }
@@ -1626,27 +1635,14 @@ function openArrow(){
 // ---------------------------------------------------
 // FUNKCIJE ZA STRELICU (rotacija + boja prema udaljenosti)
 // ---------------------------------------------------
-function rotateArrow(bearingDeg) {
-  const arrow = document.getElementById('targetArrow');
-  if (!arrow) return;
-  arrow.style.transform = `translate(-50%, -50%) rotate(${bearingDeg}deg)`;
-}
 
-function updateArrowColor(distance) {
+   function updateArrowColor(distance) {
   const arrow = document.getElementById('targetArrow');
   if (!arrow) return;
 
-  let color;
-  if (distance <= 10) {
-    color = 'green';
-    stopBeep();
-  } else if (distance <= 20) {
-    color = 'yellow';
-    stopBeep();
-  } else {
-    color = 'red';
-    startBeep();
-  }
+  let color = distance <= 10 ? '#2aa96b'      // zelena (on-track)
+            : distance <= 20 ? '#f2c14e'      // žuta (10–20m)
+            : '#ff6b6b';                      // crvena (>20m)
 
   arrow.querySelectorAll('rect, polygon')
        .forEach(el => el.setAttribute('fill', color));
@@ -1756,18 +1752,7 @@ function onPos(pos){
   updateArrowColor(distLP);
 
   const brg = bearingBetween(lat,lon,nearest.lat,nearest.lon);
-
-  if(correctedHeading!=null){
-    const off = Math.min(normalize(correctedHeading), 360 - normalize(correctedHeading));
-    const aligned = off <= ALIGN_TOLERANCE;
-    if(aligned){
-      const rel = (brg - correctedHeading + 360) % 360;
-      targetArrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`;
-      targetArrow.style.opacity = 1;
-    } else {
-      targetArrow.style.opacity = 0;
-    }
-  }
+      lastBrg = brg;
 
   miniMeters.textContent=`${distLP.toFixed(0)} m`;
   if(correctedHeading!=null){
