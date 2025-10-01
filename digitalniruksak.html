@@ -427,22 +427,19 @@
       border-radius: 2px;
     }
 
-    .target-arrow {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 22px solid #00e0ff;
-      transform-origin: 50% 60px;
-      transform: translate(-50%, -60%) rotate(0deg);
-      filter: drop-shadow(0 0 6px rgba(0,224,255,.5));
-      opacity: 0;
-      transition: opacity .25s ease;
-      pointer-events: none;
-    }
+      .target-arrow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60px;
+  height: 120px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  transform-origin: 50% 100%; /* dno strelice kao pivot */
+  filter: drop-shadow(0 0 6px rgba(0,224,255,.5));
+  opacity: 1;
+  transition: fill .3s ease, opacity .25s ease;
+  pointer-events: none;
+}
 
     .arrow3d {
       width: 68px;
@@ -980,7 +977,10 @@
               <div class="ticks"></div>
             </div>
             <div class="north-needle" id="northNeedle"><div class="tip"></div></div>
-            <div class="target-arrow" id="targetArrow" title="Smjer do najbliže točke"></div>
+               <svg id="targetArrow" class="target-arrow" viewBox="0 0 100 200" title="Smjer do najbliže točke">
+               <rect x="45" y="40" width="10" height="140" fill="#00e0ff" />
+               <polygon points="50,0 80,40 50,30 20,40" fill="#00e0ff" />
+               </svg>
             <div class="tick"></div>
             <div id="arrow3d" class="arrow3d" style="opacity:0"></div>
           </div>
@@ -1615,12 +1615,41 @@ async function startCompassSensors() {
   }, {passive:true});
 }
 
-// Otvaranje kompasa
+    // Otvaranje kompasa
 function openArrow(){
   startCompassSensors();                    // upali senzore
   const urlParam=new URL(location.href).searchParams.get('gpx');
   if(urlParam) loadGpxFromUrl(urlParam);    // auto-učitaj GPX iz URL-a
   if (!rafId) renderCompassRing();          // pokreni render petlju samo jednom
+}
+
+// ---------------------------------------------------
+// FUNKCIJE ZA STRELICU (rotacija + boja prema udaljenosti)
+// ---------------------------------------------------
+function rotateArrow(bearingDeg) {
+  const arrow = document.getElementById('targetArrow');
+  if (!arrow) return;
+  arrow.style.transform = `translate(-50%, -50%) rotate(${bearingDeg}deg)`;
+}
+
+function updateArrowColor(distance) {
+  const arrow = document.getElementById('targetArrow');
+  if (!arrow) return;
+
+  let color;
+  if (distance <= 10) {
+    color = 'green';
+    stopBeep();
+  } else if (distance <= 20) {
+    color = 'yellow';
+    stopBeep();
+  } else {
+    color = 'red';
+    startBeep();
+  }
+
+  arrow.querySelectorAll('rect, polygon')
+       .forEach(el => el.setAttribute('fill', color));
 }
 
 /* ---------- GPX parsiranje i učitavanje ---------- */
