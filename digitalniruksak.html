@@ -1055,65 +1055,248 @@
          PANEL: VODIČI
          ========================================================= -->
     <section id="panelAid" class="tool-panel" hidden>
-      <h4>Digitalna pomoć — laički vodiči</h4>
-      <div class="two-col">
-        <div>
-          <div class="chip">ℹ️ Podsjetnik — ne zamjenjuje tečaj prve pomoći</div>
-          <div class="divider"></div>
-          <div class="aid-accordion" id="aidAcc">
-            <div class="aid-item">
-              <button class="aid-head btn ghost" style="width:100%;text-align:left">🚑 KPR (odrasli)</button>
-              <div class="aid-body" style="display:none">
-                <ul>
-                  <li><b>Najprije:</b> osiguraj mjesto, pozovi <b>112</b>.</li>
-                  <li><b>Ne diše normalno?</b> Kreni s KPR: dlan na sredinu prsnog koša, drugi dlan preko, laktovi ravno.</li>
-                  <li><b>Ritam:</b> 100–120/min; <b>dubina 5–6 cm</b>. Pusti da se prsa vrate.</li>
-                  <li>Omjer <b>30:2</b> samo ako znaš i imaš masku — inače samo pritisci.</li>
-                </ul>
-              </div>
-            </div>
-            <div class="aid-item">
-              <button class="aid-head btn ghost" style="width:100%;text-align:left">🩸 Jako krvarenje</button>
-              <div class="aid-body" style="display:none">
-                <ul>
-                  <li><b>Stisni</b> direktno 10 minuta bez podizanja gaze.</li>
-                  <li>Ako promoči, <b>dodaj</b> preko (ne skidaj prvu gazu).</li>
-                  <li>Za udove: kompresivni zavoj/turniket (zabilježi vrijeme).</li>
-                </ul>
-              </div>
-            </div>
-            <div class="aid-item">
-              <button class="aid-head btn ghost" style="width:100%;text-align:left">🧊 Hladnoća (hipotermija)</button>
-              <div class="aid-body" style="display:none">
-                <ul>
-                  <li>Suho i toplo slojevito; vjetar i vlaga van.</li>
-                  <li>Astrofolija: srebrna <b>prema tijelu</b> grije (zlatna izvana).</li>
-                </ul>
-              </div>
-            </div>
-            <div class="aid-item">
-              <button class="aid-head btn ghost" style="width:100%;text-align:left">📢 Poziv 112 — što reći</button>
-              <div class="aid-body" style="display:none">
-                <ul>
-                  <li>Lokacija (koordinate/oznaka staze), što se dogodilo, broj osoba, pristup.</li>
-                </ul>
-              </div>
-            </div>
+  <h4>Digitalna pomoć — vodiči za planinare</h4>
+
+  <!-- Uvodno pravilo i preporuka -->
+  <div class="chip" style="margin-bottom:12px">
+    🥾 <b>Prvo i osnovno pravilo:</b> uvijek nosite komplet prve pomoći u ruksaku kada idete na planinarenje i pohađajte tečajeve prve pomoći. 
+    Samo tako možete pravovremeno i pravilno reagirati u situacijama kada je pomoć najpotrebnija.
+  </div>
+
+  <div class="chip" style="margin-bottom:18px">
+    ℹ️ <b>Raspitajte se u svom mjestu ili šire:</b> tečajevi prve pomoći često se organiziraju u sklopu planinarskih društava, gorskih službi spašavanja, Crvenog križa ili kroz edukacije koje provodi medicinsko osoblje. 
+    Sudjelovanjem stječete znanje i sigurnost za sebe i svoje suplaninare.
+  </div>
+  
+  <div class="two-col">
+    <!-- Lijevi stupac: vodiči (akordeon) -->
+    <div>
+      <div class="chip">ℹ️ Ovaj vodič ne zamjenjuje tečaj prve pomoći niti liječnički savjet. U hitnim slučajevima odmah nazovi 112.</div>
+      <div class="divider"></div>
+
+      <div class="aid-accordion" id="aidAcc">
+        <!-- 0. Prvi postupci -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🧭 Prvi postupci na mjestu nesreće</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Zaustavi se i procijeni sigurnost:</b> ne prilazi ako prijeti odron, klizav led, munje ili divlje životinje.</li>
+              <li><b>Pozovi 112</b> čim procijeniš da je situacija ozbiljna.</li>
+              <li><b>Zaštiti, pozovi, pruži pomoć:</b> osiguraj područje, označi stazu, pripremi orijentire (naziv staze, markacije, približne koordinate).</li>
+              <li><b>Provjeri svijest i disanje:</b> razgovaraj, protresi rame; ako ne diše normalno, započni oživljavanje.</li>
+            </ul>
           </div>
-          <div class="divider"></div>
-          <div class="hint">Ovo su sažeti podsjetnici. Tečaj prve pomoći je preporučljiv.</div>
         </div>
-        <div>
-          <h4 style="margin-top:0">Brzi podsjetnici</h4>
-          <ul>
-            <li>Astrofolija: <b>srebrna prema tijelu</b>.</li>
-            <li>KPR: <b>30:2</b> (ako znaš), 100–120/min.</li>
-            <li>Krvarenje: <b>stisni 10 min</b>; dodaj preko.</li>
-          </ul>
-          <div class="chip" style="margin-top:8px">📞 112 — hitna pomoć i spašavanje</div>
+
+        <!-- 1. Oživljavanje odrasle osobe -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🚑 Oživljavanje odrasle osobe</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Odmah pozovi 112.</b></li>
+              <li><b>Masiraj srce</b> na sredini prsnog koša: 100–120 pritisaka u minuti, dubina 5–6 cm.</li>
+              <li><b>Umjetno disanje</b> samo ako znaš i imaš masku.</li>
+              <li><b>Razmjena pomagača</b> svake 2 minute ako vas je više.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2. Gušenje -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🫁 Gušenje stranim tijelom</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li>Ako osoba <b>kašlje</b> – ohrabri kašalj.</li>
+              <li>Ako <b>ne može disati</b> – 5 udaraca između lopatica, zatim 5 potisaka u trbuh; ponavljaj dok se dišni put ne oslobodi.</li>
+              <li>Ako izgubi svijest – položi, pozovi 112 i započni masažu srca.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 3. Jako krvarenje -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🩸 Jako krvarenje</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Pritisni ranu</b> 10 minuta bez prekidanja.</li>
+              <li>Ako promoči, dodaj preko – ne skidaj prvu gazu.</li>
+              <li>Za udove: kompresivni zavoj ili turniket (zabilježi vrijeme).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 4. Uganuće i prijelom -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🦴 Uganuće i prijelom</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Odmor, hlađenje, pritisak, podizanje</b> – kod uganuća.</li>
+              <li><b>Sumnja na prijelom:</b> imobiliziraj u položaju u kojem se zatekne, toplinski zaštiti, pozovi 112.</li>
+              <li><b>Ozljeda glave/kralježnice:</b> osoba neka miruje, podupri glavu, ne pomiči vrat.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 5. Hladnoća i smrzavanje -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🧊 Hladnoća i smrzavanje</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Blaga:</b> suha odjeća, slojevi, topli napitci (ne alkohol).</li>
+              <li><b>Teža:</b> pospanost, usporen govor – nježno zagrijavanje, bez trljanja, pozovi 112.</li>
+              <li><b>Smrzotine:</b> ne trljati, ne grijati plamenom; polako zagrijavati u mlakoj vodi ako neće opet smrznuti.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 6. Vrućina i dehidracija -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🌞 Vrućina i dehidracija</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Umor od vrućine:</b> hlad, rashlađivanje, male gutljaje vode.</li>
+              <li><b>Toplinski udar:</b> visoka temperatura, smetenost – hitno rashladiti i zvati 112.</li>
+              <li><b>Dehidracija:</b> tamni urin, vrtoglavica – češće male količine vode i sol.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 7. Visinska bolest -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">⛰️ Tegobe na visini</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li>Glavobolja, mučnina, umor – odmor i hidracija; ako se pogoršava, spusti se.</li>
+              <li>Teško disanje, smetenost – hitno spuštanje i 112.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 8. Ugrizi i ubodi -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🐍 Ugrizi i ubodi</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Krpelj:</b> pincetom ravno van, prati kožu.</li>
+              <li><b>Ubod pčele/ose:</b> hladiti, paziti na alergiju; ako teška reakcija – lijek i 112.</li>
+              <li><b>Zmija:</b> mir, imobilizirati, bez rezanja/isisavanja, hitno u bolnicu.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 9. Rane i žuljevi -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🩹 Rane i žuljevi</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li>Isperi vodom, prekrij gazom.</li>
+              <li>Žuljeve zaštiti flasterom; ne bušiti osim sterilno i nužno.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 10. Opekline i oči -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">👁️ Opekline i ozljede oka</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Oko:</b> ispiranje čistom vodom ili fiziološkom.</li>
+              <li><b>Opekline:</b> hladiti vodom 20 min, skinuti nakit, sterilno prekriti, ne mazati mastima.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 11. Grmljavina -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">⚡ Grmljavina</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li>Silazi s grebena, ne stajati pod usamljena stabla.</li>
+              <li>Čučni na izolaciji, stopala zajedno, ne ležati.</li>
+              <li>Grupa se razmaka nekoliko metara.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 12. Hrana i voda -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">🥾 Voda i hrana</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li>Vodu prokuhati ili filtrirati.</li>
+              <li>Ne jesti nepoznate bobice/gljive.</li>
+              <li>Mučnina/proljev: odmor, lagana hrana, nadoknada tekućine i soli.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 13. Kronične bolesti -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">💊 Kronične bolesti u planini</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Šećerna bolest:</b> mjeri šećer, nosi glukozu; ako zbunjen ili bez svijesti – 112.</li>
+              <li><b>Tlak/srce:</b> odmori, simptomi u prsima – odmah 112.</li>
+              <li><b>Astma:</b> inhalator pri ruci, ako teško disanje – 112.</li>
+              <li><b>Epilepsija:</b> zaštiti glavu, ne stavljaj ništa u usta, nakon napadaj okreni na bok, 112 ako traje dugo.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 14. Bol u prsima i moždani udar -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">❤️ Bol u prsima i moždani udar</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li><b>Bol u prsima:</b> miruj, odmah 112.</li>
+              <li><b>Moždani udar:</b> asimetrija lica, slabost ruke/noge, teškoće govora – odmah 112.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 15. Signalizacija -->
+        <div class="aid-item">
+          <button class="aid-head btn ghost" style="width:100%;text-align:left">📢 Signalizacija i spašavanje</button>
+          <div class="aid-body" style="display:none">
+            <ul>
+              <li>Ostani na vidljivom mjestu, koristi zviždaljku, svjetiljku, foliju.</li>
+              <li>Daj jasne informacije: naziv staze, zadnja sigurna točka, broj osoba, ozljede.</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </section>
+
+      <div class="divider"></div>
+      <div class="hint">Ovo su sažeti vodiči za laike. Uvijek poštuj upute hitnih službi i liječnika.</div>
+    </div>
+
+    <!-- Desni stupac: podsjetnici -->
+    <div>
+      <h4 style="margin-top:0">Brzi podsjetnici</h4>
+      <ul>
+        <li>U hitnome: nazovi 112 što ranije, opiši lokaciju i stanje.</li>
+        <li>Krvarenje: pritisak 10 min; dodaj preko.</li>
+        <li>Hladnoća: suho, slojevito, bez trljanja smrzotina.</li>
+        <li>Vrućina: hlad, rashlađivanje, male količine vode.</li>
+        <li>Zmija: mir, imobilizacija, bez rezanja, brzo u bolnicu.</li>
+        <li>Krpelj: pinceta ravno van, prati kožu.</li>
+        <li>Kronične bolesti: lijekovi pri ruci, obavijesti partnera.</li>
+      </ul>
+
+      <h4 style="margin-top:12px">Mali planinarski komplet prve pomoći</h4>
+      <ul>
+        <li>Elastični zavoj, sterilne gaze, flasteri i gel flasteri za žuljeve.</li>
+        <li>Fiziološka otopina ili čista voda za ispiranje, dezinfekcijske maramice.</li>
+        <li>Rukavice, trokutna marama, škare.</li>
+        <li>Termo folija, zviždaljka, čeona svjetiljka, marker i notes.</li>
+        <li>Osobni lijekovi (inhalator, glukoza, tablete koje je propisao liječnik).</li>
+      </ul>
+
+      <div class="chip" style="margin-top:8px">📞 112 — hitna pomoć i spašavanje</div>
+      <div class="chip" style="margin-top:8px">📍 Uvijek nosi osnovne orijentire: naziv staze, markacije, približne koordinate.</div>
+    </div>
+  </div>
+</section>
 
     <!-- =========================================================
          PANEL: KAMERA
