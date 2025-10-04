@@ -896,29 +896,49 @@
   </style>
 </head>
 <body>
-  <!-- =========================================================
-       GORNJA NAVIGACIJA
-       ========================================================= -->
-  <nav class="navbar" aria-label="Glavna navigacija">
-    <div class="brand">
-      <img src="images/mountain-adventures.svg" alt="Logo">
-      <span>Digitalni ruksak</span>
+<!-- === NAVIGACIJA (gore) === -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
     </div>
-    <div class="navgroup">
-      <a class="navlink" href="#tool-aid">Vodiči</a>
-      <a class="navlink" href="#tool-camera">Kamera</a>
-      <a class="navlink" href="#tool-arrow">Kompas/GPX</a>
-      <a class="navlink" href="#tool-sky">Noćno nebo</a>
-      <a class="navlink" href="#tool-weather">Vrijeme</a>
-      <a class="navlink" href="#tool-bio">Biljke/Životinje</a>
-      <a class="navlink" href="#tool-offline">Izvan mreže</a>
-      <a class="navlink" href="#tool-sos">SOS</a>
-      <span class="flag" title="Jezik: hrvatski">
-        <img src="https://flagcdn.com/w20/hr.png" alt="HR">
-        HR
-      </span>
+    <div class="navbar-center">
+      <div class="search-container">
+        <div class="search-wrapper">
+          <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration" />
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
+          <img src="images/search.svg" alt="ikona za tražilicu">
+        </div>
+      </div>
     </div>
-  </nav>
+    <div class="navbar-right" id="menu-toggle">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
+  </div>
+
+  <!-- === HAMBURGER MENI === -->
+  <div class="menu-overlay" id="menu">
+    <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="webshop.html" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="planinarskevijesti.html" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="digitalniruksak.html" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>
+    <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
+
+  <!-- === SEASON TOGGLE IKONE === -->
+<div id="season-toggle-wrapper">
+  <img src="images/seasonchange.svg" id="season-toggle" alt="odabir godišnjeg doba" />
+  <div id="season-strike" class="hidden"></div> <!-- KOSA CRTA -->
+  <div id="season-icons">
+    <div class="season-icon" data-season="winter">❄️</div>
+    <div class="season-icon" data-season="spring">🌸</div>
+    <div class="season-icon" data-season="summer">☀️</div>
+    <div class="season-icon" data-season="autumn">🍂</div>
+  </div>
+ </div>
 
   <!-- =========================================================
        NASLOV
