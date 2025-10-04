@@ -332,6 +332,9 @@
       padding: 12px;
     }
 
+    /* da panel ‘stane’ ispod fiksnog navbara kada se scroll-a */
+     .tool-panel { scroll-margin-top: 84px; }
+
     section.tool-panel h4 {
       margin: 0 0 15px;
       font-size: 16px;
@@ -1794,7 +1797,7 @@
 
     const panelAid=qs('#panelAid'),
           panelCamera=qs('#panelCamera'),
-          panelPeakCam=qs('#panelPeakcam'),
+          panelPeakCam=qs('#panelPeakCam'),
           panelArrow=qs('#panelArrow'),
           panelSky=qs('#panelSky'),
           panelWeather=qs('#panelWeather'),
@@ -1809,7 +1812,8 @@
     qs('#openBioPanel')?.addEventListener('click', () => show(panelBio));
     qs('#openOfflinePanel')?.addEventListener('click', () => show(panelOffline));
     qs('#openPeakCamPanel')?.addEventListener('click', () => { show(panelPeakCam); window.__peakcam?.start(); });
-    
+    qs('#pc-start')?.addEventListener('click', () => window.__peakcam?.start());
+    qs('#pc-stop') ?.addEventListener('click', () => window.__peakcam?.stop());
     /* =========================================================
        AKORDEON VODIČ
        ========================================================= */
