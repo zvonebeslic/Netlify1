@@ -1806,14 +1806,9 @@ function showOnly(next){
   if (!next) return;
 
   // ugasi aktivne module panela koje napuštamo
-  if (!panelCamera.hidden) { try{ stopCam(); }catch{} }
-  if (!panelPeakCam.hidden){ try{ window.__peakcam?.stop(); }catch{} }
-  if (!panelArrow.hidden){
-    try{
-      if (typeof activeOriEvent === 'string') window.removeEventListener(activeOriEvent, onOrient3D, true);
-      if (watchId != null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
-    }catch{}
-  }
+  if (!panelCamera.hidden)   { try{ stopCam(); }catch{} }
+  if (!panelPeakCam.hidden)  { try{ window.__peakcam?.stop?.(); }catch{} }
+  if (!panelArrow.hidden)    { try{ window.__arrow?.stop?.(); }catch{} }
 
   // sakrij sve, prikaži samo traženi
   [panelAid,panelCamera,panelPeakCam,panelArrow,panelSky,panelWeather,panelBio,panelOffline].forEach(hide);
@@ -1831,19 +1826,29 @@ qs('#openBioPanel')     ?.addEventListener('click', () => showOnly(panelBio));
 qs('#openOfflinePanel') ?.addEventListener('click', () => showOnly(panelOffline));
 
 // PeakCam: otvori panel + start
+// PeakCam: otvori panel + START (prvo ugasi Arrow da nema sukoba senzora)
 qs('#openPeakCamPanel')?.addEventListener('click', () => {
+  try { window.__arrow?.stop?.(); } catch {}
   showOnly(panelPeakCam);
-  if (window.__peakcam?.start) { window.__peakcam.start(); }
-  else { const s = qs('#pc-status'); if (s) s.textContent = 'Status: modul nije učitan'; }
+  if (window.__peakcam?.start) {
+    window.__peakcam.start();
+  } else {
+    const s = qs('#pc-status');
+    if (s) s.textContent = 'Status: modul nije učitan';
+  }
 });
 
-// PeakCam: lokalni start/stop gumbi
-qs('#pc-start')?.addEventListener('click', () => window.__peakcam?.start?.());
-qs('#pc-stop') ?.addEventListener('click', () => {
-  try { window.__peakcam?.stop?.(); } catch {}
-  hide(panelPeakCam); // konzistentno s ostalim panelima
+// PeakCam: lokalni START (sigurnosno ugasi Arrow prije starta)
+qs('#pc-start')?.addEventListener('click', () => {
+  try { window.__arrow?.stop?.(); } catch {}
+  window.__peakcam?.start?.();
 });
-    
+
+// PeakCam: lokalni STOP (gasi samo PeakCam; panel po želji sakrij)
+qs('#pc-stop')?.addEventListener('click', () => {
+  try { window.__peakcam?.stop?.(); } catch {}
+  hide(panelPeakCam); // može ostati ako želiš zatvoriti panel na STOP
+});
     
     /* =========================================================
        AKORDEON VODIČ
@@ -2182,28 +2187,37 @@ qs('#pc-stop') ?.addEventListener('click', () => {
     let lastHeadTs = 0;
 
     function renderCompassRing(){
-      if (typeof correctedHeading === 'number') {
-        const delta = ((((correctedHeading - smooth) + 540) % 360) - 180);
-        smooth = smooth + EMA * delta;
-        const smoothQuant = Math.round(smooth * 2) / 2;
-        compassRing.style.transform = `translateZ(0) rotate(${-smoothQuant}deg)`;
+  if (typeof correctedHeading === 'number') {
+    const delta = ((((correctedHeading - smooth) + 540) % 360) - 180);
+    smooth = smooth + EMA * delta;
 
-        const off = Math.min(normalize(smoothQuant), 360 - normalize(smoothQuant));
-        const aligned = off <= 5;
+    const smoothQuant = Math.round(smooth * 2) / 2;
 
-        if (navState === NAV.OFF_PATH && aligned) {
-          targetArrow.style.opacity = 1;
-          if (lastBrg != null) {
-            const rel = (lastBrg - smoothQuant + 360) % 360;
-            targetArrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`;
-          }
-        } else {
-          targetArrow.style.opacity = 0;
-        }
-      }
-      rafId = requestAnimationFrame(renderCompassRing);
+    // zaštita ako elementi nisu u DOM-u
+    if (compassRing) {
+      compassRing.style.transform = `translateZ(0) rotate(${-smoothQuant}deg)`;
     }
 
+    const off = Math.min(normalize(smoothQuant), 360 - normalize(smoothQuant));
+    const aligned = off <= 5;
+
+    if (targetArrow) {
+      if (navState === NAV.OFF_PATH && aligned) {
+        targetArrow.style.opacity = 1;
+        if (lastBrg != null) {
+          const rel = (lastBrg - smoothQuant + 360) % 360;
+          targetArrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`;
+        }
+      } else {
+        targetArrow.style.opacity = 0;
+      }
+    }
+  }
+
+  // ⬇️ ključno: spremi u namespace da ga stop() može uredno gasiti
+  window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
+}
+    
     // Primijeni heading
     function applyHeading(mag, isIOS){
       let h = normalize(mag);
@@ -2214,6 +2228,42 @@ qs('#pc-stop') ?.addEventListener('click', () => {
       correctedHeading = h;
     }
 
+     // Namespace za Arrow/kompas
+      window.__arrow = window.__arrow || {
+  activeOriEvent: null,   // 'deviceorientation' | 'deviceorientationabsolute'
+  watchId: null,          // geolocation.watchPosition id
+  rafId: 0,               // requestAnimationFrame id
+  _onOrientChange: null,  // referenca na handler za orientationchange
+
+  stop(){
+    try {
+      // 1) Ukloni listener senzora orijentacije
+      if (this.activeOriEvent) {
+        window.removeEventListener(this.activeOriEvent, onOrient3D, true);
+        this.activeOriEvent = null;
+      }
+
+      // 2) Ukloni orientationchange handler (ako je dodan u startu)
+      if (this._onOrientChange) {
+        window.removeEventListener('orientationchange', this._onOrientChange);
+        this._onOrientChange = null;
+      }
+
+      // 3) Zaustavi geolocation watch
+      if (this.watchId != null) {
+        navigator.geolocation.clearWatch(this.watchId);
+        this.watchId = null;
+      }
+
+      // 4) Zaustavi render petlju kompasa
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = 0;
+      }
+    } catch(e) {}
+  }
+};
+    
     // Senzori (heading)
     function onOrient3D(e){
       const now = performance.now();
@@ -2248,42 +2298,73 @@ qs('#pc-stop') ?.addEventListener('click', () => {
 
     // Start senzora
     async function startCompassSensors() {
-      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-        alert('Senzori kompasa rade samo na HTTPS/localhost.');
+  // HTTPS/localhost provjera
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    alert('Senzori kompasa rade samo na HTTPS/localhost.');
+    return;
+  }
+
+  // iOS (Safari) — runtime permission
+  try {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const r = await DeviceOrientationEvent.requestPermission();
+      if (r !== 'granted') {
+        alert('Bez dopuštenja senzora kompas neće raditi na iOS-u.');
         return;
       }
-      try {
-        if (typeof DeviceOrientationEvent !== 'undefined' &&
-            typeof DeviceOrientationEvent.requestPermission === 'function') {
-          const r = await DeviceOrientationEvent.requestPermission();
-          if (r !== 'granted') { alert('Bez dopuštenja senzora kompas neće raditi na iOS-u.'); return; }
-        }
-      } catch(e) {}
-
-      if ('ondeviceorientationabsolute' in window) {
-        window.addEventListener('deviceorientationabsolute', onOrient3D, true);
-        activeOriEvent = 'deviceorientationabsolute';
-      } else if ('ondeviceorientation' in window) {
-        window.addEventListener('deviceorientation', onOrient3D, true);
-        activeOriEvent = 'deviceorientation';
-      } else {
-        window.addEventListener('deviceorientation', onOrient3D, true);
-        activeOriEvent = 'deviceorientation';
-      }
-
-      window.addEventListener('orientationchange', ()=> {
-        if (headingDeg != null) applyHeading(headingDeg);
-      }, {passive:true});
     }
+  } catch(e) {}
+
+  // Odaberi odgovarajući event i registriraj listener
+  const ev = ('ondeviceorientationabsolute' in window)
+    ? 'deviceorientationabsolute'
+    : 'deviceorientation';
+
+  // Zapamti ime eventa u namespace (VAŽNO)
+  window.__arrow.activeOriEvent = ev;
+
+  // Ako je slučajno već postojao listener (npr. od prije), ukloni ga prije novog dodavanja
+  try { window.removeEventListener(ev, onOrient3D, true); } catch(e) {}
+
+  window.addEventListener(ev, onOrient3D, true);
+
+  // orientationchange handler (spremimo referencu pa ga možemo uredno skinuti u stop())
+  if (!window.__arrow._onOrientChange) {
+    window.__arrow._onOrientChange = () => {
+      if (typeof headingDeg === 'number') applyHeading(headingDeg);
+    };
+    window.addEventListener('orientationchange', window.__arrow._onOrientChange, { passive: true });
+  }
+
+  // (Ako koristiš render petlju za kompasa, pokreni je i zapamti rafId u namespace)
+  if (!window.__arrow.rafId && typeof renderCompassRing === 'function') {
+    window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
+  }
+
+  // (Opcionalno) Ako ovdje pališ i geowatch, zapamti id u namespace:
+  // window.__arrow.watchId = navigator.geolocation.watchPosition(onPos, onErr, { enableHighAccuracy:true, maximumAge:1000, timeout:10000 });
+}
 
     // Otvaranje kompasa
     function openArrow(){
-      startCompassSensors();
-      const urlParam=new URL(location.href).searchParams.get('gpx');
-      if(urlParam) loadGpxFromUrl(urlParam);
-      setNavState(gpxTrack && gpxTrack.length >= 2 ? NAV.ON_PATH : NAV.NO_TRACK);
-      if (!rafId) renderCompassRing();
-    }
+  // sigurnosno ugasi PeakCam (da senzori ne kolidiraju)
+  try { window.__peakcam?.stop?.(); } catch(e){}
+
+  // pokreni senzore kompasa (postavlja __arrow.activeOriEvent itd.)
+  startCompassSensors();
+
+  // (opcionalno) auto-učitaj GPX iz URL-a, pa postavi state
+  const urlParam = new URL(location.href).searchParams.get('gpx');
+  if (urlParam) loadGpxFromUrl(urlParam);
+
+  setNavState(gpxTrack && gpxTrack.length >= 2 ? NAV.ON_PATH : NAV.NO_TRACK);
+
+  // pokreni render petlju ako već ne radi — spremaj u __arrow.rafId
+  if (!window.__arrow.rafId && typeof renderCompassRing === 'function') {
+    window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
+  }
+}
 
     // Strelica — boja prema udaljenosti
     function updateArrowColor(distance) {
