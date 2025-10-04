@@ -1794,9 +1794,9 @@ function byDistance(a, b) {
     list = await attachDistances(list);
 
     // Odaberi strategiju sortiranja
-const wantDistanceSort = Boolean(filterState.radius) && distancesEnabled;
+const wantDistanceSort = (distanceTracking.active || Boolean(filterState.radius)) && distancesEnabled;
 
-// Ako korisnik cilja radijus → sortiraj po udaljenosti.
+    // Ako korisnik cilja radijus → sortiraj po udaljenosti.
 // Inače po km/mnv ovisno o uključenim checkboxovima; ako ništa — byEase.
 if (wantDistanceSort) {
   list.sort(byDistance);
@@ -1877,10 +1877,10 @@ if (wantDistanceSort) {
     const id = e.target.id;
     if (!id) return;
 
-    if (id === 'distanceMode' && e.target.value === 'drive') {
-      ensureLocationThen(()=> runFiltering());
-      return;
-    }
+if (id === 'distanceMode') {
+  startDistanceTracking();   // postavi active čip + dohvat lokacije (ako već nije)
+  return;
+}
 
     if (['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode', 'modeKm', 'modeElev'].includes(id)) {
   updateFilterState(stateFromControls());
@@ -1894,7 +1894,7 @@ if (wantDistanceSort) {
     // Bez ograničenja: praćenje ostaje aktivno; samo osvježi UI
     renderActiveChips();
   }
-}
+
 
   // promjena načina mjerenja dok je praćenje aktivno -> samo refreš
   if (id === 'distanceMode' && distanceTracking.active) {
