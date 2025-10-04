@@ -831,14 +831,68 @@
       color: #d8dee6;
     }
 
-    footer {
-      margin-top: 26px;
-      border-top: 1px solid var(--line);
-      padding: 14px;
-      color: var(--muted);
-      font-size: 12px;
-      text-align: center;
-    }
+          /* =========================================================
+       FOOTER / BACK TO TOP
+       ========================================================= */
+      #backToTop {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  outline: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+#backToTop:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%) scale(1.1);
+}
+
+#backToTop svg {
+  width: 24px;
+  height: 24px;
+}
+
+  footer {
+  background: #111;
+  color: #ccc;
+  text-align: center;
+  padding: 20px 10px;
+  font-size: 14px;
+  position: relative;
+  margin-top: 60px;
+}
+
+.footer-icons {
+  margin: 10px 0;
+}
+
+.footer-icons svg {
+  width: 32px;
+  height: 32px;
+  margin: 0 10px;
+  vertical-align: middle;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.footer-icons svg:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+    
   </style>
 </head>
 <body>
