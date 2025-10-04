@@ -1872,45 +1872,65 @@ if (wantDistanceSort) {
     runFiltering();
   });
 
-  // GLOBALNI CHANGE/INPUT
+  // <!-- GLOBALNI CHANGE/INPUT (ispravljeno) -->
+
   document.addEventListener('change', async (e) => {
     const id = e.target.id;
     if (!id) return;
 
-if (id === 'distanceMode') {
-  startDistanceTracking();   // postavi active čip + dohvat lokacije (ako već nije)
-  return;
-}
+    // 0) uvijek prvo sinkroniziraj stanje iz UI-ja
+    updateFilterState(stateFromControls());
 
-    if (['areaSelect', 'radiusSelect', 'durationBucket', 'distanceMode', 'modeKm', 'modeElev'].includes(id)) {
-  updateFilterState(stateFromControls());
+    // 1) Promjena načina mjerenja udaljenosti (zračna linija ↔ vožnja)
+    if (id === 'distanceMode') {
+      // osiguraj lokaciju i čip; attachDistances() će izračunati _distShownKm
+      startDistanceTracking();
+      await runFiltering();           // odmah presloži po novom modu (najbliže → najdalje)
+      return;
+    }
 
-  // ako je odabran radius -> pokreni praćenje (prikaži čip)
-   if (id === 'radiusSelect') {
-  const hasRadius = !!document.getElementById('radiusSelect')?.value;
-  if (hasRadius && !distanceTracking.active) {
-    startDistanceTracking();
-  } else {
-    // Bez ograničenja: praćenje ostaje aktivno; samo osvježi UI
-    renderActiveChips();
-  }
+    // 2) Promjena radijusa
+    if (id === 'radiusSelect') {
+      const hasRadius = !!document.getElementById('radiusSelect')?.value;
+      if (hasRadius) {
+        // ako još nije aktivno, pokreni praćenje (da imamo userLocation)
+        if (!distanceTracking.active) startDistanceTracking();
+      } else {
+        // nema radijusa => ugasi distance tracking i vrati default sort (po težini)
+        stopDistanceTracking({ silent: true });
+      }
+      await runFiltering();
+      return;
+    }
 
-
-  // promjena načina mjerenja dok je praćenje aktivno -> samo refreš
-  if (id === 'distanceMode' && distanceTracking.active) {
-    renderActiveChips();
-  }
-
-  runFiltering();
-  }
+    // 3) Ostali filteri → normalno osvježi listu
+    if (['areaSelect', 'durationBucket', 'modeKm', 'modeElev'].includes(id)) {
+      await runFiltering();
+      return;
+    }
   });
-  document.addEventListener('input', (e)=>{
-    if (e.target.id==='search'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
-    if (e.target.id==='poiSearch'){ updateFilterState({ poi: e.target.value.trim() }); runFiltering(); }
+
+  // Tražilice (live)
+  document.addEventListener('input', (e) => {
+    if (e.target.id === 'search') {
+      updateFilterState({ poi: e.target.value.trim() });
+      runFiltering();
+    }
+    if (e.target.id === 'poiSearch') {
+      updateFilterState({ poi: e.target.value.trim() });
+      runFiltering();
+    }
   });
-  document.getElementById('difficultySelect')?.addEventListener('change', ()=>{
-    updateFilterState(stateFromControls()); runFiltering();
+
+  // Težina (select)
+  document.getElementById('difficultySelect')?.addEventListener('change', () => {
+    updateFilterState(stateFromControls());
+    runFiltering();
   });
+
+  // (Preporuka: u handleru za "Osvježi" dodaj gašenje distance trackinga)
+  // quickReset:
+  // stopDistanceTracking({ silent: true }); // prije runFiltering
 
   /* =========================================================
      #10.10 INIT
