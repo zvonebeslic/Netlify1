@@ -834,6 +834,76 @@
       color: #d8dee6;
     }
 
+       /* === PeakCam (pc-*) — panel stilovi, bez kolizija === */
+.pc-wrap {
+  display: grid;
+  gap: 12px;
+}
+
+.pc-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.pc-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-right: 10px;
+}
+
+.pc-stage {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+#pc-video,
+#pc-overlay {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#pc-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pc-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  color: #fff;
+  opacity: .9;
+  padding: 10px;
+}
+
+.pc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.pc-attrib {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+    
           /* =========================================================
        FOOTER / BACK TO TOP
        ========================================================= */
@@ -1051,6 +1121,22 @@
           <button class="btn ghost" id="stopSOS">Zaustavi</button>
         </div>
       </article>
+
+       <!-- Kartica: PeakCam (OSM vrhovi preko kamere) -->
+<article class="tool-card" id="tool-peakcam">
+  <div class="eyebrow">AR</div>
+  <h3>PeakCam — vrhovi u kameri</h3>
+  <p>Uperi kameru prema horizontu: strelice i oznake imena vrhova (OSM) pojavljuju se u kadru.</p>
+  <ul>
+    <li>Potrebno: HTTPS + lokacija + orijentacija</li>
+    <li>Automatski dohvat vrhova (30 km) s Overpass/OSM</li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn" id="openPeakCamPanel">Otvori PeakCam</button>
+  </div>
+  <p class="hint">Licenca podataka: © OpenStreetMap contributors (ODbL 1.0).</p>
+</article>
+      
     </section>
 
     <!-- =========================================================
@@ -1516,6 +1602,48 @@
       </ul>
       <button class="btn ghost" onclick="this.closest('section').hidden=true">Zatvori</button>
     </section>
+
+          <!-- =========================================================
+     PANEL: PEAKCAM (AR vrhovi preko kamere)
+     ========================================================= -->
+<section id="panelPeakCam" class="tool-panel" hidden>
+  <h4>PeakCam — prepoznavanje vrhova (OSM)</h4>
+
+  <div class="pc-toolbar">
+    <button id="pc-start" class="btn">Pokreni kameru</button>
+    <button id="pc-stop" class="btn ghost">Zatvori</button>
+    <span class="chip" id="pc-status">Status: spremno</span>
+  </div>
+
+  <div class="pc-wrap">
+    <div class="pc-stage">
+      <video id="pc-video" autoplay playsinline muted></video>
+      <canvas id="pc-overlay"></canvas>
+      <div id="pc-hint" class="pc-hint">Dopusti pristup kameri, lokaciji i orijentaciji.</div>
+    </div>
+
+    <div class="pc-legend">
+      <label class="pc-inline">H FOV
+        <input id="pc-hfov" type="range" min="40" max="90" value="60">
+        <span id="pc-hfov-val">60°</span>
+      </label>
+      <label class="pc-inline">V FOV
+        <input id="pc-vfov" type="range" min="30" max="70" value="40">
+        <span id="pc-vfov-val">40°</span>
+      </label>
+      <label class="pc-inline">Kompas offset
+        <input id="pc-hofs" type="range" min="-20" max="20" value="0">
+        <span id="pc-hofs-val">0°</span>
+      </label>
+    </div>
+
+    <div class="pc-attrib">
+      Podaci o vrhovima: © <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap contributors</a> — licenca
+      <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL 1.0</a>.
+    </div>
+  </div>
+</section>
+    
   </main>
 
   <!-- =========================================================
@@ -1666,6 +1794,7 @@
 
     const panelAid=qs('#panelAid'),
           panelCamera=qs('#panelCamera'),
+          panelPeakCam=qs('#panelPeakcam'),
           panelArrow=qs('#panelArrow'),
           panelSky=qs('#panelSky'),
           panelWeather=qs('#panelWeather'),
@@ -1679,7 +1808,8 @@
     qs('#openWeatherPanel')?.addEventListener('click', () => show(panelWeather));
     qs('#openBioPanel')?.addEventListener('click', () => show(panelBio));
     qs('#openOfflinePanel')?.addEventListener('click', () => show(panelOffline));
-
+    qs('#openPeakCamPanel')?.addEventListener('click', () => { show(panelPeakCam); window.__peakcam?.start(); });
+    
     /* =========================================================
        AKORDEON VODIČ
        ========================================================= */
@@ -2609,6 +2739,268 @@
     qs('#playSOS')?.addEventListener('click', playSOS);
     qs('#stopSOS')?.addEventListener('click', stopSOS);
 
+    /* =========================================================
+       PEAK CAM (pretrazivac vrhova)
+       ========================================================= */
+
+       
+(function(){
+  // Sigurna “instanca” na window radi pozivanja izvan modula
+  const API = { start, stop };
+  window.__peakcam = API;
+
+  // ==== ELEMENTI ====
+  const $ = id => document.getElementById(id);
+  const video   = $('pc-video');
+  const overlay = $('pc-overlay');
+  const hint    = $('pc-hint');
+  const statusEl= $('pc-status');
+  const ctx     = overlay.getContext('2d');
+
+  const hfov = $('pc-hfov'), vfov = $('pc-vfov'), hofs = $('pc-hofs');
+  const hfovVal = $('pc-hfov-val'), vfovVal = $('pc-vfov-val'), hofsVal = $('pc-hofs-val');
+  const btnStart = $('pc-start'), btnStop = $('pc-stop');
+
+  // ==== STANJE ====
+  const toRad = d => d * Math.PI / 180;
+  const toDeg = r => r * 180 / Math.PI;
+  const state = {
+    user: { lat:null, lon:null, elev:0 },
+    heading:null, pitch:0, roll:0,
+    hFov:Number(hfov.value), vFov:Number(vfov.value), hOffset:Number(hofs.value),
+    peaks:[], running:false, stream:null, oriEnabled:false, rafId:null
+  };
+
+  hfov.addEventListener('input', ()=>{ state.hFov=+hfov.value; hfovVal.textContent=state.hFov+'°'; });
+  vfov.addEventListener('input', ()=>{ state.vFov=+vfov.value; vfovVal.textContent=state.vFov+'°'; });
+  hofs.addEventListener('input', ()=>{ state.hOffset=+hofs.value; hofsVal.textContent=state.hOffset+'°'; });
+
+  // ==== GEO & ORI UTIL ====
+  function normalize(a){ a%=360; return a<0?a+360:a; }
+  function angDiffDeg(a,b){ return (a - b + 540) % 360 - 180; }
+  function haversineKm(lat1,lon1,lat2,lon2){
+    const R=6371, dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+    return 2*R*Math.asin(Math.sqrt(a));
+  }
+  function bearingDeg(lat1,lon1,lat2,lon2){
+    const φ1=toRad(lat1), φ2=toRad(lat2), λ1=toRad(lon1), λ2=toRad(lon2);
+    const y = Math.sin(λ2-λ1)*Math.cos(φ2);
+    const x = Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
+    return (toDeg(Math.atan2(y,x)) + 360) % 360;
+  }
+
+  // ==== KAMERA ====
+  async function startCamera(){
+    const s = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }, audio:false });
+    state.stream = s;
+    video.srcObject = s; await video.play();
+    fitCanvas();
+    video.addEventListener('loadedmetadata', fitCanvas, { once:true });
+    window.addEventListener('resize', fitCanvas);
+  }
+  function fitCanvas(){
+    const w = video.videoWidth || overlay.clientWidth || 640;
+    const h = video.videoHeight || overlay.clientHeight || 360;
+    overlay.width = w; overlay.height = h;
+  }
+  function stopCamera(){
+    try{ video.pause(); state.stream?.getTracks?.().forEach(t=>t.stop()); }catch(_){}
+    state.stream=null;
+    window.removeEventListener('resize', fitCanvas);
+  }
+
+  // ==== GEO ====
+  function getLocation(){
+    return new Promise((res,rej)=>{
+      if (!('geolocation' in navigator)) return rej(new Error('Geolokacija nije podržana.'));
+      navigator.geolocation.getCurrentPosition(p=>{
+        state.user.lat=p.coords.latitude; state.user.lon=p.coords.longitude;
+        if (Number.isFinite(p.coords.altitude)) state.user.elev=p.coords.altitude;
+        res(state.user);
+      }, e=>rej(e), { enableHighAccuracy:true, timeout:12000 });
+    });
+  }
+
+  // ==== ORIENTACIJA ====
+  async function enableOrientation(){
+    if (state.oriEnabled) return;
+    try{
+      if (window.DeviceOrientationEvent?.requestPermission) {
+        const r = await DeviceOrientationEvent.requestPermission();
+        if (r !== 'granted') throw new Error('DeviceOrientation denied');
+      }
+    }catch(_){}
+    window.addEventListener('deviceorientation', onOrient, true);
+    state.oriEnabled = true;
+  }
+  function disableOrientation(){
+    if (!state.oriEnabled) return;
+    window.removeEventListener('deviceorientation', onOrient, true);
+    state.oriEnabled = false;
+  }
+  function onOrient(e){
+    let head;
+    if (typeof e.webkitCompassHeading === 'number') head = e.webkitCompassHeading;  // iOS
+    else if (typeof e.alpha === 'number') head = 360 - e.alpha;                     // ostali
+    if (typeof head === 'number') state.heading = normalize(head + state.hOffset);
+    state.pitch = e.beta ?? 0;
+    state.roll  = e.gamma ?? 0;
+  }
+
+  // ==== OSM (Overpass) ====
+  const OVERPASS = "https://overpass-api.de/api/interpreter";
+  function cacheKey(lat, lon, rKm){
+    const a=(Math.round(lat*10)/10).toFixed(1), b=(Math.round(lon*10)/10).toFixed(1);
+    return `peaks:${a},${b},${rKm}`;
+  }
+  async function fetchPeaksAround(lat, lon, radiusKm=30){
+    const key = cacheKey(lat,lon,radiusKm);
+    try{
+      const raw = localStorage.getItem(key);
+      if (raw){
+        const obj = JSON.parse(raw);
+        if (Date.now() - obj.t < 30*60*1000) return obj.data;
+      }
+    }catch(_){}
+    const q = `
+[out:json][timeout:25];
+node(around:${Math.round(radiusKm*1000)}, ${lat}, ${lon})["natural"="peak"];
+out tags center;`;
+    const res = await fetch(OVERPASS, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
+      body: 'data=' + encodeURIComponent(q)
+    });
+    if (!res.ok) throw new Error('Overpass status ' + res.status);
+    const data = await res.json();
+    const peaks = (data.elements||[])
+      .filter(n => (n.lat ?? n.center?.lat) && (n.lon ?? n.center?.lon))
+      .map(n => ({
+        id:n.id,
+        lat:n.lat ?? n.center.lat,
+        lon:n.lon ?? n.center.lon,
+        name:n.tags?.['name:hr'] || n.tags?.name || 'Bez imena',
+        elev:Number(n.tags?.ele) || null
+      }));
+    try{ localStorage.setItem(key, JSON.stringify({ t:Date.now(), data:peaks })); }catch(_){}
+    return peaks;
+  }
+
+  // ==== CRTANJE ====
+  function roundRect(ctx, x, y, w, h, r, fill, stroke){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y,   x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x,   y+h, r);
+    ctx.arcTo(x,   y+h, x,   y,   r);
+    ctx.arcTo(x,   y,   x+w, y,   r);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+  }
+  function drawCandidate(c){
+    const { x, y, p, dKm, dAz } = c;
+    // strelica
+    ctx.save(); ctx.translate(x, y); ctx.rotate(toRad(dAz));
+    ctx.beginPath(); ctx.moveTo(0,-18); ctx.lineTo(8,8); ctx.lineTo(0,3); ctx.lineTo(-8,8); ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,0.95)'; ctx.fill(); ctx.restore();
+    // oznaka
+    const text = `${p.name}${Number.isFinite(dKm) ? ` • ${dKm.toFixed(1)} km` : ''}`;
+    ctx.font = '600 14px Montserrat, system-ui, Arial';
+    const pad=6, tw=ctx.measureText(text).width;
+    const bx = Math.min(Math.max(8, x - tw/2 - pad), overlay.width - tw - 16);
+    const by = Math.max(8, y - 40);
+    ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.strokeStyle='rgba(255,255,255,0.35)';
+    roundRect(ctx, bx, by, tw+pad*2, 24, 10, true, true);
+    ctx.fillStyle='#fff'; ctx.fillText(text, bx+pad, by+16);
+  }
+
+  function loop(){
+    if (!state.running) return;
+    ctx.clearRect(0,0,overlay.width,overlay.height);
+
+    if (Number.isFinite(state.user.lat) && Number.isFinite(state.heading)) {
+      const cands = [];
+      for (const p of state.peaks) {
+        const az = bearingDeg(state.user.lat, state.user.lon, p.lat, p.lon);
+        const dKm = haversineKm(state.user.lat, state.user.lon, p.lat, p.lon);
+        const dM  = dKm * 1000;
+        const elevAngle = Number.isFinite(p.elev) ? toDeg(Math.atan2((p.elev - state.user.elev), dM)) : 0;
+        const dAz = angDiffDeg(az, state.heading);
+        const dPitch = elevAngle - state.pitch;
+        if (Math.abs(dAz) <= state.hFov/2 && Math.abs(dPitch) <= state.vFov/2) {
+          const x = overlay.width  * (0.5 + dAz / state.hFov);
+          const y = overlay.height * (0.5 - dPitch / state.vFov);
+          const score = Math.hypot(dAz, dPitch);
+          cands.push({p, x, y, dKm, dAz, dPitch, score});
+        }
+      }
+      if (cands.length){
+        cands.sort((a,b)=> a.score - b.score);
+        drawCandidate(cands[0]);
+        for (let i=1;i<Math.min(3,cands.length);i++){ ctx.globalAlpha=.7; drawCandidate(cands[i]); ctx.globalAlpha=1; }
+        statusEl.textContent = `Status: ${cands.length} vrh(ova) u FOV-u`;
+      } else {
+        statusEl.textContent = 'Status: nema vrhova u kadru';
+      }
+    } else {
+      statusEl.textContent = 'Status: čekam GPS/kompas…';
+    }
+    state.rafId = requestAnimationFrame(loop);
+  }
+
+  // ==== JAVNE FUNKCIJE (start/stop) ====
+  async function start(){
+    if (state.running) return;
+    try{
+      hint.textContent='Tražim dozvole…';
+      await startCamera();
+      await getLocation();
+      await enableOrientation();
+      hint.textContent='Dohvaćam vrhove (OSM)…';
+      state.peaks = await fetchPeaksAround(state.user.lat, state.user.lon, 30);
+      hint.remove();
+      state.running = true;
+      state.rafId = requestAnimationFrame(loop);
+      statusEl.textContent = `Status: učitano ${state.peaks.length} vrhova (30 km)`;
+    }catch(e){
+      console.warn(e);
+      hint.textContent = 'Greška: ' + (e && e.message ? e.message : e);
+      statusEl.textContent = 'Status: greška';
+    }
+  }
+
+  function stop(){
+    if (!state.running) { // ipak očisti
+      stopCamera(); disableOrientation();
+      return;
+    }
+    state.running = false;
+    if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId=null; }
+    ctx.clearRect(0,0,overlay.width,overlay.height);
+    disableOrientation();
+    stopCamera();
+  }
+
+  // Gumbi u panelu
+  btnStart?.addEventListener('click', start);
+  btnStop?.addEventListener('click', ()=>{
+    stop();
+    // sakrij panel da bude konzistentno s ostalima
+    const panel = document.getElementById('panelPeakCam');
+    if (panel) panel.hidden = true;
+    // reset poruke
+    if (hint && !document.body.contains(hint)) {
+      const div = document.createElement('div');
+      div.id='pc-hint'; div.className='pc-hint';
+      div.textContent='Dopusti pristup kameri, lokaciji i orijentaciji.';
+      document.querySelector('#panelPeakCam .pc-stage')?.appendChild(div);
+    }
+  });
+
+})();
+    
     /* =========================================================
        ISKOČNI PROZOR — PLACEHOLDER
        ========================================================= */
