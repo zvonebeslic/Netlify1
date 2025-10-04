@@ -1388,7 +1388,80 @@
   <!-- =========================================================
        SCRIPTS — LOGIKA (vidljive poruke su na HR)
        ========================================================= -->
+ 
   <script>
+
+      /* ---------------------------------------------------------
+     #10.1 NAV / JEZIK / MENI / BACK-TO-TOP
+     --------------------------------------------------------- */
+  const langToggle = document.getElementById('language-toggle');
+  const searchInput = document.getElementById('search');
+  const menuToggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('menu');
+  const backToTopBtn = document.getElementById('backToTop');
+  const footer = document.getElementById('footer');
+
+  function getInitialLang() {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (['hr', 'en'].includes(urlLang)) return urlLang;
+    try { const s = localStorage.getItem('preferredLang'); if (['hr','en'].includes(s)) return s; } catch(e){}
+    return 'hr';
+  }
+
+  function applyLanguage(lang) {
+    try { localStorage.setItem('preferredLang', lang); } catch(e){}
+    const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState({}, '', u.toString());
+    document.documentElement.lang = lang;
+
+    if (langToggle) {
+      langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+      langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+      langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
+    }
+    if (searchInput) searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
+
+    document.querySelectorAll('[data-hr]').forEach(el => {
+      const v = el.getAttribute('data-' + lang);
+      if (v == null) return;
+      if (v.includes('<')) el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('.menu-overlay a').forEach(a => {
+      const v = a.getAttribute('data-' + lang); if (v != null) a.textContent = v;
+    });
+  }
+
+  let currentLang = getInitialLang();
+  applyLanguage(currentLang);
+  if (langToggle) langToggle.addEventListener('click', () => { currentLang = currentLang === 'hr' ? 'en' : 'hr'; applyLanguage(currentLang); });
+
+  menuToggle.addEventListener('click', () => { menu.classList.toggle('open'); });
+  window.addEventListener('click', (e) => { if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') menu.classList.remove('open'); });
+  document.querySelectorAll('.menu-overlay a').forEach(l => l.addEventListener('click', () => menu.classList.remove('open')));
+
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY; const footerTop = footer.getBoundingClientRect().top + window.scrollY; const h = window.innerHeight;
+    backToTopBtn.style.display = y > 300 ? 'flex' : 'none';
+    backToTopBtn.style.bottom = (y + h > footerTop) ? ((y + h - footerTop) + 60) + 'px' : '30px';
+  });
+  backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const s = localStorage.getItem('activeSeason');
+    if (s) {
+      setTimeout(() => {
+        if (s === 'winter') startWinterEffect(true);
+        else if (s === 'summer') startSummerEffect(true);
+        else if (s === 'spring') startSpringEffect(true);
+        else if (s === 'autumn') startAutumnEffect(true);
+      }, 10000);
+    }
+    fetch('season.html').then(r => r.text()).then(html => {
+      const ph = document.getElementById('season-placeholder'); if (ph) ph.innerHTML = html;
+      if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+    }).catch(() => {});
+  });
+
+    
     /* =========================================================
        PWA SERVICE WORKER
        ========================================================= */
