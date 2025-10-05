@@ -2207,23 +2207,27 @@ qs('#closePopupBtn')?.addEventListener('click', closeMiniPopup);
 /* Fallback: pokreni render petlju ako nije aktivna */
 if (!window.__arrow.rafId) window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
   
-
 /* =========================================================
    NOĆNO NEBO — ISTICANJE ASTERIZAMA
    ========================================================= */
 const skyCanvas = qs('#skyCanvas');
-const skyCtx = skyCanvas?.getContext('2d');
+const skyCtx    = skyCanvas?.getContext('2d');
 const skyStartBtn = qs('#skyStart');
-const skyNowBtn = qs('#skyNow');
-const skyLegend = qs('#skyLegend');
+const skyNowBtn   = qs('#skyNow');
+const skyLegend   = qs('#skyLegend');
+
 let skyHeading = 0, skyPitch = 0;
 
 window.__sky = window.__sky || {
-  activeEvent: null, isRunning: false,
+  activeEvent: null,
+  isRunning: false,
   stop(){
     try{
-      if (this.activeEvent){ window.removeEventListener(this.activeEvent, handleSky, true); this.activeEvent=null; }
-      this.isRunning=false;
+      if (this.activeEvent){
+        window.removeEventListener(this.activeEvent, handleSky, true);
+        this.activeEvent = null;
+      }
+      this.isRunning = false;
     }catch(_){}
   }
 };
@@ -2234,6 +2238,7 @@ const STARS = [
   {ra:5.5334, dec:-0.2991, mag:0.9, name:'Alnilam'},
   {ra:5.6036, dec:-1.2019, mag:1.7, name:'Mintaka'},
   {ra:5.5856, dec:-1.9426, mag:2.2, name:'Alnitak'},
+
   {ra:11.0621, dec:61.7508, mag:1.8, name:'Alioth'},
   {ra:12.2570, dec:57.0326, mag:1.9, name:'Mizar'},
   {ra:13.7923, dec:49.3133, mag:1.8, name:'Dubhe'},
@@ -2244,15 +2249,20 @@ const STARS = [
 
 function drawSky(){
   if(!skyCtx || !skyCanvas) return;
-  const w=skyCanvas.width = skyCanvas.clientWidth || skyCanvas.width || 360;
-  const h=skyCanvas.height= skyCanvas.clientHeight|| skyCanvas.height|| 240;
+  const w = skyCanvas.width  = skyCanvas.clientWidth  || skyCanvas.width  || 360;
+  const h = skyCanvas.height = skyCanvas.clientHeight || skyCanvas.height || 240;
 
-  skyCtx.fillStyle='#020309'; skyCtx.fillRect(0,0,w,h);
-  skyCtx.strokeStyle='#1f2327'; skyCtx.strokeRect(0.5,0.5,w-1,h-1);
+  skyCtx.fillStyle = '#020309';
+  skyCtx.fillRect(0,0,w,h);
+  skyCtx.strokeStyle = '#1f2327';
+  skyCtx.strokeRect(0.5,0.5,w-1,h-1);
 
-  skyCtx.fillStyle='#9aa6b2'; skyCtx.font='12px Montserrat';
-  skyCtx.fillText('N', 6, 14); skyCtx.fillText('E', w-14, 14);
-  skyCtx.fillText('S', w-14, h-6); skyCtx.fillText('W', 6, h-6);
+  skyCtx.fillStyle = '#9aa6b2';
+  skyCtx.font = '12px Montserrat';
+  skyCtx.fillText('N', 6, 14);
+  skyCtx.fillText('E', w-14, 14);
+  skyCtx.fillText('S', w-14, h-6);
+  skyCtx.fillText('W', 6, h-6);
 
   const cx=w/2, cy=h/2, Rk=Math.min(cx,cy)-16;
   skyCtx.strokeStyle='#101317';
@@ -2260,13 +2270,13 @@ function drawSky(){
 
   const positions = {};
   STARS.forEach(st=>{
-    const az = ((st.ra*15 - skyHeading + 360*10) % 360);
+    const az  = ((st.ra*15 - skyHeading + 360*10) % 360);
     const rad = az*Math.PI/180;
-    const x = cx + Math.sin(rad)*Rk*0.92;
-    const y = cy - Math.cos(rad)*Rk*0.92;
-    const r = (st.mag < 1.0) ? 3.2 : (st.mag < 2.0) ? 2.6 : 2.1;
+    const x   = cx + Math.sin(rad)*Rk*0.92;
+    const y   = cy - Math.cos(rad)*Rk*0.92;
+    const r   = (st.mag < 1.0) ? 3.2 : (st.mag < 2.0) ? 2.6 : 2.1;
     positions[st.name] = {x,y};
-    skyCtx.fillStyle='#e7e9ff';
+    skyCtx.fillStyle = '#e7e9ff';
     skyCtx.beginPath(); skyCtx.arc(x,y,r,0,Math.PI*2); skyCtx.fill();
   });
 
@@ -2274,6 +2284,7 @@ function drawSky(){
   if(lookingUp){
     skyCtx.strokeStyle='rgba(58,160,255,.7)';
     skyCtx.lineWidth=2;
+
     ['Alnitak','Alnilam','Mintaka'].reduce((prev,cur)=>{
       if(prev && positions[prev] && positions[cur]){
         skyCtx.beginPath();
@@ -2283,6 +2294,7 @@ function drawSky(){
       }
       return cur;
     }, null);
+
     const umList=['Dubhe','Megrez','Phecda','Alioth','Mizar','Alkaid'];
     umList.reduce((prev,cur)=>{
       if(prev && positions[prev] && positions[cur]){
@@ -2293,38 +2305,70 @@ function drawSky(){
       }
       return cur;
     }, null);
-    skyCtx.fillStyle='#8fbaff'; skyCtx.font='11px Montserrat';
+
+    skyCtx.fillStyle='#8fbaff';
+    skyCtx.font='11px Montserrat';
     ['Betelgeuse','Rigel','Alnilam','Mintaka','Dubhe','Alioth','Mizar','Alkaid'].forEach(n=>{
       const p=positions[n]; if(p){ skyCtx.fillText(n, p.x+6, p.y-6); }
     });
   }
+
   skyCtx.fillStyle='#6f7a86';
   skyCtx.fillText(lookingUp?'Orion • Veliki medvjed (linije aktivne)':'Orion • Veliki medvjed (pojednostavljeno)', 10, h-10);
 }
+
+// === PATCH: throttle za handleSky + redraw na orientationchange ===
+let __skyLastTs = 0;
 function handleSky(e){
-  if(typeof e.webkitCompassHeading === 'number'){ skyHeading = normalize(e.webkitCompassHeading); }
-  else if (typeof e.alpha === 'number'){ let h = normalize(360 - e.alpha); h = normalize(h - screenAngle()); skyHeading = h; }
+  const now = performance.now();
+  if (now - __skyLastTs < 30) return; // ~33 fps cap
+  __skyLastTs = now;
+
+  if(typeof e.webkitCompassHeading === 'number'){
+    skyHeading = normalize(e.webkitCompassHeading);
+  } else if (typeof e.alpha === 'number'){
+    let h = normalize(360 - e.alpha);
+    h = normalize(h - screenAngle());
+    skyHeading = h;
+  }
   if(typeof e.beta === 'number'){ skyPitch = e.beta; }
   drawSky();
 }
+window.addEventListener('orientationchange', ()=> drawSky(), {passive:true});
+
 async function askSkyPermission(){
   if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-    alert('Senzori rade samo na HTTPS/localhost.'); return;
+    alert('Senzori rade samo na HTTPS/localhost.');
+    return;
   }
   try{
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
       const r = await DeviceOrientationEvent.requestPermission();
-      if (r !== 'granted') { alert('Bez dopuštenja senzora nebo se neće rotirati na iOS-u.'); return; }
+      if (r !== 'granted') {
+        alert('Bez dopuštenja senzora nebo se neće rotirati na iOS-u.');
+        return;
+      }
     }
   }catch(_){}
+
   const ev = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
   try{ window.removeEventListener(ev, handleSky, true); }catch(_){}
   window.addEventListener(ev, handleSky, true);
-  window.__sky.activeEvent = ev; window.__sky.isRunning = true;
+  window.__sky.activeEvent = ev;
+  window.__sky.isRunning = true;
   drawSky();
 }
+
 qs('#skyStart')?.addEventListener('click', askSkyPermission);
-qs('#skyNow')  ?.addEventListener('click', ()=>{ skyHeading = 0; drawSky(); });
+
+// === PATCH: skyNow reset i headinga i pitcha ===
+qs('#skyNow')?.addEventListener('click', ()=>{
+  skyHeading = 0;
+  skyPitch   = 0;
+  drawSky();
+});
+
 drawSky();
 
 /* =========================================================
@@ -2345,22 +2389,35 @@ wxFetchBtn?.addEventListener('click', ()=>{
     await fetchForecast(lat,lon);
   }, e=>alert('GPS greška: '+e.message), {enableHighAccuracy:true,timeout:10000});
 });
+
 wxFetchManual?.addEventListener('click', async ()=>{
   const lat=parseFloat(wxLat.value), lon=parseFloat(wxLon.value);
   if(!Number.isFinite(lat)||!Number.isFinite(lon)){ alert('Unesi ispravne koordinate.'); return; }
   await fetchForecast(lat,lon);
 });
+
+// === PATCH: bolji fetch error handling + cache bust ===
 async function fetchForecast(lat,lon){
   try{
-    wxCity.textContent=`Lokacija: ${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+    wxCity.textContent = `Lokacija: ${lat.toFixed(3)}, ${lon.toFixed(3)}`;
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,wind_speed_10m,uv_index&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max,wind_speed_10m_max&current_weather=true&timezone=auto`;
-    const res=await fetch(url); const data=await res.json();
+    const res = await fetch(url, {cache:'no-store'});
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
     renderWeather(data);
-  }catch(_){ wxCity.textContent='Greška pri dohvaćanju prognoze'; }
+  }catch(e){
+    wxCity.textContent='Greška pri dohvaćanju prognoze';
+    wxGrid.innerHTML='<div class="wx-card">Pokušaj ponovno kasnije.</div>';
+    console.error('Open-Meteo error:', e);
+  }
 }
+
 function renderWeather(d){
   wxGrid.innerHTML='';
-  if(!d?.daily){ wxGrid.innerHTML='<div class="wx-card">Nema podataka.</div>'; return; }
+  if(!d?.daily){
+    wxGrid.innerHTML='<div class="wx-card">Nema podataka.</div>';
+    return;
+  }
   const days=d.daily.time.length;
   for(let i=0;i<Math.min(days,3);i++){
     const el=document.createElement('div'); el.className='wx-card';
@@ -2376,22 +2433,32 @@ function renderWeather(d){
 /* =========================================================
    BILJKE / ŽIVOTINJE — KAMERA
    ========================================================= */
-const bioOpen = qs('#bioOpenCam'),
-      bioSnap = qs('#bioSnap'),
-      bioClose= qs('#bioCloseCam'),
-      bioVideo= qs('#bioVideo'),
-      bioCanvas=qs('#bioCanvas'),
-      bioPhoto =qs('#bioPhoto'),
-      bioINat  =qs('#bioINat');
+const bioOpen  = qs('#bioOpenCam'),
+      bioSnap  = qs('#bioSnap'),
+      bioClose = qs('#bioCloseCam'),
+      bioVideo = qs('#bioVideo'),
+      bioCanvas= qs('#bioCanvas'),
+      bioPhoto = qs('#bioPhoto'),
+      bioINat  = qs('#bioINat');
+
 let bioStream=null;
 
+// === PATCH: HTTPS provjera prije otvaranja kamere ===
 bioOpen?.addEventListener('click', async ()=>{
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    alert('Kamera radi samo na HTTPS ili localhostu.');
+    return;
+  }
   try{
     bioStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
     bioVideo.srcObject=bioStream; bioVideo.style.display='block';
-    bioSnap.disabled=false; bioClose.disabled=false; await bioVideo.play();
-  }catch(e){ alert('Kamera nedostupna: '+e.message); }
+    bioSnap.disabled=false; bioClose.disabled=false;
+    await bioVideo.play();
+  }catch(e){
+    alert('Kamera nedostupna: '+e.message);
+  }
 });
+
 bioClose?.addEventListener('click', ()=>{
   try{
     bioVideo.pause(); bioVideo.style.display='none';
@@ -2399,6 +2466,7 @@ bioClose?.addEventListener('click', ()=>{
     bioStream=null; bioSnap.disabled=true; bioClose.disabled=true;
   }catch(_){}
 });
+
 bioSnap?.addEventListener('click', ()=>{
   if(!bioVideo.videoWidth) return;
   bioCanvas.width=bioVideo.videoWidth; bioCanvas.height=bioVideo.videoHeight;
@@ -2406,13 +2474,17 @@ bioSnap?.addEventListener('click', ()=>{
   const url=bioCanvas.toDataURL('image/jpeg',0.9);
   bioPhoto.src=url; bioPhoto.style.display='block';
 });
-bioINat?.addEventListener('click', ()=>{ window.open('https://www.inaturalist.org/observations/new','_blank'); });
+
+bioINat?.addEventListener('click', ()=>{
+  window.open('https://www.inaturalist.org/observations/new','_blank');
+});
 
 /* =========================================================
    SOS — AUDIO
    ========================================================= */
 let sosCtx=null, sosPlay=false;
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
 function sosBeep(freq=900,dur=150){
   return new Promise(res=>{
     try{
@@ -2430,6 +2502,7 @@ function sosBeep(freq=900,dur=150){
     }catch(_){ res(); }
   });
 }
+
 async function playSOS(){
   if(sosPlay) return;
   sosPlay=true;
@@ -2437,15 +2510,32 @@ async function playSOS(){
     await sosBeep(900,150); await sleep(120);
     await sosBeep(900,150); await sleep(120);
     await sosBeep(900,150); await sleep(300);
+
     await sosBeep(900,450); await sleep(150);
     await sosBeep(900,450); await sleep(150);
     await sosBeep(900,450); await sleep(300);
+
     await sosBeep(900,150); await sleep(120);
     await sosBeep(900,150); await sleep(120);
     await sosBeep(900,150); await sleep(900);
   }
 }
-function stopSOS(){ sosPlay=false; }
+
+// === PATCH: SOS cleanup + auto-stop na tab hidden ===
+function stopSOS(){
+  sosPlay=false;
+  try {
+    if (sosCtx && sosCtx.state !== 'closed') {
+      setTimeout(()=>{ sosCtx?.close?.(); sosCtx = null; }, 120);
+    } else {
+      sosCtx = null;
+    }
+  } catch { sosCtx = null; }
+}
+document.addEventListener('visibilitychange', ()=>{
+  if (document.visibilityState === 'hidden') stopSOS();
+});
+
 qs('#playSOS')?.addEventListener('click', playSOS);
 qs('#stopSOS')?.addEventListener('click', stopSOS);
                       
