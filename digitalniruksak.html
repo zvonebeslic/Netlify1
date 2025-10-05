@@ -1889,10 +1889,17 @@ qs('#openArrowPanel')?.addEventListener('click', openArrow);
 function updateArrowColor(distance){
   const arrow = document.getElementById('targetArrow');
   if (!arrow) return;
-  let color = distance <= 10 ? '#2aa96b' : distance <= 20 ? '#f2c14e' : '#ff6b6b';
+  let color;
+  if (distance <= ONPATH_THRESH_M) {        // npr. ONPATH_THRESH_M=10
+    color = '#2aa96b'; // zelena
+  } else if (distance <= 30) {
+    color = '#f2c14e'; // žuta >10 m
+  } else {
+    color = '#ff6b6b'; // crvena >30 m
+  }
   arrow.querySelectorAll('rect, polygon').forEach(el=> el.setAttribute('fill', color));
 }
-
+  
 /* ---------- GPX parsiranje i učitavanje ---------- */
 async function loadGpxFromUrl(url){
   try{
@@ -1918,15 +1925,22 @@ function afterGpxLoaded(label){
   if (!gpxTrack || gpxTrack.length < 2) {
     trackStatusPill && (trackStatusPill.textContent = 'GPX: premalo točaka');
     setNavState(NAV.NO_TRACK);
-    if (targetArrow) targetArrow.style.opacity = 0;
+    // targetArrow?.style.display = 'none'; // (nije nužno, setNavState to radi)
+    offDistChip && (offDistChip.textContent = '↔︎ udaljenost: —');
     return;
   }
+
+  // Ako koristiš prozorsko traženje najbližeg segmenta:
+  try { gpxLastSeg = null; } catch(_) {}
+
   trackStatusPill && (trackStatusPill.textContent = label);
   onTrackChip && (onTrackChip.textContent = '🧭 status: GPX spreman — klikni “Pokreni praćenje”');
   offDistChip && (offDistChip.textContent = '↔︎ udaljenost: —');
+
   toggleTrackBtn?.classList.add('alt');
   setTimeout(()=> toggleTrackBtn?.classList.remove('alt'), 1400);
-  setNavState(NAV.NO_TRACK);
+
+  setNavState(NAV.NO_TRACK); // kompas prazan dok GPS ne krene
 }
 loadGpxBtn?.addEventListener('click', async ()=>{
   const f=gpxInput?.files?.[0];
@@ -1977,9 +1991,15 @@ function onGeoErr(err){
   if (gpsBanner) gpsBanner.style.display='flex';
 }
 function updateOffTrackUI(dist){
-  if(dist<=5){ setArrowMode('ok'); onTrackChip && (onTrackChip.textContent='🧭 status: na stazi ✓'); }
-  else if(dist<=alertMeters){ setArrowMode('warn'); onTrackChip && (onTrackChip.textContent='🧭 status: blizu ruba'); }
-  else { setArrowMode('bad'); onTrackChip && (onTrackChip.textContent='🧭 status: izvan staze');
+  if(dist <= ONPATH_THRESH_M){
+    setArrowMode('ok');
+    onTrackChip && (onTrackChip.textContent='🧭 status: na pravom ste putu ✓');
+  } else if(dist <= 30){
+    setArrowMode('warn');
+    onTrackChip && (onTrackChip.textContent='🧭 status: blizu ruba (>10 m)');
+  } else {
+    setArrowMode('bad');
+    onTrackChip && (onTrackChip.textContent='🧭 status: izvan staze (>30 m)');
     if(offBeepArmed){ offBeepArmed=false; beep3(); setTimeout(()=>offBeepArmed=true,8000); }
   }
   offDistChip && (offDistChip.textContent=`↔︎ udaljenost: ${dist.toFixed(0)} m`);
@@ -2086,6 +2106,31 @@ function beep3(){
   }catch(e){}
 }
 
+// === AUTO-PAUSE I AUTO-RESUME KOMPASA ===
+function resumeCompassIfNeeded(){
+  const arrowPanel = document.querySelector('#panelArrow');
+  if (arrowPanel && !arrowPanel.hidden) {
+    // Ako panel kompasa otvoren i senzori nisu aktivni, ponovo ih upali
+    startCompassSensors?.();
+    if (!window.__arrow?.rafId) {
+      window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
+    }
+  }
+}
+
+document.addEventListener('visibilitychange', ()=>{
+  if (document.visibilityState === 'hidden'){
+    // ugasi teže module dok je tab u pozadini
+    try { window.__arrow?.stop?.(); } catch {}
+    try { window.__sky?.stop?.(); } catch {}
+    try { window.__peakcam?.stop?.(); } catch {}
+    try { window.stopCam?.(); } catch {}
+  } else {
+    // pri povratku u prvi plan, vrati kompas ako je panel otvoren
+    resumeCompassIfNeeded();
+  }
+}, {passive:true});
+  
 /* ---- Backtrack ---- */
 let backtrackActive = false;
 let backtrackPoints = [];
