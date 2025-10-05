@@ -2038,20 +2038,52 @@ qs('#arrowClose')?.addEventListener('click', ()=>{
   try { window.__arrow.stop(); } catch(_){}
 });
 
-/* ---- Beep + vibracija ---- */
+/* Beep kontrola s mogućnošću hard-stop-a */
+let audioCtx = null;
+let __beepActiveOscs = [];
+
+function stopBeep(){
+  try {
+    __beepActiveOscs.forEach(({osc, gain})=>{
+      try { gain?.gain?.cancelScheduledValues?.(0); } catch {}
+      try { gain?.disconnect?.(); } catch {}
+      try { osc?.stop?.(0); } catch {}
+      try { osc?.disconnect?.(); } catch {}
+    });
+    __beepActiveOscs = [];
+    if (audioCtx && audioCtx.state !== 'closed') {
+      audioCtx.close().catch(()=>{});
+    }
+  } catch {}
+  audioCtx = null;
+}
+
 function beep3(){
   try{
     audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
-    const seq = [900,900,900]; let t = audioCtx.currentTime;
+    const seq = [900,900,900];
+    let t = audioCtx.currentTime;
+    __beepActiveOscs = [];
+
     seq.forEach((f)=>{
-      const osc=audioCtx.createOscillator(); const gain=audioCtx.createGain();
-      osc.type='sine'; osc.frequency.value=f; osc.connect(gain); gain.connect(audioCtx.destination);
-      gain.gain.setValueAtTime(0.0001, t); gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
-      osc.start(t); osc.stop(t+0.15); gain.gain.exponentialRampToValueAtTime(0.0001, t+0.15);
+      const osc = audioCtx.createOscillator();
+      const gain= audioCtx.createGain();
+      osc.type='sine'; osc.frequency.value=f;
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
+      osc.start(t);
+      osc.stop(t+0.15);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t+0.15);
+      __beepActiveOscs.push({osc, gain});
       t += 0.27;
     });
-    if (navigator.vibrate) navigator.vibrate([150, 120, 150, 120, 150]);
-  }catch(_){}
+
+    if (navigator.vibrate) navigator.vibrate([150,120,150,120,150]);
+
+    // safety timeout: ugasi sve nakon 1.5s ako zapne
+    setTimeout(()=>{ stopBeep(); }, 1500);
+  }catch(e){}
 }
 
 /* ---- Backtrack ---- */
@@ -2679,5 +2711,150 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
 })();
 </script>
 
+<script>
+/* --- Globalni suspend svih modula (jedan alat aktivan) --- */
+window.suspendAllTools = function suspendAllTools() {
+  // Kompas (render + senzori + GPS + miniHUD + zvuk)
+  try { window.__arrow?.stop?.(); } catch {}
+  try { window.stopGeoWatch?.(); } catch {}
+  try { window.hideMini?.(); } catch {}
+
+  // PeakCam
+  try { window.__peakcam?.stop?.(); } catch {}
+
+  // Noćno nebo
+  try { window.__sky?.stop?.(); } catch {}
+
+  // Kamera
+  try { window.stopCam?.(); } catch {}
+
+  // SOS / Beep
+  try { window.stopSOS?.(); } catch {}
+  try { window.stopBeep?.(); } catch {}
+};
+
+/* --- Hookaj suspend u router (otvaranje bilo kojeg panela) --- */
+(function patchRouterToSuspend(){
+  const openSel = (sel) => {
+    window.suspendAllTools?.(); // <-- KLJUČNO: prije promjene panela, sve ugasi
+    const tgt = document.querySelector(sel);
+    if (!tgt) return;
+    document.querySelectorAll('section.tool-panel').forEach(p => p.hidden = (p !== tgt));
+    try { tgt.scrollIntoView({behavior:'smooth', block:'start'}); } catch {}
+  };
+  // Ako si već imao router, prespojit ćemo gumbe na ovu verziju:
+  [
+    ['#openAidPanel',     '#panelAid'],
+    ['#openCamPanel',     '#panelCamera'],
+    ['#openArrowPanel',   '#panelArrow'],
+    ['#openSkyPanel',     '#panelSky'],
+    ['#openWeatherPanel', '#panelWeather'],
+    ['#openBioPanel',     '#panelBio'],
+    ['#openOfflinePanel', '#panelOffline'],
+    ['#openPeakCamPanel', '#panelPeakCam'],
+  ].forEach(([btnSel, panelSel])=>{
+    const btn = document.querySelector(btnSel);
+    if (btn) {
+      btn.onclick = (e)=>{ e?.preventDefault?.(); openSel(panelSel); };
+    }
+  });
+})();
+</script>
+
+<script>
+/* --- GPX optimizacija: simplify + throttle onPos --- */
+
+/* 1) Pojednostavi trag po udaljenosti (O(n)) */
+function simplifyTrackByDistance(pts, minStepM=8){
+  if (!Array.isArray(pts) || pts.length < 3) return pts || [];
+  const out = [pts[0]];
+  let last = pts[0];
+  for (let i=1;i<pts.length;i++){
+    const p = pts[i];
+    const d = haversine(last.lat,last.lon,p.lat,p.lon);
+    if (d >= minStepM){ out.push(p); last = p; }
+  }
+  if (out[out.length-1] !== pts[pts.length-1]) out.push(pts[pts.length-1]);
+  return out;
+}
+
+/* 2) Adaptivni korak ovisno o veličini traga */
+function adaptMinStepMeters(n){
+  if (n <= 1500)   return 6;
+  if (n <= 5000)   return 12;
+  if (n <= 15000)  return 20;
+  return 35;
+}
+
+/* 3) Wrap oko tvog afterGpxLoaded: simplificiraj pa proslijedi */
+const __orig_afterGpxLoaded = (typeof afterGpxLoaded === 'function') ? afterGpxLoaded : null;
+
+function afterGpxLoaded(label){
+  try{
+    if (Array.isArray(gpxTrack) && gpxTrack.length > 2){
+      const step = adaptMinStepMeters(gpxTrack.length);
+      gpxTrack = simplifyTrackByDistance(gpxTrack, step);
+      label = `${label} • simpl: ${gpxTrack.length} točaka`;
+    }
+  }catch(e){ console.warn('GPX simplify error:', e); }
+
+  if (__orig_afterGpxLoaded) {
+    return __orig_afterGpxLoaded(label);
+  }
+
+  /* fallback ako iz nekog razloga original ne postoji */
+  if (!gpxTrack || gpxTrack.length < 2) {
+    trackStatusPill && (trackStatusPill.textContent = 'GPX: premalo točaka');
+    setNavState && setNavState(NAV.NO_TRACK);
+    if (typeof targetArrow !== 'undefined' && targetArrow) targetArrow.style.opacity = 0;
+    return;
+  }
+  trackStatusPill && (trackStatusPill.textContent = label);
+  onTrackChip   && (onTrackChip.textContent = '🧭 status: GPX spreman — klikni “Pokreni praćenje”');
+  offDistChip   && (offDistChip.textContent = '↔︎ udaljenost: —');
+  toggleTrackBtn?.classList.add('alt');
+  setTimeout(()=> toggleTrackBtn?.classList.remove('alt'), 1400);
+  setNavState && setNavState(NAV.NO_TRACK);
+}
+
+/* 4) Throttle onPos (spriječi “smrzavanje” na slabijim uređajima) */
+let __onPosLastTs = 0;
+const __ONPOS_MIN_MS = 140; // ≈7 Hz
+if (typeof onPos === 'function') {
+  const __orig_onPos = onPos;
+  window.onPos = function(pos){
+    const now = performance.now();
+    if (now - __onPosLastTs < __ONPOS_MIN_MS) return;
+    __onPosLastTs = now;
+    return __orig_onPos(pos);
+  };
+}
+</script>  
+
+<script>
+// Kompas otvaranje
+document.querySelector('#openArrowPanel')?.addEventListener('click', ()=>{
+  window.suspendAllTools?.();   // prvo ugasi sve
+  startCompassSensors?.();      // onda upali kompas
+});
+
+// PeakCam otvaranje
+document.querySelector('#openPeakCamPanel')?.addEventListener('click', ()=>{
+  window.suspendAllTools?.();   // prvo ugasi sve
+  window.__peakcam?.start?.();  // onda upali PeakCam
+});
+</script>  
+
+<script>
+window.stopGeoWatch = window.stopGeoWatch || function(){
+  try{
+    if(window.__arrow?.watchId != null){
+      navigator.geolocation.clearWatch(window.__arrow.watchId);
+      window.__arrow.watchId = null;
+    }
+  }catch{}
+};
+</script>  
+  
 </body>
 </html>
