@@ -1633,9 +1633,13 @@ const gpsBanner      = qs('#gpsBanner');
 const bannerHide     = qs('#bannerHide');
 
 bannerHide?.addEventListener('click', ()=> gpsBanner.style.display='none');
-declHelpBtn?.addEventListener('click', ()=> declModalBack.style.display='grid');
-declCloseBtn?.addEventListener('click', ()=> declModalBack.style.display='none');
-
+declHelpBtn?.addEventListener('click', ()=>{
+  if (declModalBack) declModalBack.style.display='grid';
+});
+declCloseBtn?.addEventListener('click', ()=>{
+  if (declModalBack) declModalBack.style.display='none';
+});
+  
 const onPathOK = document.getElementById('onPathOK');
 const NAV = { NO_TRACK:'NO_TRACK', ON_PATH:'ON_PATH', OFF_PATH:'OFF_PATH' };
 let navState = NAV.NO_TRACK;
@@ -2039,7 +2043,6 @@ qs('#arrowClose')?.addEventListener('click', ()=>{
 });
 
 /* Beep kontrola s mogućnošću hard-stop-a */
-let audioCtx = null;
 let __beepActiveOscs = [];
 
 function stopBeep(){
@@ -2055,7 +2058,7 @@ function stopBeep(){
       audioCtx.close().catch(()=>{});
     }
   } catch {}
-  audioCtx = null;
+  audioCtx = null; // koristi postojeći audioCtx iz “stanje i konstante”
 }
 
 function beep3(){
@@ -2064,10 +2067,9 @@ function beep3(){
     const seq = [900,900,900];
     let t = audioCtx.currentTime;
     __beepActiveOscs = [];
-
     seq.forEach((f)=>{
-      const osc = audioCtx.createOscillator();
-      const gain= audioCtx.createGain();
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
       osc.type='sine'; osc.frequency.value=f;
       osc.connect(gain); gain.connect(audioCtx.destination);
       gain.gain.setValueAtTime(0.0001, t);
@@ -2078,9 +2080,7 @@ function beep3(){
       __beepActiveOscs.push({osc, gain});
       t += 0.27;
     });
-
     if (navigator.vibrate) navigator.vibrate([150,120,150,120,150]);
-
     // safety timeout: ugasi sve nakon 1.5s ako zapne
     setTimeout(()=>{ stopBeep(); }, 1500);
   }catch(e){}
