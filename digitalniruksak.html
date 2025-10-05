@@ -1198,27 +1198,51 @@
     </section>
   </main>
 
-  <!-- =========================================================
-       MINI HUD STRELICA + GPS BANNER + DEKLINACIJA MODAL
-       ========================================================= -->
-  <div id="miniCompass" aria-label="Mini strelica" hidden>
-    <div class="mini-ring"><div id="miniNeedle" class="mini-needle"></div></div>
-    <div class="mini-info"><span id="miniMeters">— m</span></div>
-  </div>
+<!-- MINI KOMPAS — FRAGMENT ZA POPUP (HTML+CSS, BEZ JS) -->
+<template id="miniPopupTpl">
+  <style>
+    :root { color-scheme: dark light; }
+    html,body{margin:0;background:#0b0e12;color:#e8eef5;font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+    .wrap{padding:14px;display:flex;flex-direction:column;gap:12px}
+    .card{background:#12161c;border:1px solid #222b35;border-radius:16px;padding:14px}
+    .topbar{display:flex;align-items:center;justify-content:space-between}
+    .xbtn{appearance:none;border:0;background:#1b222b;border:1px solid #2b3642;color:#d7e0ea;border-radius:10px;padding:6px 10px;cursor:pointer}
+    .ringWrap{display:grid;place-items:center}
+    #ring{width:260px;height:260px;border-radius:50%;border:2px solid #2b3642;position:relative;transform:translateZ(0)}
+    #needle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:40px solid #ff6b6b;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+    .cardinal{position:absolute;left:50%;top:50%;transform-origin:50% 110px;color:#9fb0c2;font-weight:600}
+    .N{transform:translate(-50%,-50%) rotate(0deg)   translateY(-110px)}
+    .E{transform:translate(-50%,-50%) rotate(90deg)  translateY(-110px)}
+    .S{transform:translate(-50%,-50%) rotate(180deg) translateY(-110px)}
+    .W{transform:translate(-50%,-50%) rotate(270deg) translateY(-110px)}
+    .hud{text-align:center;color:#a9b4c0}
+    .pill{display:inline-block;background:#0f1318;border:1px solid #202a34;border-radius:999px;padding:6px 10px;margin-top:8px}
+    .pill.ok{border-color:#2aa96b;color:#b8f1d4}
+    .pill.warn{border-color:#f2c14e;color:#ffe7a4}
+    .pill.bad{border-color:#ff6b6b;color:#ffc9c9}
+  </style>
 
-  <div id="gpsBanner" class="banner" style="display:none">
-    <div class="msg">📡 Nema GPS signala — čekam fiks. Navigacija ograničena.</div>
-    <div class="actions"><button class="btn ghost" id="bannerHide">Sakrij</button></div>
-  </div>
-
-  <div id="declModalBack" class="modal-back">
-    <div class="modal" role="dialog" aria-label="Upute za deklinaciju">
-      <h5>Deklinacija — kratke upute</h5>
-      <p><b>Geografski sjever</b> je prema Zemljinoj osi. <b>Magnetski sjever</b> je gdje pokazuje magnetometar. Razlika je <b>deklinacija</b> (E = dodaj +°, W = oduzmi °).</p>
-      <p>Uključena je <b>Auto deklinacija</b> (procjena za Balkan izvan mreže + GPS korekcija). Po želji brojku promijeni ručno.</p>
-      <div class="actions"><button class="btn ghost" id="declClose">Zatvori</button></div>
+  <div class="wrap">
+    <div class="topbar">
+      <div style="opacity:.8">Mini kompas</div>
+      <button id="close" class="xbtn" aria-label="Zatvori">✕</button>
+    </div>
+    <div class="card ringWrap">
+      <div id="ring">
+        <div id="needle"></div>
+        <div class="cardinal N">N</div>
+        <div class="cardinal E">E</div>
+        <div class="cardinal S">S</div>
+        <div class="cardinal W">W</div>
+      </div>
+      <div class="hud" style="margin-top:10px">Smjer: <span id="lblH">—</span>°</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div class="hud">Udaljenost od staze</div>
+      <div id="distPill" class="pill">—</div>
     </div>
   </div>
+</template>
 
   <!-- FOOTER + BACK TO TOP -->
   <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
@@ -2619,146 +2643,127 @@ window.__peakcam = { start, stop };
 })();
 
 /* =========================================================
-   ISKOČNI PROZOR — MINI KOMPAS + UDALJENOST (POPUP)
+   MINI KOMPAS I POP UP PROZORCIC
    ========================================================= */
+
+    
+// Sigurni selektori
+window.qs  = window.qs  || (s=>document.querySelector(s));
+window.qsa = window.qsa || (s=>document.querySelectorAll(s));
+
 let miniPopupWin = null;
 let __lastMiniSendTs = 0;
 let __lastHeadingForMini = null; // HOOK iz renderCompassRing()
 let __lastDistForMini = null;    // HOOK iz onPos()
 let __miniAlertMeters = 30;
 
-function openMiniPopup(){
-  if (miniPopupWin && !miniPopupWin.closed) { miniPopupWin.focus(); return; }
-  const w = 360, h = 500;
-  const left = window.screenX + (window.outerWidth - w) / 2;
-  const top  = window.screenY + (window.outerHeight - h) / 2;
-  miniPopupWin = window.open('', 'miniCompassPopup', `width=${w},height=${h},left=${Math.max(0,left)},top=${Math.max(0,top)},resizable=yes,noopener=yes`);
-  if (!miniPopupWin) { alert('Popup blokiran — dopusti iskočne prozore.'); return; }
+// Opcionalni hookovi koje zoveš iz svog kompasa/GPS-a
+function hookMiniHeading(deg){ if (typeof deg==='number'){ __lastHeadingForMini = deg; miniPopupBroadcast(); } }
+function hookMiniDistance(m){ if (typeof m==='number' || m===null){ __lastDistForMini = m; miniPopupBroadcast(); } }
 
-  const html = `<!doctype html>
+// Ova funkcija se izvršava U POPUPU i veže njegovu logiku
+function __bindMiniInto(win){
+  const doc = win.document;
+  const ring = doc.getElementById('ring');
+  const lblH = doc.getElementById('lblH');
+  const distPill = doc.getElementById('distPill');
+  const btnClose = doc.getElementById('close');
+
+  let smooth=0, EMA=0.12, rafId=null, lastHeading=null;
+
+  function normalize(d){ d=d%360; return d<0? d+360 : d; }
+  function setDistance(m, alertMeters){
+    if (typeof m!=='number'){ distPill.textContent='—'; distPill.className='pill'; return; }
+    distPill.textContent = Math.round(m)+' m';
+    const a = (typeof alertMeters==='number'&&alertMeters>0)? alertMeters : 30;
+    let cls='pill'; if(m<=5) cls+=' ok'; else if(m<=a) cls+=' warn'; else cls+=' bad';
+    distPill.className = cls;
+  }
+  function animate(){
+    if (typeof lastHeading==='number'){
+      const delta = ((((lastHeading - smooth) + 540) % 360) - 180);
+      smooth += EMA * delta;
+      const hq = Math.round(smooth*2)/2;
+      ring.style.transform = 'translateZ(0) rotate('+(-hq)+'deg)';
+      lblH.textContent = hq.toFixed(1);
+    }
+    rafId = win.requestAnimationFrame(animate);
+  }
+
+  win.addEventListener('message', (e)=>{
+    const d = e.data||{}; if (d.type!=='compass-mini') return;
+    if (typeof d.heading==='number')  lastHeading = normalize(d.heading);
+    if (typeof d.distance==='number' || d.distance===null) setDistance(d.distance, d.alertMeters);
+    if (!rafId) rafId = win.requestAnimationFrame(animate);
+  });
+
+  btnClose && btnClose.addEventListener('click', ()=> win.close());
+}
+
+function openMiniPopup(){
+  if (miniPopupWin && !miniPopupWin.closed){ miniPopupWin.focus(); return; }
+
+  const w=360, h=500;
+  const left=(window.screenX||0)+((window.outerWidth||800)-w)/2;
+  const top =(window.screenY||0)+((window.outerHeight||600)-h)/2;
+
+  miniPopupWin = window.open('', 'miniCompassPopup',
+    `width=${w},height=${h},left=${Math.max(0,left)},top=${Math.max(0,top)},resizable=yes`
+  );
+  if(!miniPopupWin){ alert('Popup blokiran — dopusti iskočne prozore.'); return; }
+
+  // Učitaj markup+css iz <template>
+  const tpl = qs('#miniPopupTpl');
+  const html = tpl ? tpl.innerHTML : '<div style="padding:12px">Nedostaje #miniPopupTpl</div>';
+
+  miniPopupWin.document.open();
+  miniPopupWin.document.write(`<!doctype html>
 <html lang="hr"><head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Mini kompas</title>
-<style>
-:root { color-scheme: dark light; }
-html,body{margin:0;background:#0b0e12;color:#e8eef5;font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
-.wrap{padding:14px;display:flex;flex-direction:column;gap:12px}
-.card{background:#12161c;border:1px solid #222b35;border-radius:16px;padding:14px}
-.topbar{display:flex;align-items:center;justify-content:space-between}
-.xbtn{appearance:none;border:0;background:#1b222b;border:1px solid #2b3642;color:#d7e0ea;border-radius:10px;padding:6px 10px;cursor:pointer}
-.ringWrap{display:grid;place-items:center}
-#ring{width:260px;height:260px;border-radius:50%;border:2px solid #2b3642;position:relative;transform:translateZ(0)}
-#needle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:40px solid #ff6b6b;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
-.cardinal{position:absolute;left:50%;top:50%;transform-origin:50% 110px;color:#9fb0c2;font-weight:600}
-.N{transform:translate(-50%,-50%) rotate(0deg)   translateY(-110px)}
-.E{transform:translate(-50%,-50%) rotate(90deg)  translateY(-110px)}
-.S{transform:translate(-50%,-50%) rotate(180deg) translateY(-110px)}
-.W{transform:translate(-50%,-50%) rotate(270deg) translateY(-110px)}
-.hud{text-align:center;color:#a9b4c0}
-.pill{display:inline-block;background:#0f1318;border:1px solid #202a34;border-radius:999px;padding:6px 10px;margin-top:8px}
-.pill.ok{border-color:#2aa96b;color:#b8f1d4}
-.pill.warn{border-color:#f2c14e;color:#ffe7a4}
-.pill.bad{border-color:#ff6b6b;color:#ffc9c9}
-</style>
-</head><body>
-<div class="wrap">
-  <div class="topbar">
-    <div style="opacity:.8">Mini kompas</div>
-    <button id="close" class="xbtn" aria-label="Zatvori">✕</button>
-  </div>
-  <div class="card ringWrap">
-    <div id="ring">
-      <div id="needle"></div>
-      <div class="cardinal N">N</div>
-      <div class="cardinal E">E</div>
-      <div class="cardinal S">S</div>
-      <div class="cardinal W">W</div>
-    </div>
-    <div class="hud" style="margin-top:10px">Smjer: <span id="lblH">—</span>°</div>
-  </div>
-  <div class="card" style="text-align:center">
-    <div class="hud">Udaljenost od staze</div>
-    <div id="distPill" class="pill">—</div>
-  </div>
-</div>
-<script>
-(function(){
-  const ring = document.getElementById('ring');
-  const lblH = document.getElementById('lblH');
-  const distPill = document.getElementById('distPill');
-  const btnClose = document.getElementById('close');
-  let smooth=0, EMA=0.12, rafId=0, lastHeading=null;
-
-  function normalize(d){ d = d % 360; return d<0 ? d+360 : d; }
-
-  function setDistance(m, alertMeters){
-    if (typeof m !== 'number') { distPill.textContent='—'; distPill.className='pill'; return; }
-    distPill.textContent = Math.round(m) + ' m';
-    const a = (typeof alertMeters==='number' && alertMeters>0) ? alertMeters : 30;
-    let cls = 'pill';
-    if (m <= 5) cls+=' ok';
-    else if (m <= a) cls+=' warn';
-    else cls+=' bad';
-    distPill.className = cls;
-  }
-
-  function animate(){
-    if (typeof lastHeading === 'number') {
-      const delta = ((((lastHeading - smooth) + 540) % 360) - 180);
-      smooth = smooth + EMA * delta;
-      const hq = Math.round(smooth*2)/2;
-      ring.style.transform = 'translateZ(0) rotate(' + (-hq) + 'deg)';
-      lblH.textContent = hq.toFixed(1);
-    }
-    rafId = requestAnimationFrame(animate);
-  }
-
-  window.addEventListener('message', (e)=>{
-    const d = e.data || {};
-    if (d.type !== 'compass-mini') return;
-    if (typeof d.heading === 'number') lastHeading = normalize(d.heading);
-    if (typeof d.distance === 'number' || d.distance === null) setDistance(d.distance, d.alertMeters);
-    if (!rafId) rafId = requestAnimationFrame(animate);
-  });
-
-  btnClose.addEventListener('click', ()=> window.close());
-})();
-</script>
-</body></html>`;
-
-  miniPopupWin.document.open();
-  miniPopupWin.document.write(html);
+</head><body>${html}</body></html>`);
   miniPopupWin.document.close();
-  miniPopupBroadcast(true);
+
+  // Spoji JS logiku u popup (bez ijednog </script> u stringu)
+  __bindMiniInto(miniPopupWin);
+
+  // Pošalji početno stanje s malim delayem
+  setTimeout(()=> miniPopupBroadcast(true), 60);
+
+  // Čišćenje reference kad se zatvori
+  const t = setInterval(()=>{
+    if(!miniPopupWin || miniPopupWin.closed){ clearInterval(t); miniPopupWin = null; }
+  }, 1000);
 }
 
 function closeMiniPopup(){
-  try{ miniPopupWin?.close(); }catch{}
+  try{ if(miniPopupWin && !miniPopupWin.closed) miniPopupWin.close(); }catch{}
+  miniPopupWin = null;
 }
 
-/* Slanje heading/distance popupu (throttle ~120 ms) */
+// Throttle slanja u popup (~120ms)
 function miniPopupBroadcast(force=false){
-  if (!miniPopupWin || miniPopupWin.closed) return;
+  if(!miniPopupWin || miniPopupWin.closed) return;
   const now = performance.now();
-  if (!force && now - __lastMiniSendTs < 120) return;
+  if(!force && now - __lastMiniSendTs < 120) return;
   __lastMiniSendTs = now;
   const payload = {
-    type: 'compass-mini',
+    type:'compass-mini',
     heading: (typeof __lastHeadingForMini==='number') ? __lastHeadingForMini : null,
-    distance: (typeof __lastDistForMini==='number') ? __lastDistForMini : null,
+    distance:(typeof __lastDistForMini==='number') ? __lastDistForMini : null,
     alertMeters: __miniAlertMeters
   };
-  try { miniPopupWin.postMessage(payload, '*'); } catch(_){}
+  try{ miniPopupWin.postMessage(payload, '*'); }catch(_){}
 }
 
-/* Gumbi */
-qs('#openPopupBtn') ?.addEventListener('click', ()=>{
-  try { window.__peakcam?.stop?.(); } catch {}
+// Gumbi
+qs('#openPopupBtn') && qs('#openPopupBtn').addEventListener('click', ()=>{
+  try{ window.__peakcam?.stop?.(); }catch{}
   openMiniPopup();
 });
-qs('#closePopupBtn')?.addEventListener('click', closeMiniPopup);
-
+qs('#closePopupBtn') && qs('#closePopupBtn').addEventListener('click', closeMiniPopup);
+    
 /* =========================================================
    VID/FOCUS — ŠTEDI BATERIJU
    ========================================================= */
