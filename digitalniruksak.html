@@ -2617,15 +2617,16 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
 window.__peakcam = { start, stop };
 })();
 })();
- /* =========================================================
-       ISKOČNI PROZOR — MINI KOMPAS + UDALJENOST (POPUP)
-   
- ========================================================= */
+
+/* =========================================================
+   ISKOČNI PROZOR — MINI KOMPAS + UDALJENOST (POPUP)
+   ========================================================= */
 let miniPopupWin = null;
 let __lastMiniSendTs = 0;
 let __lastHeadingForMini = null; // HOOK iz renderCompassRing()
 let __lastDistForMini = null;    // HOOK iz onPos()
 let __miniAlertMeters = 30;
+
 function openMiniPopup(){
   if (miniPopupWin && !miniPopupWin.closed) { miniPopupWin.focus(); return; }
   const w = 360, h = 500;
@@ -2633,6 +2634,7 @@ function openMiniPopup(){
   const top  = window.screenY + (window.outerHeight - h) / 2;
   miniPopupWin = window.open('', 'miniCompassPopup', `width=${w},height=${h},left=${Math.max(0,left)},top=${Math.max(0,top)},resizable=yes,noopener=yes`);
   if (!miniPopupWin) { alert('Popup blokiran — dopusti iskočne prozore.'); return; }
+
   const html = `<!doctype html>
 <html lang="hr"><head>
 <meta charset="utf-8"/>
@@ -2687,7 +2689,9 @@ html,body{margin:0;background:#0b0e12;color:#e8eef5;font:14px/1.35 system-ui,-ap
   const distPill = document.getElementById('distPill');
   const btnClose = document.getElementById('close');
   let smooth=0, EMA=0.12, rafId=0, lastHeading=null;
+
   function normalize(d){ d = d % 360; return d<0 ? d+360 : d; }
+
   function setDistance(m, alertMeters){
     if (typeof m !== 'number') { distPill.textContent='—'; distPill.className='pill'; return; }
     distPill.textContent = Math.round(m) + ' m';
@@ -2698,16 +2702,18 @@ html,body{margin:0;background:#0b0e12;color:#e8eef5;font:14px/1.35 system-ui,-ap
     else cls+=' bad';
     distPill.className = cls;
   }
+
   function animate(){
     if (typeof lastHeading === 'number') {
       const delta = ((((lastHeading - smooth) + 540) % 360) - 180);
       smooth = smooth + EMA * delta;
       const hq = Math.round(smooth*2)/2;
-      ring.style.transform = 'translateZ(0) rotate(' + (-hq) + 'deg)'; // prsten se vrti, igla je fiksna
+      ring.style.transform = 'translateZ(0) rotate(' + (-hq) + 'deg)';
       lblH.textContent = hq.toFixed(1);
     }
     rafId = requestAnimationFrame(animate);
   }
+
   window.addEventListener('message', (e)=>{
     const d = e.data || {};
     if (d.type !== 'compass-mini') return;
@@ -2715,19 +2721,22 @@ html,body{margin:0;background:#0b0e12;color:#e8eef5;font:14px/1.35 system-ui,-ap
     if (typeof d.distance === 'number' || d.distance === null) setDistance(d.distance, d.alertMeters);
     if (!rafId) rafId = requestAnimationFrame(animate);
   });
+
   btnClose.addEventListener('click', ()=> window.close());
 })();
 </script>
 </body></html>`;
+
   miniPopupWin.document.open();
   miniPopupWin.document.write(html);
   miniPopupWin.document.close();
-  // po otvaranju odmah pošalji što imamo (ako imamo)
   miniPopupBroadcast(true);
 }
+
 function closeMiniPopup(){
   try{ miniPopupWin?.close(); }catch{}
 }
+
 /* Slanje heading/distance popupu (throttle ~120 ms) */
 function miniPopupBroadcast(force=false){
   if (!miniPopupWin || miniPopupWin.closed) return;
@@ -2742,17 +2751,17 @@ function miniPopupBroadcast(force=false){
   };
   try { miniPopupWin.postMessage(payload, '*'); } catch(_){}
 }
+
 /* Gumbi */
 qs('#openPopupBtn') ?.addEventListener('click', ()=>{
-  // po želji ugasi veće module prije popupa:
   try { window.__peakcam?.stop?.(); } catch {}
   openMiniPopup();
 });
 qs('#closePopupBtn')?.addEventListener('click', closeMiniPopup);
+
 /* =========================================================
-       VID/FOCUS — ŠTEDI BATERIJU
-   
- ========================================================= */
+   VID/FOCUS — ŠTEDI BATERIJU
+   ========================================================= */
 document.addEventListener('visibilitychange', ()=>{
   if(document.visibilityState==='hidden'){
     try { window.__arrow   ?.stop?.(); }catch{}
@@ -2761,6 +2770,8 @@ document.addEventListener('visibilitychange', ()=>{
     try { stopCam?.(); }catch{}
   }
 });
-</script>
-</body>
-</html>
+    
+  </script>
+
+  </body>
+  </html>
