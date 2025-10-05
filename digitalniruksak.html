@@ -586,4 +586,738 @@
   
 </head>
 
-  
+<body>
+  <!-- === NAVIGACIJA (gore) === -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
+    </div>
+    <div class="navbar-center">
+      <div class="search-container">
+        <div class="search-wrapper">
+          <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration" />
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
+          <img src="images/search.svg" alt="ikona za tražilicu">
+        </div>
+      </div>
+    </div>
+    <div class="navbar-right" id="menu-toggle">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+    </div>
+  </div>
+
+  <!-- === HAMBURGER MENI === -->
+  <div class="menu-overlay" id="menu">
+    <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
+    <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
+    <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
+    <a href="webshop.html" data-hr="Web shop" data-en="Web Shop">Web shop</a>
+    <a href="planinarskevijesti.html" data-hr="Blog" data-en="Blog">Blog</a>
+    <a href="digitalniruksak.html" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>
+    <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
+
+  <!-- === SEASON TOGGLE IKONE === -->
+  <div id="season-toggle-wrapper">
+    <img src="images/seasonchange.svg" id="season-toggle" alt="odabir godišnjeg doba" />
+    <div id="season-strike" class="hidden"></div>
+    <!-- KOSA CRTA -->
+    <div id="season-icons">
+      <div class="season-icon" data-season="winter">❄️</div>
+      <div class="season-icon" data-season="spring">🌸</div>
+      <div class="season-icon" data-season="summer">☀️</div>
+      <div class="season-icon" data-season="autumn">🍂</div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       NASLOV
+       ========================================================= -->
+  <header class="page-head">
+    <h1>Digitalni ruksak</h1>
+    <p class="intro">Vaš Digitalni Vodič na jednom mjestu. Upute za Prvu Pomoć, Pametna Kamera, Pametni Kompas, Noćno nebo, Vremenska prognoza i Vodič za biljni i životinjski svijet te još dosta korisnih stvari.</p>
+  </header>
+
+  <!-- =========================================================
+       GLAVNI SADRŽAJ — KARTICE ALATA
+       ========================================================= -->
+  <main>
+    <section class="tools-grid" aria-label="Alati">
+      <!-- Kartica: Vodiči -->
+      <article class="tool-card" id="tool-aid">
+        <div class="eyebrow">Prioritet</div>
+        <h3>Upute za Prvu Pomoć</h3>
+        <p>Brzi koraci koje svatko može slijediti. Prvo sigurnost mjesta, zatim 112.</p>
+        <div class="btn-row">
+          <button class="btn alt" id="openAidPanel">Otvori vodiče</button>
+          <span class="chip">⛰️ Podsjetnici pri ruci</span>
+        </div>
+      </article>
+
+      <!-- Kartica: Kamera -->
+      <article class="tool-card" id="tool-camera">
+        <div class="eyebrow">Foto</div>
+        <h3>Pametna Kamera</h3>
+        <p>Stabilan kadar → blago pojačanje kontrasta/boje/oštrine → snimka (izvan mreže).</p>
+        <ul>
+          <li>Samookidanje kad se kadar umiri</li>
+          <li>Radi na HTTPS/localhost</li>
+          <li>Bez slanja na poslužitelj</li>
+        </ul>
+        <div class="btn-row">
+          <button class="btn" id="openCamPanel">Otvori alat</button>
+          <a class="btn ghost" href="tools/camera-auto-enhance.html">U novoj kartici</a>
+        </div>
+        <p class="hint">Privatnost: snimka ostaje u tvom pregledniku.</p>
+      </article>
+
+      <!-- Kartica: Kompas/GPX -->
+      <article class="tool-card" id="tool-arrow">
+        <div class="eyebrow">Orijentacija</div>
+        <h3>Pametni Kompas</h3>
+        <p>Oznake N/E/S/W rotiraju prema smjeru kretanja, crvena igla je fiksna i pokazuje <b>geografski sjever</b> (s deklinacijom). Kad poravnaš s N (±5°), plava strelica pokazuje najbližu točku GPX staze.</p>
+        <div class="btn-row">
+          <button class="btn" id="openArrowPanel">Otvori alat</button>
+          <button class="btn ghost" id="openPopupBtn" title="Iskočni prozor sa mini strelicom">Iskočni prozor</button>
+          <button class="btn ghost" id="closePopupBtn" title="Zatvori iskočni prozor" style="display:none">Zatvori iskočni prozor</button>
+        </div>
+        <p class="hint">iOS traži dopuštenje za “Motion &amp; Orientation”; radi na HTTPS-u.</p>
+      </article>
+
+      <!-- Kartica: Nebo -->
+      <article class="tool-card" id="tool-sky">
+        <div class="eyebrow">Noć</div>
+        <h3>Noćno nebo</h3>
+        <p>Prikaz svjetlijih zvijezda. Kad telefon uperiš prema gore, asterizmi se <b>naglašavaju i spajaju linijama</b>.</p>
+        <div class="btn-row">
+          <button class="btn" id="openSkyPanel">Otvori nebo</button>
+        </div>
+        <p class="hint">Za preciznije: Stellarium Mobile ili Sky Map.</p>
+      </article>
+
+      <!-- Kartica: Vrijeme -->
+      <article class="tool-card" id="tool-weather">
+        <div class="eyebrow">Meteo</div>
+        <h3>Vremenska prognoza</h3>
+        <p>Brza lokalna prognoza: temperatura, vjetar, oborina, UV.</p>
+        <div class="btn-row">
+          <button class="btn" id="openWeatherPanel">Otvori prognozu</button>
+        </div>
+        <p class="hint">Izvor: open-meteo.com (bez API ključa).</p>
+      </article>
+
+      <!-- Kartica: Flora/Fauna -->
+      <article class="tool-card" id="tool-bio">
+        <div class="eyebrow">Vodič za biljni i životinjski svijet</div>
+        <h3>Biljke i životinje (ručno prepoznavanje)</h3>
+        <p>Snimi fotku i usporedi s mini vodičem. (Za AI prepoznavanje preporuka: iNaturalist / Pl@ntNet.)</p>
+        <div class="btn-row">
+          <button class="btn" id="openBioPanel">Otvori vodič</button>
+        </div>
+        <p class="hint">Radi izvan mreže kao pomoć pri opažanju; na mreži može otvoriti iNaturalist.</p>
+      </article>
+
+      <!-- Kartica: Izvan mreže -->
+      <article class="tool-card" id="tool-offline">
+        <div class="eyebrow">Navigacija</div>
+        <h3>Vanmrežni dodaci</h3>
+        <p>Preuzmi regiju u OSMand/Organic Maps; GPX spremi lokalno.</p>
+        <div class="btn-row">
+          <button class="btn ghost" id="openOfflinePanel">Brzi savjeti</button>
+        </div>
+      </article>
+
+      <!-- Kartica: SOS -->
+      <article class="tool-card" id="tool-sos">
+        <div class="eyebrow">SOS</div>
+        <h3>SOS svijetlo i zviždaljka</h3>
+        <p>Glasan ton (••• — — — •••). Broj 112 je prioritet.</p>
+        <div class="btn-row">
+          <button class="btn alert" id="playSOS">Pokreni SOS</button>
+          <button class="btn ghost" id="stopSOS">Zaustavi</button>
+        </div>
+      </article>
+
+      <!-- Kartica: PeakCam (OSM vrhovi preko kamere) -->
+      <article class="tool-card" id="tool-peakcam">
+        <div class="eyebrow">AR</div>
+        <h3>PeakCam — vrhovi u kameri</h3>
+        <p>Uperi kameru prema horizontu: strelice i oznake imena vrhova (OSM) pojavljuju se u kadru.</p>
+        <ul>
+          <li>Potrebno: HTTPS + lokacija + orijentacija</li>
+          <li>Automatski dohvat vrhova (30 km) s Overpass/OSM</li>
+        </ul>
+        <div class="btn-row">
+          <button class="btn" id="openPeakCamPanel">Otvori PeakCam</button>
+        </div>
+        <p class="hint">Licenca podataka: © OpenStreetMap contributors (ODbL 1.0).</p>
+      </article>
+    </section>
+
+    <!-- =========================================================
+         PANEL: VODIČI
+         ========================================================= -->
+    <section id="panelAid" class="tool-panel" hidden>
+      <h4>Digitalna pomoć — vodiči za planinare</h4>
+      <!-- Uvodno pravilo i preporuka -->
+      <div class="chip" style="margin-bottom:12px">🥾 <b>Prvo i osnovno pravilo:</b> uvijek nosite komplet prve pomoći u ruksaku kada idete na planinarenje i pohađajte tečajeve prve pomoći. Samo tako možete pravovremeno i pravilno reagirati u situacijama kada je pomoć najpotrebnija.</div>
+      <div class="chip" style="margin-bottom:18px">ℹ️ <b>Raspitajte se u svom mjestu ili šire:</b> tečajevi prve pomoći često se organiziraju u sklopu planinarskih društava, gorskih službi spašavanja, Crvenog križa ili kroz edukacije koje provodi medicinsko osoblje. Sudjelovanjem stječete znanje i sigurnost za sebe i svoje suplaninare.</div>
+      <div class="two-col">
+        <!-- Lijevi stupac: vodiči (akordeon) -->
+        <div>
+          <div class="chip">ℹ️ Ovaj vodič ne zamjenjuje tečaj prve pomoći niti liječnički savjet. U hitnim slučajevima odmah nazovi 112.</div>
+          <div class="divider"></div>
+          <div class="aid-accordion" id="aidAcc">
+            <!-- 0. Prvi postupci -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🧭 Prvi postupci na mjestu nesreće</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Zaustavi se i procijeni sigurnost:</b> ne prilazi ako prijeti odron, klizav led, munje ili divlje životinje.</li>
+                  <li><b>Pozovi 112</b> čim procijeniš da je situacija ozbiljna.</li>
+                  <li><b>Zaštiti, pozovi, pruži pomoć:</b> osiguraj područje, označi stazu, pripremi orijentire (naziv staze, markacije, približne koordinate).</li>
+                  <li><b>Provjeri svijest i disanje:</b> razgovaraj, protresi rame; ako ne diše normalno, započni oživljavanje.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 1. Oživljavanje odrasle osobe -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🚑 Oživljavanje odrasle osobe</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Odmah pozovi 112.</b></li>
+                  <li><b>Masiraj srce</b> na sredini prsnog koša: 100–120 pritisaka u minuti, dubina 5–6 cm.</li>
+                  <li><b>Umjetno disanje</b> samo ako znaš i imaš masku.</li>
+                  <li><b>Razmjena pomagača</b> svake 2 minute ako vas je više.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 2. Gušenje -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🫁 Gušenje stranim tijelom</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li>Ako osoba <b>kašlje</b> – ohrabri kašalj.</li>
+                  <li>Ako <b>ne može disati</b> – 5 udaraca između lopatica, zatim 5 potisaka u trbuh; ponavljaj dok se dišni put ne oslobodi.</li>
+                  <li>Ako izgubi svijest – položi, pozovi 112 i započni masažu srca.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 3. Jako krvarenje -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🩸 Jako krvarenje</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Pritisni ranu</b> 10 minuta bez prekidanja.</li>
+                  <li>Ako promoči, dodaj preko – ne skidaj prvu gazu.</li>
+                  <li>Za udove: kompresivni zavoj ili turniket (zabilježi vrijeme).</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 4. Uganuće i prijelom -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🦴 Uganuće i prijelom</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Odmor, hlađenje, pritisak, podizanje</b> – kod uganuća.</li>
+                  <li><b>Sumnja na prijelom:</b> imobiliziraj u položaju u kojem se zatekne, toplinski zaštiti, pozovi 112.</li>
+                  <li><b>Ozljeda glave/kralježnice:</b> osoba neka miruje, podupri glavu, ne pomiči vrat.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 5. Hladnoća i smrzavanje -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🧊 Hladnoća i smrzavanje</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Blaga:</b> suha odjeća, slojevi, topli napitci (ne alkohol).</li>
+                  <li><b>Teža:</b> pospanost, usporen govor – nježno zagrijavanje, bez trljanja, pozovi 112.</li>
+                  <li><b>Smrzotine:</b> ne trljati, ne grijati plamenom; polako zagrijavati u mlakoj vodi ako neće opet smrznuti.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 6. Vrućina i dehidracija -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🌞 Vrućina i dehidracija</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Umor od vrućine:</b> hlad, rashlađivanje, male gutljaje vode.</li>
+                  <li><b>Toplinski udar:</b> visoka temperatura, smetenost – hitno rashladiti i zvati 112.</li>
+                  <li><b>Dehidracija:</b> tamni urin, vrtoglavica – češće male količine vode i sol.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 7. Visinska bolest -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">⛰️ Tegobe na visini</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li>Glavobolja, mučnina, umor – odmor i hidracija; ako se pogoršava, spusti se.</li>
+                  <li>Teško disanje, smetenost – hitno spuštanje i 112.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 8. Ugrizi i ubodi -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🐍 Ugrizi i ubodi</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Krpelj:</b> pincetom ravno van, prati kožu.</li>
+                  <li><b>Ubod pčele/ose:</b> hladiti, paziti na alergiju; ako teška reakcija – lijek i 112.</li>
+                  <li><b>Zmija:</b> mir, imobilizirati, bez rezanja/isisavanja, hitno u bolnicu.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 9. Rane i žuljevi -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🩹 Rane i žuljevi</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li>Isperi vodom, prekrij gazom.</li>
+                  <li>Žuljeve zaštiti flasterom; ne bušiti osim sterilno i nužno.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 10. Opekline i oči -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">👁️ Opekline i ozljede oka</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Oko:</b> ispiranje čistom vodom ili fiziološkom.</li>
+                  <li><b>Opekline:</b> hladiti vodom 20 min, skinuti nakit, sterilno prekriti, ne mazati mastima.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 11. Grmljavina -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">⚡ Grmljavina</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li>Silazi s grebena, ne stajati pod usamljena stabla.</li>
+                  <li>Čučni na izolaciji, stopala zajedno, ne ležati.</li>
+                  <li>Grupa se razmaka nekoliko metara.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 12. Hrana i voda -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">🥾 Voda i hrana</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li>Vodu prokuhati ili filtrirati.</li>
+                  <li>Ne jesti nepoznate bobice/gljive.</li>
+                  <li>Mučnina/proljev: odmor, lagana hrana, nadoknada tekućine i soli.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 13. Kronične bolesti -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">💊 Kronične bolesti u planini</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Šećerna bolest:</b> mjeri šećer, nosi glukozu; ako zbunjen ili bez svijesti – 112.</li>
+                  <li><b>Tlak/srce:</b> odmori, simptomi u prsima – odmah 112.</li>
+                  <li><b>Astma:</b> inhalator pri ruci, ako teško disanje – 112.</li>
+                  <li><b>Epilepsija:</b> zaštiti glavu, ne stavljaj ništa u usta, nakon napadaj okreni na bok, 112 ako traje dugo.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 14. Bol u prsima i moždani udar -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">❤️ Bol u prsima i moždani udar</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li><b>Bol u prsima:</b> miruj, odmah 112.</li>
+                  <li><b>Moždani udar:</b> asimetrija lica, slabost ruke/noge, teškoće govora – odmah 112.</li>
+                </ul>
+              </div>
+            </div>
+            <!-- 15. Signalizacija -->
+            <div class="aid-item">
+              <button class="aid-head btn ghost" style="width:100%;text-align:left">📢 Signalizacija i spašavanje</button>
+              <div class="aid-body" style="display:none">
+                <ul>
+                  <li>Ostani na vidljivom mjestu, koristi zviždaljku, svjetiljku, foliju.</li>
+                  <li>Daj jasne informacije: naziv staze, zadnja sigurna točka, broj osoba, ozljede.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="hint">Ovo su sažeti vodiči za laike. Uvijek poštuj upute hitnih službi i liječnika.</div>
+        </div>
+        <!-- Desni stupac: podsjetnici -->
+        <div>
+          <h4 style="margin-top:0">Brzi podsjetnici</h4>
+          <ul>
+            <li>U hitnome: nazovi 112 što ranije, opiši lokaciju i stanje.</li>
+            <li>Krvarenje: pritisak 10 min; dodaj preko.</li>
+            <li>Hladnoća: suho, slojevito, bez trljanja smrzotina.</li>
+            <li>Vrućina: hlad, rashlađivanje, male količine vode.</li>
+            <li>Zmija: mir, imobilizacija, bez rezanja, brzo u bolnicu.</li>
+            <li>Krpelj: pinceta ravno van, prati kožu.</li>
+            <li>Kronične bolesti: lijekovi pri ruci, obavijesti partnera.</li>
+          </ul>
+          <h4 style="margin-top:12px">Mali planinarski komplet prve pomoći</h4>
+          <ul>
+            <li>Elastični zavoj, sterilne gaze, flasteri i gel flasteri za žuljeve.</li>
+            <li>Fiziološka otopina ili čista voda za ispiranje, dezinfekcijske maramice.</li>
+            <li>Rukavice, trokutna marama, škare.</li>
+            <li>Termo folija, zviždaljka, čeona svjetiljka, marker i notes.</li>
+            <li>Osobni lijekovi (inhalator, glukoza, tablete koje je propisao liječnik).</li>
+          </ul>
+          <div class="chip" style="margin-top:8px">📞 112 — hitna pomoć i spašavanje</div>
+          <div class="chip" style="margin-top:8px">📍 Uvijek nosi osnovne orijentire: naziv staze, markacije, približne koordinate.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PANEL: KAMERA
+         ========================================================= -->
+    <section id="panelCamera" class="tool-panel" hidden>
+      <h4>Pejzažno snimanje (ugrađeno)</h4>
+      <div class="camera-wrap">
+        <video id="camVideo" autoplay playsinline></video>
+        <canvas id="camCanvas"></canvas>
+        <div class="toolbar">
+          <div id="camDot" class="dot" title="Pokazatelj mirnoće"></div>
+          <div id="camMsg">Tražim stabilnost…</div>
+          <button id="camManual" class="btn ghost">Snimi sada</button>
+          <button id="camAuto" class="btn">Auto snimanje: UKLJ.</button>
+          <button id="camClose" class="btn ghost">Zatvori</button>
+        </div>
+        <div class="result">
+          <img id="camThumb" alt="Pregled snimljene fotografije">
+          <div class="hint">Radi samo na HTTPS/localhost. Snimka ostaje lokalno.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PANEL: KOMPAS + GPX + DEKLINACIJA + LIBELA
+         ========================================================= -->
+    <section id="panelArrow" class="tool-panel" hidden>
+      <h4>Pametni Kompas</h4>
+      <div class="compass-wrap">
+        <div class="compass-row">
+          <!-- Kompas -->
+          <div class="compass" aria-label="Kompas">
+            <div class="compass-ring" id="compassRing">
+              <span class="mark n">N</span>
+              <span class="mark e">E</span>
+              <span class="mark s">S</span>
+              <span class="mark w">W</span>
+              <div class="ticks"></div>
+            </div>
+            <div class="north-needle" id="northNeedle">
+              <div class="tip"></div>
+            </div>
+            <!-- Strelica koja NAVODI (skrivena dok nema GPX ili si na stazi) -->
+            <svg id="targetArrow" width="72" height="72" viewBox="0 0 72 72" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(0deg); display:none; z-index:5;">
+              <polygon points="36,6 46,30 36,26 26,30" fill="#e53935"></polygon>
+              <rect x="33" y="26" width="6" height="28" rx="3" fill="#e53935"></rect>
+            </svg>
+            <!-- Zelena kvačica kad si NA stazi -->
+            <div id="onPathOK" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:none; z-index:5;">
+              <svg width="64" height="64" viewBox="0 0 64 64" aria-label="Na stazi">
+                <circle cx="32" cy="32" r="28" fill="#2e7d32"></circle>
+                <polyline points="20,33 28,41 46,23" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              </svg>
+            </div>
+            <div class="tick"></div>
+            <div id="arrow3d" class="arrow3d" style="opacity:0"></div>
+          </div>
+          <!-- Libela -->
+          <div class="level-wrap" aria-label="Libela">
+            <div class="level-ring" id="levelRing">
+              <div class="lvl-cross lvl-h"></div>
+              <div class="lvl-cross lvl-v"></div>
+              <div class="level-bubble" id="levelBubble"></div>
+            </div>
+            <div class="level-readout">
+              <span> ↔️ : <b id="pitchDeg">0.0°</b></span>
+              <span> ↕️ : <b id="rollDeg">0.0°</b></span>
+            </div>
+          </div>
+          <div class="hint">N/E/S/W su na rotirajućem prstenu, crvena igla je fiksna. <br> Ako je igla poravnata s N (±5°), plava strelica pokazuje najbližu točku GPX staze.</div>
+        </div>
+        <div class="divider"></div>
+        <!-- GPX Učitavanje -->
+        <div class="compass-row">
+          <div class="field">
+            <label for="gpxInput">GPX datoteka:</label>
+            <input id="gpxInput" type="file" accept=".gpx,application/gpx+xml">
+            <button class="btn ghost" id="loadGpxBtn">Učitaj</button>
+          </div>
+          <div class="field">
+            <label for="gpxUrl">GPX URL:</label>
+            <input id="gpxUrl" type="url" placeholder="https://…/ruta.gpx" style="width:260px">
+            <button class="btn ghost" id="loadUrlBtn">Učitaj URL</button>
+          </div>
+          <div class="field">
+            <label for="alertMeters">Prag (m) za zvuk:</label>
+            <input id="alertMeters" type="number" min="5" step="5" value="30">
+            <button class="btn" id="toggleTrackBtn">Pokreni praćenje</button>
+          </div>
+        </div>
+        <div class="status-line" style="margin-top:6px">
+          <span class="chip" id="trackStatusPill">GPX: —</span>
+          <span class="chip" id="onTrackChip">🧭 status: —</span>
+          <span class="chip" id="offDistChip">↔︎ udaljenost: —</span>
+        </div>
+        <div class="divider"></div>
+        <!-- Povratna ruta (Backtrack) -->
+        <div class="compass-row">
+          <div class="btn-row">
+            <button class="btn ghost" id="btStart">Započni povratak</button>
+            <button class="btn ghost" id="btStop">Zaustavi povratak</button>
+          </div>
+          <span class="chip" id="btStatus">↩︎ Povratak: isključen</span>
+        </div>
+        <div class="divider"></div>
+        <!-- Deklinacija i dozvole -->
+        <div class="compass-row">
+          <div class="chip"><label><input type="checkbox" id="useTrueNorth" checked> Geografski sjever</label></div>
+          <div class="chip"><label><input type="checkbox" id="autoDecl" checked> Auto deklinacija (izvan mreže + GPS)</label></div>
+          <div class="chip">Deklinacija: <input id="declInput" type="number" step="0.1" style="width:80px">°</div>
+          <button class="btn ghost" id="declHelp">Upute</button>
+          <button class="btn ghost" id="iosPermBtn" style="margin-left:auto">Omogući kompas (iOS)</button>
+        </div>
+        <p class="hint" style="margin-top:6px">Možeš dodati parametar: <code>?gpx=https://…/ruta.gpx</code></p>
+        <div><button class="btn" id="arrowClose">Zatvori</button></div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PANEL: NOĆNO NEBO (MINI PLANISFERA)
+         ========================================================= -->
+    <section id="panelSky" class="tool-panel" hidden>
+      <h4>Noćno nebo — Orion i Veliki medvjed (beta)</h4>
+      <canvas id="skyCanvas" width="520" height="300"></canvas>
+      <div class="sky-legend" id="skyLegend">Pomakni telefon: prikaz prati orijentaciju (azimut). <br>Kad telefon uperiš prema gore (pitch &le; -60°), istaknut ćemo linije asterizama i nazive zvijezda.</div>
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button class="btn" id="skyStart">Uključi senzore</button>
+        <button class="btn ghost" id="skyNow">Centriraj na sjever</button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PANEL: PROGNOZA VREMENA (OPEN-METEO)
+         ========================================================= -->
+    <section id="panelWeather" class="tool-panel" hidden>
+      <h4>Meteorološka prognoza — sljedeća 3 dana</h4>
+      <div class="btn-row">
+        <button class="btn" id="wxFetch">Dohvati prema lokaciji</button>
+        <input id="wxLat" type="number" step="0.0001" placeholder="Geografska širina" style="width:160px">
+        <input id="wxLon" type="number" step="0.0001" placeholder="Geografska dužina" style="width:160px">
+        <button class="btn ghost" id="wxFetchManual">Dohvati po koordinatama</button>
+      </div>
+      <div class="divider"></div>
+      <div id="wxCity" class="chip">Lokacija: —</div>
+      <div class="weather-grid" id="wxGrid"></div>
+    </section>
+
+    <!-- =========================================================
+         PANEL: BILJKE / ŽIVOTINJE (RUČNO)
+         ========================================================= -->
+    <section id="panelBio" class="tool-panel" hidden>
+      <h4>Terenski vodič — Biljke i životinje (pomoć izvan mreže)</h4>
+      <div class="id-grid">
+        <div class="id-row">
+          <button class="btn" id="bioOpenCam">Otvori kameru</button>
+          <button class="btn ghost" id="bioSnap" disabled>Snimi</button>
+          <button class="btn ghost" id="bioCloseCam" disabled>Zatvori</button>
+          <button class="btn alt" id="bioINat">iNaturalist (na mreži)</button>
+        </div>
+        <video id="bioVideo" autoplay playsinline style="width:100%;max-width:420px;border:1px solid var(--line);border-radius:10px;display:none"></video>
+        <canvas id="bioCanvas" width="640" height="480" style="display:none"></canvas>
+        <img id="bioPhoto" alt="Snimka za usporedbu" style="max-width:420px;border:1px solid var(--line);border-radius:10px;display:none">
+        <div class="divider"></div>
+        <div class="hint">Brzi vodič (općenito):</div>
+        <div class="id-row">
+          <span class="tag">Listovi: suprotni ili naizmjenični?</span>
+          <span class="tag">Rub lista: cijeli / nazubljen</span>
+          <span class="tag">Cvijet: broj latica (4, 5, 6…)</span>
+          <span class="tag">Plod: bobica / komuška / oraščić</span>
+          <span class="tag">Stanište: livada / šuma / voda</span>
+          <span class="tag">Životinja: tragovi — broj prstiju</span>
+          <span class="tag">Perje: oblik repa i kljuna</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PANEL: SAVJETI IZVAN MREŽE
+         ========================================================= -->
+    <section id="panelOffline" class="tool-panel" hidden>
+      <h4>Savjeti izvan mreže</h4>
+      <ul>
+        <li><b>Organic Maps</b> ili <b>OSMand</b> — preuzmi regiju za korištenje bez interneta.</li>
+        <li>GPX spremi lokalno i otvori iz aplikacije (bez interneta).</li>
+        <li>Uključi “Zrakoplovni način” + GPS radi štednje baterije.</li>
+      </ul>
+      <button class="btn ghost" onclick="this.closest('section').hidden=true">Zatvori</button>
+    </section>
+
+    <!-- =========================================================
+         PANEL: PEAKCAM (AR vrhovi preko kamere)
+         ========================================================= -->
+    <section id="panelPeakCam" class="tool-panel" hidden>
+      <h4>PeakCam — prepoznavanje vrhova (OSM)</h4>
+      <div class="pc-toolbar">
+        <button id="pc-start" class="btn">Pokreni kameru</button>
+        <button id="pc-stop" class="btn ghost">Zatvori</button>
+        <span class="chip" id="pc-status">Status: spremno</span>
+      </div>
+      <div class="pc-wrap">
+        <div class="pc-stage">
+          <video id="pc-video" autoplay playsinline muted></video>
+          <canvas id="pc-overlay"></canvas>
+          <div id="pc-hint" class="pc-hint">Dopusti pristup kameri, lokaciji i orijentaciji.</div>
+        </div>
+        <div class="pc-legend">
+          <label class="pc-inline">H FOV
+            <input id="pc-hfov" type="range" min="40" max="90" value="60">
+            <span id="pc-hfov-val">60°</span>
+          </label>
+          <label class="pc-inline">V FOV
+            <input id="pc-vfov" type="range" min="30" max="70" value="40">
+            <span id="pc-vfov-val">40°</span>
+          </label>
+          <label class="pc-inline">Kompas offset
+            <input id="pc-hofs" type="range" min="-20" max="20" value="0">
+            <span id="pc-hofs-val">0°</span>
+          </label>
+        </div>
+        <div class="pc-attrib">Podaci o vrhovima: © <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap contributors</a> — licenca <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL 1.0</a>.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       MINI HUD STRELICA + GPS BANNER + DEKLINACIJA MODAL
+       ========================================================= -->
+  <div id="miniCompass" aria-label="Mini strelica" hidden>
+    <div class="mini-ring"><div id="miniNeedle" class="mini-needle"></div></div>
+    <div class="mini-info"><span id="miniMeters">— m</span></div>
+  </div>
+
+  <div id="gpsBanner" class="banner" style="display:none">
+    <div class="msg">📡 Nema GPS signala — čekam fiks. Navigacija ograničena.</div>
+    <div class="actions"><button class="btn ghost" id="bannerHide">Sakrij</button></div>
+  </div>
+
+  <div id="declModalBack" class="modal-back">
+    <div class="modal" role="dialog" aria-label="Upute za deklinaciju">
+      <h5>Deklinacija — kratke upute</h5>
+      <p><b>Geografski sjever</b> je prema Zemljinoj osi. <b>Magnetski sjever</b> je gdje pokazuje magnetometar. Razlika je <b>deklinacija</b> (E = dodaj +°, W = oduzmi °).</p>
+      <p>Uključena je <b>Auto deklinacija</b> (procjena za Balkan izvan mreže + GPS korekcija). Po želji brojku promijeni ručno.</p>
+      <div class="actions"><button class="btn ghost" id="declClose">Zatvori</button></div>
+    </div>
+  </div>
+
+  <!-- FOOTER + BACK TO TOP -->
+  <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <footer id="footer">
+    <div class="footer-icons">
+      <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
+        </svg>
+      </a>
+      <a href="mailto:mountainadventures1717@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </a>
+    </div>
+    © Mountain Adventures. All rights reserved.
+  </footer>
+
+  <script src="season.js"></script>
+
+  <!-- =========================================================       SCRIPTS — LOGIKA (vidljive poruke su na HR)       ========================================================= -->
+  <script>
+    
+    /* ---------------------------------------------------------
+       #10.1 NAV / JEZIK / MENI / BACK-TO-TOP
+       --------------------------------------------------------- */
+    const langToggle = document.getElementById('language-toggle');
+    const searchInput = document.getElementById('search');
+    const menuToggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('menu');
+    const backToTopBtn = document.getElementById('backToTop');
+    const footer = document.getElementById('footer');
+    function getInitialLang() {
+      const urlLang = new URLSearchParams(location.search).get('lang');
+      if (['hr', 'en'].includes(urlLang)) return urlLang;
+      try { const s = localStorage.getItem('preferredLang'); if (['hr','en'].includes(s)) return s; } catch(e){}
+      return 'hr';
+    }
+    function applyLanguage(lang) {
+      try { localStorage.setItem('preferredLang', lang); } catch(e){}
+      const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState({}, '', u.toString());
+      document.documentElement.lang = lang;
+      if (langToggle) {
+        langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+        langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+        langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
+      }
+      if (searchInput) searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
+      document.querySelectorAll('[data-hr]').forEach(el => {
+        const v = el.getAttribute('data-' + lang);
+        if (v == null) return;
+        if (v.includes('<')) el.innerHTML = v; else el.textContent = v;
+      });
+      document.querySelectorAll('.menu-overlay a').forEach(a => {
+        const v = a.getAttribute('data-' + lang); if (v != null) a.textContent = v;
+      });
+    }
+    let currentLang = getInitialLang();
+    applyLanguage(currentLang);
+    if (langToggle) langToggle.addEventListener('click', () => { currentLang = currentLang === 'hr' ? 'en' : 'hr'; applyLanguage(currentLang); });
+    menuToggle.addEventListener('click', () => { menu.classList.toggle('open'); });
+    window.addEventListener('click', (e) => { if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') menu.classList.remove('open'); });
+    document.querySelectorAll('.menu-overlay a').forEach(l => l.addEventListener('click', () => menu.classList.remove('open')));
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY; const footerTop = footer.getBoundingClientRect().top + window.scrollY; const h = window.innerHeight;
+      backToTopBtn.style.display = y > 300 ? 'flex' : 'none';
+      backToTopBtn.style.bottom = (y + h > footerTop) ? ((y + h - footerTop) + 60) + 'px' : '30px';
+    });
+    backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    document.addEventListener('DOMContentLoaded', () => {
+      const s = localStorage.getItem('activeSeason');
+      if (s) {
+        setTimeout(() => {
+          if (s === 'winter') startWinterEffect(true);
+          else if (s === 'summer') startSummerEffect(true);
+          else if (s === 'spring') startSpringEffect(true);
+          else if (s === 'autumn') startAutumnEffect(true);
+        }, 10000);
+      }
+      fetch('season.html').then(r => r.text()).then(html => {
+        const ph = document.getElementById('season-placeholder'); if (ph) ph.innerHTML = html;
+        if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+      }).catch(() => {});
+    });
+    
+    /* =========================================================
+       PWA SERVICE WORKER
+       ========================================================= */
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    }
+
+    
