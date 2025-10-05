@@ -2810,6 +2810,73 @@ document.addEventListener('visibilitychange', ()=>{
     try { stopCam?.(); }catch{}
   }
 });
+  </script>
+
+  <script>
+/* ===== Minimalni "router" za panele (drop-in) ===== */
+(function () {
+  // sigurni selektori (da skripta ne puca i kad nešto fali)
+  const qs  = (sel, root = document) => root.querySelector(sel);
+  const qsa = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  // mapiranje: gumb -> panel
+  const wires = [
+    ['#openAidPanel',     '#panelAid'],
+    ['#openCamPanel',     '#panelCamera'],
+    ['#openArrowPanel',   '#panelArrow'],
+    ['#openSkyPanel',     '#panelSky'],
+    ['#openWeatherPanel', '#panelWeather'],
+    ['#openBioPanel',     '#panelBio'],
+    ['#openOfflinePanel', '#panelOffline'],
+    ['#openPeakCamPanel', '#panelPeakCam'],
+  ];
+
+  // skupi sve panele
+  const panels = qsa('section.tool-panel');
+
+  function closeAllPanels() {
+    panels.forEach(p => { if (p) p.hidden = true; });
+  }
+
+  function openPanelById(idSel) {
+    const tgt = qs(idSel);
+    if (!tgt) return;
+    panels.forEach(p => { p.hidden = p !== tgt; });
+    // fino skrolaj do vrha panela (imaš već CSS scroll-margin-top)
+    tgt.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Spoji gumbe na panele
+  wires.forEach(([btnSel, panelSel]) => {
+    const btn = qs(btnSel);
+    if (btn) btn.addEventListener('click', () => openPanelById(panelSel));
+  });
+
+  // “Zatvori” gumbi u nekim panelima (ako postoje)
+  const closeBindings = [
+    ['#camClose',   '#panelCamera'],
+    ['#arrowClose', '#panelArrow'],
+    ['#pc-stop',    '#panelPeakCam'],
+  ];
+  closeBindings.forEach(([btnSel, panelSel]) => {
+    const btn = qs(btnSel), panel = qs(panelSel);
+    if (btn && panel) btn.addEventListener('click', () => { panel.hidden = true; });
+  });
+
+  // ESC zatvara sve
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAllPanels();
+  });
+
+  // opcionalno: zatvori panel kad klikneš izvan njega (na prazno područje main-a)
+  const main = qs('main');
+  if (main) {
+    main.addEventListener('click', (e) => {
+      // ako si kliknuo baš na main, a ne na sadržaj panela
+      if (e.target === main) closeAllPanels();
+    });
+  }
+})();
     
   </script>
 
