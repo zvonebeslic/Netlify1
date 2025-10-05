@@ -1349,75 +1349,110 @@
    HELPERI / PANELI / UI
    
  ========================================================= */
-const qs = s => document.querySelector(s);
-const hide = el => { if(!el) return; el.hidden = true; };
 
-  // === Globalni helperi ===
-  function normalize(d) {
-    d = d % 360;
-    return d < 0 ? d + 360 : d;
-  }
-    
-const panelAid=qs('#panelAid'),
-      panelCamera=qs('#panelCamera'),
-      panelPeakCam=qs('#panelPeakCam'),
-      panelArrow=qs('#panelArrow'),
-      panelSky=qs('#panelSky'),
-      panelWeather=qs('#panelWeather'),
-      panelBio=qs('#panelBio'),
-      panelOffline=qs('#panelOffline');
+// Sigurni helperi
+const qs  = s => document.querySelector(s);
+const qsa = s => document.querySelectorAll(s);
+const hide = el => { if (el) el.hidden = true; };
+const safeCall = fn => { try { typeof fn === 'function' && fn(); } catch {} };
+const safeAsync = async fn => { try { if (typeof fn === 'function') await fn(); } catch {} };
+
+// Normalizacija kuta (ostaje tvoja)
+function normalize(d){ d = d % 360; return d < 0 ? d + 360 : d; }
+
+// Panely (mogu biti null na nekim stranicama)
+const panelAid      = qs('#panelAid');
+const panelCamera   = qs('#panelCamera');
+const panelPeakCam  = qs('#panelPeakCam');
+const panelArrow    = qs('#panelArrow');
+const panelSky      = qs('#panelSky');
+const panelWeather  = qs('#panelWeather');
+const panelBio      = qs('#panelBio');
+const panelOffline  = qs('#panelOffline');
+
+// Lista postojećih panela (filtriramo null)
+const PANELS = [panelAid, panelCamera, panelPeakCam, panelArrow, panelSky, panelWeather, panelBio, panelOffline].filter(Boolean);
+
+// Gasi aktivne module (provjeri postojanje i vidljivost)
+function stopActiveModules(){
+  if (panelCamera && !panelCamera.hidden)  safeCall(() => window.stopCam?.());
+  if (panelPeakCam && !panelPeakCam.hidden) safeCall(() => window.__peakcam?.stop?.());
+  if (panelArrow && !panelArrow.hidden)     safeCall(() => window.__arrow?.stop?.());
+  if (panelSky && !panelSky.hidden)         safeCall(() => window.__sky?.stop?.());
+}
+
+// Prikaži samo traženi panel
 function showOnly(next){
   if (!next) return;
-  if (!next.hidden) return; // već je otvoren
-  // ugasi aktivne module panela koje napuštamo
-  if (!panelCamera.hidden)  { try{ stopCam?.(); }catch{} }
-  if (!panelPeakCam.hidden) { try{ window.__peakcam?.stop?.(); }catch{} }
-  if (!panelArrow.hidden)   { try{ window.__arrow?.stop?.(); }catch{} }
-  if (!panelSky.hidden) { try{ window.__sky?.stop?.(); }catch{} }
-  // sakrij sve, prikaži samo traženi
-  [panelAid,panelCamera,panelPeakCam,panelArrow,panelSky,panelWeather,panelBio,panelOffline].forEach(hide);
+  if (!next.hidden) return; // već otvoren
+
+  // ugasi aktivne module panela koje napuštamo (uz guardove)
+  stopActiveModules();
+
+  // sakrij sve postojeće panele, prikaži samo traženi
+  PANELS.forEach(hide);
   next.hidden = false;
-  next.scrollIntoView({ behavior:'smooth', block:'start' });
+
+  // skrolanje (sigurno)
+  try { next.scrollIntoView({ behavior:'smooth', block:'start' }); } catch {}
 }
-// Klikovi – svi sad koriste showOnly()
+
+// Klikovi – svi sad koriste showOnly() + guardovi za funkcije
 qs('#openAidPanel')    ?.addEventListener('click', () => showOnly(panelAid));
-qs('#openCamPanel')    ?.addEventListener('click', async () => { showOnly(panelCamera); await startCam(); });
-qs('#openArrowPanel')  ?.addEventListener('click', () => {
-  try { window.__peakcam?.stop?.(); } catch {}
-  showOnly(panelArrow);
-  openArrow();
+
+qs('#openCamPanel')    ?.addEventListener('click', async () => {
+  showOnly(panelCamera);
+  await safeAsync(window.startCam); // umjesto await startCam();
 });
+
+qs('#openArrowPanel')  ?.addEventListener('click', () => {
+  // gašenje peakcama ako radi
+  safeCall(() => window.__peakcam?.stop?.());
+  showOnly(panelArrow);
+  safeCall(() => window.openArrow?.()); // ako openArrow nije definiran, neće puknuti
+});
+
 qs('#openSkyPanel')    ?.addEventListener('click', () => showOnly(panelSky));
 qs('#openWeatherPanel')?.addEventListener('click', () => showOnly(panelWeather));
 qs('#openBioPanel')    ?.addEventListener('click', () => showOnly(panelBio));
 qs('#openOfflinePanel')?.addEventListener('click', () => showOnly(panelOffline));
-// PeakCam: otvori panel + start (prije starta ugasi kompas)
+
+// PeakCam: otvaranje + start (prije starta ugasi kompas)
 qs('#openPeakCamPanel')?.addEventListener('click', () => {
-  try { window.__arrow?.stop?.(); } catch {}
+  safeCall(() => window.__arrow?.stop?.());
   showOnly(panelPeakCam);
   if (window.__peakcam?.start) { window.__peakcam.start(); }
   else { const s = qs('#pc-status'); if (s) s.textContent = 'Status: modul nije učitan'; }
 });
+
 // PeakCam: lokalni start/stop gumbi
-qs('#pc-start')?.addEventListener('click', () => { try{ window.__arrow?.stop?.(); }catch{} window.__peakcam?.start?.(); });
-qs('#pc-stop') ?.addEventListener('click', () => {
-  try { window.__peakcam?.stop?.(); } catch {}
-  hide(panelPeakCam); // konzistentno s ostalim panelima
+qs('#pc-start')?.addEventListener('click', () => {
+  safeCall(() => window.__arrow?.stop?.());
+  safeCall(() => window.__peakcam?.start?.());
 });
+
+qs('#pc-stop') ?.addEventListener('click', () => {
+  safeCall(() => window.__peakcam?.stop?.());
+  hide(panelPeakCam); // konzistentno s ostalim panelima
+})
+    
 /* =========================================================
    AKORDEON VODIČ
    
  ========================================================= */
 (function(){
-  const acc=qs('#aidAcc'); if(!acc) return;
+  const acc = qs('#aidAcc');
+  if (!acc) return;
   acc.querySelectorAll('.aid-head').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      const body=btn.parentElement.querySelector('.aid-body');
-      const open=btn.classList.toggle('open');
-      body.style.display=open?'block':'none';
+      const body = btn.parentElement.querySelector('.aid-body');
+      if (!body) return; // guard
+      const open = btn.classList.toggle('open');
+      body.style.display = open ? 'block' : 'none';
     });
   });
 })();
+    
 /*
  =========================================================
    KAMERA — AUTO STABILNOST I CAPTURE
