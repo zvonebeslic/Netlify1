@@ -2540,25 +2540,26 @@ qs('#playSOS')?.addEventListener('click', playSOS);
 qs('#stopSOS')?.addEventListener('click', stopSOS);
                       
 
+<script>
 /* =========================================================
    PEAK CAM (AR OSM Vrhovi) — KAMERA + SENZORI + OSM
    ========================================================= */
 (function(){
   // --- DOM ---
-  const panel   = document.getElementById('panelPeakCam');
-  const video   = document.getElementById('pc-video');
-  const overlay = document.getElementById('pc-overlay');
-  const ctx     = overlay?.getContext?.('2d');
-  const hint    = document.getElementById('pc-hint');
-  const statusEl= document.getElementById('pc-status');
-  const btnStart= document.getElementById('pc-start');
-  const btnStop = document.getElementById('pc-stop');
-  const hfovInp = document.getElementById('pc-hfov');
-  const vfovInp = document.getElementById('pc-vfov');
-  const hofsInp = document.getElementById('pc-hofs');
-  const hfovVal = document.getElementById('pc-hfov-val');
-  const vfovVal = document.getElementById('pc-vfov-val');
-  const hofsVal = document.getElementById('pc-hofs-val');
+  const panel    = document.getElementById('panelPeakCam');
+  const video    = document.getElementById('pc-video');
+  const overlay  = document.getElementById('pc-overlay');
+  const ctx      = overlay?.getContext?.('2d');
+  const hint     = document.getElementById('pc-hint');
+  const statusEl = document.getElementById('pc-status');
+  const btnStart = document.getElementById('pc-start');
+  const btnStop  = document.getElementById('pc-stop');
+  const hfovInp  = document.getElementById('pc-hfov');
+  const vfovInp  = document.getElementById('pc-vfov');
+  const hofsInp  = document.getElementById('pc-hofs');
+  const hfovVal  = document.getElementById('pc-hfov-val');
+  const vfovVal  = document.getElementById('pc-vfov-val');
+  const hofsVal  = document.getElementById('pc-hofs-val');
 
   // --- STATE ---
   const state = {
@@ -2575,27 +2576,58 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
   function hideHint(){ if(hint) hint.style.display='none'; }
 
   // --- CAMERA ---
+  let resizeHandler = null;
+
+  function setupOverlaySizeWithDPR() {
+    if (!video || !overlay) return;
+    const rect = video.getBoundingClientRect();
+    const cssW = Math.max(2, Math.round(rect.width));
+    const cssH = Math.max(2, Math.round(rect.height));
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+
+    overlay.width  = Math.floor(cssW * dpr);
+    overlay.height = Math.floor(cssH * dpr);
+    overlay.style.width  = cssW + 'px';
+    overlay.style.height = cssH + 'px';
+
+    const c = overlay.getContext('2d');
+    if (c) {
+      c.setTransform(1,0,0,1,0,0);
+      c.scale(dpr, dpr); // crtamo u CSS koordinatama; skala brine za oštrinu
+    }
+  }
+
   async function startCamera(){
     if(state.stream) return;
     setStatus('pokrećem kameru…');
     const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }, audio:false });
-    state.stream = stream; video.srcObject = stream; await video.play();
+    state.stream = stream;
+    video.srcObject = stream;
+    await video.play();
 
-    const resize = ()=>{
-      const rect = video.getBoundingClientRect();
-      overlay.width  = Math.max(2, Math.round(rect.width));
-      overlay.height = Math.max(2, Math.round(rect.height));
-    };
-    resize(); setTimeout(resize, 150);
-    window.addEventListener('resize', resize, {passive:true});
+    setupOverlaySizeWithDPR();
+    setTimeout(setupOverlaySizeWithDPR, 150);
+
+    if (!resizeHandler) {
+      resizeHandler = ()=> setupOverlaySizeWithDPR();
+      window.addEventListener('resize', resizeHandler, {passive:true});
+      window.addEventListener('orientationchange', resizeHandler, {passive:true});
+    }
     setStatus('kamera radi');
   }
+
   function stopCamera(){
     try{
       video.pause();
       state.stream?.getTracks?.().forEach(t=>t.stop());
       state.stream=null; video.srcObject=null;
     }catch(_){}
+
+    if (resizeHandler) {
+      try { window.removeEventListener('resize', resizeHandler); } catch {}
+      try { window.removeEventListener('orientationchange', resizeHandler); } catch {}
+      resizeHandler = null;
+    }
   }
 
   // --- ORIENTATION ---
@@ -2628,7 +2660,9 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
       activeOriEvent = 'deviceorientation';
     }
     window.addEventListener('orientationchange', ()=>{
-      if(state.heading!=null){ applyHeading(state.heading, false); }
+      if (typeof state.heading === 'number') {
+        applyHeading(state.heading, false);
+      }
     }, {passive:true});
   }
   function disableOrientation(){
@@ -2651,7 +2685,7 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
   }
 
   // --- OSM PEAKS (Overpass) ---
-  async function fetchPeaks(lat, lon, radius=10000){  // smanjeno na 10 km da bude preglednije
+  async function fetchPeaks(lat, lon, radius=10000){ // 10 km
     const q = `
       [out:json][timeout:20];
       (
@@ -2719,7 +2753,9 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
   // --- DRAW LOOP ---
   function draw(){
     if(!ctx || !overlay) return;
-    const w = overlay.width, h = overlay.height;
+    const w = overlay.width / (window.devicePixelRatio||1);
+    const h = overlay.height / (window.devicePixelRatio||1);
+
     ctx.clearRect(0,0,w,h);
     ctx.strokeStyle = 'rgba(255,255,255,0.12)';
     ctx.beginPath(); ctx.moveTo(0, h*0.52); ctx.lineTo(w, h*0.52); ctx.stroke();
@@ -2730,7 +2766,9 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
       ctx.font = '12px Montserrat, system-ui, sans-serif'; ctx.textBaseline='bottom';
       for(const p of state.peaks){
         const P = projectPeak(p, w, h); if(!P) continue;
-        ctx.fillStyle = 'rgba(58,160,255,.95)'; ctx.beginPath(); ctx.arc(P.x, P.y, 3, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = 'rgba(58,160,255,.95)';
+        ctx.beginPath(); ctx.arc(P.x, P.y, 3, 0, Math.PI*2); ctx.fill();
+
         const label = `${p.name} · ${(P.dist/1000).toFixed(1)} km`;
         const tw = ctx.measureText(label).width + 10; const lh = 18;
         const lx = clamp(P.x - tw/2, 6, w - tw - 6); const ly = Math.max(18, P.y - 10);
@@ -2763,6 +2801,7 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
       showHint('Provjeri dozvole za kameru / lokaciju / orijentaciju.');
     }
   }
+
   function stop(){
     if (!state.running) { stopCamera(); disableOrientation(); return; }
     state.running=false;
@@ -2831,7 +2870,15 @@ window.suspendAllTools = function suspendAllTools() {
     if (!tgt) return;
     document.querySelectorAll('section.tool-panel').forEach(p => p.hidden = (p !== tgt));
     try { tgt.scrollIntoView({behavior:'smooth', block:'start'}); } catch {}
+
+    // specifične akcije po panelu:
+    if (sel === '#panelArrow') {
+      startCompassSensors?.();
+    } else if (sel === '#panelPeakCam') {
+      window.__peakcam?.start?.();
+    }
   };
+
   // Ako si već imao router, prespojit ćemo gumbe na ovu verziju:
   [
     ['#openAidPanel',     '#panelAid'],
@@ -2853,7 +2900,6 @@ window.suspendAllTools = function suspendAllTools() {
 
 <script>
 /* --- GPX optimizacija: simplify + throttle onPos --- */
-
 /* 1) Pojednostavi trag po udaljenosti (O(n)) */
 function simplifyTrackByDistance(pts, minStepM=8){
   if (!Array.isArray(pts) || pts.length < 3) return pts || [];
@@ -2861,13 +2907,12 @@ function simplifyTrackByDistance(pts, minStepM=8){
   let last = pts[0];
   for (let i=1;i<pts.length;i++){
     const p = pts[i];
-    const d = haversine(last.lat,last.lon,p.lat,p.lon);
+    const d = haversine(last.lat,last.lon,p.lat,p.lon); // koristi globalni haversine
     if (d >= minStepM){ out.push(p); last = p; }
   }
   if (out[out.length-1] !== pts[pts.length-1]) out.push(pts[pts.length-1]);
   return out;
 }
-
 /* 2) Adaptivni korak ovisno o veličini traga */
 function adaptMinStepMeters(n){
   if (n <= 1500)   return 6;
@@ -2875,10 +2920,8 @@ function adaptMinStepMeters(n){
   if (n <= 15000)  return 20;
   return 35;
 }
-
 /* 3) Wrap oko tvog afterGpxLoaded: simplificiraj pa proslijedi */
 const __orig_afterGpxLoaded = (typeof afterGpxLoaded === 'function') ? afterGpxLoaded : null;
-
 function afterGpxLoaded(label){
   try{
     if (Array.isArray(gpxTrack) && gpxTrack.length > 2){
@@ -2887,11 +2930,9 @@ function afterGpxLoaded(label){
       label = `${label} • simpl: ${gpxTrack.length} točaka`;
     }
   }catch(e){ console.warn('GPX simplify error:', e); }
-
   if (__orig_afterGpxLoaded) {
     return __orig_afterGpxLoaded(label);
   }
-
   /* fallback ako iz nekog razloga original ne postoji */
   if (!gpxTrack || gpxTrack.length < 2) {
     trackStatusPill && (trackStatusPill.textContent = 'GPX: premalo točaka');
@@ -2906,7 +2947,6 @@ function afterGpxLoaded(label){
   setTimeout(()=> toggleTrackBtn?.classList.remove('alt'), 1400);
   setNavState && setNavState(NAV.NO_TRACK);
 }
-
 /* 4) Throttle onPos (spriječi “smrzavanje” na slabijim uređajima) */
 let __onPosLastTs = 0;
 const __ONPOS_MIN_MS = 140; // ≈7 Hz
@@ -2919,23 +2959,10 @@ if (typeof onPos === 'function') {
     return __orig_onPos(pos);
   };
 }
-</script>  
+</script>
 
 <script>
-// Kompas otvaranje
-document.querySelector('#openArrowPanel')?.addEventListener('click', ()=>{
-  window.suspendAllTools?.();   // prvo ugasi sve
-  startCompassSensors?.();      // onda upali kompas
-});
-
-// PeakCam otvaranje
-document.querySelector('#openPeakCamPanel')?.addEventListener('click', ()=>{
-  window.suspendAllTools?.();   // prvo ugasi sve
-  window.__peakcam?.start?.();  // onda upali PeakCam
-});
-</script>  
-
-<script>
+/* Sigurno čišćenje GPS watch-a (shared util) */
 window.stopGeoWatch = window.stopGeoWatch || function(){
   try{
     if(window.__arrow?.watchId != null){
@@ -2944,7 +2971,7 @@ window.stopGeoWatch = window.stopGeoWatch || function(){
     }
   }catch{}
 };
-</script>  
+</script>
   
 </body>
 </html>
