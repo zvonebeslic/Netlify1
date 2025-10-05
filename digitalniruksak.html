@@ -2032,4 +2032,729 @@ window.exportBacktrackGPX = function() {
   URL.revokeObjectURL(url);
 };
 
-
+/* =========================================================
+       NOĆNO NEBO — UPRAVLJANJE I
+ ISTICANJE ASTERIZAMA
+   
+ ========================================================= */
+const skyCanvas = qs('#skyCanvas');
+const skyCtx = skyCanvas?.getContext('2d');
+const skyStartBtn = qs('#skyStart');
+const skyNowBtn = qs('#skyNow');
+const skyLegend = qs('#skyLegend');
+let skyHeading = 0;
+let skyPitch = 0;
+// Naš mali namespace za Nebo (da uredno skidamo svoje listenere)
+window.__sky = window.__sky || {
+  activeEvent: null,
+  isRunning: false,
+  stop(){
+    try{
+      if (this.activeEvent) {
+        window.removeEventListener(this.activeEvent, handleSky, true);
+        this.activeEvent = null;
+      }
+      this.isRunning = false;
+    }catch(_){}
+  }
+};
+const STARS = [
+  {ra:5.9195, dec:7.4071, mag:0.2, name:'Betelgeuse'},
+  {ra:5.2423, dec:-8.2016, mag:0.5, name:'Rigel'},
+  {ra:5.5334, dec:-0.2991, mag:0.9, name:'Alnilam'},
+  {ra:5.6036, dec:-1.2019, mag:1.7, name:'Mintaka'},
+  {ra:5.5856, dec:-1.9426, mag:2.2, name:'Alnitak'},
+  {ra:11.0621, dec:61.7508, mag:1.8, name:'Alioth'},
+  {ra:12.2570, dec:57.0326, mag:1.9, name:'Mizar'},
+  {ra:13.7923, dec:49.3133, mag:1.8, name:'Dubhe'},
+  {ra:14.2610, dec:19.1825, mag:2.4, name:'Alkaid'},
+  {ra:11.8972, dec:53.6948, mag:2.3, name:'Megrez'},
+  {ra:12.9004, dec:55.9598, mag:2.4, name:'Phecda'}
+];
+const NAME_IDX = {};
+STARS.forEach((s,i)=> NAME_IDX[s.name]=i);
+function drawSky(){
+  if(!skyCtx) return;
+  const w=skyCanvas.width, h=skyCanvas.height;
+  // pozadina + rub
+  skyCtx.fillStyle='#020309'; skyCtx.fillRect(0,0,w,h);
+  skyCtx.strokeStyle='#1f2327'; skyCtx.strokeRect(0.5,0.5,w-1,h-1);
+  // orijentiri
+  skyCtx.fillStyle='#9aa6b2'; skyCtx.font='12px Montserrat';
+  skyCtx.fillText('N', 6, 14); skyCtx.fillText('E', w-14, 14);
+  skyCtx.fillText('S', w-14, h-6); skyCtx.fillText('W', 6, h-6);
+  const cx=w/2, cy=h/2;
+  const Rk=Math.min(cx,cy)-16;
+  skyCtx.strokeStyle='#101317';
+  skyCtx.beginPath(); skyCtx.arc(cx,cy,Rk,0,Math.PI*2); skyCtx.stroke();
+  const positions = {};
+  STARS.forEach(st=>{
+    // *jednostavno*: mapiranje RA na azimut (demo). U praksi bi uzeo LST.
+    const az = ((st.ra*15 - skyHeading + 360*10) % 360);
+    const rad = az*Math.PI/180;
+    const x = cx + Math.sin(rad)*Rk*0.92;
+    const y = cy - Math.cos(rad)*Rk*0.92;
+    const r = (st.mag < 1.0) ? 3.2 : (st.mag < 2.0) ? 2.6 : 2.1;
+    positions[st.name] = {x,y};
+    skyCtx.fillStyle='#e7e9ff';
+    skyCtx.beginPath(); skyCtx.arc(x,y,r,0,Math.PI*2); skyCtx.fill();
+  });
+  const lookingUp = skyPitch <= -60;
+  if(lookingUp){
+    skyCtx.strokeStyle='rgba(58,160,255,.7)';
+    skyCtx.lineWidth=2;
+    // Orionov pojas
+    ['Alnitak','Alnilam','Mintaka'].reduce((prev,cur)=>{
+      if(prev && positions[prev] && positions[cur]){
+        skyCtx.beginPath();
+        skyCtx.moveTo(positions[prev].x,positions[prev].y);
+        skyCtx.lineTo(positions[cur].x,positions[cur].y);
+        skyCtx.stroke();
+      }
+      return cur;
+    }, null);
+    // Veliki medvjed (rep + “kolica”)
+    const umList=['Dubhe','Megrez','Phecda','Alioth','Mizar','Alkaid'];
+    umList.reduce((prev,cur)=>{
+      if(prev && positions[prev] && positions[cur]){
+        skyCtx.beginPath();
+        skyCtx.moveTo(positions[prev].x,positions[prev].y);
+        skyCtx.lineTo(positions[cur].x,positions[cur].y);
+        skyCtx.stroke();
+      }
+      return cur;
+    }, null);
+    skyCtx.fillStyle='#8fbaff';
+    skyCtx.font='11px Montserrat';
+    ['Betelgeuse','Rigel','Alnilam','Mintaka','Dubhe','Alioth','Mizar','Alkaid'].forEach(n=>{
+      const p=positions[n]; if(p){ skyCtx.fillText(n, p.x+6, p.y-6); }
+    });
+  }
+  skyCtx.fillStyle='#6f7a86';
+  skyCtx.fillText(lookingUp?'Orion • Veliki medvjed (linije aktivne)':'Orion • Veliki medvjed (pojednostavljeno)', 10, h-10);
+}
+function handleSky(e){
+  // Heading
+  if(typeof e.webkitCompassHeading === 'number'){
+    skyHeading = normalize(e.webkitCompassHeading);
+  } else if (typeof e.alpha === 'number'){
+    let h = normalize(360 - e.alpha);
+    h = normalize(h - screenAngle());
+    skyHeading = h;
+  }
+  // Pitch
+  if(typeof e.beta === 'number'){ skyPitch = e.beta; }
+  drawSky();
+}
+async function askSkyPermission(){
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    alert('Senzori rade samo na HTTPS/localhost.');
+    return;
+  }
+  try{
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const r = await DeviceOrientationEvent.requestPermission();
+      if (r !== 'granted') { alert('Bez dopuštenja senzora nebo se neće rotirati na iOS-u.'); return; }
+    }
+  }catch(_){}
+  // Odaberi najbolji event za heading
+  const ev = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
+  // Safety: ukloni naš stari listener (ako je bio)
+  try{ window.removeEventListener(ev, handleSky, true); }catch(_){}
+  window.addEventListener(ev, handleSky, true);
+  window.__sky.activeEvent = ev;
+  window.__sky.isRunning = true;
+  // inicijalni frame
+  drawSky();
+}
+qs('#skyStart')?.addEventListener('click', askSkyPermission);
+qs('#skyNow')  ?.addEventListener('click', ()=>{ skyHeading = 0; drawSky(); });
+/* inicijalni prikaz */ drawSky();
+/* =========================================================
+       PROGNOZA — OPEN-METEO (3 DANA)
+   
+ ========================================================= */
+const wxGrid=qs('#wxGrid'),
+      wxCity=qs('#wxCity'),
+      wxFetchBtn=qs('#wxFetch'),
+      wxFetchManual=qs('#wxFetchManual'),
+      wxLat=qs('#wxLat'),
+      wxLon=qs('#wxLon');
+wxFetchBtn?.addEventListener('click', ()=>{
+  if(!navigator.geolocation){ alert('Ova naprava nema geolokaciju.'); return; }
+  navigator.geolocation.getCurrentPosition(async p=>{
+    const lat=p.coords.latitude, lon=p.coords.longitude;
+    wxLat.value=lat.toFixed(4); wxLon.value=lon.toFixed(4);
+    await fetchForecast(lat,lon);
+  }, e=>alert('GPS greška: '+e.message), {enableHighAccuracy:true,timeout:10000});
+});
+wxFetchManual?.addEventListener('click', async ()=>{
+  const lat=parseFloat(wxLat.value), lon=parseFloat(wxLon.value);
+  if(!Number.isFinite(lat)||!Number.isFinite(lon)){ alert('Unesi ispravne koordinate.'); return; }
+  await fetchForecast(lat,lon);
+});
+async function fetchForecast(lat,lon){
+  try{
+    wxCity.textContent=`Lokacija: ${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,wind_speed_10m,uv_index&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max,wind_speed_10m_max&current_weather=true&timezone=auto`;
+    const res=await fetch(url); const data=await res.json(); renderWeather(data);
+  }catch(e){ wxCity.textContent='Greška pri dohvaćanju prognoze'; }
+}
+function renderWeather(d){
+  wxGrid.innerHTML='';
+  if(!d?.daily){ wxGrid.innerHTML='<div class="wx-card">Nema podataka.</div>'; return; }
+  const days=d.daily.time.length;
+  for(let i=0;i<Math.min(days,3);i++){
+    const el=document.createElement('div');
+    el.className='wx-card';
+    el.innerHTML=`<h5>${d.daily.time[i]}</h5>
+      <div class="wx-meta">Tmin/Tmax: ${d.daily.temperature_2m_min[i]}° / ${d.daily.temperature_2m_max[i]}°</div>
+      <div class="wx-meta">Vjetar max: ${d.daily.wind_speed_10m_max[i]} m/s</div>
+      <div class="wx-meta">Oborina: ${d.daily.precipitation_sum[i]} mm</div>
+      <div class="wx-meta">UV max: ${d.daily.uv_index_max[i]??'—'}</div>`;
+    wxGrid.appendChild(el);
+  }
+}
+/* =========================================================
+       BILJKE / ŽIVOTINJE — KAMERA
+   
+ ========================================================= */
+const bioOpen=qs('#bioOpenCam'),
+      bioSnap=qs('#bioSnap'),
+      bioClose=qs('#bioCloseCam'),
+      bioVideo=qs('#bioVideo'),
+      bioCanvas=qs('#bioCanvas'),
+      bioPhoto=qs('#bioPhoto'),
+      bioINat=qs('#bioINat');
+let bioStream=null;
+bioOpen?.addEventListener('click', async ()=>{
+  try{
+    bioStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    bioVideo.srcObject=bioStream; bioVideo.style.display='block';
+    bioSnap.disabled=false; bioClose.disabled=false; await bioVideo.play();
+  }catch(e){ alert('Kamera nedostupna: '+e.message); }
+});
+bioClose?.addEventListener('click', ()=>{
+  try{
+    bioVideo.pause(); bioVideo.style.display='none';
+    bioStream?.getTracks()?.forEach(t=>t.stop());
+    bioStream=null; bioSnap.disabled=true; bioClose.disabled=true;
+  }catch(e){}
+});
+bioSnap?.addEventListener('click', ()=>{
+  if(!bioVideo.videoWidth) return;
+  bioCanvas.width=bioVideo.videoWidth; bioCanvas.height=bioVideo.videoHeight;
+  const ctx=bioCanvas.getContext('2d'); ctx.drawImage(bioVideo,0,0);
+  const url=bioCanvas.toDataURL('image/jpeg',0.9);
+  bioPhoto.src=url; bioPhoto.style.display='block';
+});
+bioINat?.addEventListener('click', ()=>{ window.open('https://www.inaturalist.org/observations/new','_blank'); });
+/* =========================================================
+       SOS — AUDIO
+   
+ ========================================================= */
+let sosCtx=null, sosPlay=false;
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function sosBeep(freq=900,dur=150){
+  return new Promise(res=>{
+    try{
+      sosCtx=sosCtx||new (window.AudioContext||window.webkitAudioContext)();
+      const t=sosCtx.currentTime;
+      const osc=sosCtx.createOscillator(); const gain=sosCtx.createGain();
+      osc.frequency.value=freq; osc.type='sine';
+      gain.gain.value=0.0001; osc.connect(gain); gain.connect(sosCtx.destination);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.25, t+0.02);
+      gain.gain.setValueAtTime(0.25, t+dur/1000-0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t+dur/1000);
+      osc.stop(t+dur/1000+0.02);
+      setTimeout(res, dur);
+    }catch(e){ res(); }
+  });
+}
+async function playSOS(){
+  if(sosPlay) return;
+  sosPlay=true;
+  while(sosPlay){
+    await sosBeep(900,150); await sleep(120);
+    await sosBeep(900,150); await sleep(120);
+    await sosBeep(900,150); await sleep(300);
+    await sosBeep(900,450); await sleep(150);
+    await sosBeep(900,450); await sleep(150);
+    await sosBeep(900,450); await sleep(300);
+    await sosBeep(900,150); await sleep(120);
+    await sosBeep(900,150); await sleep(120);
+    await sosBeep(900,150); await sleep(900);
+  }
+}
+function stopSOS(){ sosPlay=false; }
+qs('#playSOS')?.addEventListener('click', playSOS);
+qs('#stopSOS')?.addEventListener('click', stopSOS);
+/* =========================================================
+       PEAK CAM (pretraživač vrhova)
+   
+ ========================================================= */
+/* ============================
+   PeakCam (AR OSM vrhovi)
+============================ */
+(function(){
+  // --- DOM ---
+  const panel     = document.getElementById('panelPeakCam');
+  const video     = document.getElementById('pc-video');
+  const overlay   = document.getElementById('pc-overlay');
+  const ctx       = overlay?.getContext?.('2d');
+  const hint      = document.getElementById('pc-hint');
+  const statusEl  = document.getElementById('pc-status');
+  const btnStart  = document.getElementById('pc-start');
+  const btnStop   = document.getElementById('pc-stop');
+  const hfovInp   = document.getElementById('pc-hfov');
+  const vfovInp   = document.getElementById('pc-vfov');
+  const hofsInp   = document.getElementById('pc-hofs');
+  const hfovVal   = document.getElementById('pc-hfov-val');
+  const vfovVal   = document.getElementById('pc-vfov-val');
+  const hofsVal   = document.getElementById('pc-hofs-val');
+  // --- STATE ---
+  const state = {
+    running: false,
+    rafId: null,
+    stream: null,
+    heading: null,
+    pitch: 0,
+    roll: 0,
+    pos: null,     // {lat, lon}
+    peaks: [],     // [{lat, lon, name, ele?}]
+    hfov: Number(hfovInp?.value || 60),
+    vfov: Number(vfovInp?.value || 40),
+    hofs: Number(hofsInp?.value || 0), // ručni offset kompasa
+  };
+  // --- UTILS ---
+  const RAD = Math.PI/180, DEG = 180/Math.PI, R = 6371000;
+  const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+  const normalize = d => { d = d % 360; return d < 0 ? d + 360 : d; };
+  const screenAngle = () => (screen.orientation && typeof screen.orientation.angle==='number') ? screen.orientation.angle : (typeof window.orientation==='number' ? window.orientation : 0);
+  function setStatus(msg){ if(statusEl) statusEl.textContent = `Status: ${msg}`; }
+  function showHint(txt){ if(!hint) return; hint.textContent = txt; hint.style.display='block'; }
+  function hideHint(){ if(hint) hint.style.display='none'; }
+  // --- CAMERA ---
+  async function startCamera(){
+    if(state.stream) return;
+    setStatus('pokrećem kameru…');
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio:false });
+    state.stream = stream;
+    video.srcObject = stream;
+    await video.play();
+    // veličina overlaya prati video element (CSS width:100% → mjerimo clientWidth/Height)
+    const resize = () => {
+      const rect = video.getBoundingClientRect();
+      overlay.width  = Math.max(2, Math.round(rect.width));
+      overlay.height = Math.max(2, Math.round(rect.height));
+    };
+    resize();
+    // malo pričekaj da layout “sjedne”
+    setTimeout(resize, 150);
+    window.addEventListener('resize', resize, {passive:true});
+    setStatus('kamera radi');
+  }
+  function stopCamera(){
+    try{
+      video.pause();
+      state.stream?.getTracks?.().forEach(t=>t.stop());
+      state.stream = null;
+      video.srcObject = null;
+    }catch(_){}
+  }
+  // --- ORIENTATION ---
+  let activeOriEvent = null;
+  let lastHeadTs = 0;
+  function applyHeading(raw, isIOS){
+    let h = normalize(raw + state.hofs);
+    if(!isIOS) h = normalize(h - screenAngle());
+    state.heading = h;
+  }
+  function onOrient(e){
+    const now = performance.now();
+    if(now - lastHeadTs < 30) return;
+    lastHeadTs = now;
+    if (typeof e.webkitCompassHeading === 'number' && Number.isFinite(e.webkitCompassHeading)) {
+      applyHeading(e.webkitCompassHeading, true);
+    } else if (typeof e.alpha === 'number') {
+      applyHeading(360 - e.alpha, false); // 0° = North → koristimo 360 - alpha
+    }
+    state.pitch = typeof e.beta  === 'number' ? e.beta  : 0;
+    state.roll  = typeof e.gamma === 'number' ? e.gamma : 0;
+  }
+  async function enableOrientation(){
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const r = await DeviceOrientationEvent.requestPermission();
+      if (r !== 'granted') throw new Error('senzori odbijeni (iOS)');
+    }
+    if ('ondeviceorientationabsolute' in window) {
+      window.addEventListener('deviceorientationabsolute', onOrient, true);
+      activeOriEvent = 'deviceorientationabsolute';
+    } else {
+      window.addEventListener('deviceorientation', onOrient, true);
+      activeOriEvent = 'deviceorientation';
+    }
+    window.addEventListener('orientationchange', ()=>{
+      if(state.heading!=null){
+        // refreš nakon promjene orijentacije ekrana
+        applyHeading(state.heading, false);
+      }
+    }, {passive:true});
+  }
+  function disableOrientation(){
+    if(activeOriEvent){
+      window.removeEventListener(activeOriEvent, onOrient, true);
+      activeOriEvent = null;
+    }
+  }
+  // --- GEO ---
+  function getLocation(){
+    return new Promise((resolve, reject)=>{
+      if(!navigator.geolocation) return reject(new Error('geolokacija nije podržana'));
+      navigator.geolocation.getCurrentPosition(
+        pos=>{
+          const lat = pos.coords.latitude, lon = pos.coords.longitude;
+          state.pos = {lat, lon};
+          resolve(state.pos);
+        },
+        err=>reject(err),
+        { enableHighAccuracy:true, timeout:12000, maximumAge:2000 }
+      );
+    });
+  }
+  // --- OSM PEAKS (Overpass) ---
+  async function fetchPeaks(lat, lon, radius=30000){
+    // Overpass upit: prirodni vrhovi s imenom
+    const q = `
+      [out:json][timeout:20];
+      (
+        node["natural"="peak"]["name"](around:${radius},${lat},${lon});
+        way["natural"="peak"]["name"](around:${radius},${lat},${lon});
+        relation["natural"="peak"]["name"](around:${radius},${lat},${lon});
+      );
+      out center 200;
+    `.trim();
+    try{
+      const res = await fetch('https://overpass-api.de/api/interpreter', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ data:q })
+      });
+      if(!res.ok) throw new Error('Overpass HTTP '+res.status);
+      const data = await res.json();
+      const peaks = [];
+      for(const el of (data.elements || [])){
+        let plat = el.lat, plon = el.lon;
+        if(plat==null || plon==null){
+          // za way/relation s center
+          if(el.center){ plat = el.center.lat; plon = el.center.lon; }
+        }
+        const name = el.tags && el.tags.name || 'Vrh';
+        if(Number.isFinite(plat) && Number.isFinite(plon)){
+          peaks.push({lat:plat, lon:plon, name});
+        }
+      }
+      // mali limit da ne zatrpamo overlay
+      state.peaks = peaks.slice(0, 120);
+      setStatus(`dohvaćeno vrhova: ${state.peaks.length}`);
+    }catch(e){
+      // fallback — bez mreže ili CORS → prikaži demo 3 vrha na raznim azimutima
+      state.peaks = [
+        {name:'Demo vrh A', lat:lat+0.15, lon:lon+0.00},
+        {name:'Demo vrh B', lat:lat+0.10, lon:lon+0.20},
+        {name:'Demo vrh C', lat:lat-0.05, lon:lon-0.18},
+      ];
+      setStatus('OSM vrhovi: offline demo');
+    }
+  }
+  // --- GEO MATH ---
+  function toRad(x){ return x*RAD; }
+  function bearingBetween(lat1,lon1,lat2,lon2){
+    const φ1=toRad(lat1), φ2=toRad(lat2), Δλ=toRad(lon2-lon1);
+    const y=Math.sin(Δλ)*Math.cos(φ2);
+    const x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+    return normalize(Math.atan2(y,x)*DEG);
+  }
+  function haversine(lat1,lon1,lat2,lon2){
+    const dφ=toRad(lat2-lat1), dλ=toRad(lon2-lon1);
+    const a=Math.sin(dφ/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dλ/2)**2;
+    return 2*R*Math.asin(Math.sqrt(a));
+  }
+  // --- PROJECTION (jednostavno: samo horizontalni FOV) ---
+  function projectPeak(peak, width, height){
+    if(!state.pos || state.heading==null) return null;
+    const brg = bearingBetween(state.pos.lat, state.pos.lon, peak.lat, peak.lon);
+    const rel = normalize(brg - state.heading); // 0 = ispred
+    const halfH = state.hfov/2;
+    // ako je izvan HFOV-a — ne crtamo
+    let dx = rel;
+    if (dx > 180) dx -= 360; // mapiraj u [-180,180]
+    if (Math.abs(dx) > halfH) return null;
+    // x pozicija: -halfH .. +halfH → 0..width
+    const x = ((dx + halfH) / (state.hfov)) * width;
+    // gruba “visina” na ekranu — bez DEM, pa polagano spuštamo s udaljenošću
+    const dist = haversine(state.pos.lat, state.pos.lon, peak.lat, peak.lon); // m
+    const horizonY = height * 0.52; // simulirani horizont
+    const y = horizonY - clamp((3000 - dist/15)/3000, -0.35, 0.35) * (height*0.35);
+    return { x, y, dist, brg };
+  }
+  // --- DRAW LOOP ---
+  function draw(){
+    if(!ctx || !overlay) return;
+    const w = overlay.width, h = overlay.height;
+    ctx.clearRect(0,0,w,h);
+    // “horizont”
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.beginPath(); ctx.moveTo(0, h*0.52); ctx.lineTo(w, h*0.52); ctx.stroke();
+    // križić u centru
+    ctx.fillStyle = 'rgba(255,255,255,0.28)';
+    ctx.fillRect(w/2-6, h/2, 12, 1);
+    ctx.fillRect(w/2,   h/2-6, 1, 12);
+    if(state.peaks.length && state.pos && state.heading!=null){
+      ctx.font = '12px Montserrat, system-ui, sans-serif';
+      ctx.textBaseline = 'bottom';
+      for(const p of state.peaks){
+        const P = projectPeak(p, w, h);
+        if(!P) continue;
+        // točka
+        ctx.fillStyle = 'rgba(58,160,255,.95)';
+        ctx.beginPath(); ctx.arc(P.x, P.y, 3, 0, Math.PI*2); ctx.fill();
+        // labela
+        const label = `${p.name} · ${(P.dist/1000).toFixed(1)} km`;
+        const tw = ctx.measureText(label).width + 10;
+        const lh = 18;
+        const lx = clamp(P.x - tw/2, 6, w - tw - 6);
+        const ly = Math.max(18, P.y - 10);
+        ctx.fillStyle = 'rgba(18,20,22,.85)';
+        ctx.fillRect(lx, ly-lh, tw, lh);
+        ctx.strokeStyle = 'rgba(255,255,255,.18)';
+        ctx.strokeRect(lx+0.5, ly-lh+0.5, tw-1, lh-1);
+        ctx.fillStyle = '#e9eef2';
+        ctx.fillText(label, lx+5, ly-4);
+      }
+    }
+    state.rafId = requestAnimationFrame(draw);
+  }
+  // --- PUBLIC API ---
+  async function start(){
+    if(state.running) return;
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      alert('PeakCam radi samo na HTTPS/localhost (kamera i senzori).');
+      return;
+    }
+    try {
+      showHint('Dopusti pristup kameri, lokaciji i orijentaciji.');
+      setStatus('čekam dozvole…');
+      // redoslijed: senzori → lokacija → kamera (da korisnik vidi feed dok učitavamo vrhove)
+      await enableOrientation();
+      hideHint();
+      const pos = await getLocation().catch(()=>null);
+      if(pos) setStatus('lokacija OK'); else setStatus('lokacija nije dostupna');
+      await startCamera();
+      // dohvat vrhova (ne blokira rad — ali pokušamo odmah)
+      if(pos){ fetchPeaks(pos.lat, pos.lon).catch(()=>{}); }
+      state.running = true;
+      draw();
+      setStatus('radi');
+    } catch (e) {
+      setStatus('greška: ' + (e?.message || 'nepoznato'));
+      showHint('Provjeri dozvole za kameru / lokaciju / orijentaciju.');
+    }
+  }
+  function stop(){
+    if (!state.running) { // ipak očisti
+      stopCamera(); disableOrientation(); return;
+    }
+    state.running = false;
+    if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId=null; }
+    ctx?.clearRect?.(0,0,overlay.width,overlay.height);
+    disableOrientation();
+    stopCamera();
+  }
+  // --- SLIDERS / UI BINDINGS ---
+  function bindSliders(){
+    if(hfovInp){
+      hfovInp.addEventListener('input', e=>{
+        state.hfov = Number(hfovInp.value)||60;
+        if(hfovVal) hfovVal.textContent = `${state.hfov}°`;
+      });
+      hfovVal && (hfovVal.textContent = `${state.hfov}°`);
+    }
+    if(vfovInp){
+      vfovInp.addEventListener('input', e=>{
+        state.vfov = Number(vfovInp.value)||40;
+        if(vfovVal) vfovVal.textContent = `${state.vfov}°`;
+      });
+      vfovVal && (vfovVal.textContent = `${state.vfov}°`);
+    }
+    if(hofsInp){
+      hofsInp.addEventListener('input', e=>{
+        state.hofs = Number(hofsInp.value)||0;
+        if(hofsVal) hofsVal.textContent = `${state.hofs}°`;
+      });
+      hofsVal && (hofsVal.textContent = `${state.hofs}°`);
+    }
+  }
+  bindSliders();
+  // Gumbi — ako već imaš vlastite listenere, ovi neće smetati (?.)
+  btnStart?.addEventListener('click', start);
+  btnStop ?.addEventListener('click', ()=>{
+    stop();
+    // sakrij panel (isti UX kao ostali paneli)
+    if (panel) panel.hidden = true;
+    // reset poruke
+    showHint('Dopusti pristup kameri, lokaciji i orijentaciji.');
+    setStatus('spremno');
+  });
+  // Izloži za tvoj postojeći kod:
+  window.__peakcam?.start()/stop()
+  window.__peakcam = { start, stop };
+})();
+ /* =========================================================
+       ISKOČNI PROZOR — MINI KOMPAS + UDALJENOST (POPUP)
+   
+ ========================================================= */
+let miniPopupWin = null;
+let __lastMiniSendTs = 0;
+let __lastHeadingForMini = null; // HOOK iz renderCompassRing()
+let __lastDistForMini = null;    // HOOK iz onPos()
+let __miniAlertMeters = 30;
+function openMiniPopup(){
+  if (miniPopupWin && !miniPopupWin.closed) { miniPopupWin.focus(); return; }
+  const w = 360, h = 500;
+  const left = window.screenX + (window.outerWidth - w) / 2;
+  const top  = window.screenY + (window.outerHeight - h) / 2;
+  miniPopupWin = window.open('', 'miniCompassPopup', `width=${w},height=${h},left=${Math.max(0,left)},top=${Math.max(0,top)},resizable=yes,noopener=yes`);
+  if (!miniPopupWin) { alert('Popup blokiran — dopusti iskočne prozore.'); return; }
+  const html = `<!doctype html>
+<html lang="hr"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Mini kompas</title>
+<style>
+:root { color-scheme: dark light; }
+html,body{margin:0;background:#0b0e12;color:#e8eef5;font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+.wrap{padding:14px;display:flex;flex-direction:column;gap:12px}
+.card{background:#12161c;border:1px solid #222b35;border-radius:16px;padding:14px}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.xbtn{appearance:none;border:0;background:#1b222b;border:1px solid #2b3642;color:#d7e0ea;border-radius:10px;padding:6px 10px;cursor:pointer}
+.ringWrap{display:grid;place-items:center}
+#ring{width:260px;height:260px;border-radius:50%;border:2px solid #2b3642;position:relative;transform:translateZ(0)}
+#needle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:40px solid #ff6b6b;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.cardinal{position:absolute;left:50%;top:50%;transform-origin:50% 110px;color:#9fb0c2;font-weight:600}
+.N{transform:translate(-50%,-50%) rotate(0deg)   translateY(-110px)}
+.E{transform:translate(-50%,-50%) rotate(90deg)  translateY(-110px)}
+.S{transform:translate(-50%,-50%) rotate(180deg) translateY(-110px)}
+.W{transform:translate(-50%,-50%) rotate(270deg) translateY(-110px)}
+.hud{text-align:center;color:#a9b4c0}
+.pill{display:inline-block;background:#0f1318;border:1px solid #202a34;border-radius:999px;padding:6px 10px;margin-top:8px}
+.pill.ok{border-color:#2aa96b;color:#b8f1d4}
+.pill.warn{border-color:#f2c14e;color:#ffe7a4}
+.pill.bad{border-color:#ff6b6b;color:#ffc9c9}
+</style>
+</head><body>
+<div class="wrap">
+  <div class="topbar">
+    <div style="opacity:.8">Mini kompas</div>
+    <button id="close" class="xbtn" aria-label="Zatvori">✕</button>
+  </div>
+  <div class="card ringWrap">
+    <div id="ring">
+      <div id="needle"></div>
+      <div class="cardinal N">N</div>
+      <div class="cardinal E">E</div>
+      <div class="cardinal S">S</div>
+      <div class="cardinal W">W</div>
+    </div>
+    <div class="hud" style="margin-top:10px">Smjer: <span id="lblH">—</span>°</div>
+  </div>
+  <div class="card" style="text-align:center">
+    <div class="hud">Udaljenost od staze</div>
+    <div id="distPill" class="pill">—</div>
+  </div>
+</div>
+<script>
+(function(){
+  const ring = document.getElementById('ring');
+  const lblH = document.getElementById('lblH');
+  const distPill = document.getElementById('distPill');
+  const btnClose = document.getElementById('close');
+  let smooth=0, EMA=0.12, rafId=0, lastHeading=null;
+  function normalize(d){ d = d % 360; return d<0 ? d+360 : d; }
+  function setDistance(m, alertMeters){
+    if (typeof m !== 'number') { distPill.textContent='—'; distPill.className='pill'; return; }
+    distPill.textContent = Math.round(m) + ' m';
+    const a = (typeof alertMeters==='number' && alertMeters>0) ? alertMeters : 30;
+    let cls = 'pill';
+    if (m <= 5) cls+=' ok';
+    else if (m <= a) cls+=' warn';
+    else cls+=' bad';
+    distPill.className = cls;
+  }
+  function animate(){
+    if (typeof lastHeading === 'number') {
+      const delta = ((((lastHeading - smooth) + 540) % 360) - 180);
+      smooth = smooth + EMA * delta;
+      const hq = Math.round(smooth*2)/2;
+      ring.style.transform = 'translateZ(0) rotate(' + (-hq) + 'deg)'; // prsten se vrti, igla je fiksna
+      lblH.textContent = hq.toFixed(1);
+    }
+    rafId = requestAnimationFrame(animate);
+  }
+  window.addEventListener('message', (e)=>{
+    const d = e.data || {};
+    if (d.type !== 'compass-mini') return;
+    if (typeof d.heading === 'number') lastHeading = normalize(d.heading);
+    if (typeof d.distance === 'number' || d.distance === null) setDistance(d.distance, d.alertMeters);
+    if (!rafId) rafId = requestAnimationFrame(animate);
+  });
+  btnClose.addEventListener('click', ()=> window.close());
+})();
+</script>
+</body></html>`;
+  miniPopupWin.document.open();
+  miniPopupWin.document.write(html);
+  miniPopupWin.document.close();
+  // po otvaranju odmah pošalji što imamo (ako imamo)
+  miniPopupBroadcast(true);
+}
+function closeMiniPopup(){
+  try{ miniPopupWin?.close(); }catch{}
+}
+/* Slanje heading/distance popupu (throttle ~120 ms) */
+function miniPopupBroadcast(force=false){
+  if (!miniPopupWin || miniPopupWin.closed) return;
+  const now = performance.now();
+  if (!force && now - __lastMiniSendTs < 120) return;
+  __lastMiniSendTs = now;
+  const payload = {
+    type: 'compass-mini',
+    heading: (typeof __lastHeadingForMini==='number') ? __lastHeadingForMini : null,
+    distance: (typeof __lastDistForMini==='number') ? __lastDistForMini : null,
+    alertMeters: __miniAlertMeters
+  };
+  try { miniPopupWin.postMessage(payload, '*'); } catch(_){}
+}
+/* Gumbi */
+qs('#openPopupBtn') ?.addEventListener('click', ()=>{
+  // po želji ugasi veće module prije popupa:
+  try { window.__peakcam?.stop?.(); } catch {}
+  openMiniPopup();
+});
+qs('#closePopupBtn')?.addEventListener('click', closeMiniPopup);
+/* =========================================================
+       VID/FOCUS — ŠTEDI BATERIJU
+   
+ ========================================================= */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='hidden'){
+    try { window.__arrow   ?.stop?.(); }catch{}
+    try { window.__sky     ?.stop?.(); }catch{}
+    try { window.__peakcam ?.stop?.(); }catch{}
+    try { stopCam?.(); }catch{}
+  }
+});
+</script>
+</body>
+</html>
