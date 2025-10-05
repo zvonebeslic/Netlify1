@@ -2880,5 +2880,116 @@ document.addEventListener('visibilitychange', ()=>{
     
   </script>
 
+<script>
+/* ===== PATCH: minimalni “život” za kompas ===== */
+/* 1) Helperi koje koristiš, a nisu definirani */
+function normalize(d){ return (d % 360 + 360) % 360; }
+function hide(el){ if(el) el.hidden = true; }
+if (typeof updateArrowColor !== 'function') {
+  // ako nemaš ovu funkciju drugdje, neka bude no-op da ne puca
+  function updateArrowColor(){ /* no-op */ }
+}
+
+/* 2) applyHeading: upiši heading, primijeni true north i orijentaciju ekrana */
+function applyHeading(magDeg){
+  // magnetski heading (0..360)
+  headingDeg = normalize(magDeg);
+
+  // ako koristiš geografski sjever, korigiraj deklinacijom
+  const base = useTrueNorth ? normalize(headingDeg + (Number.isFinite(declinationDeg)?declinationDeg:0)) : headingDeg;
+
+  // kompas ti je u “igla fiksna, prsten rotira” modu -> odvoji orijentaciju ekrana
+  correctedHeading = normalize(base - screenAngle());
+
+  // (opcionalno) mini popup hook – ako ga koristiš
+  if (typeof window.setMiniHeading === 'function') {
+    try { window.setMiniHeading(correctedHeading); } catch {}
+  }
+
+  lastHeadTs = Date.now();
+}
+
+/* 3) Handler za deviceorientation (iOS + ostalo) */
+function onOrient3D(e){
+  let h = null;
+
+  // iOS Safari preferira webkitCompassHeading (0 = sjever, raste prema istoku)
+  if (typeof e.webkitCompassHeading === 'number') {
+    h = e.webkitCompassHeading;
+  } else if (typeof e.alpha === 'number') {
+    // većina ostalih: 0..360, ali orijentacija je “okrenuta” — najstabilnije: 360 - alpha
+    h = 360 - e.alpha;
+  }
+
+  if (h == null || !Number.isFinite(h)) return;
+  applyHeading(h);
+}
+
+/* 4) Start/stop senzora + RAF pokretanje */
+(function wireCompass(){
+  // pokreni render petlju AKO već nije upaljena
+  if (!window.__arrow) window.__arrow = {};
+  if (!window.__arrow.rafId) {
+    try { cancelAnimationFrame(window.__arrow.rafId); } catch {}
+    window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
+  }
+
+  // promjena orijentacije ekrana – odmah osvježi correctedHeading
+  if (!window.__arrow._onOrientChange) {
+    window.__arrow._onOrientChange = () => {
+      if (headingDeg != null) applyHeading(headingDeg);
+    };
+    window.addEventListener('orientationchange', window.__arrow._onOrientChange);
+  }
+
+  // ako već nismo spojeni na deviceorientation, spoji (Android/desktop)
+  if (!window.__arrow.activeOriEvent) {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission !== 'function') {
+      window.addEventListener('deviceorientation', onOrient3D, true);
+      window.__arrow.activeOriEvent = 'deviceorientation';
+    }
+  }
+
+  // iOS gumb – kad klikneš, zatraži dozvolu i spoji handler
+  if (typeof iosPermBtn !== 'undefined' && iosPermBtn) {
+    iosPermBtn.addEventListener('click', async () => {
+      try{
+        if (typeof DeviceOrientationEvent === 'undefined') {
+          alert('Ovaj preglednik nema orijentacijske senzore.');
+          return;
+        }
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          const res = await DeviceOrientationEvent.requestPermission();
+          if (res !== 'granted') { alert('Dopusti Motion & Orientation za kompas.'); return; }
+        }
+        window.addEventListener('deviceorientation', onOrient3D, true);
+        window.__arrow.activeOriEvent = 'deviceorientation';
+      }catch(err){
+        console.warn('iOS permission error:', err);
+        alert('Ne mogu dobiti dozvolu za orijentaciju.');
+      }
+    }, { once:true });
+  }
+
+  // sigurnosno: ako panel otvaraš gumbom, možete i ovdje “pokrenuti” na otvaranje
+  const openArrowBtn = document.querySelector('#openArrowPanel');
+  if (openArrowBtn) {
+    openArrowBtn.addEventListener('click', () => {
+      // inicijalni frame ako još nije
+      if (!window.__arrow.rafId) {
+        window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
+      }
+    });
+  }
+})();
+
+/* 5) Ako render petlja nikada nije pozvana, pokreni je sad (fallback) */
+if (!window.__arrow || !window.__arrow.rafId) {
+  window.__arrow = window.__arrow || {};
+  window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
+}
+</script>
+  
   </body>
   </html>
