@@ -1327,6 +1327,13 @@
  ========================================================= */
 const qs = s => document.querySelector(s);
 const hide = el => { if(!el) return; el.hidden = true; };
+
+  // === Globalni helperi ===
+  function normalize(d) {
+    d = d % 360;
+    return d < 0 ? d + 360 : d;
+  }
+    
 const panelAid=qs('#panelAid'),
       panelCamera=qs('#panelCamera'),
       panelPeakCam=qs('#panelPeakCam'),
@@ -2330,7 +2337,6 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
   // --- UTILS ---
   const RAD = Math.PI/180, DEG = 180/Math.PI, R = 6371000;
   const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
-  const normalize = d => { d = d % 360; return d < 0 ? d + 360 : d; };
   const screenAngle = () => (screen.orientation && typeof screen.orientation.angle==='number') ? screen.orientation.angle : (typeof window.orientation==='number' ? window.orientation : 0);
   function setStatus(msg){ if(statusEl) statusEl.textContent = `Status: ${msg}`; }
   function showHint(txt){ if(!hint) return; hint.textContent = txt; hint.style.display='block'; }
@@ -2607,9 +2613,9 @@ qs('#stopSOS')?.addEventListener('click', stopSOS);
     showHint('Dopusti pristup kameri, lokaciji i orijentaciji.');
     setStatus('spremno');
   });
-  // Izloži za tvoj postojeći kod:
-  window.__peakcam?.start()/stop()
-  window.__peakcam = { start, stop };
+// Izloži za tvoj postojeći kod:
+window.__peakcam = { start, stop };
+})();
 })();
  /* =========================================================
        ISKOČNI PROZOR — MINI KOMPAS + UDALJENOST (POPUP)
