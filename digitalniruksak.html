@@ -1463,7 +1463,7 @@ qs('#openCamPanel')?.addEventListener('click', async ()=>{
 });
 </script>
 
-<script>
+ <script>
 /* =========================================================
    KOMPAS / GPX / BACKTRACK + MINI HUD + POPUP
    ========================================================= */
@@ -1655,6 +1655,9 @@ function renderLevel(pitch=0,roll=0){
 
 /* ---- Heading / render petlja ---- */
 let smooth = 0, EMA = 0.12, lastHeadTs = 0;
+function normalize(a){ a%=360; if(a<0) a+=360; return a; }
+function screenAngle(){ return (window.orientation||0)*1 || 0; }
+
 function renderCompassRing(){
   if (typeof correctedHeading === 'number') {
     const delta = ((((correctedHeading - smooth) + 540) % 360) - 180);
@@ -1733,6 +1736,9 @@ async function startCompassSensors(){
 
 /* ---- Otvaranje kompasa panel + GPX iz URL-a ---- */
 function openArrow(){
+  // ČIST ULAZ PRI SVAKOM OTVARANJU
+  resetArrow({ keepGPX:false });
+
   try { window.__peakcam?.stop?.(); } catch(_){}
   startCompassSensors();
   const urlParam=new URL(location.href).searchParams.get('gpx');
@@ -1908,10 +1914,55 @@ function onPos(pos){
   hookMiniDistance?.(distLP);
 }
 
+/* === HARD RESET KOMPASA (poziva se kad napuštaš alat) === */
+function resetArrow(opts={ keepGPX:false }){
+  try{ window.__arrow?.stop?.(); }catch(_){}
+  try{ stopGeoWatch?.(); }catch(_){}
+  try{ stopBeep?.(); }catch(_){}
+  try{ closeMiniPopup?.(); }catch(_){}
+  try{ hideMini?.(); }catch(_){}
+
+  // render petlja
+  try{ if (window.__arrow?.rafId){ cancelAnimationFrame(window.__arrow.rafId); window.__arrow.rafId = 0; } }catch(_){}
+
+  // stanje / varijable
+  offBeepArmed   = false;
+  lastFix        = null;
+  lastKnownLat   = null;
+  lastKnownLon   = null;
+  headingDeg     = null;
+  correctedHeading = null;
+  lastBrg        = null;
+  distLP         = null;
+  smooth         = 0;
+
+  // GPX: brišemo da bude “od nule” pri povratku (postavi keepGPX:true ako želiš zadržati)
+  if (!opts.keepGPX) gpxTrack = null;
+
+  // UI reset
+  try{
+    setNavState(NAV.NO_TRACK);
+    if (targetArrow){ targetArrow.style.opacity = 0; targetArrow.style.display='none'; }
+    if (onPathOK)   { onPathOK.style.display='none'; }
+    if (compassRing){ compassRing.style.transform = 'translateZ(0) rotate(0deg)'; }
+
+    trackStatusPill && (trackStatusPill.textContent = '🧭 status: —');
+    onTrackChip     && (onTrackChip.textContent     = '🧭 status: —');
+    offDistChip     && (offDistChip.textContent     = '↔︎ udaljenost: —');
+
+    miniMeters      && (miniMeters.textContent      = '—');
+    miniNeedle      && (miniNeedle.style.transform  = 'rotate(0deg)');
+
+    renderLevel(0,0);
+    pitchLbl && (pitchLbl.textContent = '0.0°');
+    rollLbl  && (rollLbl.textContent  = '0.0°');
+  }catch(_){}
+}
+
 /* ---- Zatvaranje panela kompasa ---- */
 qs('#arrowClose')?.addEventListener('click', ()=>{
+  resetArrow({ keepGPX:false });
   hide(qs('#panelArrow'));
-  try { window.__arrow.stop(); } catch(_){}
 });
 
 /* Beep kontrola s mogućnošću hard-stop-a */
@@ -2096,7 +2147,38 @@ qs('#closePopupBtn')?.addEventListener('click', closeMiniPopup);
 
 /* Fallback: pokreni render petlju ako nije aktivna */
 if (!window.__arrow.rafId) window.__arrow.rafId = requestAnimationFrame(renderCompassRing);
-</script>
+
+/* ---- Auto reset kad #panelArrow postane skriven (prebacivanje alata) ---- */
+(function(){
+  const el = qs('#panelArrow');
+  if(!el) return;
+  let lastHidden = !!el.hidden;
+
+  const mo = new MutationObserver(()=>{
+    const nowHidden = !!el.hidden || el.style.display==='none';
+    if (nowHidden && !lastHidden){
+      resetArrow({ keepGPX:false });
+    }
+    lastHidden = nowHidden;
+  });
+
+  mo.observe(el, { attributes:true, attributeFilter:['hidden','style','class'] });
+  window.__arrowPanelObserver = mo;
+})();
+
+/* ---- (Opcionalno) reset pri globalnom prebacivanju panela ---- */
+(function(){
+  if (typeof window.openPanel === 'function'){
+    const __orig = window.openPanel;
+    window.openPanel = function(id){
+      try{
+        if (id !== 'panelArrow'){ resetArrow({ keepGPX:false }); }
+      }catch(_){}
+      return __orig.apply(this, arguments);
+    };
+  }
+})();
+</script> 
 
 <script>
 /* =========================================================
