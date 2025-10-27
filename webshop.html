@@ -38,122 +38,501 @@
   <!-- Sezone CSS -->
   <link rel="stylesheet" href="season.css" />
 
-<style>
-  /* === OSNOVNI RESET === */
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{overflow-x:hidden!important}
-  body{font-family:Arial, sans-serif;overflow-x:hidden;scroll-behavior:smooth;background:#000;color:#f7f8fa}
+  <style>
+    /* === OSNOVNI RESET === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      overflow-x: hidden !important;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      background: #000;
+      color: #f7f8fa;
+    }
 
-  /* === NAVBAR (ostavljeno tvoje) === */
-  .navbar{position:fixed;top:0;width:100%;height:70px;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:space-between;padding:0 15px;z-index:1000}
-  .navbar-left img{height:16px;width:24px;cursor:pointer;position:relative}
-  .navbar-left img:hover::after{content:attr(data-tooltip);position:absolute;background:#fff;color:#000;padding:4px 8px;border-radius:5px;font-size:12px;top:30px;left:0;white-space:nowrap;box-shadow:0 0 6px rgba(0,0,0,.2)}
-  .navbar-center{flex:1;display:flex;justify-content:center;z-index:1;transform:translateY(12px)}
-  .search-container{width:250px;position:relative;padding-top:10px;z-index:1}
-  .search-wrapper{position:relative;z-index:2;width:100%;height:30px;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.3);padding:0 15px;display:flex;align-items:flex-end;justify-content:center;overflow:visible;border-radius:20px}
-  .search-top-decoration{position:absolute;top:-212.7px;left:108px;width:1600%;height:30px;object-fit:cover;display:block;z-index:-10;transform:scale(19);transform-origin:top center;pointer-events:none}
-  .mountain-search{width:100%;padding:14px 40px 8px 12px;font-size:14px;border:none;background:transparent;color:#333;outline:none}
-  .search-wrapper img{position:absolute;right:12px;bottom:8px;width:19px;height:19px;pointer-events:none}
-  .navbar-right{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:8px;border:1px solid rgba(255,255,255,.4);border-radius:8px;cursor:pointer;background:rgba(255,255,255,.05);transition:background .3s,transform .2s}
-  .navbar-right:hover{background:rgba(255,255,255,.1);transform:scale(1.05)}
-  .burger-line{width:26px;height:3px;background:#fff;border-radius:2px}
+    /* === NAVBAR === */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      z-index: 1000;
+    }
+    .navbar-left img {
+      height: 16px;
+      width: 24px;
+      cursor: pointer;
+      position: relative;
+    }
+    .navbar-left img:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #fff;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      top: 30px;
+      left: 0;
+      white-space: nowrap;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    }
+    .navbar-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      z-index: 1;
+      transform: translateY(12px);
+    }
+    .search-container {
+      width: 250px;
+      position: relative;
+      padding-top: 10px;
+      z-index: 1;
+    }
+    .search-wrapper {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 30px;
+      background: #fff;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      padding: 0 15px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: visible;
+      border-radius: 20px;
+    }
+    .search-top-decoration {
+      position: absolute;
+      top: -212.7px;
+      left: 108px;
+      width: 1600%;
+      height: 30px;
+      object-fit: cover;
+      display: block;
+      z-index: -10;
+      transform: scale(19);
+      transform-origin: top center;
+      pointer-events: none;
+    }
+    .mountain-search {
+      width: 100%;
+      padding: 14px 40px 8px 12px;
+      font-size: 14px;
+      border: none;
+      background: transparent;
+      color: #333;
+      outline: none;
+    }
+    .search-wrapper img {
+      position: absolute;
+      right: 12px;
+      bottom: 8px;
+      width: 19px;
+      height: 19px;
+      pointer-events: none;
+    }
+    .navbar-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 8px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.05);
+      transition: background 0.3s, transform 0.2s;
+    }
+    .navbar-right:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+    .burger-line {
+      width: 26px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+    }
+    .menu-overlay {
+      position: fixed;
+      top: 70px;
+      right: 0;
+      width: 35vw;
+      max-width: 360px;
+      background: rgba(17, 17, 17, 0.95);
+      color: #fff;
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      z-index: 9999;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .menu-overlay.open {
+      display: flex;
+    }
+    .menu-overlay a {
+      margin: 10px 0;
+      text-decoration: none;
+      color: #fff;
+      font-size: 1.1em;
+    }
 
-  .menu-overlay{position:fixed;top:70px;right:0;width:35vw;max-width:360px;background:rgba(17,17,17,.95);color:#fff;padding:20px;display:none;flex-direction:column;align-items:flex-start;z-index:9999;border-left:1px solid rgba(255,255,255,.08)}
-  .menu-overlay.open{display:flex}
-  .menu-overlay a{margin:10px 0;text-decoration:none;color:#fff;font-size:1.1em}
+    /* === BACK TO TOP === */
+    #backToTop {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, transform 0.3s;
+    }
+    #backToTop:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateX(-50%) scale(1.1);
+    }
+    #backToTop svg {
+      width: 24px;
+      height: 24px;
+    }
 
-  /* === BACK TO TOP === */
-  #backToTop{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(255,255,255,.2);backdrop-filter:blur(12px);color:#fff;border:1px solid rgba(255,255,255,.3);width:48px;height:48px;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;transition:background .3s,transform .3s}
-  #backToTop:hover{background:rgba(255,255,255,.3);transform:translateX(-50%) scale(1.1)}
-  #backToTop svg{width:24px;height:24px}
+    /* === FOOTER === */
+    footer {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 14px;
+      position: relative;
+      margin-top: 60px;
+    }
+    .footer-icons {
+      margin: 10px 0;
+    }
+    .footer-icons svg {
+      width: 32px;
+      height: 32px;
+      margin: 0 10px;
+      vertical-align: middle;
+      opacity: 0.8;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .footer-icons svg:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
 
-  /* === FOOTER === */
-  footer{background:#111;color:#ccc;text-align:center;padding:20px 10px;font-size:14px;position:relative;margin-top:60px}
-  .footer-icons{margin:10px 0}
-  .footer-icons svg{width:32px;height:32px;margin:0 10px;vertical-align:middle;opacity:.8;transition:opacity .3s,transform .3s}
-  .footer-icons svg:hover{opacity:1;transform:scale(1.1)}
+    .pressed {
+      transform: scale(0.97);
+      transition: transform 0.15s ease;
+    }
+    .lang-flag {
+      transition: transform 0.15s, background-color 0.2s, filter 0.2s;
+      cursor: pointer;
+      transform-origin: center;
+    }
+    .lang-flag:hover {
+      filter: brightness(1.1);
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
 
-  .pressed{transform:scale(.97);transition:transform .15s ease}
-  .lang-flag{transition:transform .15s, background-color .2s, filter .2s;cursor:pointer;transform-origin:center}
-  .lang-flag:hover{filter:brightness(1.1);background-color:rgba(255,255,255,.15);color:#fff}
+    /* ============================= */
+    /* === KOLIBA WEBSHOP DODACI === */
+    /* ============================= */
+    :root {
+      --cta: #1f7a6b;
+      --wood: #3a2a1c;
+      --woodLight: #5a4029;
+      --panel: rgba(255, 255, 255, 0.06);
+      --shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+    }
 
-  /* ============================= */
-  /* === KOLIBA WEBSHOP DODACI === */
-  /* ============================= */
+    /* HERO — planinarska koliba */
+    .hero {
+      margin-top: 70px;
+      position: relative;
+      min-height: 78vh;
+      display: grid;
+      place-items: center;
+      background: #000 url('images/shop-hero-cabin.jpg') center/cover no-repeat;
+      isolation: isolate;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(40% 28% at 65% 30%, rgba(255, 230, 170, 0.24), transparent 60%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85));
+      z-index: 0;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(1080px, 92vw);
+      text-align: center;
+      color: #fff;
+      padding: 28px 0 24px;
+    }
+    .hero-kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(6px);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+    .hero-title {
+      margin-top: 16px;
+      font-family: "Montserrat", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 4.8vw, 56px);
+      line-height: 1.04;
+    }
+    .hero-sub {
+      margin-top: 10px;
+      font-size: clamp(14px, 2.2vw, 18px);
+      opacity: 0.95;
+    }
 
-  :root{
-    --cta:#1f7a6b;      /* prirodna zelena */
-    --wood:#3a2a1c;     /* tamno drvo */
-    --woodLight:#5a4029;/* svjetlije drvo */
-    --panel:rgba(255,255,255,.06);
-    --shadow:0 12px 36px rgba(0,0,0,.35);
-  }
+    /* PUTOKAZI — kategorije */
+    .signs {
+      width: min(1080px, 92vw);
+      margin: 18px auto -36px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    .sign {
+      position: relative;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      background: linear-gradient(180deg, var(--woodLight), var(--wood));
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 8px 18px rgba(0, 0, 0, 0.35);
+      color: #f8f3ec;
+      font-weight: 700;
+      transition: transform 0.15s ease, filter 0.2s ease;
+    }
+    .sign:hover {
+      transform: translateY(-2px);
+    }
+    .sign.active {
+      outline: 2px dashed rgba(215, 181, 109, 0.75);
+      outline-offset: 2px;
+    }
 
-  /* HERO — planinarska koliba */
-  .hero{
-    margin-top:70px; position:relative; min-height:78vh; display:grid; place-items:center;
-    background:#000 url('images/shop-hero-cabin.jpg') center/cover no-repeat; isolation:isolate;
-  }
-  .hero::after{
-    content:""; position:absolute; inset:0;
-    background:
-      radial-gradient(40% 28% at 65% 30%, rgba(255,230,170,.24), transparent 60%),
-      linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.85));
-    z-index:0;
-  }
-  .hero-inner{ position:relative; z-index:1; width:min(1080px,92vw); text-align:center; color:#fff; padding:28px 0 24px }
-  .hero-kicker{
-    display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.35);
-    background:rgba(255,255,255,.08); backdrop-filter:blur(6px); letter-spacing:.12em; text-transform:uppercase; font-size:13px
-  }
-  .hero-title{ margin-top:16px; font-family:"Montserrat",system-ui,sans-serif; font-weight:800; font-size:clamp(28px,4.8vw,56px); line-height:1.04 }
-  .hero-sub{ margin-top:10px; font-size:clamp(14px,2.2vw,18px); opacity:.95 }
+    /* GRID PROIZVODA */
+    .shop-wrap {
+      background: #111;
+    }
+    .section-pad {
+      width: min(1180px, 94vw);
+      margin: 0 auto;
+      padding: 48px 0 40px;
+    }
+    .product-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 1080px) {
+      .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 820px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 540px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .card-cover {
+      aspect-ratio: 16 / 11;
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-body {
+      padding: 14px 14px 16px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(0, 0, 0, 0.35);
+    }
+    .title {
+      font-weight: 800;
+      font-family: "Montserrat";
+      font-size: 18px;
+      margin-top: 8px;
+    }
+    .desc {
+      color: #c8d0d8;
+      font-size: 14px;
+      margin-top: 6px;
+      min-height: 42px;
+    }
+    .price-row {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .price {
+      font-weight: 800;
+      color: #fff;
+    }
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--cta);
+      color: #fff;
+      transition: transform 0.12s ease, filter 0.2s ease;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
-  /* PUTOKAZI — kategorije */
-  .signs{ width:min(1080px,92vw); margin:18px auto -36px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center; position:relative; z-index:2 }
-  .sign{
-    position:relative; padding:12px 16px; border-radius:10px; cursor:pointer; user-select:none;
-    background:linear-gradient(180deg, var(--woodLight), var(--wood));
-    border:1px solid rgba(0,0,0,.25);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.35);
-    color:#f8f3ec; font-weight:700; transition:transform .15s ease, filter .2s ease;
-  }
-  .sign:hover{ transform:translateY(-2px) }
-  .sign.active{ outline:2px dashed rgba(215,181,109,.75); outline-offset:2px }
-
-  /* GRID PROIZVODA */
-  .shop-wrap{ background:#111; }
-  .section-pad{ width:min(1180px,94vw); margin:0 auto; padding:48px 0 40px }
-  .product-grid{ display:grid; gap:16px; grid-template-columns: repeat(4,1fr) }
-  @media (max-width:1080px){ .product-grid{ grid-template-columns: repeat(3,1fr) } }
-  @media (max-width:820px){ .product-grid{ grid-template-columns: repeat(2,1fr) } }
-  @media (max-width:540px){ .product-grid{ grid-template-columns: 1fr } }
-
-  .card{ background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:18px; overflow:hidden; box-shadow:var(--shadow) }
-  .card-cover{ aspect-ratio:16/11; width:100%; object-fit:cover; display:block }
-  .card-body{ padding:14px 14px 16px }
-  .badge{ display:inline-block; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.35) }
-  .title{ font-weight:800; font-family:"Montserrat"; font-size:18px; margin-top:8px }
-  .desc{ color:#c8d0d8; font-size:14px; margin-top:6px; min-height:42px }
-  .price-row{ margin-top:10px; display:flex; align-items:center; justify-content:space-between }
-  .price{ font-weight:800; color:#fff }
-  .btn{ appearance:none; border:0; border-radius:12px; padding:10px 12px; font-weight:800; cursor:pointer; background:var(--cta); color:#fff; transition:transform .12s ease, filter .2s ease }
-  .btn:active{ transform:scale(.97) }
-  .btn-ghost{ background:transparent; border:1px solid rgba(255,255,255,.25); color:#fff; border-radius:12px; padding:10px 12px; font-weight:700; cursor:pointer }
-
-  /* MINI KORPA — Ruksak */
-  .bag-toggle{ position:fixed; right:16px; bottom:18px; z-index:9999; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.08); backdrop-filter:blur(10px); color:#fff; padding:12px 14px; border-radius:999px; font-weight:800; cursor:pointer }
-  .bag-panel{ position:fixed; top:70px; right:0; width:min(420px,92vw); height:calc(100vh - 70px); background:rgba(12,13,15,.98); border-left:1px solid rgba(255,255,255,.08); transform:translateX(100%); transition:transform .25s ease; z-index:9998; display:grid; grid-template-rows:auto 1fr auto }
-  .bag-panel.open{ transform:translateX(0) }
-  .bag-head{ padding:16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.08) }
-  .bag-list{ overflow:auto; padding:12px 10px }
-  .bag-item{ display:grid; grid-template-columns:64px 1fr auto; gap:10px; align-items:center; border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:8px; margin-bottom:10px; background:rgba(255,255,255,.03) }
-  .bag-item img{ width:64px; height:64px; object-fit:cover; border-radius:10px }
-  .bag-foot{ padding:14px 16px; border-top:1px solid rgba(255,255,255,.08); display:grid; gap:10px }
-  .bag-total{ display:flex; align-items:center; justify-content:space-between; font-weight:800 }
-</style>
+    /* MINI KORPA — Ruksak */
+    .bag-toggle {
+      position: fixed;
+      right: 16px;
+      bottom: 18px;
+      z-index: 9999;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .bag-panel {
+      position: fixed;
+      top: 70px;
+      right: 0;
+      width: min(420px, 92vw);
+      height: calc(100vh - 70px);
+      background: rgba(12, 13, 15, 0.98);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      z-index: 9998;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    .bag-panel.open {
+      transform: translateX(0);
+    }
+    .bag-head {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .bag-list {
+      overflow: auto;
+      padding: 12px 10px;
+    }
+    .bag-item {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 8px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .bag-item img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .bag-foot {
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 10px;
+    }
+    .bag-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 800;
+    }
+  </style>
 </head>
-  
+
 <body>
   <div id="season-placeholder"></div>
 
@@ -197,10 +576,8 @@
   <section class="hero">
     <div class="hero-inner">
       <span class="hero-kicker" data-hr="Planinarska trgovinica" data-en="Hiker's Store">Planinarska trgovinica</span>
-      <h1 class="hero-title" data-hr="Topli ugođaj kolibe. Pametna oprema i vodiči."
-          data-en="Cozy cabin vibes. Smart gear & guides.">Topli ugođaj kolibe. Pametna oprema i vodiči.</h1>
-      <p class="hero-sub" data-hr="Ubaci u ruksak i kreni na uspon – bez kompliciranja."
-         data-en="Add to your pack and head out — no fuss.">Ubaci u ruksak i kreni na uspon – bez kompliciranja.</p>
+      <h1 class="hero-title" data-hr="Topli ugođaj kolibe. Pametna oprema i vodiči." data-en="Cozy cabin vibes. Smart gear & guides.">Topli ugođaj kolibe. Pametna oprema i vodiči.</h1>
+      <p class="hero-sub" data-hr="Ubaci u ruksak i kreni na uspon – bez kompliciranja." data-en="Add to your pack and head out — no fuss.">Ubaci u ruksak i kreni na uspon – bez kompliciranja.</p>
     </div>
   </section>
 
@@ -223,8 +600,7 @@
           <div class="card-body">
             <span class="badge">GPX</span>
             <div class="title" data-hr="Velebit: 12 staza (GPX paket)" data-en="Velebit: 12 trails (GPX pack)">Velebit: 12 staza (GPX paket)</div>
-            <div class="desc" data-hr="Kurirani tragovi s markacijama i ključnim waypointima."
-                 data-en="Curated tracks with markings and key waypoints.">Kurirani tragovi s markacijama i ključnim waypointima.</div>
+            <div class="desc" data-hr="Kurirani tragovi s markacijama i ključnim waypointima." data-en="Curated tracks with markings and key waypoints.">Kurirani tragovi s markacijama i ključnim waypointima.</div>
             <div class="price-row">
               <div class="price">9.90 €</div>
               <button class="btn add-to-bag" data-id="gpx-velebit" data-name="Velebit GPX pak" data-price="9.90" data-img="images/prod-gpx-velebit.jpg" data-type="digital">
@@ -239,8 +615,7 @@
           <div class="card-body">
             <span class="badge">PDF</span>
             <div class="title" data-hr="Zimski priručnik (mini PDF)" data-en="Winter Mini Guide (PDF)">Zimski priručnik (mini PDF)</div>
-            <div class="desc" data-hr="Brzi savjeti za dereze, slojevitost i orijentaciju."
-                 data-en="Quick tips for crampons, layering and nav.">Brzi savjeti za dereze, slojevitost i orijentaciju.</div>
+            <div class="desc" data-hr="Brzi savjeti za dereze, slojevitost i orijentaciju." data-en="Quick tips for crampons, layering and nav.">Brzi savjeti za dereze, slojevitost i orijentaciju.</div>
             <div class="price-row">
               <div class="price">2.49 €</div>
               <button class="btn add-to-bag" data-id="pdf-zima" data-name="Zimski mini PDF" data-price="2.49" data-img="images/prod-pdf-zima.jpg" data-type="digital">
@@ -255,8 +630,7 @@
           <div class="card-body">
             <span class="badge">Sticker</span>
             <div class="title" data-hr="Naljepnica “Do vrha!”" data-en="Sticker “To the top!”">Naljepnica “Do vrha!”</div>
-            <div class="desc" data-hr="UV-otporna vinil naljepnica 7×7 cm."
-                 data-en="UV resistant vinyl sticker 7×7 cm.">UV-otporna vinil naljepnica 7×7 cm.</div>
+            <div class="desc" data-hr="UV-otporna vinil naljepnica 7×7 cm." data-en="UV resistant vinyl sticker 7×7 cm.">UV-otporna vinil naljepnica 7×7 cm.</div>
             <div class="price-row">
               <div class="price">1.99 €</div>
               <button class="btn add-to-bag" data-id="sticker-peak" data-name="Naljepnica Do vrha" data-price="1.99" data-img="images/prod-sticker-peak.jpg" data-type="pod">
@@ -271,8 +645,7 @@
           <div class="card-body">
             <span class="badge">Suvenir</span>
             <div class="title" data-hr="Šalica “Koliba”" data-en="Mug “Cabin”">Šalica “Koliba”</div>
-            <div class="desc" data-hr="Keramička šalica 330 ml — print on demand."
-                 data-en="Ceramic mug 330 ml — print on demand.">Keramička šalica 330 ml — print on demand.</div>
+            <div class="desc" data-hr="Keramička šalica 330 ml — print on demand." data-en="Ceramic mug 330 ml — print on demand.">Keramička šalica 330 ml — print on demand.</div>
             <div class="price-row">
               <div class="price">12.90 €</div>
               <button class="btn add-to-bag" data-id="mug-cabin" data-name="Šalica Koliba" data-price="12.90" data-img="images/prod-mug-cabin.jpg" data-type="pod">
@@ -294,9 +667,16 @@
     </div>
     <div class="bag-list" id="bagList"></div>
     <div class="bag-foot">
-      <div class="bag-total"><span data-hr="Ukupno" data-en="Total">Ukupno</span><span id="bagTotal">0.00 €</span></div>
-      <button class="btn" id="btnCheckout"><span data-hr="Kreni na uspon" data-en="Head out">Kreni na uspon</span></button>
-      <button class="btn-ghost" id="btnClear"><span data-hr="Isprazni ruksak" data-en="Empty pack">Isprazni ruksak</span></button>
+      <div class="bag-total">
+        <span data-hr="Ukupno" data-en="Total">Ukupno</span>
+        <span id="bagTotal">0.00 €</span>
+      </div>
+      <button class="btn" id="btnCheckout">
+        <span data-hr="Kreni na uspon" data-en="Head out">Kreni na uspon</span>
+      </button>
+      <button class="btn-ghost" id="btnClear">
+        <span data-hr="Isprazni ruksak" data-en="Empty pack">Isprazni ruksak</span>
+      </button>
     </div>
   </aside>
 
@@ -340,90 +720,127 @@
     const footer = document.getElementById('footer');
 
     // === 2. JEZIK ===
-    function getInitialLang(){
-      const urlLang=new URLSearchParams(location.search).get('lang');
-      if(urlLang==='hr'||urlLang==='en') return urlLang;
-      try{const s=localStorage.getItem('preferredLang'); if(s==='hr'||s==='en') return s;}catch(e){}
+    function getInitialLang() {
+      const urlLang = new URLSearchParams(location.search).get('lang');
+      if (urlLang === 'hr' || urlLang === 'en') return urlLang;
+      try {
+        const s = localStorage.getItem('preferredLang');
+        if (s === 'hr' || s === 'en') return s;
+      } catch (e) {}
       return 'hr';
     }
-    function applyLanguage(lang){
-      try{ localStorage.setItem('preferredLang', lang); }catch(e){}
-      const u=new URL(location.href); u.searchParams.set('lang', lang); history.replaceState({},'',u.toString());
-      document.documentElement.lang=lang;
-      if(langToggle){
-        langToggle.src = (lang==='hr') ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-        langToggle.alt = (lang==='hr') ? 'Promijeni na engleski' : 'Switch to Croatian';
-        langToggle.setAttribute('data-tooltip', (lang==='hr')?'Promijeni jezik':'Change language');
-      }
-      if(searchInput){ searchInput.placeholder=(lang==='hr')?'Pretraži...':'Search...'; }
-      document.querySelectorAll('[data-hr]').forEach(el=>{
-        const txt=el.getAttribute(`data-${lang}`); if(txt==null) return;
-        if(txt.includes('<')) el.innerHTML=txt; else el.textContent=txt;
-      });
-      // ažuriraj i tekst u gumbu ruksaka
-      const bagToggle=document.getElementById('bagToggle');
-      if(bagToggle){
-        const base=(lang==='hr')?'Ruksak':'Pack';
-        bagToggle.firstChild.nodeValue = base + ' ('+ (window.__bag?.items.length||0) +')';
-      }
+
+    function setBagToggleLabel(count) {
+      const bagToggle = document.getElementById('bagToggle');
+      if (!bagToggle) return;
+      const base = (currentLang === 'hr') ? 'Ruksak' : 'Pack';
+      bagToggle.textContent = `${base} (${count})`;
     }
-    let currentLang=getInitialLang(); applyLanguage(currentLang);
-    langToggle?.addEventListener('click',()=>{ currentLang=(currentLang==='hr')?'en':'hr'; applyLanguage(currentLang); });
+
+    function applyLanguage(lang) {
+      try { localStorage.setItem('preferredLang', lang); } catch (e) {}
+      const u = new URL(location.href);
+      u.searchParams.set('lang', lang);
+      history.replaceState({}, '', u.toString());
+      document.documentElement.lang = lang;
+
+      if (langToggle) {
+        langToggle.src = (lang === 'hr') ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+        langToggle.alt = (lang === 'hr') ? 'Promijeni na engleski' : 'Switch to Croatian';
+        langToggle.setAttribute('data-tooltip', (lang === 'hr') ? 'Promijeni jezik' : 'Change language');
+      }
+      if (searchInput) {
+        searchInput.placeholder = (lang === 'hr') ? 'Pretraži...' : 'Search...';
+      }
+      document.querySelectorAll('[data-hr]').forEach(el => {
+        const txt = el.getAttribute(`data-${lang}`);
+        if (txt == null) return;
+        if (txt.includes('<')) el.innerHTML = txt;
+        else el.textContent = txt;
+      });
+      // ažuriraj labelu ruksaka
+      setBagToggleLabel(window.__bag?.items.length || 0);
+    }
+
+    let currentLang = getInitialLang();
+    applyLanguage(currentLang);
+
+    if (langToggle) {
+      langToggle.addEventListener('click', () => {
+        currentLang = (currentLang === 'hr') ? 'en' : 'hr';
+        applyLanguage(currentLang);
+      });
+    }
 
     // === 3. HAMBURGER MENI ===
-    menuToggle?.addEventListener('click',()=> menu.classList.toggle('open'));
-    window.addEventListener('click',e=>{ if(!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id!=='language-toggle'){ menu.classList.remove('open'); } });
-    document.querySelectorAll('.menu-overlay a').forEach(a=> a.addEventListener('click',()=> menu.classList.remove('open')));
+    if (menuToggle && menu) {
+      menuToggle.addEventListener('click', () => menu.classList.toggle('open'));
+      window.addEventListener('click', e => {
+        if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') {
+          menu.classList.remove('open');
+        }
+      });
+      document.querySelectorAll('.menu-overlay a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+    }
 
     // === 4. PUTOKAZI (filter kategorija) ===
-    (function mountCategoryFilter(){
-      const signs=document.querySelectorAll('.sign');
-      const cards=[...document.querySelectorAll('.card')];
-      signs.forEach(s=> s.addEventListener('click',()=>{
-        signs.forEach(x=>x.classList.remove('active')); s.classList.add('active');
-        const cat=s.dataset.cat||'all';
-        cards.forEach(c=>{
-          const show = (cat==='all') || (c.getAttribute('data-cat')===cat);
-          c.style.display = show ? 'block':'none';
+    (function mountCategoryFilter() {
+      const signs = document.querySelectorAll('.sign');
+      const cards = [...document.querySelectorAll('.card')];
+      if (!signs.length || !cards.length) return;
+      signs.forEach(s => s.addEventListener('click', () => {
+        signs.forEach(x => x.classList.remove('active'));
+        s.classList.add('active');
+        const cat = s.dataset.cat || 'all';
+        cards.forEach(c => {
+          const show = (cat === 'all') || (c.getAttribute('data-cat') === cat);
+          c.style.display = show ? 'block' : 'none';
         });
       }));
     })();
 
     // === 5. BACK TO TOP ===
-    window.addEventListener('scroll',()=>{
-      const scrollY=window.scrollY;
-      const footerTop=footer.getBoundingClientRect().top + window.scrollY;
-      const windowHeight=window.innerHeight;
-      backToTopBtn.style.display = scrollY>300 ? 'flex' : 'none';
-      backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop) ? `${(scrollY + windowHeight - footerTop) + 60}px` : '30px';
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      const windowHeight = window.innerHeight;
+      backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+      backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
+        ? `${(scrollY + windowHeight - footerTop) + 60}px`
+        : '30px';
     });
-    backToTopBtn.addEventListener('click',()=> window.scrollTo({top:0,behavior:'smooth'}));
+    backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
     // === 6. RUKSAK (mini-cart, localStorage) ===
-    const bagToggle=document.getElementById('bagToggle');
-    const bagPanel=document.getElementById('bagPanel');
-    const bagList=document.getElementById('bagList');
-    const bagTotal=document.getElementById('bagTotal');
-    const bagClose=document.getElementById('bagClose');
-    const btnCheckout=document.getElementById('btnCheckout');
-    const btnClear=document.getElementById('btnClear');
+    const bagToggle = document.getElementById('bagToggle');
+    const bagPanel = document.getElementById('bagPanel');
+    const bagList = document.getElementById('bagList');
+    const bagTotal = document.getElementById('bagTotal');
+    const bagClose = document.getElementById('bagClose');
+    const btnCheckout = document.getElementById('btnCheckout');
+    const btnClear = document.getElementById('btnClear');
 
-    function loadBag(){ try{ return JSON.parse(localStorage.getItem('__ma_bag__')||'{"items":[]}'); }catch(e){ return {items:[]} } }
-    function saveBag(){ localStorage.setItem('__ma_bag__', JSON.stringify(window.__bag)); }
-    function eur(n){ return (Number(n)||0).toFixed(2)+' €'; }
+    function loadBag() {
+      try { return JSON.parse(localStorage.getItem('__ma_bag__') || '{"items":[]}'); }
+      catch (e) { return { items: [] }; }
+    }
+    function saveBag() {
+      localStorage.setItem('__ma_bag__', JSON.stringify(window.__bag));
+    }
+    function eur(n) { return (Number(n) || 0).toFixed(2) + ' €'; }
 
-    function renderBag(){
-      bagList.innerHTML='';
-      let sum=0;
-      window.__bag.items.forEach((it,idx)=>{
-        sum += Number(it.price)*Number(it.qty);
-        const row=document.createElement('div');
-        row.className='bag-item';
-        row.innerHTML=`
+    function renderBag() {
+      bagList.innerHTML = '';
+      let sum = 0;
+      window.__bag.items.forEach((it, idx) => {
+        sum += Number(it.price) * Number(it.qty);
+        const row = document.createElement('div');
+        row.className = 'bag-item';
+        row.innerHTML = `
           <img src="${it.img}" alt="">
           <div>
             <div style="font-weight:800">${it.name}</div>
-            <div style="opacity:.8; font-size:13px">${it.type==='digital'?'Digital':'Fizičko'} • ${eur(it.price)} × ${it.qty}</div>
+            <div style="opacity:.8; font-size:13px">${it.type === 'digital' ? 'Digital' : 'Fizičko'} • ${eur(it.price)} × ${it.qty}</div>
           </div>
           <div style="display:grid; gap:6px">
             <button class="btn-ghost" data-act="minus" data-idx="${idx}">−</button>
@@ -433,53 +850,76 @@
         bagList.appendChild(row);
       });
       bagTotal.textContent = eur(sum);
-      const base=(currentLang==='hr')?'Ruksak':'Pack';
-      bagToggle.firstChild.nodeValue = base + ' ('+ window.__bag.items.length +')';
+      setBagToggleLabel(window.__bag.items.length);
       saveBag();
     }
-    function openBag(){ bagPanel.classList.add('open'); }
-    function closeBag(){ bagPanel.classList.remove('open'); }
+    function openBag() { bagPanel.classList.add('open'); }
+    function closeBag() { bagPanel.classList.remove('open'); }
 
-    window.__bag = loadBag(); renderBag();
-    bagToggle?.addEventListener('click', openBag);
-    bagClose?.addEventListener('click', closeBag);
-    bagList.addEventListener('click', e=>{
-      const btn=e.target.closest('button'); if(!btn) return;
-      const idx=+btn.dataset.idx; const act=btn.dataset.act;
-      const it=window.__bag.items[idx]; if(!it) return;
-      if(act==='plus') it.qty++;
-      if(act==='minus') it.qty=Math.max(1, it.qty-1);
-      if(act==='rm') window.__bag.items.splice(idx,1);
-      renderBag();
+    window.__bag = loadBag();
+    renderBag();
+
+    if (bagToggle) bagToggle.addEventListener('click', openBag);
+    if (bagClose) bagClose.addEventListener('click', closeBag);
+
+    if (bagList) {
+      bagList.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const idx = +btn.dataset.idx;
+        const act = btn.dataset.act;
+        const it = window.__bag.items[idx];
+        if (!it) return;
+        if (act === 'plus') it.qty++;
+        if (act === 'minus') it.qty = Math.max(1, it.qty - 1);
+        if (act === 'rm') window.__bag.items.splice(idx, 1);
+        renderBag();
+      });
+    }
+    if (btnClear) btnClear.addEventListener('click', () => { window.__bag.items = []; renderBag(); });
+    if (btnCheckout) btnCheckout.addEventListener('click', () => {
+      alert((currentLang === 'hr') ? 'Hvala! Plaćanje uskoro (Stripe/Shopify).' : 'Thanks! Payment soon (Stripe/Shopify).');
     });
-    btnClear?.addEventListener('click', ()=>{ window.__bag.items=[]; renderBag(); });
-    btnCheckout?.addEventListener('click', ()=>{
-      alert( (currentLang==='hr') ? 'Hvala! Plaćanje uskoro (Stripe/Shopify).' : 'Thanks! Payment soon (Stripe/Shopify).' );
-    });
-    document.querySelectorAll('.add-to-bag').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const item={ id:btn.dataset.id, name:btn.dataset.name, price:btn.dataset.price, img:btn.dataset.img, type:btn.dataset.type||'digital', qty:1 };
-        const found=window.__bag.items.find(x=>x.id===item.id);
-        if(found) found.qty++; else window.__bag.items.push(item);
-        renderBag(); openBag();
+
+    document.querySelectorAll('.add-to-bag').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = {
+          id: btn.dataset.id,
+          name: btn.dataset.name,
+          price: btn.dataset.price,
+          img: btn.dataset.img,
+          type: btn.dataset.type || 'digital',
+          qty: 1
+        };
+        const found = window.__bag.items.find(x => x.id === item.id);
+        if (found) found.qty++;
+        else window.__bag.items.push(item);
+        renderBag();
+        openBag();
       });
     });
 
-    // === 7. SEASON HTML I EFEKTI (ostavljeno kako radi kod tebe) ===
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedSeason = localStorage.getItem("activeSeason");
+    // === 7. SEASON HTML I EFEKTI ===
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedSeason = localStorage.getItem('activeSeason');
       if (savedSeason) {
         setTimeout(() => {
-          if (savedSeason === "winter") startWinterEffect(true);
-          else if (savedSeason === "summer") startSummerEffect(true);
-          else if (savedSeason === "spring") startSpringEffect(true);
-          else if (savedSeason === "autumn") startAutumnEffect(true);
+          if (savedSeason === 'winter') startWinterEffect(true);
+          else if (savedSeason === 'summer') startSummerEffect(true);
+          else if (savedSeason === 'spring') startSpringEffect(true);
+          else if (savedSeason === 'autumn') startAutumnEffect(true);
         }, 10000);
       }
-      fetch("season.html").then(res=>res.text()).then(html=>{
-        const ph=document.getElementById("season-placeholder"); if(ph) ph.innerHTML=html;
-        if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
-      });
+      fetch('season.html')
+        .then(res => res.text())
+        .then(html => {
+          const ph = document.getElementById('season-placeholder');
+          if (ph) ph.innerHTML = html;
+          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+        })
+        .catch(() => {
+          // Ako radiš lokalno file://, fetch neće proći — ali to ne smije srušiti stranicu
+        });
     });
   </script>
 </body>
