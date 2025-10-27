@@ -1,404 +1,230 @@
 <!DOCTYPE html>
 <html lang="hr">
-  
-  <head>
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mountain Adventures</title>
-  
-  <!-- === SEO OPIS (HR VERZIJA) === -->
-  <meta name="description" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu. Planinarske staze Velebita. Planinarske staze Nacionalni park Paklenica. Planinarske staze Nacionalni park Triglav. Planinarske staze Nacionalni park Sutjeska. Planinarske staze Nacionalni park Prokletije. Planinarske staze Nacionalni park Durmitor. Planinarske staze Nacionalni park Biogradska gora. Planinarske staze Nacionalni park Plitvička jezera. Planinarske staze Nacionalni park Sjeverni Velebit. Planinarske staze Nacionalni park Risnjak. Planinarske staze Nacionalni park Tara. Planinarske staze Nacionalni park Kopaonik. Planinarske staze Nacionalni park Đerdap. Planinarske staze Nacionalni park Mavrovo. Planinarske staze Nacionalni park Galicica. Planinarske staze Nacionalni park Pelister. Planinarske staze Julijske Alpe. Planinarske staze Nacionalni park Logarska dolina. Planinarske staze Park prirode Blidinje. Planinarske staze Prenj. Planinarske staze Park prirode Biokovo. Planinarske staze Komovi. Planinarske staze Rila. Planinarske staze Čvrsnica. Planinarske staze Hrvatske, Planinarske staze Bosne i Hercegovine, Planinarske staze Albanije, Planinarske staze Slovenije, Planinarske staze Makedonije, Planinarske staze Crne Gore i Planinarske staze Srbije.">
-      
-  <!-- === CANONICAL I HREFLANG === -->
-  <link rel="canonical" href="https://tvojadomena.com/" />
-  <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/" />
-  <link rel="alternate" hreflang="en" href="https://tvojadomena.com/index-en.html" />
-  <link rel="alternate" hreflang="x-default" href="https://tvojadomena.com/" />
-      
-  <!-- === OPEN GRAPH (HR + EN) === -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-hr="Avantura — Mountain Adventures" data-en="Adventure — Mountain Adventures">
+    Avantura — Mountain Adventures
+  </title>
+
+  <!-- === SEO (HR/EN) === -->
+  <meta name="description"
+        content="Unikatne planinarske avanture na Balkanu: vodiči, prijevoz od smještaja, gastronomski doživljaji i tematski obilasci. Rezerviraj sigurno i jednostavno." />
+  <link rel="canonical" href="https://tvojadomena.com/avantura.html" />
+  <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/avantura.html" />
+  <link rel="alternate" hreflang="en" href="https://tvojadomena.com/avantura-en.html" />
+  <link rel="alternate" hreflang="x-default" href="https://tvojadomena.com/avantura.html" />
+
+  <!-- === Open Graph / Twitter === -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://tvojadomena.com/" />
+  <meta property="og:url" content="https://tvojadomena.com/avantura.html" />
   <meta property="og:image" content="https://tvojadomena.com/images/cover.jpg" />
-
-  <meta property="og:title" content="Mountain Adventures – Planinarske staze Balkana" />
-  <meta property="og:description" content="Planinarske staze, GPS tragovi, planinarska oprema i inspirativne priče. Istraži Velebit, Durmitor, Prokletije i druge planine Balkana." />
-
-  <meta property="og:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails" />
-  <meta property="og:description" lang="en" content="Hiking trails, GPS tracks, hiking gear and inspiring stories. Explore Velebit, Durmitor, Prokletije and other Balkan mountains." />
-
-  <!-- === TWITTER CARDS (HR + EN) === -->
+  <meta property="og:title" content="Avantura — Mountain Adventures" />
+  <meta property="og:description" content="Unikatne planinarske avanture s vodičima, prijevozom i gastronomijom." />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Avantura — Mountain Adventures" />
+  <meta name="twitter:description" content="Planinarske ture + gastronomija + povijest + tematski obilasci." />
   <meta name="twitter:image" content="https://tvojadomena.com/images/cover.jpg" />
 
-  <meta name="twitter:title" content="Mountain Adventures – Planinarske staze Balkana" />
-  <meta name="twitter:description" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu." />
-
-  <meta name="twitter:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails" />
-  <meta name="twitter:description" lang="en" content="Explore the hiking trails of the Balkans. Detailed descriptions of hiking tours. Hiking gear. GPS tracks for hiking. Inspiring and educational hiking stories. The hiking world in one place." />
-
-  <!-- === Ikona za spremanje sadrzaja na mobitele === -->
+  <!-- Ikona / Fontovi / Sezone -->
   <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />
-      
-  <!-- === Link za fontove u naslovnoj slici === -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-
-  <!-- === SEASON STILOVI === -->
-  <link rel="stylesheet" href="season.css" />   
-      
-</head>
+  <link rel="stylesheet" href="season.css" />
 
   <style>
-       /* === OSNOVNI RESET I GLOBALNA PRAVILA === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    /* Naslanja se na tvoj postojeći global iz index.html */
+    :root{
+      --ink: #0b1220;
+      --muted:#64748b;
+      --panel: rgba(255,255,255,0.08);
+      --glass: rgba(255,255,255,0.06);
+      --cta:#35776a;
+      --ctaHover:#26594f;
+      --accent:#16a34a;
+      --chip:#1f2937;
+    }
 
-body {
-  font-family: Arial, sans-serif;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-  background-color: #000;
-}
+    body{ background:#000; color:#f7f8fa; font-family: Arial, sans-serif; overflow-x:hidden }
 
-/* === NAVIGACIJA / GORNJI IZBORNIK === */
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 70px;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-  z-index: 1000;
-}
+    /* Hero */
+    .hero-adv{
+      position:relative;
+      height:60vh;
+      background:url('images/adv-hero.jpg') center/cover no-repeat;
+      display:grid; place-items:center;
+    }
+    .hero-adv::after{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
+    }
+    .hero-wrap{
+      position:relative; z-index:1; text-align:center; padding:0 18px; max-width:980px;
+    }
+    .hero-kicker{
+      font:700 13px/1.2 system-ui, sans-serif; letter-spacing:.16em; text-transform:uppercase;
+      display:inline-block; padding:6px 10px; border:1px solid rgba(255,255,255,.25); border-radius:999px; backdrop-filter: blur(6px);
+      background:rgba(0,0,0,.25);
+    }
+    .hero-title{
+      margin-top:14px; font-family: 'Montserrat', sans-serif; font-weight:800;
+      font-size:clamp(28px, 4.8vw, 54px); line-height:1.08;
+      text-shadow: 0 8px 30px rgba(0,0,0,.45);
+    }
+    .hero-sub{
+      margin-top:10px; color:#e5e7eb; max-width:820px; margin-left:auto; margin-right:auto;
+      font-size:clamp(14px, 2.2vw, 18px);
+    }
+    .hero-chips{ margin-top:16px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center }
+    .chip{
+      padding:8px 12px; border-radius:999px; background:var(--chip); border:1px solid rgba(255,255,255,.08);
+      font-size:13px; color:#cbd5e1;
+    }
 
-/* === ZASTAVICA (tooltip na hover) === */
-.navbar-left img {
-  height: 16px;
-  width: 24px;
-  cursor: pointer;
-  position: relative;
-}
+    /* UVP / Zašto s nama */
+    .uvp{
+      padding:40px 16px; background:#0b0b0b;
+    }
+    .uvp-grid{
+      max-width:1100px; margin:0 auto; display:grid; gap:16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .uvp-card{
+      background:var(--glass); border:1px solid rgba(255,255,255,.10); border-radius:18px; padding:18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .uvp-title{ font-weight:700; margin-bottom:6px }
+    .uvp-desc{ color:#c7cbd4; font-size:14px }
 
-.navbar-left img:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  background: #fff;
-  color: #000;
-  padding: 4px 8px;
-  border-radius: 5px;
-  font-size: 12px;
-  top: 30px;
-  left: 0;
-  white-space: nowrap;
-  box-shadow: 0 0 6px rgba(0,0,0,0.2);
-}
+    /* Sekcija – istaknute ture */
+    .sec{
+      padding:44px 16px; background:#0b0d10;
+    }
+    .sec h2{ text-align:center; margin-bottom:10px; font-family:'Montserrat', sans-serif }
+    .sec p.lead{ text-align:center; color:#c7cbd4; margin:0 auto 22px; max-width:780px }
 
-/* === TRAŽILICA (CENTAR) === */
-.navbar-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-  transform: translateY(12px);
-}
+    .tour-grid{
+      max-width:1100px; margin:0 auto; display:grid; gap:16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .tour{
+      border:1px solid rgba(255,255,255,.10); border-radius:18px; overflow:hidden; background:#0e1116;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .tour:hover{ transform: translateY(-2px); box-shadow:0 14px 40px rgba(0,0,0,.35) }
+    .tour .img{ aspect-ratio: 16/10; width:100%; object-fit:cover; display:block }
+    .tour .cnt{ padding:16px }
+    .tour h3{ margin:0 0 6px; font-size:18px; font-weight:700 }
+    .meta{ display:flex; gap:10px; flex-wrap:wrap; color:#cbd5e1; font-size:13px; margin-bottom:8px }
+    .badge{ padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); font-size:12px }
+    .price{ margin-top:8px; font-weight:700 }
+    .cta-row{ display:flex; gap:10px; margin-top:12px }
+    .btn{
+      padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.12); cursor:pointer; font-weight:600;
+      background:#111; color:#fff; transition: background .2s ease, transform .1s ease;
+    }
+    .btn:hover{ background:#151515 }
+    .btn-cta{ background:var(--cta); border-color:transparent }
+    .btn-cta:hover{ background:var(--ctaHover) }
 
-.search-container {
-  width: 250px;
-  position: relative;
-  padding-top: 10px;
-  z-index: 1;
-}
+    /* Tematski obilasci – list */
+    .themes{
+      max-width:980px; margin:0 auto; display:grid; gap:12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .theme{
+      padding:16px; border-radius:16px; background:var(--glass); border:1px solid rgba(255,255,255,.10)
+    }
+    .theme h4{ margin:0 0 6px }
 
-.search-wrapper {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 30px; /* ili 55px ako dodaješ prostor za sliku */
-  background: #fff;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  padding: 0 15px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: visible;
-  border-radius: 20px;
-}
+    /* Logistika / tablica */
+    .logi{
+      max-width:980px; margin:0 auto; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; overflow:hidden
+    }
+    .logi table{ width:100%; border-collapse:collapse }
+    .logi th, .logi td{ padding:14px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left; font-size:14px }
+    .logi th{ background:rgba(255,255,255,.04) }
 
-/* === UKRASNA PLANINA IZNAD TRAŽILICE === */
-.search-top-decoration {
-  position: absolute;
-  top: -212.7px;
-  left: 108px;
-  width: 1600%;
-  height: 30px;
-  object-fit: cover;
-  display: block;
-  z-index: -10;
-  transform: scale(19);
-  transform-origin: top center;
-  pointer-events: none;
-}
-      
-/* === UNUTARNJI INPUT POLJE === */
-.mountain-search {
-  width: 100%;
-  padding: 14px 40px 8px 12px;
-  font-size: 14px;
-  border: none;
-  background: transparent;
-  color: #333;
-  outline: none;
-}
+    /* Akordeon (FAQ / uvod u ture) */
+    .accordion{ max-width:980px; margin:0 auto; }
+    .acc-item{ border:1px solid rgba(255,255,255,.10); border-radius:14px; background:#0d1015; margin-bottom:10px; overflow:hidden }
+    .acc-h{
+      width:100%; text-align:left; padding:14px 16px; background:#0f131a; color:#fff; border:none; cursor:pointer; font-weight:700;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .acc-c{ padding:14px 16px; color:#c7cbd4; display:none }
+    .acc-item.open .acc-c{ display:block }
 
-/* === IKONA UNUTAR TRAŽILICE === */
-.search-wrapper img {
-  position: absolute;
-  right: 12px;
-  bottom: 8px;
-  width: 19px;
-  height: 19px;
-  pointer-events: none;
-}
+    /* CTA blok */
+    .cta-wide{
+      max-width:980px; margin:0 auto; background:linear-gradient(135deg, rgba(22,163,74,.15), rgba(37,119,106,.15));
+      border:1px solid rgba(255,255,255,.1); border-radius:18px; padding:18px;
+      display:grid; gap:12px;
+    }
+    .cta-wide .row{ display:flex; gap:10px; flex-wrap:wrap }
+    .cta-wide input, .cta-wide select, .cta-wide textarea{
+      background:#0c0f14; color:#e5e7eb; border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:10px 12px; flex:1 1 220px;
+      font-size:14px
+    }
+    .cta-wide textarea{ min-height:100px; flex-basis:100% }
+    .note{ color:#a7abb4; font-size:12px }
 
-/* === DESNA STRANA (HAMBURGER IKONA) === */
-.navbar-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.05);
-  transition: background 0.3s, transform 0.2s;
-}
+    /* Reuse iz indexa: navbar, search, hamburger, back-to-top, footer... */
+    .navbar{
+      position: fixed; top:0; width:100%; height:70px; background: rgba(0,0,0,.7);
+      display:flex; align-items:center; justify-content:space-between; padding:0 15px; z-index:1000;
+    }
+    .navbar-left img{ height:16px; width:24px; cursor:pointer; position:relative }
+    .navbar-left img:hover::after{
+      content:attr(data-tooltip); position:absolute; background:#fff; color:#000; padding:4px 8px; border-radius:5px; font-size:12px;
+      top:30px; left:0; white-space:nowrap; box-shadow:0 0 6px rgba(0,0,0,.2);
+    }
+    .navbar-center{ flex:1; display:flex; justify-content:center; z-index:1; transform: translateY(12px) }
+    .search-container{ width:250px; position:relative; padding-top:10px; z-index:1 }
+    .search-wrapper{
+      position:relative; z-index:2; width:100%; height:30px; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.3);
+      padding:0 15px; display:flex; align-items:flex-end; justify-content:center; overflow:visible; border-radius:20px;
+    }
+    .search-top-decoration{
+      position:absolute; top:-212.7px; left:108px; width:1600%; height:30px; object-fit:cover; display:block; z-index:-10; transform:scale(19);
+      transform-origin: top center; pointer-events:none;
+    }
+    .mountain-search{ width:100%; padding:14px 40px 8px 12px; font-size:14px; border:none; background:transparent; color:#333; outline:none }
+    .search-wrapper img[alt="ikona za tražilicu"]{ position:absolute; right:12px; bottom:8px; width:19px; height:19px; pointer-events:none }
 
-.navbar-right:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.05);
-}
+    .navbar-right{ display:flex; flex-direction:column; justify-content:center; gap:5px; padding:8px;
+      border:1px solid rgba(255,255,255,.4); border-radius:8px; cursor:pointer; background:rgba(255,255,255,.05); transition: background .3s, transform .2s;
+    }
+    .navbar-right:hover{ background:rgba(255,255,255,.1); transform:scale(1.05) }
+    .burger-line{ width:26px; height:3px; background:#fff; border-radius:2px }
 
-.burger-line {
-  width: 26px;
-  height: 3px;
-  background-color: white;
-  border-radius: 2px;
-}
+    .menu-overlay{
+      position:fixed; top:70px; right:0; width:35vw; background:rgba(17,17,17,.95); color:#fff; padding:20px; display:none; flex-direction:column; align-items:flex-start; z-index:9999;
+    }
+    .menu-overlay.open{ display:flex }
+    .menu-overlay a{ margin:10px 0; text-decoration:none; color:#fff; font-size:1.1em }
 
-/* === MENI KOJI SE OTVARA === */
-.menu-overlay {
-  position: fixed;
-  top: 70px;
-  right: 0;
-  width: 35vw;
-  background-color: rgba(17, 17, 17, 0.95);
-  color: white;
-  padding: 20px;
-  display: none;
-  flex-direction: column;
-  align-items: flex-start;
-  z-index: 9999;
-}
+    #backToTop{
+      position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(255,255,255,.2); backdrop-filter: blur(12px);
+      color:#fff; border:1px solid rgba(255,255,255,.3); outline:none; width:48px; height:48px; border-radius:50%; cursor:pointer; display:none;
+      align-items:center; justify-content:center; transition: background .3s ease, transform .3s ease;
+    }
+    #backToTop:hover{ background:rgba(255,255,255,.3); transform:translateX(-50%) scale(1.1) }
+    #backToTop svg{ width:24px; height:24px }
 
-.menu-overlay.open {
-  display: flex;
-}
+    footer{ background:#111; color:#ccc; text-align:center; padding:20px 10px; font-size:14px; position:relative; margin-top:60px }
+    .footer-icons{ margin:10px 0 }
+    .footer-icons svg{ width:32px; height:32px; margin:0 10px; vertical-align:middle; opacity:.8; transition: opacity .3s, transform .3s }
+    .footer-icons svg:hover{ opacity:1; transform:scale(1.1) }
 
-.menu-overlay a {
-  margin: 10px 0;
-  text-decoration: none;
-  color: white;
-  font-size: 1.1em;
-}
-    
-.section {
-  height: 50vh;
-  overflow: hidden;
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  transition: transform 1s ease, opacity 1s ease;
-}
-
-/* === SEKCIJA KOJA JE VIDLJIVA U VIEWPORTU === */
-.section.visible {
-  opacity: 1;
-  transform: scale(1.05);
-  z-index: 2;
-}
-
-/* === SEKCIJE KOJE NISU U FOKUSU === */
-.section:not(.visible) {
-  opacity: 0.4;
-  transform: scale(1);
-}
-    
-.trail-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-    
-.trail-card {
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  background-color: #fafafa;  
-  transition: transform 0.2s ease;
-}
-    
-.trail-card:hover {
-  transform: scale(1.02);
-}
-    
-.trail-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-    
-.trail-card div {
-  padding: 1rem;
-}
-    
-.trail-card h3 {
-  margin-top: 0;
-}
-   
-#trail-filter-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  margin: 1rem 0 2rem;
-}
-    
-#trail-filter-form select,
-#trail-filter-form button {
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  border: 1px solid #888;
-  font-size: 1rem;
-}
-    
-#trail-filter-form button {
-  background-color: #35776a;
-  color: #fff;
-  cursor: pointer;
-}
-    
-#trail-filter-form button:hover {
-  background-color: #26594f;
-}
-
-   /* === GUMB "NA VRH STRANICE" (BACK TO TOP) === */
-#backToTop {
-  position: fixed;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  outline: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s ease, transform 0.3s ease;
-}
-
-#backToTop:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: translateX(-50%) scale(1.1);
-}
-
-#backToTop svg {
-  width: 24px;
-  height: 24px;
-}
-
-/* === FOOTER === */
-footer {
-  background: #111;
-  color: #ccc;
-  text-align: center;
-  padding: 20px 10px;
-  font-size: 14px;
-  position: relative;
-  margin-top: 60px;
-}
-
-.footer-icons {
-  margin: 10px 0;
-}
-
-.footer-icons svg {
-  width: 32px;
-  height: 32px;
-  margin: 0 10px;
-  vertical-align: middle;
-  opacity: 0.8;
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.footer-icons svg:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
- /* === OPĆI EFEKT PRITISKA (UNIVERZALNA KLASA .pressed) === */
-.pressed {
-  transform: scale(0.97);
-  transition: transform 0.15s ease;
-}
-
-/* === UNUTARNJI SLOJ I TEKST (KUTIJA SADRŽAJA) === */
-.content-box {
-  overflow: hidden;
-  position: relative; /* ili absolute ako već pozicioniraš sekcije */
-}   
-
- /* === DODATNI INTERAKTIVNI ELEMENTI: ZASTAVICE, IKONE, GUMBI === */
-.lang-flag {
-  transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
-  cursor: pointer;
-  transform-origin: center center;
-}
-
-/* === HOVER EFEKT ZA GORENJE ELEMENTE === */
-.lang-flag:hover {
-  filter: brightness(1.1);
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-      
-/* === SPRIJEČAVANJE ŠIRENJA VAN EKRANA === */
-  html, body {
-  overflow-x: hidden !important;
-}       
-    
+    html, body{ overflow-x:hidden !important }
   </style>
-  
+</head>
+
 <body>
   <div id="season-placeholder"></div>
 
-    <!-- === NAVIGACIJA (gore) === -->
+  <!-- === NAVBAR (identičan kao na index.html) === -->
   <div class="navbar">
     <div class="navbar-left">
       <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
@@ -419,8 +245,8 @@ footer {
     </div>
   </div>
 
-  <!-- === HAMBURGER MENI === -->
-    <div class="menu-overlay" id="menu">
+  <!-- === HAMBURGER (isti linkovi) === -->
+  <div class="menu-overlay" id="menu">
     <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
     <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
     <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
@@ -430,61 +256,299 @@ footer {
     <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
 
-  <section class="image-section" style="background-image: url('images/hero.jpg'); height: 50vh;">
-    <div class="overlay"></div>
+  <!-- === HERO === -->
+  <header class="hero-adv">
+    <div class="hero-wrap">
+      <span class="hero-kicker" data-hr="Vodiči • Prijevoz • Gastronomija" data-en="Guides • Transfers • Gastronomy">
+        Vodiči • Prijevoz • Gastronomija
+      </span>
+      <h1 class="hero-title"
+          data-hr="Avanture koje spajaju vrhove, tradiciju i priče"
+          data-en="Adventures blending peaks, tradition and stories">
+        Avanture koje spajaju vrhove, tradiciju i priče
+      </h1>
+      <p class="hero-sub"
+         data-hr="Planinarski uspon + lokalni zalogaj + kratki povijesni obilazak. Sve organizirano: preuzimanje ispred smještaja, oprema na upit i siguran povrat."
+         data-en="Hike + local flavors + a short historical visit. Fully organized: pick-up at your stay, gear on request and safe return.">
+         Planinarski uspon + lokalni zalogaj + kratki povijesni obilazak. Sve organizirano: preuzimanje ispred smještaja, oprema na upit i siguran povrat.
+      </p>
+      <div class="hero-chips">
+        <span class="chip" data-hr="Mali i privatni timovi" data-en="Small & private groups">Mali i privatni timovi</span>
+        <span class="chip" data-hr="Fleksibilni polasci" data-en="Flexible departures">Fleksibilni polasci</span>
+        <span class="chip" data-hr="Sigurnost na prvom mjestu" data-en="Safety first">Sigurnost na prvom mjestu</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- === UVP / Zašto s nama === -->
+  <section class="uvp">
+    <div class="uvp-grid">
+      <article class="uvp-card">
+        <div class="uvp-title" data-hr="Ovlašteni lokalni vodiči" data-en="Licensed local guides">Ovlašteni lokalni vodiči</div>
+        <p class="uvp-desc" data-hr="Poznajemo staze, vrijeme i prave skrivenosti regije." data-en="We know the trails, weather and the region’s hidden gems.">
+          Poznajemo staze, vrijeme i prave skrivenosti regije.
+        </p>
+      </article>
+      <article class="uvp-card">
+        <div class="uvp-title" data-hr="Prijevoz od vrata do vrata" data-en="Door-to-door transfers">Prijevoz od vrata do vrata</div>
+        <p class="uvp-desc" data-hr="Preuzimanje ispred smještaja i siguran povrat na dogovorenu točku." data-en="Pick-up at your stay and a safe return to the agreed point.">
+          Preuzimanje ispred smještaja i siguran povrat na dogovorenu točku.
+        </p>
+      </article>
+      <article class="uvp-card">
+        <div class="uvp-title" data-hr="Gastro dodatak" data-en="Gastro add-ons">Gastro dodatak</div>
+        <p class="uvp-desc" data-hr="Tradicionalna kuhinja (bosanska, hercegovačka, dalmatinska, slavonska) po upitu." data-en="Traditional cuisine (Bosnian, Herzegovinian, Dalmatian, Slavonian) on request.">
+          Tradicionalna kuhinja (bosanska, hercegovačka, dalmatinska, slavonska) po upitu.
+        </p>
+      </article>
+      <article class="uvp-card">
+        <div class="uvp-title" data-hr="Sigurnosni standardi" data-en="Safety standards">Sigurnosni standardi</div>
+        <p class="uvp-desc" data-hr="Tempo, oprema i rute prilagođeni tvom iskustvu." data-en="Pace, gear and routes tailored to your experience.">
+          Tempo, oprema i rute prilagođeni tvom iskustvu.
+        </p>
+      </article>
+    </div>
   </section>
 
-  <main>
-    <section style="background-color: #f8f8f8; text-align: center;">
-      <h1>Istraži planinarske staze Balkana</h1>
-      <p>Filtriraj i pronađi savršenu rutu prema težini, planini, trajanju ili tvojoj lokaciji.</p>
-    </section>
+  <!-- === ISTAKNUTE TURE === -->
+  <section class="sec">
+    <h2 data-hr="Istaknute ture" data-en="Featured tours">Istaknute ture</h2>
+    <p class="lead"
+       data-hr="Planinarski dan uz lokalnu priču i zalogaj — prikladno za početnike i iskusne."
+       data-en="A hiking day wrapped in local stories and flavors — suitable for beginners and experienced hikers.">
+       Planinarski dan uz lokalnu priču i zalogaj — prikladno za početnike i iskusne.
+    </p>
 
-    <section style="background-color: #e3ecec;">
-      <h2 style="text-align: center;">Filtriraj staze</h2>
-      <form id="trail-filter-form">
-        <select><option selected disabled>Odaberi planinu</option><option>Velebit</option><option>Triglav</option><option>Prokletije</option></select>
-        <select><option selected disabled>Težina</option><option>Lagana</option><option>Srednja</option><option>Teška</option></select>
-        <select><option selected disabled>Trajanje hoda</option><option>&lt;2h</option><option>2–5h</option><option>&gt;5h</option></select>
-        <select><option selected disabled>Udaljenost</option><option>&lt;10 km</option><option>10–30 km</option><option>&gt;30 km</option></select>
-        <button type="submit">Primijeni filtre</button>
-      </form>
-    </section>
-
-    <section class="trail-list">
-      <article class="trail-card">
-        <img src="images/velebit.jpg" alt="Velebit">
-        <div>
-          <h3>Premužićeva staza</h3>
-          <p><strong>Planina:</strong> Velebit</p>
-          <p><strong>Težina:</strong> Srednja</p>
-          <p><strong>Trajanje:</strong> 5h</p>
-          <p><strong>Udaljenost:</strong> 15 km</p>
-          <a href="#">Detalji &rarr;</a>
+    <div class="tour-grid">
+      <!-- Tour 1 -->
+      <article class="tour">
+        <img class="img" src="images/adv-velebit.jpg" alt="Velebit — Premužićeva staza">
+        <div class="cnt">
+          <h3 data-hr="Premužićeva + Zavižan" data-en="Premužićeva + Zavižan">Premužićeva + Zavižan</h3>
+          <div class="meta">
+            <span class="badge" data-hr="Srednje" data-en="Moderate">Srednje</span>
+            <span class="badge" data-hr="4–6 h hoda" data-en="4–6 h hiking">4–6 h hoda</span>
+            <span class="badge" data-hr="transfer uključen" data-en="transfer included">transfer uključen</span>
+          </div>
+          <p data-hr="Lagano valovita dionica s vrhunskim vidicima i pričama o gradnji staze."
+             data-en="Gentle undulating section with great vistas and stories behind the trail construction.">
+             Lagano valovita dionica s vrhunskim vidicima i pričama o gradnji staze.
+          </p>
+          <div class="price" data-hr="od 85 € po osobi" data-en="from €85 pp">od 85 € po osobi</div>
+          <div class="cta-row">
+            <button class="btn btn-cta" data-hr="Rezerviraj" data-en="Book now">Rezerviraj</button>
+            <a class="btn" href="#" data-hr="Pogledaj detalje" data-en="View details">Pogledaj detalje</a>
+          </div>
         </div>
       </article>
-      <article class="trail-card">
-        <img src="images/triglav.jpg" alt="Triglav">
-        <div>
-          <h3>Uspon na Triglav</h3>
-          <p><strong>Planina:</strong> Triglav</p>
-          <p><strong>Težina:</strong> Teška</p>
-          <p><strong>Trajanje:</strong> 8h</p>
-          <p><strong>Udaljenost:</strong> 12 km</p>
-          <a href="#">Detalji &rarr;</a>
+
+      <!-- Tour 2 -->
+      <article class="tour">
+        <img class="img" src="images/adv-triglav.jpg" alt="Triglav — uspon">
+        <div class="cnt">
+          <h3 data-hr="Triglav: klasični uspon" data-en="Triglav: classic ascent">Triglav: klasični uspon</h3>
+          <div class="meta">
+            <span class="badge" data-hr="Teško" data-en="Hard">Teško</span>
+            <span class="badge" data-hr="8–10 h hoda" data-en="8–10 h hiking">8–10 h hoda</span>
+            <span class="badge" data-hr="via ferrata" data-en="via ferrata">via ferrata</span>
+          </div>
+          <p data-hr="Sigurni uspon uz vodiča, opremu po potrebi i pripremu dan ranije."
+             data-en="Guided ascent with gear if needed, including pre-day briefing.">
+             Sigurni uspon uz vodiča, opremu po potrebi i pripremu dan ranije.
+          </p>
+          <div class="price" data-hr="od 160 € po osobi" data-en="from €160 pp">od 160 € po osobi</div>
+          <div class="cta-row">
+            <button class="btn btn-cta" data-hr="Rezerviraj" data-en="Book now">Rezerviraj</button>
+            <a class="btn" href="#" data-hr="Pogledaj detalje" data-en="View details">Pogledaj detalje</a>
+          </div>
         </div>
       </article>
-    </section>
-  </main>
 
-       <!-- === GUMB: VRATI NA VRH STRANICE === -->
+      <!-- Tour 3 -->
+      <article class="tour">
+        <img class="img" src="images/adv-blidinje.jpg" alt="Čvrsnica — Blidinje">
+        <div class="cnt">
+          <h3 data-hr="Čvrsnica + Blidinje &amp; gastro" data-en="Čvrsnica + Blidinje &amp; gastro">Čvrsnica + Blidinje &amp; gastro</h3>
+          <div class="meta">
+            <span class="badge" data-hr="Srednje" data-en="Moderate">Srednje</span>
+            <span class="badge" data-hr="4–7 h" data-en="4–7 h">4–7 h</span>
+            <span class="badge" data-hr="lokalni specijaliteti" data-en="local specialties">lokalni specijaliteti</span>
+          </div>
+          <p data-hr="Uspon do vidikovca + degustacija hercegovačkih jela i kratka povijesna ruta."
+             data-en="Summit viewpoint + Herzegovinian tasting and a short heritage loop.">
+             Uspon do vidikovca + degustacija hercegovačkih jela i kratka povijesna ruta.
+          </p>
+          <div class="price" data-hr="od 95 € po osobi" data-en="from €95 pp">od 95 € po osobi</div>
+          <div class="cta-row">
+            <button class="btn btn-cta" data-hr="Rezerviraj" data-en="Book now">Rezerviraj</button>
+            <a class="btn" href="#" data-hr="Pogledaj detalje" data-en="View details">Pogledaj detalje</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- === TEMATSKI OBILASCI (franjevački samostani, vinske ceste, izvori, crkve…) === -->
+  <section class="sec" style="background:#0a0c10">
+    <h2 data-hr="Tematski obilasci" data-en="Themed visits">Tematski obilasci</h2>
+    <p class="lead" data-hr="Uz planinarsku turu, biraj dodatne tematske rute — kultura, povijest, prirodni izvori."
+       data-en="Alongside your hike, add themed routes — culture, history, natural springs.">
+       Uz planinarsku turu, biraj dodatne tematske rute — kultura, povijest, prirodni izvori.
+    </p>
+    <div class="themes">
+      <article class="theme">
+        <h4 data-hr="Franjevački samostani" data-en="Franciscan monasteries">Franjevački samostani</h4>
+        <p data-hr="Posjet zbirkama i crkvama uz lokalnu priču." data-en="Visit collections and churches with local stories.">
+          Posjet zbirkama i crkvama uz lokalnu priču.
+        </p>
+      </article>
+      <article class="theme">
+        <h4 data-hr="Vinske ceste i podrumi" data-en="Wine roads & cellars">Vinske ceste i podrumi</h4>
+        <p data-hr="Degustacije autohtonih sorti i domaćih zalogaja." data-en="Tastings of local varieties and bites.">
+          Degustacije autohtonih sorti i domaćih zalogaja.
+        </p>
+      </article>
+      <article class="theme">
+        <h4 data-hr="Izvori i vidikovci" data-en="Springs & viewpoints">Izvori i vidikovci</h4>
+        <p data-hr="Lagani izleti do izvora i panoramskih tačaka." data-en="Easy trips to springs and panoramic points.">
+          Lagani izleti do izvora i panoramskih tačaka.
+        </p>
+      </article>
+      <article class="theme">
+        <h4 data-hr="Crkve i baština" data-en="Churches & heritage">Crkve i baština</h4>
+        <p data-hr="Kratke rute uz najvažnije lokalitete i tihi ambijent." data-en="Short routes past key heritage sites in calm settings.">
+          Kratke rute uz najvažnije lokalitete i tihi ambijent.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- === LOGISTIKA (prijevoz, oprema, hrana) === -->
+  <section class="sec" style="background:#0b0d10">
+    <h2 data-hr="Što je uključeno" data-en="What’s included">Što je uključeno</h2>
+    <p class="lead" data-hr="Jasno definirano što dobivaš, a što možeš dodati po želji." data-en="Clearly what’s included and optional add-ons.">
+      Jasno definirano što dobivaš, a što možeš dodati po želji.
+    </p>
+
+    <div class="logi" role="table" aria-label="Uključeno i dodaci">
+      <table>
+        <thead>
+          <tr>
+            <th data-hr="Stavka" data-en="Item">Stavka</th>
+            <th data-hr="Uključeno" data-en="Included">Uključeno</th>
+            <th data-hr="Dodatno" data-en="Add-on">Dodatno</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-hr="Ovlašteni vodič" data-en="Licensed guide">Ovlašteni vodič</td>
+            <td data-hr="Da" data-en="Yes">Da</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td data-hr="Prijevoz (povratni)" data-en="Transfers (round trip)">Prijevoz (povratni)</td>
+            <td data-hr="Na dogovorenim turama" data-en="On select tours">Na dogovorenim turama</td>
+            <td data-hr="Moguće uz nadoplatu" data-en="Available as add-on">Moguće uz nadoplatu</td>
+          </tr>
+          <tr>
+            <td data-hr="Oprema (štapovi, kacige…)" data-en="Gear (poles, helmets…)">Oprema (štapovi, kacige…)</td>
+            <td data-hr="Osnovno po upitu" data-en="Basic on request">Osnovno po upitu</td>
+            <td data-hr="Napredni setovi" data-en="Advanced sets">Napredni setovi</td>
+          </tr>
+          <tr>
+            <td data-hr="Hrana i piće" data-en="Food & drinks">Hrana i piće</td>
+            <td data-hr="Osnovni snack" data-en="Basic snack">Osnovni snack</td>
+            <td data-hr="Bosanska / Hercegovačka / Dalmatinska / Slavonska"
+                data-en="Bosnian / Herzegovinian / Dalmatian / Slavonian">
+                Bosanska / Hercegovačka / Dalmatinska / Slavonska
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- === Uvodi / FAQ kao akordeon === -->
+  <section class="sec" style="background:#0a0c10">
+    <h2 data-hr="Što očekivati na turi" data-en="What to expect">Što očekivati na turi</h2>
+    <div class="accordion" id="faq">
+      <div class="acc-item">
+        <button class="acc-h">
+          <span data-hr="Tempo i sigurnost" data-en="Pace & safety">Tempo i sigurnost</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="acc-c" data-hr="Tempo prilagođavamo grupi; sigurnost i procjena vremena su prioritet."
+             data-en="We adapt the pace to the group; safety and time assessment are our priority.">
+          Tempo prilagođavamo grupi; sigurnost i procjena vremena su prioritet.
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-h">
+          <span data-hr="Vrijeme i alternativa" data-en="Weather & alternatives">Vrijeme i alternativa</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="acc-c" data-hr="U slučaju pogoršanja vremena nudimo sigurniju rutu ili novi termin."
+             data-en="If weather worsens, we propose a safer route or a new date.">
+          U slučaju pogoršanja vremena nudimo sigurniju rutu ili novi termin.
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-h">
+          <span data-hr="Prehrambene želje" data-en="Dietary preferences">Prehrambene želje</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="acc-c" data-hr="Vegetarijanski/bezglutenski izbori mogući su uz najavu."
+             data-en="Vegetarian/gluten-free choices available with notice.">
+          Vegetarijanski/bezglutenski izbori mogući su uz najavu.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === CTA / Brza rezervacija (lead) === -->
+  <section class="sec" style="background:#0b0d10">
+    <h2 data-hr="Zatraži ponudu / termin" data-en="Request a date / quote">Zatraži ponudu / termin</h2>
+    <div class="cta-wide">
+      <div class="row">
+        <input id="leadName" type="text" placeholder="Ime i prezime / Name">
+        <input id="leadEmail" type="email" placeholder="Email">
+        <select id="leadTour">
+          <option value="" selected data-hr="Odaberi turu" data-en="Choose a tour">Odaberi turu</option>
+          <option data-hr="Premužićeva + Zavižan" data-en="Premužićeva + Zavižan">Premužićeva + Zavižan</option>
+          <option data-hr="Triglav: klasični uspon" data-en="Triglav: classic ascent">Triglav: klasični uspon</option>
+          <option data-hr="Čvrsnica + Blidinje &amp; gastro" data-en="Čvrsnica + Blidinje &amp; gastro">Čvrsnica + Blidinje &amp; gastro</option>
+        </select>
+      </div>
+      <div class="row">
+        <select id="leadPickup">
+          <option value="" selected data-hr="Mjesto preuzimanja (smještaj)" data-en="Pick-up location (stay)">Mjesto preuzimanja (smještaj)</option>
+          <option>Mostar</option><option>Posušje</option><option>Makarska</option><option>Zadar</option><option>Split</option>
+        </select>
+        <select id="leadFood">
+          <option value="" selected data-hr="Gastro dodatak (opcionalno)" data-en="Gastro add-on (optional)">Gastro dodatak (opcionalno)</option>
+          <option data-hr="Bosanska" data-en="Bosnian">Bosanska</option>
+          <option data-hr="Hercegovačka" data-en="Herzegovinian">Hercegovačka</option>
+          <option data-hr="Dalmatinska" data-en="Dalmatian">Dalmatinska</option>
+          <option data-hr="Slavonska" data-en="Slavonian">Slavonska</option>
+        </select>
+        <input id="leadPeople" type="number" min="1" placeholder="Osoba / People">
+      </div>
+      <textarea id="leadNote" placeholder="Poruka (npr. razina iskustva, željeni termin)…"></textarea>
+      <div class="row">
+        <button id="btnLead" class="btn btn-cta" data-hr="Pošalji upit" data-en="Send request">Pošalji upit</button>
+        <span class="note" data-hr="Odgovaramo u pravilu isti dan." data-en="We usually reply the same day.">Odgovaramo u pravilu isti dan.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- === BACK TO TOP === -->
   <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="18 15 12 9 6 15"></polyline>
     </svg>
   </button>
 
-  <!-- === FOOTER === -->
+  <!-- === FOOTER (isti kao index) === -->
   <footer id="footer">
     <div class="footer-icons">
       <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Link za Instagram">
@@ -504,168 +568,117 @@ footer {
     © Mountain Adventures. All rights reserved.
   </footer>
 
-<script src="season.js"></script>
-      
-<script>
-  // === 1. DEFINICIJE ELEMENTA ===
-  const langToggle = document.getElementById('language-toggle');
-  const searchInput = document.getElementById('search');
-  const menuToggle = document.getElementById('menu-toggle');
-  const menu = document.getElementById('menu');
-  const backToTopBtn = document.getElementById('backToTop');
-  const footer = document.getElementById('footer');
+  <!-- === Skripte (isti princip kao index) === -->
+  <script src="season.js"></script>
+  <script>
+    // === element references
+    const langToggle = document.getElementById('language-toggle');
+    const searchInput = document.getElementById('search');
+    const menuToggle  = document.getElementById('menu-toggle');
+    const menu        = document.getElementById('menu');
+    const backToTopBtn= document.getElementById('backToTop');
+    const footer      = document.getElementById('footer');
 
-
-  // === 2. JEZIČNI TOGGLE I PREVODI ===
-  
-// helper: početni jezik (URL ?lang > localStorage > 'hr')
-function getInitialLang() {
-  const urlLang = new URLSearchParams(location.search).get('lang');
-  if (urlLang === 'hr' || urlLang === 'en') return urlLang;
-  try {
-    const saved = localStorage.getItem('preferredLang');
-    if (saved === 'hr' || saved === 'en') return saved;
-  } catch(e) {}
-  return 'hr';
-}
-
-function applyLanguage(lang) {
-  // 1) spremi i URL
-  try { localStorage.setItem('preferredLang', lang); } catch(e) {}
-  const u = new URL(location.href);
-  u.searchParams.set('lang', lang);
-  history.replaceState({}, '', u.toString());
-
-  // 2) <html lang>, zastavica, tooltip, placeholder
-  document.documentElement.lang = lang;
-
-  if (langToggle) {
-    langToggle.src = lang === 'hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-    langToggle.alt = lang === 'hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
-    langToggle.setAttribute('data-tooltip', lang === 'hr' ? 'Promijeni jezik' : 'Change language');
-  }
-
-  if (searchInput) {
-    searchInput.placeholder = lang === 'hr' ? 'Pretraži...' : 'Search...';
-  }
-
-  // 3) prepiši sve elemente s data-hr / data-en
-  document.querySelectorAll('[data-hr]').forEach(el => {
-    const htmlContent = el.getAttribute(`data-${lang}`);
-    if (htmlContent == null) return;
-    if (htmlContent.includes('<')) el.innerHTML = htmlContent;
-    else el.textContent = htmlContent;
-  });
-
-  // 4) linkovi u meniju
-  document.querySelectorAll('.menu-overlay a').forEach(link => {
-    const txt = link.getAttribute(`data-${lang}`);
-    if (txt != null) link.textContent = txt;
-  });
-}
-
-// globalna var za trenutno stanje
-let currentLang = getInitialLang();
-applyLanguage(currentLang);
-
-// klik na zastavu — stvarni toggle
-if (langToggle) {
-  langToggle.addEventListener('click', () => {
-    currentLang = currentLang === 'hr' ? 'en' : 'hr';
-    applyLanguage(currentLang);
-  });
-}
-
-  // === 3. HAMBURGER MENI ===
-  menuToggle.addEventListener('click', () => {
-    menu.classList.toggle('open');
-  });
-
-  window.addEventListener('click', e => {
-    if (
-      !menu.contains(e.target) &&
-      !menuToggle.contains(e.target) &&
-      e.target.id !== 'language-toggle'
-    ) {
-      menu.classList.remove('open');
+    // === language helpers (isti kao na indexu)
+    function getInitialLang(){
+      const urlLang = new URLSearchParams(location.search).get('lang');
+      if (urlLang === 'hr' || urlLang === 'en') return urlLang;
+      try{ const saved = localStorage.getItem('preferredLang'); if (saved==='hr'||saved==='en') return saved; }catch(e){}
+      return 'hr';
     }
-  });
+    function applyLanguage(lang){
+      try{ localStorage.setItem('preferredLang', lang); }catch(e){}
+      const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState({}, '', u.toString());
+      document.documentElement.lang = lang;
+      if (langToggle){
+        langToggle.src = lang==='hr' ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
+        langToggle.alt = lang==='hr' ? 'Promijeni na engleski' : 'Switch to Croatian';
+        langToggle.setAttribute('data-tooltip', lang==='hr' ? 'Promijeni jezik' : 'Change language');
+      }
+      if (searchInput){ searchInput.placeholder = lang==='hr' ? 'Pretraži...' : 'Search...'; }
 
-  document.querySelectorAll('.menu-overlay a').forEach(link => {
-    link.addEventListener('click', () => {
-      menu.classList.remove('open');
-    });
-  });
+      // data-hr / data-en
+      document.querySelectorAll('[data-hr]').forEach(el=>{
+        const txt = el.getAttribute(`data-${lang}`);
+        if (txt == null) return;
+        if (txt.includes('<')) el.innerHTML = txt; else el.textContent = txt;
+      });
 
-  // === 4. PARALLAX SEKCIJE ===
-const sections = document.querySelectorAll('.section');  
-const observer = new IntersectionObserver(entries => {  
-  entries.forEach(entry => {  
-    entry.isIntersecting  
-      ? entry.target.classList.add('visible')  
-      : entry.target.classList.remove('visible');  
-  });  
-}, { threshold: 0.52 });  
+      // select options koji imaju data-hr/en
+      document.querySelectorAll('option[data-hr]').forEach(opt=>{
+        const t = opt.getAttribute(`data-${lang}`); if (t!=null) opt.textContent = t;
+      });
+    }
+    let currentLang = getInitialLang(); applyLanguage(currentLang);
+    if (langToggle){
+      langToggle.addEventListener('click', ()=>{
+        currentLang = currentLang==='hr' ? 'en' : 'hr';
+        applyLanguage(currentLang);
+      });
+    }
 
-sections.forEach(section => observer.observe(section));
-      
-
-  // === 5. BACK TO TOP GUMB ===
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-    const windowHeight = window.innerHeight;
-
-    backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
-    backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
-      ? `${(scrollY + windowHeight - footerTop) + 60}px`
-      : '30px';
-  });
-
-  backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  // === 6. EFEKT PRITISKA NA ZASTAVICU (ako vodi na link)
-  document.querySelectorAll('.lang-flag').forEach(el => {
-    el.addEventListener('click', e => {
-      const link = el.querySelector('a');
-      const href = link ? link.getAttribute('href') : null;
-
-      if (href) {
-        e.preventDefault();
-        el.classList.add('pressed');
-
-        setTimeout(() => {
-          el.classList.remove('pressed');
-          window.location.href = href;
-        }, 150);
+    // === hamburger
+    menuToggle.addEventListener('click', ()=> menu.classList.toggle('open'));
+    window.addEventListener('click', e=>{
+      if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id!=='language-toggle'){
+        menu.classList.remove('open');
       }
     });
-  });
+    document.querySelectorAll('.menu-overlay a').forEach(a=> a.addEventListener('click', ()=> menu.classList.remove('open')));
 
-  // === 7. SEASON HTML I EFEKTI (dinamički dio)
-  document.addEventListener("DOMContentLoaded", () => {
-    // === A) Ako postoji spremljena sezona, pokreni je nakon 10s
-    const savedSeason = localStorage.getItem("activeSeason");
-    if (savedSeason) {
-      setTimeout(() => {
-        if (savedSeason === "winter") startWinterEffect(true);
-        else if (savedSeason === "summer") startSummerEffect(true);
-        else if (savedSeason === "spring") startSpringEffect(true);
-        else if (savedSeason === "autumn") startAutumnEffect(true);
-      }, 10000);
-    }
+    // === back to top
+    window.addEventListener('scroll', ()=>{
+      const scrollY = window.scrollY;
+      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      const windowHeight = window.innerHeight;
+      backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+      backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop) ? `${(scrollY + windowHeight - footerTop) + 60}px` : '30px';
+    });
+    backToTopBtn.addEventListener('click', ()=> window.scrollTo({ top:0, behavior:'smooth' }));
 
-    // === B) Učitaj season.html i inicijaliziraj
-    fetch("season.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("season-placeholder").innerHTML = html;
-        if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+    // === accordion
+    document.querySelectorAll('.acc-item .acc-h').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const item = btn.closest('.acc-item');
+        item.classList.toggle('open');
       });
-  });
-</script>
-  
+    });
+
+    // === lightweight "lead" handler (placeholder bez backend-a)
+    document.getElementById('btnLead').addEventListener('click', ()=>{
+      const name = (document.getElementById('leadName').value || '').trim();
+      const email= (document.getElementById('leadEmail').value||'').trim();
+      const tour = document.getElementById('leadTour').value;
+      if (!name || !email || !tour){
+        alert(currentLang==='hr' ? 'Molimo ispuni ime, email i odaberi turu.' : 'Please enter name, email and choose a tour.');
+        return;
+      }
+      alert(currentLang==='hr'
+        ? 'Hvala! Javit ćemo se uskoro s ponudom.'
+        : 'Thank you! We will get back to you shortly with a quote.'
+      );
+      // ovdje kasnije: slanje na backend / email
+    });
+
+    // === sezone (isti princip kao na indexu)
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedSeason = localStorage.getItem("activeSeason");
+      if (savedSeason) {
+        setTimeout(() => {
+          if (savedSeason === "winter") startWinterEffect(true);
+          else if (savedSeason === "summer") startSummerEffect(true);
+          else if (savedSeason === "spring") startSpringEffect(true);
+          else if (savedSeason === "autumn") startAutumnEffect(true);
+        }, 10000);
+      }
+      fetch("season.html")
+        .then(res => res.text())
+        .then(html => {
+          const ph = document.getElementById("season-placeholder");
+          if (ph){ ph.innerHTML = html; }
+          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
+        });
+    });
+  </script>
 </body>
 </html>
