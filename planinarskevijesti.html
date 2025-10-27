@@ -240,67 +240,346 @@ body {
   transform: scale(1);
 }
     
-.trail-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-    
-.trail-card {
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  background-color: #fafafa;  
-  transition: transform 0.2s ease;
-}
-    
-.trail-card:hover {
-  transform: scale(1.02);
-}
-    
-.trail-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-    
-.trail-card div {
-  padding: 1rem;
-}
-    
-.trail-card h3 {
-  margin-top: 0;
-}
-   
-#trail-filter-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  margin: 1rem 0 2rem;
-}
-    
-#trail-filter-form select,
-#trail-filter-form button {
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  border: 1px solid #888;
-  font-size: 1rem;
-}
-    
-#trail-filter-form button {
-  background-color: #35776a;
-  color: #fff;
-  cursor: pointer;
-}
-    
-#trail-filter-form button:hover {
-  background-color: #26594f;
+/* === PLANINARSKE VIJESTI — LAYOUT (visitposusje + visit-blidinje mix) === */
+:root{
+  --newsBg:#f5f7f7;
+  --newsInk:#0d1b1e;
+  --newsMuted:#5b6b73;
+  --newsAccent:#1f7a6b;      /* prirodni zeleni ton */
+  --newsGold:#d7b56d;        /* premium detalji */
+  --newsShadow:0 12px 28px rgba(0,0,0,.18);
+  --chipBg:rgba(15,17,21,.06);
+  --chipInk:#0f1115;
 }
 
+/* HERO showcase (veliki ulaz) */
+.news-hero{
+  position:relative;
+  min-height:92vh;
+  display:grid;
+  place-items:center;
+  background: #000 url('images/hero-vijesti.jpg') center/cover no-repeat;
+  margin-top:70px; /* zbog fixed navbara */
+  isolation:isolate;
+}
+.news-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.75) 100%);
+  z-index:0;
+}
+.news-hero-inner{
+  position:relative;
+  z-index:1;
+  width:min(1080px,92vw);
+  color:#fff;
+  text-align:center;
+  padding:32px 0 24px;
+}
+.news-kicker{
+  display:inline-block;
+  padding:6px 10px;
+  font-size:13px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(6px);
+}
+.news-title{
+  margin-top:18px;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-weight:800;
+  font-size: clamp(28px, 5vw, 60px);
+  line-height:1.06;
+}
+.news-sub{
+  margin-top:12px;
+  font-size: clamp(14px, 2.4vw, 20px);
+  opacity:.92;
+}
+
+/* Hero kategorije (chips) */
+.news-chips{
+  margin-top:22px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.chip{
+  padding:10px 14px;
+  border-radius:999px;
+  background:var(--chipBg);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.18);
+  font-size:14px;
+  cursor:pointer;
+  transition:transform .15s ease, background .2s ease, color .2s ease;
+  user-select:none;
+}
+.chip:hover{ transform:translateY(-2px) }
+.chip.active{
+  background:rgba(255,255,255,.92);
+  color:#111;
+}
+
+/* FEATURE blok (1 velika + 4 istaknute) */
+.news-wrap{
+  background:var(--newsBg);
+  color:var(--newsInk);
+}
+.section-pad{
+  width:min(1180px,94vw);
+  margin:0 auto;
+  padding:42px 0 34px;
+}
+.feature-grid{
+  display:grid;
+  grid-template-columns: 1.6fr .9fr;
+  gap:18px;
+}
+@media (max-width: 980px){
+  .feature-grid{ grid-template-columns:1fr; }
+}
+.feature-main{
+  position:relative;
+  min-height:460px;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:var(--newsShadow);
+  background:#000 url('images/feature-main.jpg') center/cover no-repeat;
+}
+.feature-main::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.85) 100%);
+}
+.feature-main-body{
+  position:absolute; inset:auto 0 0 0;
+  padding:18px 18px 18px 18px;
+  color:#fff;
+}
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(15,17,21,.75);
+  color:#fff;
+  font-size:12px;
+  border:1px solid rgba(255,255,255,.18);
+}
+.feature-main h2{
+  margin-top:10px;
+  font-size: clamp(22px, 3.2vw, 36px);
+  line-height:1.12;
+  font-weight:800;
+}
+.feature-main p{
+  margin-top:8px;
+  opacity:.95;
+}
+.feature-cta{
+  display:inline-block;
+  margin-top:12px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:var(--newsAccent);
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+}
+
+/* 4 istaknute desno */
+.feature-side{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+}
+.card-mini{
+  position:relative;
+  min-height:98px;
+  border-radius:16px;
+  overflow:hidden;
+  background:#000 center/cover no-repeat;
+  box-shadow:var(--newsShadow);
+}
+.card-mini::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.70) 100%);
+}
+.card-mini-body{
+  position:absolute; inset:auto 10px 10px 10px;
+  color:#fff;
+  font-size:15px;
+  line-height:1.2;
+  font-weight:700;
+}
+
+/* MOZAIC (masonry) — premium osjećaj */
+.masonry{
+  column-width: 320px;
+  column-gap: 16px;
+  padding: 12px 0 24px;
+}
+@media (max-width: 680px){ .masonry{ column-width: 100%; } }
+.m-card{
+  display:inline-block;
+  width:100%;
+  margin: 0 0 16px;
+  border-radius:20px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:var(--newsShadow);
+  break-inside:avoid;
+}
+.m-cover{
+  width:100%;
+  height: clamp(160px, 32vw, 260px);
+  object-fit:cover;
+  display:block;
+}
+.m-body{
+  padding:16px 16px 18px;
+}
+.m-meta{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  font-size:12px;
+  color:var(--newsMuted);
+  margin-bottom:8px;
+}
+.m-title{
+  font-size: clamp(18px, 2.4vw, 22px);
+  line-height:1.18;
+  font-weight:800;
+  color:var(--newsInk);
+}
+.m-desc{
+  margin-top:6px;
+  color:#334155;
+}
+.m-read{
+  display:inline-block;
+  margin-top:10px;
+  font-weight:700;
+  text-decoration:none;
+  color:var(--newsAccent);
+}
+
+/* DESTINACIJE (promo grid) */
+.dest-grid{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:16px;
+}
+@media (max-width: 980px){ .dest-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px){ .dest-grid{ grid-template-columns: 1fr; } }
+.dest-card{
+  position:relative;
+  border-radius:20px;
+  overflow:hidden;
+  min-height:200px;
+  background:#000 center/cover no-repeat;
+  box-shadow:var(--newsShadow);
+}
+.dest-card::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.08) 0%, rgba(0,0,0,.80) 100%);
+}
+.dest-body{
+  position:absolute; inset:auto 14px 14px 14px;
+  color:#fff;
+}
+.dest-title{
+  font-weight:800;
+  font-size:20px;
+}
+.dest-sub{ opacity:.92 }
+
+/* EVENT traka (horiz. scroll) */
+.events-strip{
+  background:#0d1b1e;
+  color:#eaf2f2;
+}
+.events-row{
+  width:min(1180px,94vw);
+  margin:0 auto;
+  padding:18px 0 16px;
+  display:flex;
+  gap:10px;
+  overflow:auto;
+  scroll-snap-type:x mandatory;
+}
+.event-pill{
+  flex:0 0 auto;
+  scroll-snap-align:start;
+  background:#14272b;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  padding:12px 14px;
+  min-width:220px;
+}
+.event-pill strong{ color:#fff }
+
+/* CTA newsletter */
+.news-cta{
+  width:min(1080px,92vw);
+  margin:26px auto 46px;
+  background:linear-gradient(135deg, rgba(31,122,107,.12), rgba(215,181,109,.16));
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:22px;
+  padding:22px 20px;
+  display:grid;
+  gap:10px;
+  box-shadow:var(--newsShadow);
+}
+.news-cta h3{
+  font-size:clamp(20px,2.6vw,26px);
+  font-weight:800;
+}
+.news-cta form{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.news-cta input{
+  flex:1 1 260px;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.12);
+  font-size:15px;
+}
+.news-cta button{
+  padding:12px 16px;
+  border:none;
+  border-radius:12px;
+  background:var(--newsAccent);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* Sekcijske oznake */
+.section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  margin: 24px 0 12px;
+}
+.section-head h2{
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: clamp(22px, 2.8vw, 32px);
+  font-weight:800;
+}
+.section-head .note{ color:var(--newsMuted); font-size:14px }
+
+    
    /* === GUMB "NA VRH STRANICE" (BACK TO TOP) === */
 #backToTop {
   position: fixed;
@@ -368,12 +647,6 @@ footer {
   transition: transform 0.15s ease;
 }
 
-/* === UNUTARNJI SLOJ I TEKST (KUTIJA SADRŽAJA) === */
-.content-box {
-  overflow: hidden;
-  position: relative; /* ili absolute ako već pozicioniraš sekcije */
-}   
-
  /* === DODATNI INTERAKTIVNI ELEMENTI: ZASTAVICE, IKONE, GUMBI === */
 .lang-flag {
   transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
@@ -430,52 +703,208 @@ footer {
     <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
   </div>
 
-  <section class="image-section" style="background-image: url('images/hero.jpg'); height: 50vh;">
-    <div class="overlay"></div>
+
+   <main class="news-wrap">
+
+  <!-- 2.1 HERO SHOWCASE -->
+  <section class="news-hero">
+    <div class="news-hero-inner">
+      <span class="news-kicker" data-hr="Planinarske vijesti" data-en="Hiking News">Planinarske vijesti</span>
+      <h1 class="news-title" data-hr="Priče, događaji i savjeti s planina Balkana"
+          data-en="Stories, events & tips from the Balkan mountains">
+        Priče, događaji i savjeti s planina Balkana
+      </h1>
+      <p class="news-sub" data-hr="Najnovije iz Velebita, Blidinja, Prenja, Durmitora, Prokletija i dalje."
+         data-en="Latest from Velebit, Blidinje, Prenj, Durmitor, Prokletije & beyond.">
+        Najnovije iz Velebita, Blidinja, Prenja, Durmitora, Prokletija i dalje.
+      </p>
+
+      <!-- Hero kategorije -->
+      <div class="news-chips" id="newsChips">
+        <button class="chip active" data-cat="all" data-hr="Sve" data-en="All">Sve</button>
+        <button class="chip" data-cat="dogadanja" data-hr="Događanja" data-en="Events">Događanja</button>
+        <button class="chip" data-cat="savjeti" data-hr="Savjeti" data-en="Tips">Savjeti</button>
+        <button class="chip" data-cat="oprema" data-hr="Oprema" data-en="Gear">Oprema</button>
+        <button class="chip" data-cat="priroda" data-hr="Priroda" data-en="Nature">Priroda</button>
+        <button class="chip" data-cat="sigurnost" data-hr="Sigurnost" data-en="Safety">Sigurnost</button>
+      </div>
+    </div>
   </section>
 
-  <main>
-    <section style="background-color: #f8f8f8; text-align: center;">
-      <h1>Istraži planinarske staze Balkana</h1>
-      <p>Filtriraj i pronađi savršenu rutu prema težini, planini, trajanju ili tvojoj lokaciji.</p>
-    </section>
-
-    <section style="background-color: #e3ecec;">
-      <h2 style="text-align: center;">Filtriraj staze</h2>
-      <form id="trail-filter-form">
-        <select><option selected disabled>Odaberi planinu</option><option>Velebit</option><option>Triglav</option><option>Prokletije</option></select>
-        <select><option selected disabled>Težina</option><option>Lagana</option><option>Srednja</option><option>Teška</option></select>
-        <select><option selected disabled>Trajanje hoda</option><option>&lt;2h</option><option>2–5h</option><option>&gt;5h</option></select>
-        <select><option selected disabled>Udaljenost</option><option>&lt;10 km</option><option>10–30 km</option><option>&gt;30 km</option></select>
-        <button type="submit">Primijeni filtre</button>
-      </form>
-    </section>
-
-    <section class="trail-list">
-      <article class="trail-card">
-        <img src="images/velebit.jpg" alt="Velebit">
-        <div>
-          <h3>Premužićeva staza</h3>
-          <p><strong>Planina:</strong> Velebit</p>
-          <p><strong>Težina:</strong> Srednja</p>
-          <p><strong>Trajanje:</strong> 5h</p>
-          <p><strong>Udaljenost:</strong> 15 km</p>
-          <a href="#">Detalji &rarr;</a>
+  <!-- 2.2 FEATURE BLOK -->
+  <section class="section-pad">
+    <div class="feature-grid">
+      <!-- Veliki feature -->
+      <article class="feature-main" style="background-image:url('images/feature-durmitorski-prsteni.jpg')">
+        <div class="feature-main-body">
+          <span class="badge" data-hr="Reportaža" data-en="Feature">Reportaža</span>
+          <h2 data-hr="Durmitorski prsteni: kružna tura koja oduzima dah"
+              data-en="Durmitor Rings: a breathtaking loop hike">
+            Durmitorski prsteni: kružna tura koja oduzima dah
+          </h2>
+          <p data-hr="Kako isplanirati 22 km po grebenima s pogledima na Ledenu pećinu i planinska jezera."
+             data-en="How to plan 22 km over ridgelines with views of ice cave and alpine lakes.">
+            Kako isplanirati 22 km po grebenima s pogledima na Ledenu pećinu i planinska jezera.
+          </p>
+          <a class="feature-cta" href="#" data-hr="Pročitaj" data-en="Read">Pročitaj</a>
         </div>
       </article>
-      <article class="trail-card">
-        <img src="images/triglav.jpg" alt="Triglav">
-        <div>
-          <h3>Uspon na Triglav</h3>
-          <p><strong>Planina:</strong> Triglav</p>
-          <p><strong>Težina:</strong> Teška</p>
-          <p><strong>Trajanje:</strong> 8h</p>
-          <p><strong>Udaljenost:</strong> 12 km</p>
-          <a href="#">Detalji &rarr;</a>
+
+      <!-- 4 istaknute kartice desno -->
+      <div class="feature-side">
+        <a class="card-mini" href="#" style="background-image:url('images/mini-velebit.jpg')" data-cat="savjeti">
+          <div class="card-mini-body" data-hr="5 grešaka na Premužićevoj stazi" data-en="5 mistakes on Premužićeva trail">5 grešaka na Premužićevoj stazi</div>
+        </a>
+        <a class="card-mini" href="#" style="background-image:url('images/mini-blidinje.jpg')" data-cat="dogadanja">
+          <div class="card-mini-body" data-hr="Zima na Blidinju: vikend festival" data-en="Blidinje winter: weekend festival">Zima na Blidinju: vikend festival</div>
+        </a>
+        <a class="card-mini" href="#" style="background-image:url('images/mini-oprema.jpg')" data-cat="oprema">
+          <div class="card-mini-body" data-hr="Test: dereze za miješane uvjete" data-en="Test: crampons for mixed terrain">Test: dereze za miješane uvjete</div>
+        </a>
+        <a class="card-mini" href="#" style="background-image:url('images/mini-sigurnost.jpg')" data-cat="sigurnost">
+          <div class="card-mini-body" data-hr="Lavinski bilten: kako čitati" data-en="Avalanche bulletin: how to read">Lavinski bilten: kako čitati</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.3 MOZAIK (masonry) VIJESTI -->
+  <section class="section-pad" style="padding-top:0">
+    <div class="section-head">
+      <h2 data-hr="Najnovije priče" data-en="Latest stories">Najnovije priče</h2>
+      <span class="note" data-hr="Ažuriramo tjedno" data-en="Updated weekly">Ažuriramo tjedno</span>
+    </div>
+
+    <div class="masonry" id="newsMasonry">
+      <!-- Kartice s kategorijama u data-cat (za filter) -->
+      <article class="m-card" data-cat="priroda">
+        <img class="m-cover" loading="lazy" src="images/mosaic-prenjski-vrhovi.jpg" alt="Prenjski vrhovi">
+        <div class="m-body">
+          <div class="m-meta"><span>📍 Prenj</span><span>•</span><span>7 min</span></div>
+          <h3 class="m-title" data-hr="Prenjski vrhovi nakon prve snježne epizode"
+              data-en="Prenj peaks after the first snow episode">
+            Prenjski vrhovi nakon prve snježne epizode
+          </h3>
+          <p class="m-desc" data-hr="Galerija rujanskih prizora i savjeti što ponijeti kad zima iznenadi jesenski uspon."
+             data-en="A September photo set and what to pack when winter surprises autumn ascents.">
+            Galerija rujanskih prizora i savjeti što ponijeti kad zima iznenadi jesenski uspon.
+          </p>
+          <a class="m-read" href="#" data-hr="Pročitaj" data-en="Read">Pročitaj</a>
         </div>
       </article>
-    </section>
-  </main>
+
+      <article class="m-card" data-cat="oprema">
+        <img class="m-cover" loading="lazy" src="images/mosaic-ruksak-45l.jpg" alt="Planinarski ruksak 45l">
+        <div class="m-body">
+          <div class="m-meta"><span>🎒 Oprema</span><span>•</span><span>4 min</span></div>
+          <h3 class="m-title" data-hr="Koji je idealan ruksak za zimske ture (35–45l)?"
+              data-en="Which winter pack (35–45l) is ideal?">
+            Koji je idealan ruksak za zimske ture (35–45l)?
+          </h3>
+          <p class="m-desc" data-hr="Usporedili smo 6 modela s fokusom na udobnost, nosače opreme i trajnost."
+             data-en="We compared 6 models focusing on comfort, gear carry and durability.">
+            Usporedili smo 6 modela s fokusom na udobnost, nosače opreme i trajnost.
+          </p>
+          <a class="m-read" href="#" data-hr="Pročitaj" data-en="Read">Pročitaj</a>
+        </div>
+      </article>
+
+      <article class="m-card" data-cat="dogadanja">
+        <img class="m-cover" loading="lazy" src="images/mosaic-maraton-triglav.jpg" alt="Maraton pod Triglavom">
+        <div class="m-body">
+          <div class="m-meta"><span>🏁 Događanja</span><span>•</span><span>3 min</span></div>
+          <h3 class="m-title" data-hr="Trail maraton pod Triglavom: prijave otvorene"
+              data-en="Trail marathon near Triglav: registrations open">
+            Trail maraton pod Triglavom: prijave otvorene
+          </h3>
+          <p class="m-desc" data-hr="Datum, startnine, staze i kako trenirati kroz zimu."
+             data-en="Dates, fees, routes and how to train through winter.">
+            Datum, startnine, staze i kako trenirati kroz zimu.
+          </p>
+          <a class="m-read" href="#" data-hr="Detalji" data-en="Details">Detalji</a>
+        </div>
+      </article>
+
+      <article class="m-card" data-cat="sigurnost">
+        <img class="m-cover" loading="lazy" src="images/mosaic-sigurnost-led.jpg" alt="Sigurnost na ledu">
+        <div class="m-body">
+          <div class="m-meta"><span>🧭 Sigurnost</span><span>•</span><span>6 min</span></div>
+          <h3 class="m-title" data-hr="Ledene plohe na stazama: kako prepoznati rizične dionice"
+              data-en="Icy sections: spotting risk segments">
+            Ledene plohe na stazama: kako prepoznati rizične dionice
+          </h3>
+          <p class="m-desc" data-hr="Krplje, dereze, štapovi – i kada se vratiti natrag."
+             data-en="Snowshoes, crampons, poles – and when to turn back.">
+            Krplje, dereze, štapovi – i kada se vratiti natrag.
+          </p>
+          <a class="m-read" href="#" data-hr="Pročitaj" data-en="Read">Pročitaj</a>
+        </div>
+      </article>
+
+      <article class="m-card" data-cat="savjeti">
+        <img class="m-cover" loading="lazy" src="images/mosaic-pakiranje-zima.jpg" alt="Pakiranje za zimu">
+        <div class="m-body">
+          <div class="m-meta"><span>💡 Savjeti</span><span>•</span><span>5 min</span></div>
+          <h3 class="m-title" data-hr="Što spakirati za jednodnevni zimski uspon"
+              data-en="What to pack for a winter day hike">
+            Što spakirati za jednodnevni zimski uspon
+          </h3>
+          <p class="m-desc" data-hr="Checklist za toplotu, sigurnost i orijentaciju."
+             data-en="A checklist for warmth, safety and navigation.">
+            Checklist za toplotu, sigurnost i orijentaciju.
+          </p>
+          <a class="m-read" href="#" data-hr="Preuzmi checklistu" data-en="Get checklist">Preuzmi checklistu</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 2.4 DESTINACIJE — promo blok kao na TZ webovima -->
+  <section class="section-pad">
+    <div class="section-head">
+      <h2 data-hr="Istraži destinacije" data-en="Explore destinations">Istraži destinacije</h2>
+      <span class="note" data-hr="Kurirana selekcija" data-en="Curated selection">Kurirana selekcija</span>
+    </div>
+    <div class="dest-grid">
+      <a class="dest-card" href="staze.html#velebit" style="background-image:url('images/dest-velebit.jpg')">
+        <div class="dest-body"><div class="dest-title">Velebit</div><div class="dest-sub">Staze i vidikovci</div></div>
+      </a>
+      <a class="dest-card" href="staze.html#blidinje" style="background-image:url('images/dest-blidinje.jpg')">
+        <div class="dest-body"><div class="dest-title">Blidinje</div><div class="dest-sub">Park prirode</div></div>
+      </a>
+      <a class="dest-card" href="staze.html#prenj" style="background-image:url('images/dest-prenj.jpg')">
+        <div class="dest-body"><div class="dest-title">Prenj</div><div class="dest-sub">Divlji grebeni</div></div>
+      </a>
+      <a class="dest-card" href="staze.html#durmitor" style="background-image:url('images/dest-durmitor.jpg')">
+        <div class="dest-body"><div class="dest-title">Durmitor</div><div class="dest-sub">Lednička jezera</div></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 2.5 EVENT STRIP (horiz scroll) -->
+  <section class="events-strip">
+    <div class="events-row">
+      <div class="event-pill"><strong>📅 16.11.</strong><br> Zimska škola alpinizma — Mostar</div>
+      <div class="event-pill"><strong>📅 24.11.</strong><br> Trail Blidinje Night Run</div>
+      <div class="event-pill"><strong>📅 08.12.</strong><br> Sigurnost na snijegu — radionica</div>
+      <div class="event-pill"><strong>📅 14.12.</strong><br> Prenj Photo Walk</div>
+      <div class="event-pill"><strong>📅 21.12.</strong><br> Zimski uspon na Čvrsnicu</div>
+    </div>
+  </section>
+
+  <!-- 2.6 CTA NEWSLETTER -->
+  <section class="news-cta">
+    <h3 data-hr="Primaj planinarske vijesti i savjete" data-en="Get hiking news & tips">
+      Primaj planinarske vijesti i savjete
+    </h3>
+    <form onsubmit="event.preventDefault(); alert(currentLang==='hr'?'Hvala na prijavi!':'Thanks for subscribing!')">
+      <input type="email" placeholder="email@domena.com" required>
+      <button type="submit" data-hr="Pretplati se" data-en="Subscribe">Pretplati se</button>
+    </form>
+  </section>
+
+</main>
+  
 
        <!-- === GUMB: VRATI NA VRH STRANICE === -->
   <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
@@ -665,6 +1094,65 @@ sections.forEach(section => observer.observe(section));
         if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
       });
   });
+
+  /* === PLANINARSKE VIJESTI — JS (filter + i18n prepis) === */
+
+// Filter preko chipova (radi na data-cat)
+(function newsFilter(){
+  const chips = document.querySelectorAll('.news-chips .chip');
+  const featureSide = document.querySelectorAll('.feature-side .card-mini');
+  const mosaic = document.querySelectorAll('.masonry .m-card');
+
+  function applyFilter(cat){
+    const match = (el) => cat==='all' || (el.getAttribute('data-cat')||'').includes(cat);
+
+    featureSide.forEach(el => {
+      el.style.display = match(el)? 'block':'none';
+    });
+    mosaic.forEach(el => {
+      el.style.display = match(el)? 'inline-block':'none';
+    });
+  }
+  chips.forEach(ch => {
+    ch.addEventListener('click', () => {
+      chips.forEach(c=>c.classList.remove('active'));
+      ch.classList.add('active');
+      applyFilter(ch.dataset.cat || 'all');
+    });
+  });
+  applyFilter('all');
+})();
+
+// Prepiši tekstove na osnovu postojećeg applyLanguage()
+(function patchNewsLang(){
+  // pozovi nakon 0ms da uhvati DOM
+  setTimeout(()=>{
+    if (typeof currentLang !== 'string') return;
+    // prepiši data-hr/en u novim sekcijama
+    document.querySelectorAll('[data-hr]').forEach(el=>{
+      const htmlContent = el.getAttribute(`data-${currentLang}`);
+      if (htmlContent == null) return;
+      if (htmlContent.includes('<')) el.innerHTML = htmlContent;
+      else el.textContent = htmlContent;
+    });
+    // chipovi
+    document.querySelectorAll('.news-chips .chip').forEach(ch=>{
+      const txt = ch.getAttribute(`data-${currentLang}`);
+      if (txt) ch.textContent = txt;
+    });
+  },0);
+})();
+
+// Lazy fix za masonry “skok” kad se slike učitaju (reflow)
+(function masonryReflowOnLoad(){
+  const ms = document.getElementById('newsMasonry');
+  if (!ms) return;
+  const imgs = ms.querySelectorAll('img[loading="lazy"]');
+  let timer=null;
+  function bump(){ clearTimeout(timer); timer=setTimeout(()=>{ ms.style.columnGap='15px'; ms.offsetHeight; ms.style.columnGap='16px'; },30); }
+  imgs.forEach(img => img.addEventListener('load', bump, {once:false}));
+})();
+  
 </script>
   
 </body>
