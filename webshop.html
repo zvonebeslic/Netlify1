@@ -180,7 +180,7 @@
       display: none;
       flex-direction: column;
       align-items: flex-start;
-      z-index: 9999;
+      z-index: 9999 !important;
       border-left: 1px solid rgba(255, 255, 255, 0.08);
     }
     .menu-overlay.open {
@@ -199,7 +199,7 @@
       bottom: 22px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 9999;
+      z-index: 9999 !important;
       background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(12px);
       color: #fff;
@@ -551,7 +551,7 @@
       transition: background .25s ease;
     }
     /* sav sadržaj iznad overlay-a */
-    .navbar, .hero, .shop-wrap, footer, .menu-overlay, #bagPanel, #backToTop {
+    .navbar, .hero, .shop-wrap, footer, #bagPanel, {
       position: relative;
       z-index: 2;
     }
