@@ -362,7 +362,7 @@
     /* GRID PROIZVODA */
     .shop-wrap {
      background: rgba(0, 0, 0, 0.45); /* tamnija, ali prozirna */
-     z-index: 3;
+     z-index: 4 !important;
     }
     
     .section-pad {
@@ -394,6 +394,7 @@
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 18px;
+      z-index: 3;
       overflow: hidden;
       box-shadow: var(--shadow);
     }
@@ -551,11 +552,7 @@
       background: rgba(0,0,0,.45); /* layout dolje */
       transition: background .25s ease;
     }
-    /* sav sadržaj iznad overlay-a */
-      .hero, #bagPanel, {
-      position: relative;
-      z-index: 2;
-    }
+    
     /* Hero gore – bez tamnog preklopa i bez pozadinske slike */
     .hero {
       background: none !important;
