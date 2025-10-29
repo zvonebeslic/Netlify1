@@ -361,6 +361,7 @@
 
     /* GRID PROIZVODA */
     .shop-wrap {
+     position: relative;
      background: rgba(0, 0, 0, 0.45); /* tamnija, ali prozirna */
      z-index: 4 !important;
     }
@@ -852,6 +853,15 @@
       backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
         ? `${(scrollY + windowHeight - footerTop) + 60}px`
         : '30px';
+      // ===== Pomak "Ruksak" gumba kad uđe footer =====
+const bagToggleBtn = document.getElementById('bagToggle');
+if (bagToggleBtn) {
+  const baseBottom = 18; // osnovni odmak od dna
+  const overlap = (scrollY + windowHeight) - footerTop;
+  bagToggleBtn.style.bottom = (overlap > 0)
+    ? `${baseBottom + overlap + 16}px` // +16 da ne 'ljubi' footer
+    : `${baseBottom}px`;
+       }
     });
     backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
