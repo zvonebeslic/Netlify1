@@ -274,7 +274,7 @@
       --shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
     }
 
-    /* HERO — planinarska koliba */
+    /* HERO — planinarska koliba (OSTAVLJENO ISTO, ali ga kasnije override-amo) */
     .hero {
       margin-top: 70px;
       position: relative;
@@ -530,10 +530,55 @@
       justify-content: space-between;
       font-weight: 800;
     }
+
+    /* === OVERRIDE / DODANO ZA VIDEO POZADINU (NIŠTA DRUGO NE DIRAM) === */
+    .page-bg-video{
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100svh;
+      object-fit: cover;
+      z-index: 0;              /* najniži sloj */
+      background:#000;
+    }
+    .page-overlay{
+      position: fixed;
+      inset: 0;
+      z-index: 1;              /* iznad videa, ispod sadržaja */
+      pointer-events: none;
+      background: rgba(0,0,0,.45); /* layout dolje */
+      transition: background .25s ease;
+    }
+    /* sav sadržaj iznad overlay-a */
+    .navbar, .hero, .shop-wrap, footer, .menu-overlay, #bagPanel, #backToTop {
+      position: relative;
+      z-index: 2;
+    }
+    /* Hero gore – bez tamnog preklopa i bez pozadinske slike */
+    .hero {
+      background: none !important;
+    }
+    .hero::after{
+      display:none !important;
+    }
+    /* Kad je hero u viewportu – overlay se gasi ili ostavlja blagi fade pri dnu */
+    body.hero-in-view .page-overlay{
+      background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%);
+    }
+    /* po želji malo jači kontrast teksta u hero-u, ali bez full tamnog sloja */
+    .hero-title, .hero-sub { text-shadow: 0 2px 14px rgba(0,0,0,.45); }
   </style>
 </head>
 
 <body>
+  <!-- GLOBALNI POZADINSKI VIDEO + OVERLAY (DODANO) -->
+  <video class="page-bg-video" id="pageBgVideo" autoplay muted playsinline loop preload="auto"
+         poster="images/shop-hero-cabin.jpg">
+    <source src="videos/cabin-hero.mp4" type="video/mp4" />
+    <!-- <source src="videos/cabin-hero.webm" type="video/webm" /> -->
+  </video>
+  <div class="page-overlay" aria-hidden="true"></div>
+
   <div id="season-placeholder"></div>
 
   <!-- === NAVIGACIJA === -->
@@ -899,7 +944,20 @@
       });
     });
 
-    // === 7. SEASON HTML I EFEKTI ===
+    // === 7A. HERO OVERLAY UPRAVLJANJE (DODANO) ===
+    (function mountHeroObserver(){
+      const hero = document.querySelector('.hero');
+      if (!hero) return;
+      const body = document.body;
+      const io = new IntersectionObserver((entries) => {
+        const e = entries[0];
+        if (e && e.isIntersecting) body.classList.add('hero-in-view');
+        else body.classList.remove('hero-in-view');
+      }, { threshold: 0.2 });
+      io.observe(hero);
+    })();
+
+    // === 7B. SEASON HTML I EFEKTI (OSTAVLJENO) ===
     document.addEventListener('DOMContentLoaded', () => {
       const savedSeason = localStorage.getItem('activeSeason');
       if (savedSeason) {
