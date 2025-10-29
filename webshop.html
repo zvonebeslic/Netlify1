@@ -844,34 +844,49 @@
       }));
     })();
 
-    // === 5. BACK TO TOP ===
-    window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const windowHeight = window.innerHeight;
-  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+// === 5. BACK TO TOP + RUKSAK — FIXED (isto ponašanje, bez rušenja) ===
+(() => {
+  const backToTopBtn = document.getElementById('backToTop');
+  const bagToggleBtn = document.getElementById('bagToggle');
+  const footer = document.getElementById('footer');
 
-  // prikazi / sakrij
-  backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+  function onScrollOrResize() {
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+    const viewportBottom = scrollY + windowHeight;
 
-  // elegantno podigni iznad footera
-  if (scrollY + windowHeight > footerTop) {
-    backToTopBtn.classList.add('above-footer');
-  } else {
-    backToTopBtn.classList.remove('above-footer');
+    // pokaži / sakrij BTT
+    backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+
+    // TVOJA ORIGINALNA LOGIKA: pomak prema overlapu s footerom
+    if (viewportBottom > footerTop) {
+      const overlap = viewportBottom - footerTop;
+
+      // BackToTop
+      backToTopBtn.style.bottom = `${overlap + 60}px`;
+
+      // Ruksak
+      if (bagToggleBtn) {
+        const baseBottom = 18;     // tvoja baza
+        bagToggleBtn.style.bottom = `${baseBottom + overlap + 16}px`;
+      }
+    } else {
+      // default položaji kad footer nije u viewportu
+      backToTopBtn.style.bottom = '22px';
+      if (bagToggleBtn) bagToggleBtn.style.bottom = '18px';
+    }
   }
-});
-      // ===== Pomak "Ruksak" gumba kad uđe footer =====
-const bagToggleBtn = document.getElementById('bagToggle');
-if (bagToggleBtn) {
-  const baseBottom = 18; // osnovni odmak od dna
-  const overlap = (scrollY + windowHeight) - footerTop;
-  bagToggleBtn.style.bottom = (overlap > 0)
-    ? `${baseBottom + overlap + 16}px` // +16 da ne 'ljubi' footer
-    : `${baseBottom}px`;
-       }
-    });
-    backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('resize', onScrollOrResize);
+  onScrollOrResize(); // init
+
+  backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+    
     // === 6. RUKSAK (mini-cart, localStorage) ===
     const bagToggle = document.getElementById('bagToggle');
     const bagPanel = document.getElementById('bagPanel');
