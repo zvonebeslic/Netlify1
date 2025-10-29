@@ -846,13 +846,20 @@
 
     // === 5. BACK TO TOP ===
     window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-      const windowHeight = window.innerHeight;
-      backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
-      backToTopBtn.style.bottom = (scrollY + windowHeight > footerTop)
-        ? `${(scrollY + windowHeight - footerTop) + 60}px`
-        : '30px';
+  const scrollY = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+
+  // prikazi / sakrij
+  backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
+
+  // elegantno podigni iznad footera
+  if (scrollY + windowHeight > footerTop) {
+    backToTopBtn.classList.add('above-footer');
+  } else {
+    backToTopBtn.classList.remove('above-footer');
+  }
+});
       // ===== Pomak "Ruksak" gumba kad uđe footer =====
 const bagToggleBtn = document.getElementById('bagToggle');
 if (bagToggleBtn) {
