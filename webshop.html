@@ -328,7 +328,7 @@
     /* PUTOKAZI — kategorije */
     .signs {
       width: min(1080px, 92vw);
-      margin: -6px auto -36px;
+      margin: -36px auto -36px;
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
@@ -636,21 +636,40 @@
   <!-- PUTOKAZI (kategorije) -->
   <div class="signs" id="categorySigns">
     <button class="sign active" data-cat="all" data-hr="Sve" data-en="All">Sve</button>
-    <button class="sign" data-cat="gpx" data-hr="GPX vodiči" data-en="GPX Guides">GPX vodiči</button>
-    <button class="sign" data-cat="pdf" data-hr="PDF priručnici" data-en="PDF Guides">PDF priručnici</button>
-    <button class="sign" data-cat="stickers" data-hr="Naljepnice" data-en="Stickers">Naljepnice</button>
-    <button class="sign" data-cat="souvenir" data-hr="Suveniri" data-en="Souvenirs">Suveniri</button>
+    <button class="sign" data-cat="Souvenirs" data-hr="Suveniri" data-en="Souvenirs">Suveniri</button>
+    <button class="sign" data-cat="Games&Cards" data-hr="Društvene igre i Karte" data-en="Games&Cards">Društvene igre i karte</button>
+    <button class="sign" data-cat="Stickers" data-hr="Naljepnice" data-en="Stickers">Naljepnice</button>
+    <button class="sign" data-cat="Perfect Gifts" data-hr="Najljepši pokloni" data-en="Perfect Gifts">Najljepši pokloni</button>
+    <button class="sign" data-cat="Limited Edition" data-hr="Limitirana izdanja" data-en="Limited Edition">Limitirana izdanja</button>
+    <buttkm class="sign" data-cat="Clothes" data-hr="Odjeća" data-en="clothes">Odjeća</button>
   </div>
 
   <!-- GRID PROIZVODA -->
   <main class="shop-wrap">
     <section class="section-pad">
       <div class="product-grid" id="productGrid">
+        
         <!-- Primjeri (zamijeni svojim sadržajem/slikama) -->
-        <article class="card" data-cat="gpx">
+        
+        <article class="card" data-cat="Souvenir">
           <img class="card-cover" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit paket">
           <div class="card-body">
-            <span class="badge">GPX</span>
+            <span class="badge">Suveniri</span>
+            <div class="title" data-hr="Snježna kugla Hajdučka Vrata" data-en="SnowBall ">Velebit: 12 staza (GPX paket)</div>
+            <div class="desc" data-hr="Kurirani tragovi s markacijama i ključnim waypointima." data-en="Curated tracks with markings and key waypoints.">Kurirani tragovi s markacijama i ključnim waypointima.</div>
+            <div class="price-row">
+              <div class="price">9.90 €</div>
+              <button class="btn add-to-bag" data-id="gpx-velebit" data-name="Velebit GPX pak" data-price="9.90" data-img="images/prod-gpx-velebit.jpg" data-type="digital">
+                <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" data-cat="Games&Cards">
+          <img class="card-cover" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit paket">
+          <div class="card-body">
+            <span class="badge">Društvene igre i karte</span>
             <div class="title" data-hr="Velebit: 12 staza (GPX paket)" data-en="Velebit: 12 trails (GPX pack)">Velebit: 12 staza (GPX paket)</div>
             <div class="desc" data-hr="Kurirani tragovi s markacijama i ključnim waypointima." data-en="Curated tracks with markings and key waypoints.">Kurirani tragovi s markacijama i ključnim waypointima.</div>
             <div class="price-row">
@@ -662,10 +681,25 @@
           </div>
         </article>
 
-        <article class="card" data-cat="pdf">
+        <article class="card" data-cat="Stickers">
+          <img class="card-cover" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit paket">
+          <div class="card-body">
+            <span class="badge">Naljepnice</span>
+            <div class="title" data-hr="Velebit: 12 staza (GPX paket)" data-en="Velebit: 12 trails (GPX pack)">Velebit: 12 staza (GPX paket)</div>
+            <div class="desc" data-hr="Kurirani tragovi s markacijama i ključnim waypointima." data-en="Curated tracks with markings and key waypoints.">Kurirani tragovi s markacijama i ključnim waypointima.</div>
+            <div class="price-row">
+              <div class="price">9.90 €</div>
+              <button class="btn add-to-bag" data-id="gpx-velebit" data-name="Velebit GPX pak" data-price="9.90" data-img="images/prod-gpx-velebit.jpg" data-type="digital">
+                <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" data-cat="Perfect Gifts">
           <img class="card-cover" src="images/prod-pdf-zima.jpg" alt="PDF zimski priručnik">
           <div class="card-body">
-            <span class="badge">PDF</span>
+            <span class="badge">Najljepši pokloni</span>
             <div class="title" data-hr="Zimski priručnik (mini PDF)" data-en="Winter Mini Guide (PDF)">Zimski priručnik (mini PDF)</div>
             <div class="desc" data-hr="Brzi savjeti za dereze, slojevitost i orijentaciju." data-en="Quick tips for crampons, layering and nav.">Brzi savjeti za dereze, slojevitost i orijentaciju.</div>
             <div class="price-row">
@@ -677,10 +711,10 @@
           </div>
         </article>
 
-        <article class="card" data-cat="stickers">
+        <article class="card" data-cat="Souvenirs">
           <img class="card-cover" src="images/prod-sticker-peak.jpg" alt="Naljepnica vrh">
           <div class="card-body">
-            <span class="badge">Sticker</span>
+            <span class="badge">Suveniri</span>
             <div class="title" data-hr="Naljepnica “Do vrha!”" data-en="Sticker “To the top!”">Naljepnica “Do vrha!”</div>
             <div class="desc" data-hr="UV-otporna vinil naljepnica 7×7 cm." data-en="UV resistant vinyl sticker 7×7 cm.">UV-otporna vinil naljepnica 7×7 cm.</div>
             <div class="price-row">
@@ -692,10 +726,25 @@
           </div>
         </article>
 
-        <article class="card" data-cat="souvenir">
+        <article class="card" data-cat="Limited Edition">
           <img class="card-cover" src="images/prod-mug-cabin.jpg" alt="Šalica Koliba">
           <div class="card-body">
-            <span class="badge">Suvenir</span>
+            <span class="badge">Limitirana izdanja</span>
+            <div class="title" data-hr="Šalica “Koliba”" data-en="Mug “Cabin”">Šalica “Koliba”</div>
+            <div class="desc" data-hr="Keramička šalica 330 ml — print on demand." data-en="Ceramic mug 330 ml — print on demand.">Keramička šalica 330 ml — print on demand.</div>
+            <div class="price-row">
+              <div class="price">12.90 €</div>
+              <button class="btn add-to-bag" data-id="mug-cabin" data-name="Šalica Koliba" data-price="12.90" data-img="images/prod-mug-cabin.jpg" data-type="pod">
+                <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" data-cat="Clothes">
+          <img class="card-cover" src="images/prod-mug-cabin.jpg" alt="Šalica Koliba">
+          <div class="card-body">
+            <span class="badge">Odjeća</span>
             <div class="title" data-hr="Šalica “Koliba”" data-en="Mug “Cabin”">Šalica “Koliba”</div>
             <div class="desc" data-hr="Keramička šalica 330 ml — print on demand." data-en="Ceramic mug 330 ml — print on demand.">Keramička šalica 330 ml — print on demand.</div>
             <div class="price-row">
