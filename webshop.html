@@ -386,11 +386,18 @@
         grid-template-columns: repeat(2, 1fr);
       }
     }
-    @media (max-width: 540px) {
-      .product-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+   @media (max-width: 540px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 u redu na mobu */
+    gap: 12px;
+  }
+}
+/* Ako želiš baš ispod 360px da bude 1 po redu (jako mali ekrani) */
+@media (max-width: 360px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
     .card {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
       border: 1px solid rgba(255, 255, 255, 0.08);
