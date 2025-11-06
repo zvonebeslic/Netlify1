@@ -579,6 +579,94 @@
     }
     /* po želji malo jači kontrast teksta u hero-u, ali bez full tamnog sloja */
     .hero-title, .hero-sub { text-shadow: 0 2px 14px rgba(0,0,0,.45); }
+  
+     /* === PRODUCT CARD CAROUSEL === */
+.pc-media{
+  position: relative;
+  width: 100%;
+  aspect-ratio: 15 / 11;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: rgba(255,255,255,.04);
+}
+.pc-track{
+  height: 100%;
+  display: flex;
+  transition: transform .35s ease;
+  will-change: transform;
+}
+.pc-slide{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  flex: 0 0 100%;
+  user-select: none;
+  pointer-events: none;
+}
+.pc-dots{
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(6px);
+}
+.pc-dot{
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.6);
+  opacity: .6;
+}
+.pc-dot.active{ opacity: 1; background: #fff; }
+
+/* === LIGHTBOX === */
+.pc-lightbox[hidden]{ display:none !important; }
+.pc-lightbox{
+  position: fixed; inset: 0; z-index: 100000;
+  background: rgba(0,0,0,.88);
+  display: grid; place-items: center;
+}
+.pc-lightbox-inner{
+  position: relative; width: min(96vw, 980px); height: min(86vh, 720px);
+  display: grid; place-items: center;
+}
+.pc-lightbox-img{
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+}
+.pc-lightbox-close,
+.pc-lightbox-prev,
+.pc-lightbox-next{
+  position: absolute; top: 12px;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff; border-radius: 12px;
+  padding: 8px 10px; cursor: pointer;
+  font-weight: 800;
+}
+.pc-lightbox-close{ right: 12px; }
+.pc-lightbox-prev{ left: 12px; top: 50%; transform: translateY(-50%); }
+.pc-lightbox-next{ right: 12px; top: 50%; transform: translateY(-50%); }
+
+.pc-lightbox-cta{
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+  width: 100%; display: grid; place-items: center; pointer-events: none;
+}
+.pc-more{
+  pointer-events: auto;
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--cta, #1f7a6b);
+  color: #fff; font-weight: 800; text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,.35);
+}
+.pc-more:active{ transform: translateY(1px); }
+    
   </style>
 </head>
 
@@ -657,8 +745,16 @@
 
       <!-- Primjeri (zamijeni svojim sadržajem/slikama) -->
 
-      <article class="card" data-cat="Souvenirs">
-        <img class="card-cover" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit paket">
+      <article class="card" data-cat="Souvenirs"
+        data-detail-url="proizvodi/snjezna-kugla.html">
+         <div class="pc-media">
+  <div class="pc-track">
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
+  </div>
+  <div class="pc-dots"></div>
+</div>
         <div class="card-body">
           <span class="badge">Suveniri</span>
           <div class="title" data-hr="Snježna kugla Hajdučka Vrata" data-en="Snow Globe Hajducka Vrata">Snježna kugla Hajdučka Vrata</div>
@@ -672,8 +768,17 @@
         </div>
       </article>
 
-      <article class="card" data-cat="Games&Cards">
-        <img class="card-cover" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit paket">
+      
+      <article class="card" data-cat="Games&Cards" 
+        data-detail-url="proizvodi/snjezna-kugla.html">
+           <div class="pc-media">
+  <div class="pc-track">
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
+  </div>
+  <div class="pc-dots"></div>
+</div>
         <div class="card-body">
           <span class="badge">Društvene igre i karte</span>
           <div class="title" data-hr="Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)" data-en="Ludo (Hiking Edition)">Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)</div>
@@ -687,8 +792,17 @@
         </div>
       </article>
 
-      <article class="card" data-cat="Clothes">
-        <img class="card-cover" src="images/prod-shirt-mountains.jpg" alt="Majica s ugraviranim vrhovima planina">
+      
+      <article class="card" data-cat="Clothes"
+        data-detail-url="proizvodi/snjezna-kugla.html">
+           <div class="pc-media">
+  <div class="pc-track">
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
+  </div>
+  <div class="pc-dots"></div>
+</div>
         <div class="card-body">
           <span class="badge">Odjeća</span>
           <div class="title" data-hr="Majica s ugraviranim vrhovima planina" data-en="T-shirt with engraved mountain peaks">Majica s ugraviranim vrhovima planina</div>
@@ -702,8 +816,17 @@
         </div>
       </article>
 
-      <article class="card" data-cat="Perfect Gifts">
-        <img class="card-cover" src="images/prod-survival-kit.jpg" alt="Planinarski survival set">
+      
+      <article class="card" data-cat="Perfect Gifts"
+        data-detail-url="proizvodi/snjezna-kugla.html">
+           <div class="pc-media">
+  <div class="pc-track">
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
+  </div>
+  <div class="pc-dots"></div>
+</div>
         <div class="card-body">
           <span class="badge">Najljepši pokloni</span>
           <div class="title" data-hr="Planinarski survival set" data-en="Hiker’s Survival Kit">Planinarski survival set</div>
@@ -717,8 +840,17 @@
         </div>
       </article>
 
-      <article class="card" data-cat="Stickers">
-        <img class="card-cover" src="images/prod-magnet-mountain.jpg" alt="Magnet u obliku planine">
+      
+      <article class="card" data-cat="Stickers"
+        data-detail-url="proizvodi/snjezna-kugla.html">
+           <div class="pc-media">
+  <div class="pc-track">
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
+  </div>
+  <div class="pc-dots"></div>
+</div>
         <div class="card-body">
           <span class="badge">Suveniri</span>
           <div class="title" data-hr="Magnet u obliku planine" data-en="Mountain-shaped magnet">Magnet u obliku planine</div>
@@ -732,8 +864,17 @@
         </div>
       </article>
 
-      <article class="card" data-cat="Limited Edition">
-        <img class="card-cover" src="images/prod-phonecase-mountain.jpg" alt="Maskica za mobitel planinski motiv">
+      
+      <article class="card" data-cat="Limited Edition"
+        data-detail-url="proizvodi/snjezna-kugla.html">
+           <div class="pc-media">
+  <div class="pc-track">
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
+  </div>
+  <div class="pc-dots"></div>
+</div>
         <div class="card-body">
           <span class="badge">Limitirana izdanja</span>
           <div class="title" data-hr="Maskica za mobitel (izgled po želji)" data-en="Custom mountain phone case">Maskica za mobitel (izgled po želji)</div>
@@ -747,8 +888,17 @@
         </div>
       </article>
 
-      <article class="card" data-cat="Souvenirs">
-        <img class="card-cover" src="images/prod-3dmodel-snowglobe.jpg" alt="3D model snježne kugle">
+      
+      <article class="card" data-cat="Souvenirs"
+        data-detail-url="proizvodi/snjezna-kugla.html">
+          <div class="pc-media">
+  <div class="pc-track">
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
+  </div>
+  <div class="pc-dots"></div>
+</div>
         <div class="card-body">
           <span class="badge">Posebni suveniri</span>
           <div class="title" data-hr="Izrada 3D modela po vašoj želji" data-en="Custom 3D model creation">Izrada 3D modela po vašoj želji</div>
@@ -788,6 +938,18 @@
       </button>
     </div>
   </aside>
+
+  <div class="pc-lightbox" hidden aria-modal="true" role="dialog">
+  <div class="pc-lightbox-inner">
+    <button class="pc-lightbox-prev" aria-label="Prethodna">‹</button>
+    <img class="pc-lightbox-img" alt="">
+    <button class="pc-lightbox-next" aria-label="Sljedeća">›</button>
+    <button class="pc-lightbox-close" aria-label="Zatvori">✕</button>
+  </div>
+  <div class="pc-lightbox-cta">
+    <a class="pc-more" href="#" target="_self" rel="noopener">Pročitaj više o proizvodu</a>
+  </div>
+</div>
 
   <!-- === BACK TO TOP === -->
   <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
@@ -1052,6 +1214,152 @@
       io.observe(hero);
     })();
 
+// === PRODUCT CARD CAROUSEL + LIGHTBOX ===
+(function(){
+  // 1) CAROUSEL u karticama
+  const carousels = [];
+  document.querySelectorAll('.card .pc-media').forEach(media => {
+    const track = media.querySelector('.pc-track');
+    const slides = [...media.querySelectorAll('.pc-slide')];
+    const dotsWrap = media.querySelector('.pc-dots');
+
+    if (!track || slides.length === 0) return;
+
+    // točkice (samo ako >1 slika)
+    let dots = [];
+    if (slides.length > 1) {
+      dots = slides.map((_,i) => {
+        const d = document.createElement('span');
+        d.className = 'pc-dot' + (i===0?' active':'');
+        d.addEventListener('click', (e) => { e.stopPropagation(); go(i); });
+        dotsWrap.appendChild(d);
+        return d;
+      });
+    } else {
+      dotsWrap.style.display = 'none';
+    }
+
+    let index = 0;
+    function render(){
+      track.style.transform = `translateX(${-index*100}%)`;
+      dots.forEach((d,i)=>d.classList.toggle('active', i===index));
+    }
+    function go(i){
+      index = Math.max(0, Math.min(slides.length-1, i));
+      render();
+    }
+
+    // swipe (touch)
+    let sx=0, dx=0, moving=false;
+    media.addEventListener('touchstart', e => {
+      if (slides.length<2) return;
+      sx = e.touches[0].clientX; moving=true; dx=0;
+    }, {passive:true});
+    media.addEventListener('touchmove', e => {
+      if (!moving) return;
+      dx = e.touches[0].clientX - sx;
+    }, {passive:true});
+    media.addEventListener('touchend', () => {
+      if (!moving) return;
+      moving=false;
+      if (Math.abs(dx)>40){
+        if (dx<0 && index<slides.length-1) go(index+1);
+        if (dx>0 && index>0) go(index-1);
+      }
+    });
+
+    // klik na sliku -> lightbox
+    media.addEventListener('click', (e) => {
+      const startIdx = Math.round(Math.abs(track.style.transform?.match(/-?(\d+(\.\d+)?)%/)?.[1]||0)/100) || 0;
+      openLightboxFromMedia(media, startIdx);
+    });
+
+    render();
+    carousels.push({media, go});
+  });
+
+  // 2) LIGHTBOX
+  const lb = document.querySelector('.pc-lightbox');
+  const lbImg = lb?.querySelector('.pc-lightbox-img');
+  const btnPrev = lb?.querySelector('.pc-lightbox-prev');
+  const btnNext = lb?.querySelector('.pc-lightbox-next');
+  const btnClose = lb?.querySelector('.pc-lightbox-close');
+  const lbMore = lb?.querySelector('.pc-more');
+
+  let lbList = [], lbIdx = 0, lbDetailURL = '#';
+
+  function setLbImage(){
+    if (!lbImg || !lbList.length) return;
+    lbImg.src = lbList[lbIdx];
+  }
+
+  function findDetailURL(fromEl){
+    // 1) <a.pc-title-link>
+    const link = fromEl.closest('.card')?.querySelector('.pc-title-link');
+    if (link?.getAttribute('href')) return link.getAttribute('href');
+
+    // 2) data-detail-url na <article>
+    const card = fromEl.closest('.card');
+    if (card?.dataset.detailUrl) return card.dataset.detailUrl;
+
+    // 3) <div class="title"> prvi <a>
+    const a = card?.querySelector('.title a[href]');
+    if (a) return a.getAttribute('href');
+
+    return '#';
+  }
+
+  window.openLightboxFromMedia = function(media, startIndex=0){
+    const slides = [...media.querySelectorAll('.pc-slide')];
+    lbList = slides.map(s => s.currentSrc || s.src);
+    lbIdx = Math.max(0, Math.min(startIndex, lbList.length-1));
+    lbDetailURL = findDetailURL(media);
+    setLbImage();
+
+    if (lbMore){
+      lbMore.href = lbDetailURL || '#';
+      lbMore.textContent = (window.currentLang === 'en')
+        ? 'Read more about the product'
+        : 'Pročitaj više o proizvodu';
+      lbMore.style.display = lbDetailURL ? 'inline-block' : 'none';
+    }
+
+    lb.hidden = false;
+    lb.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function closeLb(){
+    lb.hidden = true;
+    lb.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  btnClose?.addEventListener('click', closeLb);
+  btnPrev?.addEventListener('click', ()=>{ if(lbList.length){ lbIdx = (lbIdx-1+lbList.length)%lbList.length; setLbImage(); } });
+  btnNext?.addEventListener('click', ()=>{ if(lbList.length){ lbIdx = (lbIdx+1)%lbList.length; setLbImage(); } });
+  lb?.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+  window.addEventListener('keydown', e => {
+    if (lb.hasAttribute('hidden')) return;
+    if (e.key==='Escape') closeLb();
+    if (e.key==='ArrowLeft') btnPrev?.click();
+    if (e.key==='ArrowRight') btnNext?.click();
+  });
+
+  // 3) Klik na NASLOV -> isti URL kao detail
+  document.querySelectorAll('.card .title').forEach(t => {
+    // Ako već ima <a>, pusti ga
+    if (t.querySelector('a')) return;
+
+    const card = t.closest('.card');
+    const url = card?.dataset.detailUrl;
+    if (url){
+      t.style.cursor = 'pointer';
+      t.addEventListener('click', ()=> location.href = url);
+    }
+  });
+})();
+    
     // === 7B. SEASON HTML I EFEKTI (OSTAVLJENO) ===
     document.addEventListener('DOMContentLoaded', () => {
       const savedSeason = localStorage.getItem('activeSeason');
@@ -1074,6 +1382,8 @@
           // Ako radiš lokalno file://, fetch neće proći — ali to ne smije srušiti stranicu
         });
     });
+
+  
   </script>
 </body>
 </html>
