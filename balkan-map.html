@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Balkan Hiking Network – Route Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <style>
+    :root {
+      --bg: #05070b;
+      --panel-bg: rgba(5, 7, 11, 0.95);
+      --accent: #e6b800;
+      --ink: #f7f9fc;
+      --muted: #9ba3b5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top, #151b28 0, #05070b 55%);
+      padding: 0.75rem;
+      gap: 0.6rem;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      color: var(--muted);
+      max-width: 380px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+    }
+
+    .controls button {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.6);
+      padding: 0.25rem 0.8rem;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    .controls button:hover {
+      border-color: var(--accent);
+    }
+
+    #balkanMap {
+      width: 100%;
+      height: 60vh;
+      min-height: 360px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.55);
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+      gap: 0.6rem;
+    }
+
+    @media (max-width: 900px) {
+      .bottom {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    #routePanel,
+    #hintPanel {
+      background: var(--panel-bg);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.7rem 0.9rem;
+      font-size: 0.78rem;
+    }
+
+    #routePanel h3,
+    #hintPanel h3 {
+      margin: 0 0 0.35rem 0;
+      font-size: 0.85rem;
+    }
+
+    #routePanel .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.25rem;
+    }
+
+    #routePanel .row span.label {
+      color: var(--muted);
+    }
+
+    #routePanel .row span.value {
+      font-weight: 500;
+    }
+
+    #route-panel-notice {
+      margin-top: 0.35rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    #routeResetBtn {
+      margin-top: 0.45rem;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #111;
+      font-weight: 600;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    #hintPanel ul {
+      margin: 0.35rem 0 0 1.0rem;
+      padding: 0;
+    }
+
+    #hintPanel li {
+      margin-bottom: 0.15rem;
+    }
+
+    /* Leaflet default tweaks */
+    .leaflet-control-attribution {
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="header">
+      <div>
+        <div class="title">Balkan Hiking Network – Demo Planner</div>
+        <div class="subtitle">
+          1) Klikni raskrižje za START. 2) Klikaj segmente koji iz njega izlaze.
+          Sustav zbraja tvoju rutu (km, uspon, spust, vrijeme).
+        </div>
+      </div>
+      <div class="controls">
+        <button id="resetRouteTop">Reset ruta</button>
+      </div>
+    </div>
+
+    <div id="balkanMap"></div>
+
+    <div class="bottom">
+      <div id="routePanel">
+        <h3>Trenutna ruta</h3>
+        <div class="row">
+          <span class="label">Start čvor:</span>
+          <span class="value" id="routeStartNode">-</span>
+        </div>
+        <div class="row">
+          <span class="label">Zadnji čvor:</span>
+          <span class="value" id="routeEndNode">-</span>
+        </div>
+        <div class="row">
+          <span class="label">Dužina:</span>
+          <span class="value" id="routeDistance">0.0 km</span>
+        </div>
+        <div class="row">
+          <span class="label">Uspon:</span>
+          <span class="value" id="routeAscent">0 m</span>
+        </div>
+        <div class="row">
+          <span class="label">Spust:</span>
+          <span class="value" id="routeDescent">0 m</span>
+        </div>
+        <div class="row">
+          <span class="label">Vrijeme:</span>
+          <span class="value" id="routeTime">0 min</span>
+        </div>
+        <div id="route-panel-notice">
+          * Za sada je ovo ručni način. Kasnije ćemo dodati auto-rutu (start → cilj) kroz cijeli Balkan.
+        </div>
+        <button id="routeResetBtn">Resetiraj rutu</button>
+      </div>
+
+      <div id="hintPanel">
+        <h3>Kako koristiti</h3>
+        <ul>
+          <li>Zoomiraj gdje imaš unesene čvorove.</li>
+          <li>Klikni na čvor (točkica) za početni punkt.</li>
+          <li>Svi segmenti (linije) koji dotiču taj čvor bit će klikabilni kao sljedeći korak.</li>
+          <li>Klikom na segment dodaješ ga u rutu i prelaziš na idući čvor.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initBalkanNetworkMap();
+    });
+
+    function initBalkanNetworkMap() {
+      const mapEl = document.getElementById("balkanMap");
+      if (!mapEl) return;
+
+      const map = L.map("balkanMap", {
+        zoomControl: true,
+        scrollWheelZoom: true
+      });
+
+      const balkanBounds = [
+        [40.0, 13.0], // jugozapad
+        [47.8, 27.0]  // sjeveroistok
+      ];
+      map.fitBounds(balkanBounds);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 13,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      // UI elementi
+      const startNodeEl = document.getElementById("routeStartNode");
+      const endNodeEl = document.getElementById("routeEndNode");
+      const distEl = document.getElementById("routeDistance");
+      const ascEl = document.getElementById("routeAscent");
+      const descEl = document.getElementById("routeDescent");
+      const timeEl = document.getElementById("routeTime");
+      const resetBtn = document.getElementById("routeResetBtn");
+      const resetTopBtn = document.getElementById("resetRouteTop");
+
+      let graphNodes = [];
+      let graphSegments = [];
+      const nodeById = new Map();
+      const segmentsById = new Map();
+      const adjacency = new Map(); // nodeId -> [segmentIds]
+
+      const nodeLayers = new Map();    // nodeId -> Leaflet marker
+      const segmentLayers = new Map(); // segmentId -> Leaflet polyline
+
+      let routeSegments = []; // niz segmenata (js objekata)
+      let routePolyline = null;
+      let startNodeId = null;
+      let currentNodeId = null;
+
+      function resetRoute() {
+        routeSegments = [];
+        startNodeId = null;
+        currentNodeId = null;
+        startNodeEl.textContent = "-";
+        endNodeEl.textContent = "-";
+        distEl.textContent = "0.0 km";
+        ascEl.textContent = "0 m";
+        descEl.textContent = "0 m";
+        timeEl.textContent = "0 min";
+
+        // reset stila segmenata
+        segmentLayers.forEach((layer) => {
+          layer.setStyle({
+            color: "#27ae60",
+            weight: 3,
+            opacity: 0.55
+          });
+        });
+
+        if (routePolyline) {
+          map.removeLayer(routePolyline);
+          routePolyline = null;
+        }
+      }
+
+      function updateStats() {
+        let d = 0;
+        let a = 0;
+        let de = 0;
+        let t = 0;
+
+        routeSegments.forEach(seg => {
+          d += seg.distance_km || 0;
+          a += seg.ascent_m || 0;
+          de += seg.descent_m || 0;
+          t += seg.time_min || 0;
+        });
+
+        distEl.textContent = d.toFixed(1) + " km";
+        ascEl.textContent = Math.round(a) + " m";
+        descEl.textContent = Math.round(de) + " m";
+        timeEl.textContent = Math.round(t) + " min";
+      }
+
+      function updateRouteLine() {
+        if (routePolyline) {
+          map.removeLayer(routePolyline);
+          routePolyline = null;
+        }
+        if (!routeSegments.length) return;
+
+        let routeLatLngs = [];
+
+        routeSegments.forEach((seg, index) => {
+          const fromNode = nodeById.get(seg.from);
+          const toNode = nodeById.get(seg.to);
+
+          let segCoords;
+          if (Array.isArray(seg.coords) && seg.coords.length >= 2) {
+            segCoords = seg.coords.map(c => [c[0], c[1]]);
+          } else if (fromNode && toNode) {
+            segCoords = [
+              [fromNode.lat, fromNode.lng],
+              [toNode.lat, toNode.lng]
+            ];
+          } else {
+            segCoords = [];
+          }
+
+          if (!segCoords.length) return;
+
+          // odredi smjer segmenta prema ruti
+          if (index === 0) {
+            // prva dionica: smjer da startNodeId bude početak
+            if (startNodeId && seg.to === startNodeId) {
+              segCoords = segCoords.slice().reverse();
+            }
+            routeLatLngs = segCoords;
+          } else {
+            // sljedeće dionice: spojiti na zadnju točku rute
+            const last = routeLatLngs[routeLatLngs.length - 1];
+            const first = segCoords[0];
+            const lastSeg = segCoords[segCoords.length - 1];
+
+            if (last[0] === lastSeg[0] && last[1] === lastSeg[1]) {
+              // treba obrnuti
+              segCoords = segCoords.slice().reverse();
+            }
+            // izbjegni duplu točku
+            routeLatLngs = routeLatLngs.concat(segCoords.slice(1));
+          }
+        });
+
+        if (routeLatLngs.length) {
+          routePolyline = L.polyline(routeLatLngs, {
+            color: "#e6b800",
+            weight: 4,
+            opacity: 0.95
+          }).addTo(map);
+        }
+      }
+
+      function highlightAvailableSegments() {
+        // prvo reset sve
+        segmentLayers.forEach(layer => {
+          layer.setStyle({
+            color: "#27ae60",
+            weight: 3,
+            opacity: 0.35
+          });
+        });
+
+        if (!currentNodeId) return;
+        const segIds = adjacency.get(currentNodeId) || [];
+        segIds.forEach(id => {
+          const layer = segmentLayers.get(id);
+          if (layer) {
+            layer.setStyle({
+              color: "#27ae60",
+              weight: 4,
+              opacity: 0.75
+            });
+          }
+        });
+
+        // highlight već odabrane segmente rute
+        routeSegments.forEach(seg => {
+          const layer = segmentLayers.get(seg.id);
+          if (layer) {
+            layer.setStyle({
+              color: "#e6b800",
+              weight: 5,
+              opacity: 0.95
+            });
+          }
+        });
+      }
+
+      function onNodeClick(nodeId) {
+        const node = nodeById.get(nodeId);
+        if (!node) return;
+
+        // ako još nema rute -> postavi start
+        if (!startNodeId) {
+          startNodeId = nodeId;
+          currentNodeId = nodeId;
+          startNodeEl.textContent = nodeId;
+          endNodeEl.textContent = nodeId;
+          highlightAvailableSegments();
+          return;
+        }
+
+        // ako već imamo rutu, klik na čvor = reset i novi start
+        resetRoute();
+        startNodeId = nodeId;
+        currentNodeId = nodeId;
+        startNodeEl.textContent = nodeId;
+        endNodeEl.textContent = nodeId;
+        highlightAvailableSegments();
+      }
+
+      function onSegmentClick(segId) {
+        const seg = segmentsById.get(segId);
+        if (!seg) return;
+
+        if (!currentNodeId) {
+          alert("Prvo klikni na raskrižje (čvor) za start.");
+          return;
+        }
+
+        // segment mora biti susjed trenutnom čvoru
+        if (seg.from !== currentNodeId && seg.to !== currentNodeId) {
+          // nije validan sljedeći korak
+          return;
+        }
+
+        routeSegments.push(seg);
+        // novi "trenutni" čvor je drugi kraj
+        currentNodeId = seg.from === currentNodeId ? seg.to : seg.from;
+        endNodeEl.textContent = currentNodeId;
+
+        updateStats();
+        updateRouteLine();
+        highlightAvailableSegments();
+      }
+
+      resetBtn.addEventListener("click", resetRoute);
+      resetTopBtn.addEventListener("click", resetRoute);
+
+      // Učitaj graph JSON
+      fetch("data/balkan-graph.json")
+        .then(res => res.json())
+        .then(data => {
+          graphNodes = data.nodes || [];
+          graphSegments = data.segments || [];
+
+          // napuni mape
+          graphNodes.forEach(n => {
+            nodeById.set(n.id, n);
+          });
+
+          graphSegments.forEach(seg => {
+            segmentsById.set(seg.id, seg);
+
+            if (!adjacency.has(seg.from)) adjacency.set(seg.from, []);
+            if (!adjacency.has(seg.to)) adjacency.set(seg.to, []);
+            adjacency.get(seg.from).push(seg.id);
+            adjacency.get(seg.to).push(seg.id);
+          });
+
+          // iscrtaj čvorove
+          const allCoords = [];
+          graphNodes.forEach(n => {
+            const m = L.circleMarker([n.lat, n.lng], {
+              radius: 5,
+              fillColor: "#e6b800",
+              color: "#141414",
+              weight: 1,
+              fillOpacity: 0.95
+            }).addTo(map);
+
+            m.on("click", () => onNodeClick(n.id));
+            nodeLayers.set(n.id, m);
+            allCoords.push([n.lat, n.lng]);
+          });
+
+          // iscrtaj segmente
+          graphSegments.forEach(seg => {
+            const fromNode = nodeById.get(seg.from);
+            const toNode = nodeById.get(seg.to);
+            if (!fromNode || !toNode) return;
+
+            let latlngs;
+            if (Array.isArray(seg.coords) && seg.coords.length >= 2) {
+              latlngs = seg.coords.map(c => [c[0], c[1]]);
+            } else {
+              latlngs = [
+                [fromNode.lat, fromNode.lng],
+                [toNode.lat, toNode.lng]
+              ];
+            }
+
+            const line = L.polyline(latlngs, {
+              color: "#27ae60",
+              weight: 3,
+              opacity: 0.55
+            }).addTo(map);
+
+            line.on("click", () => onSegmentClick(seg.id));
+            segmentLayers.set(seg.id, line);
+
+            latlngs.forEach(c => allCoords.push(c));
+          });
+
+          if (allCoords.length) {
+            map.fitBounds(allCoords);
+          } else {
+            map.fitBounds(balkanBounds);
+          }
+
+          resetRoute();
+        })
+        .catch(err => {
+          console.error("Greška pri učitavanju balkan-graph.json:", err);
+          resetRoute();
+        });
+    }
+  </script>
+</body>
+</html>
