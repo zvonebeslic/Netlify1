@@ -183,7 +183,7 @@
       <div>
         <div class="title">Balkan Hiking Network – Demo Planner</div>
         <div class="subtitle">
-          1) Klikni raskrižje za START. 2) Klikaj segmente koji iz njega izlaze.
+          1) Klikni raskrižje za START. 2) Klikaj susjedna raskrižja da gradiš rutu.
           Sustav zbraja tvoju rutu (km, uspon, spust, vrijeme).
         </div>
       </div>
@@ -232,8 +232,8 @@
         <ul>
           <li>Zoomiraj gdje imaš unesene čvorove.</li>
           <li>Klikni na čvor (točkica) za početni punkt.</li>
-          <li>Svi segmenti (linije) koji dotiču taj čvor bit će klikabilni kao sljedeći korak.</li>
-          <li>Klikom na segment dodaješ ga u rutu i prelaziš na idući čvor.</li>
+          <li>Zatim klikni sljedeće raskrižje koje je direktno povezano sa zadnjim čvorom.</li>
+          <li>Možeš ići naprijed i natrag po istoj dionici – sve se zbraja u rutu.</li>
         </ul>
       </div>
     </div>
@@ -257,7 +257,9 @@
 
       const map = L.map("balkanMap", {
         zoomControl: true,
-        scrollWheelZoom: true
+        scrollWheelZoom: true,
+        minZoom: 4,
+        maxZoom: 20
       });
 
       const balkanBounds = [
@@ -281,24 +283,67 @@
       const resetBtn = document.getElementById("routeResetBtn");
       const resetTopBtn = document.getElementById("resetRouteTop");
 
+      // Stilovi za čvorove i segmente
+      const NODE_DEFAULT_STYLE = {
+        radius: 7,
+        fillColor: "#ffffff",
+        color: "#c0392b",
+        weight: 2,
+        fillOpacity: 0.95
+      };
+
+      const NODE_ACTIVE_STYLE = {
+        radius: 10,
+        fillColor: "#2ecc71",
+        color: "#ecf0f1",
+        weight: 2,
+        fillOpacity: 1
+      };
+
+      const SEGMENT_DEFAULT_STYLE = {
+        color: "#c0392b",
+        weight: 3,
+        opacity: 0.7
+      };
+
+      const SEGMENT_SELECTED_STYLE = {
+        color: "#2ecc71",
+        weight: 4,
+        opacity: 0.9
+      };
+
+      const SEGMENT_LAST_STYLE = {
+        color: "#2ecc71",
+        weight: 6,
+        opacity: 1
+      };
+
+      function pairKey(a, b) {
+        return a < b ? a + "_" + b : b + "_" + a;
+      }
+
+      // Graph podaci
       let graphNodes = [];
       let graphSegments = [];
       const nodeById = new Map();
-      const segmentsById = new Map();
-      const adjacency = new Map(); // nodeId -> [segmentIds]
+      const segmentById = new Map();
+      const segmentByNodePair = new Map(); // "N1_N2" -> segment
 
-      const nodeLayers = new Map();    // nodeId -> Leaflet marker
-      const segmentLayers = new Map(); // segmentId -> Leaflet polyline
+      // Leaflet layeri
+      const nodeLayers = new Map();    // nodeId -> circleMarker
+      const segmentLayers = new Map(); // segmentId -> polyline
 
-      let routeSegments = []; // niz segmenata (js objekata)
-      let routePolyline = null;
-      let startNodeId = null;
-      let currentNodeId = null;
+      // Stanje rute
+      let routeNodes = [];      // [nodeId1, nodeId2, ...]
+      let routeSegments = [];   // [segmentObj, ...]
+      let activeNodeId = null;  // trenutni čvor
+      let routePolyline = null; // overlay cijele rute
 
       function resetRoute() {
+        routeNodes = [];
         routeSegments = [];
-        startNodeId = null;
-        currentNodeId = null;
+        activeNodeId = null;
+
         startNodeEl.textContent = "-";
         endNodeEl.textContent = "-";
         distEl.textContent = "0.0 km";
@@ -306,18 +351,33 @@
         descEl.textContent = "0 m";
         timeEl.textContent = "0 min";
 
-        // reset stila segmenata
-        segmentLayers.forEach((layer) => {
-          layer.setStyle({
-            color: "#27ae60",
-            weight: 3,
-            opacity: 0.55
-          });
+        // reset čvorova
+        nodeLayers.forEach(layer => {
+          layer.setStyle(NODE_DEFAULT_STYLE);
+        });
+
+        // reset segmenata
+        segmentLayers.forEach(layer => {
+          layer.setStyle(SEGMENT_DEFAULT_STYLE);
         });
 
         if (routePolyline) {
           map.removeLayer(routePolyline);
           routePolyline = null;
+        }
+      }
+
+      function setActiveNode(nodeId) {
+        activeNodeId = nodeId;
+
+        // svi čvorovi na default
+        nodeLayers.forEach(layer => {
+          layer.setStyle(NODE_DEFAULT_STYLE);
+        });
+
+        const layer = nodeLayers.get(nodeId);
+        if (layer) {
+          layer.setStyle(NODE_ACTIVE_STYLE);
         }
       }
 
@@ -340,146 +400,120 @@
         timeEl.textContent = Math.round(t) + " min";
       }
 
-      function updateRouteLine() {
+      function refreshSegmentStyles() {
+        // prvo sve u default
+        segmentLayers.forEach(layer => {
+          layer.setStyle(SEGMENT_DEFAULT_STYLE);
+        });
+
+        // svi segmenti u ruti = zeleni
+        routeSegments.forEach(seg => {
+          const layer = segmentLayers.get(seg.id);
+          if (layer) {
+            layer.setStyle(SEGMENT_SELECTED_STYLE);
+          }
+        });
+
+        // zadnji segment dodatno odebljaj
+        if (routeSegments.length > 0) {
+          const lastSeg = routeSegments[routeSegments.length - 1];
+          const lastLayer = segmentLayers.get(lastSeg.id);
+          if (lastLayer) {
+            lastLayer.setStyle(SEGMENT_LAST_STYLE);
+          }
+        }
+      }
+
+      function updateRoutePolyline() {
         if (routePolyline) {
           map.removeLayer(routePolyline);
           routePolyline = null;
         }
-        if (!routeSegments.length) return;
+        if (!routeSegments.length || routeNodes.length < 2) return;
 
-        let routeLatLngs = [];
+        let allCoords = [];
 
-        routeSegments.forEach((seg, index) => {
-          const fromNode = nodeById.get(seg.from);
-          const toNode = nodeById.get(seg.to);
+        for (let i = 0; i < routeSegments.length; i++) {
+          const seg = routeSegments[i];
+          const fromId = routeNodes[i];
+          const toId = routeNodes[i + 1];
 
-          let segCoords;
+          const fromNode = nodeById.get(fromId);
+          const toNode = nodeById.get(toId);
+
+          let coords;
           if (Array.isArray(seg.coords) && seg.coords.length >= 2) {
-            segCoords = seg.coords.map(c => [c[0], c[1]]);
+            coords = seg.coords.map(c => [c[0], c[1]]);
           } else if (fromNode && toNode) {
-            segCoords = [
+            coords = [
               [fromNode.lat, fromNode.lng],
               [toNode.lat, toNode.lng]
             ];
           } else {
-            segCoords = [];
+            continue;
           }
 
-          if (!segCoords.length) return;
+          // orijentacija prema routeNodes (fromId -> toId)
+          if (seg.to === fromId && seg.from === toId) {
+            coords = coords.slice().reverse();
+          }
 
-          // odredi smjer segmenta prema ruti
-          if (index === 0) {
-            // prva dionica: smjer da startNodeId bude početak
-            if (startNodeId && seg.to === startNodeId) {
-              segCoords = segCoords.slice().reverse();
-            }
-            routeLatLngs = segCoords;
+          if (i === 0) {
+            allCoords = coords;
           } else {
-            // sljedeće dionice: spojiti na zadnju točku rute
-            const last = routeLatLngs[routeLatLngs.length - 1];
-            const first = segCoords[0];
-            const lastSeg = segCoords[segCoords.length - 1];
-
-            if (last[0] === lastSeg[0] && last[1] === lastSeg[1]) {
-              // treba obrnuti
-              segCoords = segCoords.slice().reverse();
-            }
-            // izbjegni duplu točku
-            routeLatLngs = routeLatLngs.concat(segCoords.slice(1));
+            allCoords = allCoords.concat(coords.slice(1)); // izbjeći duplu točku
           }
-        });
+        }
 
-        if (routeLatLngs.length) {
-          routePolyline = L.polyline(routeLatLngs, {
-            color: "#e6b800",
-            weight: 4,
-            opacity: 0.95
+        if (allCoords.length) {
+          routePolyline = L.polyline(allCoords, {
+            color: "#2ecc71",
+            weight: 4.5,
+            opacity: 0.9
           }).addTo(map);
         }
-      }
-
-      function highlightAvailableSegments() {
-        // prvo reset sve
-        segmentLayers.forEach(layer => {
-          layer.setStyle({
-            color: "#27ae60",
-            weight: 3,
-            opacity: 0.35
-          });
-        });
-
-        if (!currentNodeId) return;
-        const segIds = adjacency.get(currentNodeId) || [];
-        segIds.forEach(id => {
-          const layer = segmentLayers.get(id);
-          if (layer) {
-            layer.setStyle({
-              color: "#27ae60",
-              weight: 4,
-              opacity: 0.75
-            });
-          }
-        });
-
-        // highlight već odabrane segmente rute
-        routeSegments.forEach(seg => {
-          const layer = segmentLayers.get(seg.id);
-          if (layer) {
-            layer.setStyle({
-              color: "#e6b800",
-              weight: 5,
-              opacity: 0.95
-            });
-          }
-        });
       }
 
       function onNodeClick(nodeId) {
         const node = nodeById.get(nodeId);
         if (!node) return;
 
-        // ako još nema rute -> postavi start
-        if (!startNodeId) {
-          startNodeId = nodeId;
-          currentNodeId = nodeId;
+        // ako nema aktivnog čvora -> ovo je start
+        if (!activeNodeId) {
+          routeNodes = [nodeId];
+          routeSegments = [];
           startNodeEl.textContent = nodeId;
           endNodeEl.textContent = nodeId;
-          highlightAvailableSegments();
+          setActiveNode(nodeId);
+          updateStats();
+          refreshSegmentStyles();
+          updateRoutePolyline();
           return;
         }
 
-        // ako već imamo rutu, klik na čvor = reset i novi start
-        resetRoute();
-        startNodeId = nodeId;
-        currentNodeId = nodeId;
-        startNodeEl.textContent = nodeId;
-        endNodeEl.textContent = nodeId;
-        highlightAvailableSegments();
-      }
-
-      function onSegmentClick(segId) {
-        const seg = segmentsById.get(segId);
-        if (!seg) return;
-
-        if (!currentNodeId) {
-          alert("Prvo klikni na raskrižje (čvor) za start.");
+        // ako klikneš isti čvor -> ignoriraj
+        if (nodeId === activeNodeId) {
           return;
         }
 
-        // segment mora biti susjed trenutnom čvoru
-        if (seg.from !== currentNodeId && seg.to !== currentNodeId) {
-          // nije validan sljedeći korak
+        // provjeri postoji li segment između aktivnog i ovog čvora
+        const key = pairKey(activeNodeId, nodeId);
+        const seg = segmentByNodePair.get(key);
+
+        if (!seg) {
+          // nema veze → nema preskakanja
           return;
         }
 
+        // dodaj u rutu
+        routeNodes.push(nodeId);
         routeSegments.push(seg);
-        // novi "trenutni" čvor je drugi kraj
-        currentNodeId = seg.from === currentNodeId ? seg.to : seg.from;
-        endNodeEl.textContent = currentNodeId;
 
+        endNodeEl.textContent = nodeId;
+        setActiveNode(nodeId);
         updateStats();
-        updateRouteLine();
-        highlightAvailableSegments();
+        refreshSegmentStyles();
+        updateRoutePolyline();
       }
 
       resetBtn.addEventListener("click", resetRoute);
@@ -492,37 +526,20 @@
           graphNodes = data.nodes || [];
           graphSegments = data.segments || [];
 
-          // napuni mape
+          // napuni node mapu
           graphNodes.forEach(n => {
             nodeById.set(n.id, n);
           });
 
+          // napuni segment mapu
           graphSegments.forEach(seg => {
-            segmentsById.set(seg.id, seg);
-
-            if (!adjacency.has(seg.from)) adjacency.set(seg.from, []);
-            if (!adjacency.has(seg.to)) adjacency.set(seg.to, []);
-            adjacency.get(seg.from).push(seg.id);
-            adjacency.get(seg.to).push(seg.id);
+            segmentById.set(seg.id, seg);
+            segmentByNodePair.set(pairKey(seg.from, seg.to), seg);
           });
 
-          // iscrtaj čvorove
           const allCoords = [];
-          graphNodes.forEach(n => {
-            const m = L.circleMarker([n.lat, n.lng], {
-              radius: 5,
-              fillColor: "#e6b800",
-              color: "#141414",
-              weight: 1,
-              fillOpacity: 0.95
-            }).addTo(map);
 
-            m.on("click", () => onNodeClick(n.id));
-            nodeLayers.set(n.id, m);
-            allCoords.push([n.lat, n.lng]);
-          });
-
-          // iscrtaj segmente
+          // iscrtaj segmente (crvene)
           graphSegments.forEach(seg => {
             const fromNode = nodeById.get(seg.from);
             const toNode = nodeById.get(seg.to);
@@ -538,16 +555,18 @@
               ];
             }
 
-            const line = L.polyline(latlngs, {
-              color: "#27ae60",
-              weight: 3,
-              opacity: 0.55
-            }).addTo(map);
-
-            line.on("click", () => onSegmentClick(seg.id));
+            const line = L.polyline(latlngs, SEGMENT_DEFAULT_STYLE).addTo(map);
             segmentLayers.set(seg.id, line);
 
             latlngs.forEach(c => allCoords.push(c));
+          });
+
+          // iscrtaj čvorove (circle marker)
+          graphNodes.forEach(n => {
+            const marker = L.circleMarker([n.lat, n.lng], NODE_DEFAULT_STYLE).addTo(map);
+            marker.on("click", () => onNodeClick(n.id));
+            nodeLayers.set(n.id, marker);
+            allCoords.push([n.lat, n.lng]);
           });
 
           if (allCoords.length) {
