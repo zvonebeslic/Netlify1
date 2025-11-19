@@ -1,1392 +1,1389 @@
-<!DOCTYPE html>
-<html lang="hr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mountain Adventures</title>
-
-  <!-- === SEO OPIS (HR VERZIJA) — ostavljeno kako si poslao === -->
-  <meta name="description" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu. Planinarske staze Velebita. Planinarske staze Nacionalni park Paklenica. Planinarske staze Nacionalni park Triglav. Planinarske staze Nacionalni park Sutjeska. Planinarske staze Nacionalni park Prokletije. Planinarske staze Nacionalni park Durmitor. Planinarske staze Nacionalni park Biogradska gora. Planinarske staze Nacionalni park Plitvička jezera. Planinarske staze Nacionalni park Sjeverni Velebit. Planinarske staze Nacionalni park Risnjak. Planinarske staze Nacionalni park Tara. Planinarske staze Nacionalni park Kopaonik. Planinarske staze Nacionalni park Đerdap. Planinarske staze Nacionalni park Mavrovo. Planinarske staze Nacionalni park Galicica. Planinarske staze Nacionalni park Pelister. Planinarske staze Julijske Alpe. Planinarske staze Nacionalni park Logarska dolina. Planinarske staze Park prirode Blidinje. Planinarske staze Prenj. Planinarske staze Park prirode Biokovo. Planinarske staze Komovi. Planinarske staze Rila. Planinarske staze Čvrsnica. Planinarske staze Hrvatske, Planinarske staze Bosne i Hercegovine, Planinarske staze Albanije, Planinarske staze Slovenije, Planinarske staze Makedonije, Planinarske staze Crne Gore i Planinarske staze Srbije.">
-
-  <!-- === CANONICAL I HREFLANG === -->
-  <link rel="canonical" href="https://tvojadomena.com/" />
-  <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/" />
-  <link rel="alternate" hreflang="en" href="https://tvojadomena.com/index-en.html" />
-  <link rel="alternate" hreflang="x-default" href="https://tvojadomena.com/" />
-
-  <!-- === OPEN GRAPH === -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://tvojadomena.com/" />
-  <meta property="og:image" content="https://tvojadomena.com/images/cover.jpg" />
-  <meta property="og:title" content="Mountain Adventures – Planinarske staze Balkana" />
-  <meta property="og:description" content="Planinarske staze, GPS tragovi, planinarska oprema i inspirativne priče. Istraži Velebit, Durmitor, Prokletije i druge planine Balkana." />
-  <meta property="og:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails" />
-  <meta property="og:description" lang="en" content="Hiking trails, GPS tracks, hiking gear and inspiring stories. Explore Velebit, Durmitor, Prokletije and other Balkan mountains." />
-
-  <!-- === TWITTER CARDS === -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://tvojadomena.com/images/cover.jpg" />
-  <meta name="twitter:title" content="Mountain Adventures – Planinarske staze Balkana" />
-  <meta name="twitter:description" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu." />
-  <meta name="twitter:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails" />
-  <meta name="twitter:description" lang="en" content="Explore the hiking trails of the Balkans. Detailed descriptions of hiking tours. Hiking gear. GPS tracks for hiking. Inspiring and educational hiking stories. The hiking world in one place." />
-
-  <!-- Ikona + fontovi -->
-  <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Sezone CSS -->
-  <link rel="stylesheet" href="season.css" />
-
-  <style>
-    /* === OSNOVNI RESET === */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html,
-    body {
-      overflow-x: hidden !important;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      background: #000;
-      color: #f7f8fa;
-    }
-
-    /* === NAVBAR === */
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 70px;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      z-index: 1000;
-    }
-    .navbar-left img {
-      height: 16px;
-      width: 24px;
-      cursor: pointer;
-      position: relative;
-    }
-    .navbar-left img:hover::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      background: #fff;
-      color: #000;
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 12px;
-      top: 30px;
-      left: 0;
-      white-space: nowrap;
-      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-    }
-    .navbar-center {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      z-index: 1;
-      transform: translateY(12px);
-    }
-    .search-container {
-      width: 250px;
-      position: relative;
-      padding-top: 10px;
-      z-index: 1;
-    }
-    .search-wrapper {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 30px;
-      background: #fff;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-      padding: 0 15px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      overflow: visible;
-      border-radius: 20px;
-    }
-    .search-top-decoration {
-      position: absolute;
-      top: -212.7px;
-      left: 108px;
-      width: 1600%;
-      height: 30px;
-      object-fit: cover;
-      display: block;
-      z-index: -10;
-      transform: scale(19);
-      transform-origin: top center;
-      pointer-events: none;
-    }
-    .mountain-search {
-      width: 100%;
-      padding: 14px 40px 8px 12px;
-      font-size: 14px;
-      border: none;
-      background: transparent;
-      color: #333;
-      outline: none;
-    }
-    .search-wrapper img {
-      position: absolute;
-      right: 12px;
-      bottom: 8px;
-      width: 19px;
-      height: 19px;
-      pointer-events: none;
-    }
-    .navbar-right {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 8px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.05);
-      transition: background 0.3s, transform 0.2s;
-    }
-    .navbar-right:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: scale(1.05);
-    }
-    .burger-line {
-      width: 26px;
-      height: 3px;
-      background: #fff;
-      border-radius: 2px;
-    }
-    .menu-overlay {
-      position: fixed;
-      top: 70px;
-      right: 0;
-      width: 35vw;
-      max-width: 360px;
-      background: rgba(17, 17, 17, 0.95);
-      color: #fff;
-      padding: 20px;
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      z-index: 9999 !important;
-      border-left: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .menu-overlay.open {
-      display: flex;
-    }
-    .menu-overlay a {
-      margin: 10px 0;
-      text-decoration: none;
-      color: #fff;
-      font-size: 1.1em;
-    }
-
-    /* === BACK TO TOP === */
-    #backToTop {
-      position: fixed;
-      bottom: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999 !important;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(12px);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s, transform 0.3s;
-    }
-    #backToTop:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateX(-50%) scale(1.1);
-    }
-    #backToTop svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    /* === FOOTER === */
-    footer {
-      background: #111;
-      color: #ccc;
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 14px;
-      z-index: 9999 !important;
-      position: relative;
-      margin-top: 60px;
-    }
-    .footer-icons {
-      margin: 10px 0;
-    }
-    .footer-icons svg {
-      width: 32px;
-      height: 32px;
-      margin: 0 10px;
-      vertical-align: middle;
-      opacity: 0.8;
-      transition: opacity 0.3s, transform 0.3s;
-    }
-    .footer-icons svg:hover {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-
-    .pressed {
-      transform: scale(0.97);
-      transition: transform 0.15s ease;
-    }
-    .lang-flag {
-      transition: transform 0.15s, background-color 0.2s, filter 0.2s;
-      cursor: pointer;
-      transform-origin: center;
-    }
-    .lang-flag:hover {
-      filter: brightness(1.1);
-      background-color: rgba(255, 255, 255, 0.15);
-      color: #fff;
-    }
-
-    /* ============================= */
-    /* === KOLIBA WEBSHOP DODACI === */
-    /* ============================= */
-    :root {
-      --cta: #1f7a6b;
-      --wood: #3a2a1c;
-      --woodLight: #5a4029;
-      --panel: rgba(255, 255, 255, 0.06);
-      --shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
-    }
-
-    /* HERO — planinarska koliba (OSTAVLJENO ISTO, ali ga kasnije override-amo) */
-    .hero {
-      margin-top: 70px;
-      position: relative;
-      min-height: 78vh;
-      display: grid;
-      place-items: center;
-      background: #000 url('images/shop-hero-cabin.jpg') center/cover no-repeat;
-      isolation: isolate;
-    }
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(40% 28% at 65% 30%, rgba(255, 230, 170, 0.24), transparent 60%),
-        linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85));
-      z-index: 0;
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      width: min(1080px, 92vw);
-      text-align: center;
-      color: #fff;
-      padding: 28px 0 24px;
-    }
-    .hero-kicker {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(6px);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 13px;
-    }
-    .hero-title {
-      margin-top: 16px;
-      font-family: "Montserrat", system-ui, sans-serif;
-      font-weight: 800;
-      font-size: clamp(28px, 4.8vw, 56px);
-      line-height: 1.04;
-    }
-    .hero-sub {
-      margin-top: 10px;
-      font-size: clamp(14px, 2.2vw, 18px);
-      opacity: 0.95;
-    }
-
-    /* PUTOKAZI — kategorije */
-    .signs {
-      width: min(1080px, 96vw);
-      margin: -90px auto -38px !important;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      position: relative;
-      z-index: 5;
-    }
-    .sign {
-      position: relative;
-      padding: 12px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      user-select: none;
-      background: linear-gradient(180deg, var(--woodLight), var(--wood));
-      border: 1px solid rgba(0, 0, 0, 0.25);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 8px 18px rgba(0, 0, 0, 0.35);
-      color: #f8f3ec;
-      font-weight: 700;
-      transition: transform 0.15s ease, filter 0.2s ease;
-    }
-    .sign:hover {
-      transform: translateY(-2px);
-    }
-    .sign.active {
-      outline: 2px dashed rgba(215, 181, 109, 0.75);
-      outline-offset: 2px;
-    }
-
-    /* GRID PROIZVODA */
-    .shop-wrap {
-     position: relative;
-     background: rgba(0, 0, 0, 0.45); /* tamnija, ali prozirna */
-     z-index: 4 !important;
-    }
-    
-    .section-pad {
-      width: min(1180px, 94vw);
-      margin: 0 auto;
-      padding: 48px 0 40px;
-    }
-    .product-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(4, 1fr);
-    }
-    @media (max-width: 1080px) {
-      .product-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-    @media (max-width: 820px) {
-      .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-   @media (max-width: 540px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 u redu na mobu */
-    gap: 12px;
-  }
-}
-/* Ako želiš baš ispod 360px da bude 1 po redu (jako mali ekrani) */
-@media (max-width: 360px) {
-  .product-grid {
-    grid-template-columns: 1fr;
-  }
-}
-    .card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.06));
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 18px;
-      z-index: 3;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .card-cover {
-      aspect-ratio: 15 / 11;
-      width: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .card-body {
-      padding: 14px 14px 16px;
-      display:flex;
-      felx-direction: column;
-    }
-    .badge {
-      display: inline-block;
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(0, 0, 0, 0.35);
-    }
-    .title {
-      font-weight: 800;
-      font-family: "Montserrat";
-      font-size: 18px;
-      margin-top: 8px;
-    }
-    .desc {
-      color: #c8d0d8;
-      font-size: 14px;
-      margin-top: 6px;
-      min-height: 42px;
-    }
-    .price-row {
-      margin-top: auto;
-      padding-top: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .price {
-      font-weight: 800;
-      color: #fff;
-    }
-    .btn {
-      appearance: none;
-      border: 0;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-weight: 800;
-      cursor: pointer;
-      background: var(--cta);
-      color: #fff;
-      transition: transform 0.12s ease, filter 0.2s ease;
-    }
-    .btn:active {
-      transform: scale(0.97);
-    }
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #fff;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-     .btn.add-to-bag {
-      padding: 5px 7px;   /* manja visina i širina */
-      font-size: 0.68rem;  /* manji tekst */
-    }
-
-    /* MINI KORPA — Ruksak */
-    .bag-toggle {
-      position: fixed;
-      right: 16px;
-      bottom: 18px;
-      z-index: 9999;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(10px);
-      color: #fff;
-      padding: 12px 14px;
-      border-radius: 999px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .bag-panel {
-      position: fixed;
-      top: 70px;
-      right: 0;
-      width: min(420px, 92vw);
-      height: calc(100vh - 70px);
-      background: rgba(12, 13, 15, 0.98);
-      border-left: 1px solid rgba(255, 255, 255, 0.08);
-      transform: translateX(100%);
-      transition: transform 0.25s ease;
-      z-index: 10000;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-    }
-    .bag-panel.open {
-      transform: translateX(0);
-    }
-    .bag-head {
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .bag-list {
-      overflow: auto;
-      padding: 12px 10px;
-    }
-    .bag-item {
-      display: grid;
-      grid-template-columns: 64px 1fr auto;
-      gap: 10px;
-      align-items: center;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 8px;
-      margin-bottom: 10px;
-      background: rgba(255, 255, 255, 0.03);
-    }
-    .bag-item img {
-      width: 64px;
-      height: 64px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-    .bag-foot {
-      padding: 14px 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: grid;
-      gap: 10px;
-    }
-    .bag-total {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 800;
-    }
-
-    /* === OVERRIDE / DODANO ZA VIDEO POZADINU (NIŠTA DRUGO NE DIRAM) === */
-    .page-bg-video{
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 85svh;
-      object-fit: cover;
-      z-index: 0;              /* najniži sloj */
-      background:#000;
-    }
-    .page-overlay{
-      position: fixed;
-      inset: 0;
-      z-index: 1;              /* iznad videa, ispod sadržaja */
-      pointer-events: none;
-      background: rgba(0,0,0,.45); /* layout dolje */
-      transition: background .25s ease;
-    }
-    
-    /* Hero gore – bez tamnog preklopa i bez pozadinske slike */
-    .hero {
-      background: none !important;
-    }
-    .hero::after{
-      display:none !important;
-    }
-    /* Kad je hero u viewportu – overlay se gasi ili ostavlja blagi fade pri dnu */
-    body.hero-in-view .page-overlay{
-      background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%);
-    }
-    /* po želji malo jači kontrast teksta u hero-u, ali bez full tamnog sloja */
-    .hero-title, .hero-sub { text-shadow: 0 2px 14px rgba(0,0,0,.45); }
+<!DOCTYPE html>  
+<html lang="hr">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+  <title>Mountain Adventures</title>  
   
-     /* === PRODUCT CARD CAROUSEL === */
-.pc-media{
-  position: relative;
-  width: 100%;
-  aspect-ratio: 15 / 11;
-  overflow: hidden;
-  cursor: zoom-in;
-  background: rgba(255,255,255,.04);
-}
-.pc-track{
-  height: 100%;
-  display: flex;
-  transition: transform .35s ease;
-  will-change: transform;
-}
-.pc-slide{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  flex: 0 0 100%;
-  user-select: none;
-  pointer-events: none;
-}
-.pc-dots{
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 6px;
-  padding: 6px 8px;
-  border-radius: 999px;
-  background: rgba(0,0,0,.25);
-  backdrop-filter: blur(6px);
-}
-.pc-dot{
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.6);
-  opacity: .6;
-}
-.pc-dot.active{ opacity: 1; background: #fff; }
-
-/* === LIGHTBOX === */
-.pc-lightbox[hidden]{ display:none !important; }
-.pc-lightbox{
-  position: fixed; inset: 0; z-index: 100000;
-  background: rgba(0,0,0,.88);
-  display: grid; place-items: center;
-}
-.pc-lightbox-inner{
-  position: relative; width: min(96vw, 980px); height: min(86vh, 720px);
-  display: grid; place-items: center;
-}
-.pc-lightbox-img{
-  max-width: 100%; max-height: 100%;
-  object-fit: contain;
-}
-.pc-lightbox-close,
-.pc-lightbox-prev,
-.pc-lightbox-next{
-  position: absolute; top: 12px;
-  background: rgba(255,255,255,.14);
-  border: 1px solid rgba(255,255,255,.25);
-  color: #fff; border-radius: 12px;
-  padding: 8px 10px; cursor: pointer;
-  font-weight: 800;
-}
-.pc-lightbox-close{ right: 12px; }
-.pc-lightbox-prev{ left: 12px; top: 50%; transform: translateY(-50%); }
-.pc-lightbox-next{ right: 12px; top: 50%; transform: translateY(-50%); }
-
-.pc-lightbox-cta{
-  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
-  width: 100%; display: grid; place-items: center; pointer-events: none;
-}
-.pc-more{
-  pointer-events: auto;
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: var(--cta, #1f7a6b);
-  color: #fff; font-weight: 800; text-decoration: none;
-  box-shadow: 0 6px 20px rgba(0,0,0,.35);
-}
-.pc-more:active{ transform: translateY(1px); }
-    
-  </style>
-</head>
-
-<body>
-  <!-- GLOBALNI POZADINSKI VIDEO + OVERLAY (DODANO) -->
-  <video class="page-bg-video" id="pageBgVideo" autoplay muted playsinline loop preload="auto"
-         poster="images/shop-hero-cabin.jpg">
-    <source src="videos/mountain-web-shop-christmas-theme.mp4" type="video/mp4" />
-    <!-- <source src="videos/mountain-web-shop-christmas-theme.mp4" type="video/webm" /> -->
-  </video>
-  <div class="page-overlay" aria-hidden="true"></div>
-
-  <div id="season-placeholder"></div>
-
-  <!-- === NAVIGACIJA === -->
-  <div class="navbar">
-    <div class="navbar-left">
-      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">
-    </div>
-    <div class="navbar-center">
-      <div class="search-container">
-        <div class="search-wrapper">
-          <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration" />
-          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">
-          <img src="images/search.svg" alt="ikona za tražilicu">
-        </div>
-      </div>
-    </div>
-    <div class="navbar-right" id="menu-toggle" aria-label="Otvori meni">
-      <div class="burger-line"></div>
-      <div class="burger-line"></div>
-      <div class="burger-line"></div>
-    </div>
-  </div>
-
-  <!-- === HAMBURGER MENI === -->
-  <div class="menu-overlay" id="menu">
-    <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>
-    <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>
-    <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>
-    <a href="webshop.html" data-hr="Web shop" data-en="Web Shop">Web shop</a>
-    <a href="planinarskevijesti.html" data-hr="Blog" data-en="Blog">Blog</a>
-    <a href="digitalniruksak.html" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>
-    <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>
-  </div>
-
-  <!-- =============================== -->
-  <!-- === KOLIBA WEBSHOP — SADRŽAJ === -->
-  <!-- =============================== -->
-
-  <!-- HERO (koliba) -->
-  <section class="hero">
-    <div class="hero-inner">
-      <span class="hero-kicker" data-hr="Planinarska trgovina" data-en="Hiker's Store">Planinarska trgovina</span>
-      <h1 class="hero-title" data-hr="Božićni ugođaj kolibe. Najljepši pokloni i suveniri po vašem izboru." data-en="Christmas cabin vibes. Perfect gifts & Souvenirs at your choice.">Božićni ugođaj kolibe. Najljepši pokloni i suveniri po vašem izboru.</h1>
-      <p class="hero-sub" data-hr="Ubaci u ruksak i kreni na uspon – bez kompliciranja." data-en="Add to your pack and head out — no fuss.">Ubaci u ruksak i kreni na uspon – bez kompliciranja.</p>
-    </div>
-  </section>
-
-  <!-- PUTOKAZI (kategorije) -->
-  <div class="signs" id="categorySigns">
-    <button class="sign active" data-cat="all" data-hr="Sve" data-en="All">Sve</button>
-    <button class="sign" data-cat="Souvenirs" data-hr="Suveniri" data-en="Souvenirs">Suveniri</button>
-    <button class="sign" data-cat="Games&Cards" data-hr="Društvene igre i karte" data-en="Games&Cards">Društvene igre i karte</button>
-    <button class="sign" data-cat="Clothes" data-hr="Odjeća" data-en="Clothes">Odjeća</button>
-    <button class="sign" data-cat="Perfect Gifts" data-hr="Najljepši pokloni" data-en="Perfect Gifts">Najljepši pokloni</button>
-    <button class="sign" data-cat="Stickers" data-hr="Naljepnice" data-en="Stickers">Naljepnice</button>
-    <button class="sign" data-cat="Limited Edition" data-hr="Limitirana Izdanja" data-en="Limited Edition">Limitirana izdanja</button>
-  </div>
-
-
-<!-- GRID PROIZVODA -->
-<main class="shop-wrap">
-  <section class="section-pad">
-    <div class="product-grid" id="productGrid">
-
-      <!-- Primjeri (zamijeni svojim sadržajem/slikama) -->
-
-      <article class="card" data-cat="Souvenirs"
-        data-detail-url="proizvodi/snjezna-kugla.html">
-         <div class="pc-media">
-  <div class="pc-track">
-    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
-  </div>
-  <div class="pc-dots"></div>
-</div>
-        <div class="card-body">
-          <span class="badge">Suveniri</span>
-          <div class="title" data-hr="Snježna kugla Hajdučka Vrata" data-en="Snow Globe Hajducka Vrata">Snježna kugla Hajdučka Vrata</div>
-          <div class="desc" data-hr="Snježna kugla s figurom Hajdučkih Vrata." data-en="Snow globe with Hajducka Vrata figure.">Snježna kugla s figurom Hajdučkih Vrata.</div>
-          <div class="price-row">
-            <div class="price">9.90 €</div>
-            <button class="btn add-to-bag" data-id="souvenir-snow-globe" data-name="Snježna kugla Hajdučka Vrata" data-price="9.90" data-img="images/prod-gpx-velebit.jpg" data-type="pod">
-              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      
-      <article class="card" data-cat="Games&Cards" 
-        data-detail-url="proizvodi/snjezna-kugla.html">
-           <div class="pc-media">
-  <div class="pc-track">
-    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
-  </div>
-  <div class="pc-dots"></div>
-</div>
-        <div class="card-body">
-          <span class="badge">Društvene igre i karte</span>
-          <div class="title" data-hr="Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)" data-en="Ludo (Hiking Edition)">Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)</div>
-          <div class="desc" data-hr="Planinska verzija klasične društvene igre „Čovječe ne ljuti se”." data-en="A mountain-themed version of the classic “Don’t Get Angry” board game.">Planinska verzija klasične društvene igre „Čovječe ne ljuti se”.</div>
-          <div class="price-row">
-            <div class="price">9.90 €</div>
-            <button class="btn add-to-bag" data-id="game-ludo" data-name="Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)" data-price="9.90" data-img="images/prod-gpx-velebit.jpg" data-type="pod">
-              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      
-      <article class="card" data-cat="Clothes"
-        data-detail-url="proizvodi/snjezna-kugla.html">
-           <div class="pc-media">
-  <div class="pc-track">
-    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
-  </div>
-  <div class="pc-dots"></div>
-</div>
-        <div class="card-body">
-          <span class="badge">Odjeća</span>
-          <div class="title" data-hr="Majica s ugraviranim vrhovima planina" data-en="T-shirt with engraved mountain peaks">Majica s ugraviranim vrhovima planina</div>
-          <div class="desc" data-hr="Pamučna majica s precizno ugraviranim obrisima planinskih vrhova." data-en="Cotton T-shirt with precisely engraved outlines of mountain peaks.">Pamučna majica s precizno ugraviranim obrisima planinskih vrhova.</div>
-          <div class="price-row">
-            <div class="price">24.90 €</div>
-            <button class="btn add-to-bag" data-id="shirt-mountains" data-name="Majica s ugraviranim vrhovima planina" data-price="24.90" data-img="images/prod-shirt-mountains.jpg" data-type="pod">
-              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      
-      <article class="card" data-cat="Perfect Gifts"
-        data-detail-url="proizvodi/snjezna-kugla.html">
-           <div class="pc-media">
-  <div class="pc-track">
-    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
-  </div>
-  <div class="pc-dots"></div>
-</div>
-        <div class="card-body">
-          <span class="badge">Najljepši pokloni</span>
-          <div class="title" data-hr="Planinarski survival set" data-en="Hiker’s Survival Kit">Planinarski survival set</div>
-          <div class="desc" data-hr="Iznenadi avanturista praktičnim setom: mini kompas, svjetiljka i višenamjenski alat." data-en="Surprise an adventurer with a practical set: mini compass, flashlight and multitool.">Iznenadi avanturista praktičnim setom: mini kompas, svjetiljka i višenamjenski alat.</div>
-          <div class="price-row">
-            <div class="price">19.90 €</div>
-            <button class="btn add-to-bag" data-id="survival-kit" data-name="Planinarski survival set" data-price="19.90" data-img="images/prod-survival-kit.jpg" data-type="pod">
-              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      
-      <article class="card" data-cat="Stickers"
-        data-detail-url="proizvodi/snjezna-kugla.html">
-           <div class="pc-media">
-  <div class="pc-track">
-    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
-  </div>
-  <div class="pc-dots"></div>
-</div>
-        <div class="card-body">
-          <span class="badge">Suveniri</span>
-          <div class="title" data-hr="Magnet u obliku planine" data-en="Mountain-shaped magnet">Magnet u obliku planine</div>
-          <div class="desc" data-hr="Personalizirani magnet s likom ili slikom po vašoj želji." data-en="Personalized magnet with a custom mountain image or design.">Personalizirani magnet s likom ili slikom po vašoj želji.</div>
-          <div class="price-row">
-            <div class="price">4.99 €</div>
-            <button class="btn add-to-bag" data-id="magnet-mountain" data-name="Magnet u obliku planine" data-price="4.99" data-img="images/prod-magnet-mountain.jpg" data-type="pod">
-              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      
-      <article class="card" data-cat="Limited Edition"
-        data-detail-url="proizvodi/snjezna-kugla.html">
-           <div class="pc-media">
-  <div class="pc-track">
-    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
-  </div>
-  <div class="pc-dots"></div>
-</div>
-        <div class="card-body">
-          <span class="badge">Limitirana izdanja</span>
-          <div class="title" data-hr="Maskica za mobitel (izgled po želji)" data-en="Custom mountain phone case">Maskica za mobitel (izgled po želji)</div>
-          <div class="desc" data-hr="Unikatne maskice s motivima planina — odaberi izgled po vlastitoj želji." data-en="Unique phone cases with mountain motifs — customize the look to your liking.">Unikatne maskice s motivima planina — odaberi izgled po vlastitoj želji.</div>
-          <div class="price-row">
-            <div class="price">14.90 €</div>
-            <button class="btn add-to-bag" data-id="phonecase-mountain" data-name="Maskica za mobitel" data-price="14.90" data-img="images/prod-phonecase-mountain.jpg" data-type="pod">
-              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      
-      <article class="card" data-cat="Souvenirs"
-        data-detail-url="proizvodi/snjezna-kugla.html">
-          <div class="pc-media">
-  <div class="pc-track">
-    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">
-    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">
-  </div>
-  <div class="pc-dots"></div>
-</div>
-        <div class="card-body">
-          <span class="badge">Posebni suveniri</span>
-          <div class="title" data-hr="Izrada 3D modela po vašoj želji" data-en="Custom 3D model creation">Izrada 3D modela po vašoj želji</div>
-          <div class="desc" data-hr="Snježna kugla, privjesak ili minijatura — prema vašoj ideji i mjeri." data-en="Snow globe, keychain or miniature — made from your idea and design.">Snježna kugla, privjesak ili minijatura — prema vašoj ideji i mjeri.</div>
-          <div class="price-row">
-            <div class="price">29.90 €</div>
-            <button class="btn add-to-bag" data-id="custom-3d-model" data-name="3D model po želji" data-price="29.90" data-img="images/prod-3dmodel-snowglobe.jpg" data-type="custom">
-              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </section>
-</main>
-
-
-  <!-- RUKSAK (mini-cart) -->
-  <button class="bag-toggle" id="bagToggle" data-hr="Ruksak" data-en="Pack">Ruksak (0)</button>
-  <aside class="bag-panel" id="bagPanel" aria-label="Ruksak">
-    <div class="bag-head">
-      <strong data-hr="Tvoj ruksak" data-en="Your pack">Tvoj ruksak</strong>
-      <button class="btn-ghost" id="bagClose" aria-label="Zatvori">✕</button>
-    </div>
-    <div class="bag-list" id="bagList"></div>
-    <div class="bag-foot">
-      <div class="bag-total">
-        <span data-hr="Ukupno" data-en="Total">Ukupno</span>
-        <span id="bagTotal">0.00 €</span>
-      </div>
-      <button class="btn" id="btnCheckout">
-        <span data-hr="Kreni na uspon" data-en="Head out">Kreni na uspon</span>
-      </button>
-      <button class="btn-ghost" id="btnClear">
-        <span data-hr="Isprazni ruksak" data-en="Empty pack">Isprazni ruksak</span>
-      </button>
-    </div>
-  </aside>
-
-  <div class="pc-lightbox" hidden aria-modal="true" role="dialog">
-  <div class="pc-lightbox-inner">
-    <button class="pc-lightbox-prev" aria-label="Prethodna">‹</button>
-    <img class="pc-lightbox-img" alt="">
-    <button class="pc-lightbox-next" aria-label="Sljedeća">›</button>
-    <button class="pc-lightbox-close" aria-label="Zatvori">✕</button>
-  </div>
-  <div class="pc-lightbox-cta">
-    <a class="pc-more" href="#" target="_self" rel="noopener">Pročitaj više o proizvodu</a>
-  </div>
-</div>
-
-  <!-- === BACK TO TOP === -->
-  <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="18 15 12 9 6 15"></polyline>
-    </svg>
-  </button>
-
-  <!-- === FOOTER === -->
-  <footer id="footer">
-    <div class="footer-icons">
-      <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Link za Instagram">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
-        </svg>
-      </a>
-      <a href="mailto:mountainadventures1717@gmail.com" aria-label="Link za Email">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-          <polyline points="22,6 12,13 2,6"></polyline>
-        </svg>
-      </a>
-    </div>
-    © Mountain Adventures. All rights reserved.
-  </footer>
-
-  <!-- Sezone JS -->
-  <script src="season.js"></script>
-
-  <script>
-    // === 1. DEFINICIJE ELEMENTA ===
-    const langToggle = document.getElementById('language-toggle');
-    const searchInput = document.getElementById('search');
-    const menuToggle = document.getElementById('menu-toggle');
-    const menu = document.getElementById('menu');
-    const backToTopBtn = document.getElementById('backToTop');
-    const footer = document.getElementById('footer');
-
-    // === 2. JEZIK ===
-    function getInitialLang() {
-      const urlLang = new URLSearchParams(location.search).get('lang');
-      if (urlLang === 'hr' || urlLang === 'en') return urlLang;
-      try {
-        const s = localStorage.getItem('preferredLang');
-        if (s === 'hr' || s === 'en') return s;
-      } catch (e) {}
-      return 'hr';
-    }
-
-    function setBagToggleLabel(count) {
-      const bagToggle = document.getElementById('bagToggle');
-      if (!bagToggle) return;
-      const base = (currentLang === 'hr') ? 'Ruksak' : 'Pack';
-      bagToggle.textContent = `${base} (${count})`;
-    }
-
-    function applyLanguage(lang) {
-      try { localStorage.setItem('preferredLang', lang); } catch (e) {}
-      const u = new URL(location.href);
-      u.searchParams.set('lang', lang);
-      history.replaceState({}, '', u.toString());
-      document.documentElement.lang = lang;
-
-      if (langToggle) {
-        langToggle.src = (lang === 'hr') ? 'images/flag-uk.svg' : 'images/flag-hr.svg';
-        langToggle.alt = (lang === 'hr') ? 'Promijeni na engleski' : 'Switch to Croatian';
-        langToggle.setAttribute('data-tooltip', (lang === 'hr') ? 'Promijeni jezik' : 'Change language');
-      }
-      if (searchInput) {
-        searchInput.placeholder = (lang === 'hr') ? 'Pretraži...' : 'Search...';
-      }
-      document.querySelectorAll('[data-hr]').forEach(el => {
-        const txt = el.getAttribute(`data-${lang}`);
-        if (txt == null) return;
-        if (txt.includes('<')) el.innerHTML = txt;
-        else el.textContent = txt;
-      });
-      // ažuriraj labelu ruksaka
-      setBagToggleLabel(window.__bag?.items.length || 0);
-    }
-
-    let currentLang = getInitialLang();
-    applyLanguage(currentLang);
-
-    if (langToggle) {
-      langToggle.addEventListener('click', () => {
-        currentLang = (currentLang === 'hr') ? 'en' : 'hr';
-        applyLanguage(currentLang);
-      });
-    }
-
-    // === 3. HAMBURGER MENI ===
-    if (menuToggle && menu) {
-      menuToggle.addEventListener('click', () => menu.classList.toggle('open'));
-      window.addEventListener('click', e => {
-        if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') {
-          menu.classList.remove('open');
-        }
-      });
-      document.querySelectorAll('.menu-overlay a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
-    }
-
-    // === 4. PUTOKAZI (filter kategorija) ===
-    (function mountCategoryFilter() {
-      const signs = document.querySelectorAll('.sign');
-      const cards = [...document.querySelectorAll('.card')];
-      if (!signs.length || !cards.length) return;
-      signs.forEach(s => s.addEventListener('click', () => {
-        signs.forEach(x => x.classList.remove('active'));
-        s.classList.add('active');
-        const cat = s.dataset.cat || 'all';
-        cards.forEach(c => {
-          const show = (cat === 'all') || (c.getAttribute('data-cat') === cat);
-          c.style.display = show ? 'block' : 'none';
-        });
-      }));
-    })();
-
-// === 5. BACK TO TOP + RUKSAK — FIXED (isto ponašanje, bez rušenja) ===
-(() => {
-  const backToTopBtn = document.getElementById('backToTop');
-  const bagToggleBtn = document.getElementById('bagToggle');
-  const footer = document.getElementById('footer');
-
-  function onScrollOrResize() {
-    const scrollY = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
-    const viewportBottom = scrollY + windowHeight;
-
-    // pokaži / sakrij BTT
-    backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';
-
-    // TVOJA ORIGINALNA LOGIKA: pomak prema overlapu s footerom
-    if (viewportBottom > footerTop) {
-      const overlap = viewportBottom - footerTop;
-
-      // BackToTop
-      backToTopBtn.style.bottom = `${overlap + 45}px`;
-
-      // Ruksak
-      if (bagToggleBtn) {
-        const baseBottom = 18;     // tvoja baza
-        bagToggleBtn.style.bottom = `${baseBottom + overlap + 16}px`;
-      }
-    } else {
-      // default položaji kad footer nije u viewportu
-      backToTopBtn.style.bottom = '22px';
-      if (bagToggleBtn) bagToggleBtn.style.bottom = '18px';
-    }
-  }
-
-  window.addEventListener('scroll', onScrollOrResize, { passive: true });
-  window.addEventListener('resize', onScrollOrResize);
-  onScrollOrResize(); // init
-
-  backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-})();
-    
-    // === 6. RUKSAK (mini-cart, localStorage) ===
-    const bagToggle = document.getElementById('bagToggle');
-    const bagPanel = document.getElementById('bagPanel');
-    const bagList = document.getElementById('bagList');
-    const bagTotal = document.getElementById('bagTotal');
-    const bagClose = document.getElementById('bagClose');
-    const btnCheckout = document.getElementById('btnCheckout');
-    const btnClear = document.getElementById('btnClear');
-
-    function loadBag() {
-      try { return JSON.parse(localStorage.getItem('__ma_bag__') || '{"items":[]}'); }
-      catch (e) { return { items: [] }; }
-    }
-    function saveBag() {
-      localStorage.setItem('__ma_bag__', JSON.stringify(window.__bag));
-    }
-    function eur(n) { return (Number(n) || 0).toFixed(2) + ' €'; }
-
-    function renderBag() {
-      bagList.innerHTML = '';
-      let sum = 0;
-      window.__bag.items.forEach((it, idx) => {
-        sum += Number(it.price) * Number(it.qty);
-        const row = document.createElement('div');
-        row.className = 'bag-item';
-        row.innerHTML = `
-          <img src="${it.img}" alt="">
-          <div>
-            <div style="font-weight:800">${it.name}</div>
-            <div style="opacity:.8; font-size:13px">${it.type === 'digital' ? 'Digital' : 'Fizičko'} • ${eur(it.price)} × ${it.qty}</div>
-          </div>
-          <div style="display:grid; gap:6px">
-            <button class="btn-ghost" data-act="minus" data-idx="${idx}">−</button>
-            <button class="btn-ghost" data-act="plus" data-idx="${idx}">+</button>
-            <button class="btn-ghost" data-act="rm" data-idx="${idx}">✕</button>
-          </div>`;
-        bagList.appendChild(row);
-      });
-      bagTotal.textContent = eur(sum);
-      setBagToggleLabel(window.__bag.items.length);
-      saveBag();
-    }
-    function openBag() { bagPanel.classList.add('open'); }
-    function closeBag() { bagPanel.classList.remove('open'); }
-
-    window.__bag = loadBag();
-    renderBag();
-
-    if (bagToggle) bagToggle.addEventListener('click', openBag);
-    if (bagClose) bagClose.addEventListener('click', closeBag);
-
-    if (bagList) {
-      bagList.addEventListener('click', e => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
-        const idx = +btn.dataset.idx;
-        const act = btn.dataset.act;
-        const it = window.__bag.items[idx];
-        if (!it) return;
-        if (act === 'plus') it.qty++;
-        if (act === 'minus') it.qty = Math.max(1, it.qty - 1);
-        if (act === 'rm') window.__bag.items.splice(idx, 1);
-        renderBag();
-      });
-    }
-    if (btnClear) btnClear.addEventListener('click', () => { window.__bag.items = []; renderBag(); });
-    if (btnCheckout) btnCheckout.addEventListener('click', () => {
-      alert((currentLang === 'hr') ? 'Hvala! Plaćanje uskoro (Stripe/Shopify).' : 'Thanks! Payment soon (Stripe/Shopify).');
-    });
-
-    document.querySelectorAll('.add-to-bag').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const item = {
-          id: btn.dataset.id,
-          name: btn.dataset.name,
-          price: btn.dataset.price,
-          img: btn.dataset.img,
-          type: btn.dataset.type || 'digital',
-          qty: 1
-        };
-        const found = window.__bag.items.find(x => x.id === item.id);
-        if (found) found.qty++;
-        else window.__bag.items.push(item);
-        renderBag();
-        openBag();
-      });
-    });
-
-    // === 7A. HERO OVERLAY UPRAVLJANJE (DODANO) ===
-    (function mountHeroObserver(){
-      const hero = document.querySelector('.hero');
-      if (!hero) return;
-      const body = document.body;
-      const io = new IntersectionObserver((entries) => {
-        const e = entries[0];
-        if (e && e.isIntersecting) body.classList.add('hero-in-view');
-        else body.classList.remove('hero-in-view');
-      }, { threshold: 0.2 });
-      io.observe(hero);
-    })();
-
-// === PRODUCT CARD CAROUSEL + LIGHTBOX ===
-(function(){
-  // 1) CAROUSEL u karticama
-  const carousels = [];
-  document.querySelectorAll('.card .pc-media').forEach(media => {
-    const track = media.querySelector('.pc-track');
-    const slides = [...media.querySelectorAll('.pc-slide')];
-    const dotsWrap = media.querySelector('.pc-dots');
-
-    if (!track || slides.length === 0) return;
-
-    // točkice (samo ako >1 slika)
-    let dots = [];
-    if (slides.length > 1) {
-      dots = slides.map((_,i) => {
-        const d = document.createElement('span');
-        d.className = 'pc-dot' + (i===0?' active':'');
-        d.addEventListener('click', (e) => { e.stopPropagation(); go(i); });
-        dotsWrap.appendChild(d);
-        return d;
-      });
-    } else {
-      dotsWrap.style.display = 'none';
-    }
-
-    let index = 0;
-    function render(){
-      track.style.transform = `translateX(${-index*100}%)`;
-      dots.forEach((d,i)=>d.classList.toggle('active', i===index));
-    }
-    function go(i){
-      index = Math.max(0, Math.min(slides.length-1, i));
-      render();
-    }
-
-    // swipe (touch)
-    let sx=0, dx=0, moving=false;
-    media.addEventListener('touchstart', e => {
-      if (slides.length<2) return;
-      sx = e.touches[0].clientX; moving=true; dx=0;
-    }, {passive:true});
-    media.addEventListener('touchmove', e => {
-      if (!moving) return;
-      dx = e.touches[0].clientX - sx;
-    }, {passive:true});
-    media.addEventListener('touchend', () => {
-      if (!moving) return;
-      moving=false;
-      if (Math.abs(dx)>40){
-        if (dx<0 && index<slides.length-1) go(index+1);
-        if (dx>0 && index>0) go(index-1);
-      }
-    });
-
-    // klik na sliku -> lightbox
-    media.addEventListener('click', (e) => {
-      const startIdx = Math.round(Math.abs(track.style.transform?.match(/-?(\d+(\.\d+)?)%/)?.[1]||0)/100) || 0;
-      openLightboxFromMedia(media, startIdx);
-    });
-
-    render();
-    carousels.push({media, go});
-  });
-
-  // 2) LIGHTBOX
-  const lb = document.querySelector('.pc-lightbox');
-  const lbImg = lb?.querySelector('.pc-lightbox-img');
-  const btnPrev = lb?.querySelector('.pc-lightbox-prev');
-  const btnNext = lb?.querySelector('.pc-lightbox-next');
-  const btnClose = lb?.querySelector('.pc-lightbox-close');
-  const lbMore = lb?.querySelector('.pc-more');
-
-  let lbList = [], lbIdx = 0, lbDetailURL = '#';
-
-  function setLbImage(){
-    if (!lbImg || !lbList.length) return;
-    lbImg.src = lbList[lbIdx];
-  }
-
-  function findDetailURL(fromEl){
-    // 1) <a.pc-title-link>
-    const link = fromEl.closest('.card')?.querySelector('.pc-title-link');
-    if (link?.getAttribute('href')) return link.getAttribute('href');
-
-    // 2) data-detail-url na <article>
-    const card = fromEl.closest('.card');
-    if (card?.dataset.detailUrl) return card.dataset.detailUrl;
-
-    // 3) <div class="title"> prvi <a>
-    const a = card?.querySelector('.title a[href]');
-    if (a) return a.getAttribute('href');
-
-    return '#';
-  }
-
-  window.openLightboxFromMedia = function(media, startIndex=0){
-    const slides = [...media.querySelectorAll('.pc-slide')];
-    lbList = slides.map(s => s.currentSrc || s.src);
-    lbIdx = Math.max(0, Math.min(startIndex, lbList.length-1));
-    lbDetailURL = findDetailURL(media);
-    setLbImage();
-
-    if (lbMore){
-      lbMore.href = lbDetailURL || '#';
-      lbMore.textContent = (window.currentLang === 'en')
-        ? 'Read more about the product'
-        : 'Pročitaj više o proizvodu';
-      lbMore.style.display = lbDetailURL ? 'inline-block' : 'none';
-    }
-
-    lb.hidden = false;
-    lb.setAttribute('aria-hidden','false');
-    document.body.style.overflow = 'hidden';
-  };
-
-  function closeLb(){
-    lb.hidden = true;
-    lb.setAttribute('aria-hidden','true');
-    document.body.style.overflow = '';
-  }
-
-  btnClose?.addEventListener('click', closeLb);
-  btnPrev?.addEventListener('click', ()=>{ if(lbList.length){ lbIdx = (lbIdx-1+lbList.length)%lbList.length; setLbImage(); } });
-  btnNext?.addEventListener('click', ()=>{ if(lbList.length){ lbIdx = (lbIdx+1)%lbList.length; setLbImage(); } });
-  lb?.addEventListener('click', e => { if (e.target === lb) closeLb(); });
-  window.addEventListener('keydown', e => {
-    if (lb.hasAttribute('hidden')) return;
-    if (e.key==='Escape') closeLb();
-    if (e.key==='ArrowLeft') btnPrev?.click();
-    if (e.key==='ArrowRight') btnNext?.click();
-  });
-
-  // 3) Klik na NASLOV -> isti URL kao detail
-  document.querySelectorAll('.card .title').forEach(t => {
-    // Ako već ima <a>, pusti ga
-    if (t.querySelector('a')) return;
-
-    const card = t.closest('.card');
-    const url = card?.dataset.detailUrl;
-    if (url){
-      t.style.cursor = 'pointer';
-      t.addEventListener('click', ()=> location.href = url);
-    }
-  });
-})();
-    
-    // === 7B. SEASON HTML I EFEKTI (OSTAVLJENO) ===
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedSeason = localStorage.getItem('activeSeason');
-      if (savedSeason) {
-        setTimeout(() => {
-          if (savedSeason === 'winter') startWinterEffect(true);
-          else if (savedSeason === 'summer') startSummerEffect(true);
-          else if (savedSeason === 'spring') startSpringEffect(true);
-          else if (savedSeason === 'autumn') startAutumnEffect(true);
-        }, 10000);
-      }
-      fetch('season.html')
-        .then(res => res.text())
-        .then(html => {
-          const ph = document.getElementById('season-placeholder');
-          if (ph) ph.innerHTML = html;
-          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();
-        })
-        .catch(() => {
-          // Ako radiš lokalno file://, fetch neće proći — ali to ne smije srušiti stranicu
-        });
-    });
-
+  <!-- === SEO OPIS (HR VERZIJA) — ostavljeno kako si poslao === -->  
+  <meta name="description" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu. Planinarske staze Velebita. Planinarske staze Nacionalni park Paklenica. Planinarske staze Nacionalni park Triglav. Planinarske staze Nacionalni park Sutjeska. Planinarske staze Nacionalni park Prokletije. Planinarske staze Nacionalni park Durmitor. Planinarske staze Nacionalni park Biogradska gora. Planinarske staze Nacionalni park Plitvička jezera. Planinarske staze Nacionalni park Sjeverni Velebit. Planinarske staze Nacionalni park Risnjak. Planinarske staze Nacionalni park Tara. Planinarske staze Nacionalni park Kopaonik. Planinarske staze Nacionalni park Đerdap. Planinarske staze Nacionalni park Mavrovo. Planinarske staze Nacionalni park Galicica. Planinarske staze Nacionalni park Pelister. Planinarske staze Julijske Alpe. Planinarske staze Nacionalni park Logarska dolina. Planinarske staze Park prirode Blidinje. Planinarske staze Prenj. Planinarske staze Park prirode Biokovo. Planinarske staze Komovi. Planinarske staze Rila. Planinarske staze Čvrsnica. Planinarske staze Hrvatske, Planinarske staze Bosne i Hercegovine, Planinarske staze Albanije, Planinarske staze Slovenije, Planinarske staze Makedonije, Planinarske staze Crne Gore i Planinarske staze Srbije.">  
   
-  </script>
-</body>
+  <!-- === CANONICAL I HREFLANG === -->  
+  <link rel="canonical" href="https://tvojadomena.com/" />  
+  <link rel="alternate" hreflang="hr" href="https://tvojadomena.com/" />  
+  <link rel="alternate" hreflang="en" href="https://tvojadomena.com/index-en.html" />  
+  <link rel="alternate" hreflang="x-default" href="https://tvojadomena.com/" />  
+  
+  <!-- === OPEN GRAPH === -->  
+  <meta property="og:type" content="website" />  
+  <meta property="og:url" content="https://tvojadomena.com/" />  
+  <meta property="og:image" content="https://tvojadomena.com/images/cover.jpg" />  
+  <meta property="og:title" content="Mountain Adventures – Planinarske staze Balkana" />  
+  <meta property="og:description" content="Planinarske staze, GPS tragovi, planinarska oprema i inspirativne priče. Istraži Velebit, Durmitor, Prokletije i druge planine Balkana." />  
+  <meta property="og:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails" />  
+  <meta property="og:description" lang="en" content="Hiking trails, GPS tracks, hiking gear and inspiring stories. Explore Velebit, Durmitor, Prokletije and other Balkan mountains." />  
+  
+  <!-- === TWITTER CARDS === -->  
+  <meta name="twitter:card" content="summary_large_image" />  
+  <meta name="twitter:image" content="https://tvojadomena.com/images/cover.jpg" />  
+  <meta name="twitter:title" content="Mountain Adventures – Planinarske staze Balkana" />  
+  <meta name="twitter:description" content="Istraži planinarske staze Balkana. Detaljni opisi planinarskih tura. Planinarska oprema. GPS tragovi za planinarenje. Inspirativne i poučne planinarske priče. Planinarski svijet na jednom mjestu." />  
+  <meta name="twitter:title" lang="en" content="Mountain Adventures – Balkan Hiking Trails" />  
+  <meta name="twitter:description" lang="en" content="Explore the hiking trails of the Balkans. Detailed descriptions of hiking tours. Hiking gear. GPS tracks for hiking. Inspiring and educational hiking stories. The hiking world in one place." />  
+  
+  <!-- Ikona + fontovi -->  
+  <link rel="icon" href="images/mountain-adventures.svg" type="image/svg+xml" />  
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />  
+  
+  <!-- Sezone CSS -->  
+  <link rel="stylesheet" href="season.css" />  
+  
+  <style>  
+    /* === OSNOVNI RESET === */  
+    * {  
+      margin: 0;  
+      padding: 0;  
+      box-sizing: border-box;  
+    }  
+    html,  
+    body {  
+      overflow-x: hidden !important;  
+    }  
+    body {  
+      font-family: Arial, sans-serif;  
+      overflow-x: hidden;  
+      scroll-behavior: smooth;  
+      background: #000;  
+      color: #f7f8fa;  
+    }  
+  
+    /* === NAVBAR === */  
+    .navbar {  
+      position: fixed;  
+      top: 0;  
+      width: 100%;  
+      height: 70px;  
+      background: rgba(0, 0, 0, 0.7);  
+      display: flex;  
+      align-items: center;  
+      justify-content: space-between;  
+      padding: 0 15px;  
+      z-index: 1000;  
+    }  
+    .navbar-left img {  
+      height: 16px;  
+      width: 24px;  
+      cursor: pointer;  
+      position: relative;  
+    }  
+    .navbar-left img:hover::after {  
+      content: attr(data-tooltip);  
+      position: absolute;  
+      background: #fff;  
+      color: #000;  
+      padding: 4px 8px;  
+      border-radius: 5px;  
+      font-size: 12px;  
+      top: 30px;  
+      left: 0;  
+      white-space: nowrap;  
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);  
+    }  
+    .navbar-center {  
+      flex: 1;  
+      display: flex;  
+      justify-content: center;  
+      z-index: 1;  
+      transform: translateY(12px);  
+    }  
+    .search-container {  
+      width: 250px;  
+      position: relative;  
+      padding-top: 10px;  
+      z-index: 1;  
+    }  
+    .search-wrapper {  
+      position: relative;  
+      z-index: 2;  
+      width: 100%;  
+      height: 30px;  
+      background: #fff;  
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);  
+      padding: 0 15px;  
+      display: flex;  
+      align-items: flex-end;  
+      justify-content: center;  
+      overflow: visible;  
+      border-radius: 20px;  
+    }  
+    .search-top-decoration {  
+      position: absolute;  
+      top: -212.7px;  
+      left: 108px;  
+      width: 1600%;  
+      height: 30px;  
+      object-fit: cover;  
+      display: block;  
+      z-index: -10;  
+      transform: scale(19);  
+      transform-origin: top center;  
+      pointer-events: none;  
+    }  
+    .mountain-search {  
+      width: 100%;  
+      padding: 14px 40px 8px 12px;  
+      font-size: 14px;  
+      border: none;  
+      background: transparent;  
+      color: #333;  
+      outline: none;  
+    }  
+    .search-wrapper img {  
+      position: absolute;  
+      right: 12px;  
+      bottom: 8px;  
+      width: 19px;  
+      height: 19px;  
+      pointer-events: none;  
+    }  
+    .navbar-right {  
+      display: flex;  
+      flex-direction: column;  
+      justify-content: center;  
+      gap: 5px;  
+      padding: 8px;  
+      border: 1px solid rgba(255, 255, 255, 0.4);  
+      border-radius: 8px;  
+      cursor: pointer;  
+      background: rgba(255, 255, 255, 0.05);  
+      transition: background 0.3s, transform 0.2s;  
+    }  
+    .navbar-right:hover {  
+      background: rgba(255, 255, 255, 0.1);  
+      transform: scale(1.05);  
+    }  
+    .burger-line {  
+      width: 26px;  
+      height: 3px;  
+      background: #fff;  
+      border-radius: 2px;  
+    }  
+    .menu-overlay {  
+      position: fixed;  
+      top: 70px;  
+      right: 0;  
+      width: 35vw;  
+      max-width: 360px;  
+      background: rgba(17, 17, 17, 0.95);  
+      color: #fff;  
+      padding: 20px;  
+      display: none;  
+      flex-direction: column;  
+      align-items: flex-start;  
+      z-index: 9999 !important;  
+      border-left: 1px solid rgba(255, 255, 255, 0.08);  
+    }  
+    .menu-overlay.open {  
+      display: flex;  
+    }  
+    .menu-overlay a {  
+      margin: 10px 0;  
+      text-decoration: none;  
+      color: #fff;  
+      font-size: 1.1em;  
+    }  
+  
+    /* === BACK TO TOP === */  
+    #backToTop {  
+      position: fixed;  
+      bottom: 22px;  
+      left: 50%;  
+      transform: translateX(-50%);  
+      z-index: 9999 !important;  
+      background: rgba(255, 255, 255, 0.2);  
+      backdrop-filter: blur(12px);  
+      color: #fff;  
+      border: 1px solid rgba(255, 255, 255, 0.3);  
+      width: 48px;  
+      height: 48px;  
+      border-radius: 50%;  
+      cursor: pointer;  
+      display: none;  
+      align-items: center;  
+      justify-content: center;  
+      transition: background 0.3s, transform 0.3s;  
+    }  
+    #backToTop:hover {  
+      background: rgba(255, 255, 255, 0.3);  
+      transform: translateX(-50%) scale(1.1);  
+    }  
+    #backToTop svg {  
+      width: 24px;  
+      height: 24px;  
+    }  
+  
+    /* === FOOTER === */  
+    footer {  
+      background: #111;  
+      color: #ccc;  
+      text-align: center;  
+      padding: 20px 10px;  
+      font-size: 14px;  
+      z-index: 9999 !important;  
+      position: relative;  
+      margin-top: 60px;  
+    }  
+    .footer-icons {  
+      margin: 10px 0;  
+    }  
+    .footer-icons svg {  
+      width: 32px;  
+      height: 32px;  
+      margin: 0 10px;  
+      vertical-align: middle;  
+      opacity: 0.8;  
+      transition: opacity 0.3s, transform 0.3s;  
+    }  
+    .footer-icons svg:hover {  
+      opacity: 1;  
+      transform: scale(1.1);  
+    }  
+  
+    .pressed {  
+      transform: scale(0.97);  
+      transition: transform 0.15s ease;  
+    }  
+    .lang-flag {  
+      transition: transform 0.15s, background-color 0.2s, filter 0.2s;  
+      cursor: pointer;  
+      transform-origin: center;  
+    }  
+    .lang-flag:hover {  
+      filter: brightness(1.1);  
+      background-color: rgba(255, 255, 255, 0.15);  
+      color: #fff;  
+    }  
+  
+    /* ============================= */  
+    /* === KOLIBA WEBSHOP DODACI === */  
+    /* ============================= */  
+    :root {  
+      --cta: #1f7a6b;  
+      --wood: #3a2a1c;  
+      --woodLight: #5a4029;  
+      --panel: rgba(255, 255, 255, 0.06);  
+      --shadow: 0 12px 36px rgba(0, 0, 0, 0.35);  
+    }  
+  
+    /* HERO — planinarska koliba (OSTAVLJENO ISTO, ali ga kasnije override-amo) */  
+    .hero {  
+      margin-top: 70px;  
+      position: relative;  
+      min-height: 78vh;  
+      display: grid;  
+      place-items: center;  
+      background: #000 url('images/shop-hero-cabin.jpg') center/cover no-repeat;  
+      isolation: isolate;  
+    }  
+    .hero::after {  
+      content: "";  
+      position: absolute;  
+      inset: 0;  
+      background:  
+        radial-gradient(40% 28% at 65% 30%, rgba(255, 230, 170, 0.24), transparent 60%),  
+        linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85));  
+      z-index: 0;  
+    }  
+    .hero-inner {  
+      position: relative;  
+      z-index: 1;  
+      width: min(1080px, 92vw);  
+      text-align: center;  
+      color: #fff;  
+      padding: 28px 0 24px;  
+    }  
+    .hero-kicker {  
+      display: inline-block;  
+      padding: 6px 10px;  
+      border-radius: 999px;  
+      border: 1px solid rgba(255, 255, 255, 0.35);  
+      background: rgba(255, 255, 255, 0.08);  
+      backdrop-filter: blur(6px);  
+      letter-spacing: 0.12em;  
+      text-transform: uppercase;  
+      font-size: 13px;  
+    }  
+    .hero-title {  
+      margin-top: 16px;  
+      font-family: "Montserrat", system-ui, sans-serif;  
+      font-weight: 800;  
+      font-size: clamp(28px, 4.8vw, 56px);  
+      line-height: 1.04;  
+    }  
+    .hero-sub {  
+      margin-top: 10px;  
+      font-size: clamp(14px, 2.2vw, 18px);  
+      opacity: 0.95;  
+    }  
+  
+    /* PUTOKAZI — kategorije */  
+    .signs {  
+      width: min(1080px, 96vw);  
+      margin: -90px auto -38px !important;  
+      display: flex;  
+      gap: 10px;  
+      flex-wrap: wrap;  
+      justify-content: center;  
+      position: relative;  
+      z-index: 5;  
+    }  
+    .sign {  
+      position: relative;  
+      padding: 12px 16px;  
+      border-radius: 10px;  
+      cursor: pointer;  
+      user-select: none;  
+      background: linear-gradient(180deg, var(--woodLight), var(--wood));  
+      border: 1px solid rgba(0, 0, 0, 0.25);  
+      box-shadow:  
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),  
+        0 8px 18px rgba(0, 0, 0, 0.35);  
+      color: #f8f3ec;  
+      font-weight: 700;  
+      transition: transform 0.15s ease, filter 0.2s ease;  
+    }  
+    .sign:hover {  
+      transform: translateY(-2px);  
+    }  
+    .sign.active {  
+      outline: 2px dashed rgba(215, 181, 109, 0.75);  
+      outline-offset: 2px;  
+    }  
+  
+    /* GRID PROIZVODA */  
+    .shop-wrap {  
+     position: relative;  
+     background: rgba(0, 0, 0, 0.45); /* tamnija, ali prozirna */  
+     z-index: 4 !important;  
+    }  
+      
+    .section-pad {  
+      width: min(1180px, 94vw);  
+      margin: 0 auto;  
+      padding: 48px 0 40px;  
+    }  
+    .product-grid {  
+      display: grid;  
+      gap: 16px;  
+      grid-template-columns: repeat(4, 1fr);  
+    }  
+    @media (max-width: 1080px) {  
+      .product-grid {  
+        grid-template-columns: repeat(3, 1fr);  
+      }  
+    }  
+    @media (max-width: 820px) {  
+      .product-grid {  
+        grid-template-columns: repeat(2, 1fr);  
+      }  
+    }  
+   @media (max-width: 540px) {  
+  .product-grid {  
+    grid-template-columns: repeat(2, 1fr); /* 2 u redu na mobu */  
+    gap: 12px;  
+  }  
+}  
+/* Ako želiš baš ispod 360px da bude 1 po redu (jako mali ekrani) */  
+@media (max-width: 360px) {  
+  .product-grid {  
+    grid-template-columns: 1fr;  
+  }  
+}  
+    .card {  
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.06));  
+      border: 1px solid rgba(255, 255, 255, 0.12);  
+      border-radius: 18px;  
+      z-index: 3;  
+      overflow: hidden;  
+      box-shadow: var(--shadow);  
+    }  
+    .card-cover {  
+      aspect-ratio: 15 / 11;  
+      width: 100%;  
+      object-fit: cover;  
+      display: block;  
+    }  
+    .card-body {  
+      padding: 14px 14px 16px;  
+    }  
+    .badge {  
+      display: inline-block;  
+      font-size: 12px;  
+      padding: 6px 10px;  
+      border-radius: 999px;  
+      border: 1px solid rgba(255, 255, 255, 0.18);  
+      background: rgba(0, 0, 0, 0.35);  
+    }  
+    .title {  
+      font-weight: 800;  
+      font-family: "Montserrat";  
+      font-size: 18px;  
+      margin-top: 8px;  
+    }  
+    .desc {  
+      color: #c8d0d8;  
+      font-size: 14px;  
+      margin-top: 6px;  
+      min-height: 42px;  
+    }  
+    .price-row {  
+      margin-top: 10px;  
+      display: flex;  
+      align-items: center;  
+      justify-content: space-between;  
+    }  
+    .price {  
+      font-weight: 800;  
+      color: #fff;  
+    }  
+    .btn {  
+      appearance: none;  
+      border: 0;  
+      border-radius: 12px;  
+      padding: 10px 12px;  
+      font-weight: 800;  
+      cursor: pointer;  
+      background: var(--cta);  
+      color: #fff;  
+      transition: transform 0.12s ease, filter 0.2s ease;  
+    }  
+    .btn:active {  
+      transform: scale(0.97);  
+    }  
+    .btn-ghost {  
+      background: transparent;  
+      border: 1px solid rgba(255, 255, 255, 0.25);  
+      color: #fff;  
+      border-radius: 12px;  
+      padding: 10px 12px;  
+      font-weight: 700;  
+      cursor: pointer;  
+    }  
+     .btn.add-to-bag {  
+      padding: 5px 7px;   /* manja visina i širina */  
+      font-size: 0.68rem;  /* manji tekst */  
+    }  
+  
+    /* MINI KORPA — Ruksak */  
+    .bag-toggle {  
+      position: fixed;  
+      right: 16px;  
+      bottom: 18px;  
+      z-index: 9999;  
+      border: 1px solid rgba(255, 255, 255, 0.25);  
+      background: rgba(255, 255, 255, 0.08);  
+      backdrop-filter: blur(10px);  
+      color: #fff;  
+      padding: 12px 14px;  
+      border-radius: 999px;  
+      font-weight: 800;  
+      cursor: pointer;  
+    }  
+    .bag-panel {  
+      position: fixed;  
+      top: 70px;  
+      right: 0;  
+      width: min(420px, 92vw);  
+      height: calc(100vh - 70px);  
+      background: rgba(12, 13, 15, 0.98);  
+      border-left: 1px solid rgba(255, 255, 255, 0.08);  
+      transform: translateX(100%);  
+      transition: transform 0.25s ease;  
+      z-index: 10000;  
+      display: grid;  
+      grid-template-rows: auto 1fr auto;  
+    }  
+    .bag-panel.open {  
+      transform: translateX(0);  
+    }  
+    .bag-head {  
+      padding: 16px;  
+      display: flex;  
+      align-items: center;  
+      justify-content: space-between;  
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);  
+    }  
+    .bag-list {  
+      overflow: auto;  
+      padding: 12px 10px;  
+    }  
+    .bag-item {  
+      display: grid;  
+      grid-template-columns: 64px 1fr auto;  
+      gap: 10px;  
+      align-items: center;  
+      border: 1px solid rgba(255, 255, 255, 0.06);  
+      border-radius: 12px;  
+      padding: 8px;  
+      margin-bottom: 10px;  
+      background: rgba(255, 255, 255, 0.03);  
+    }  
+    .bag-item img {  
+      width: 64px;  
+      height: 64px;  
+      object-fit: cover;  
+      border-radius: 10px;  
+    }  
+    .bag-foot {  
+      padding: 14px 16px;  
+      border-top: 1px solid rgba(255, 255, 255, 0.08);  
+      display: grid;  
+      gap: 10px;  
+    }  
+    .bag-total {  
+      display: flex;  
+      align-items: center;  
+      justify-content: space-between;  
+      font-weight: 800;  
+    }  
+  
+    /* === OVERRIDE / DODANO ZA VIDEO POZADINU (NIŠTA DRUGO NE DIRAM) === */  
+    .page-bg-video{  
+      position: fixed;  
+      inset: 0;  
+      width: 100%;  
+      height: 85svh;  
+      object-fit: cover;  
+      z-index: 0;              /* najniži sloj */  
+      background:#000;  
+    }  
+    .page-overlay{  
+      position: fixed;  
+      inset: 0;  
+      z-index: 1;              /* iznad videa, ispod sadržaja */  
+      pointer-events: none;  
+      background: rgba(0,0,0,.45); /* layout dolje */  
+      transition: background .25s ease;  
+    }  
+      
+    /* Hero gore – bez tamnog preklopa i bez pozadinske slike */  
+    .hero {  
+      background: none !important;  
+    }  
+    .hero::after{  
+      display:none !important;  
+    }  
+    /* Kad je hero u viewportu – overlay se gasi ili ostavlja blagi fade pri dnu */  
+    body.hero-in-view .page-overlay{  
+      background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%);  
+    }  
+    /* po želji malo jači kontrast teksta u hero-u, ali bez full tamnog sloja */  
+    .hero-title, .hero-sub { text-shadow: 0 2px 14px rgba(0,0,0,.45); }  
+    
+     /* === PRODUCT CARD CAROUSEL === */  
+.pc-media{  
+  position: relative;  
+  width: 100%;  
+  aspect-ratio: 15 / 11;  
+  overflow: hidden;  
+  cursor: zoom-in;  
+  background: rgba(255,255,255,.04);  
+}  
+.pc-track{  
+  height: 100%;  
+  display: flex;  
+  transition: transform .35s ease;  
+  will-change: transform;  
+}  
+.pc-slide{  
+  width: 100%;  
+  height: 100%;  
+  object-fit: cover;  
+  flex: 0 0 100%;  
+  user-select: none;  
+  pointer-events: none;  
+}  
+.pc-dots{  
+  position: absolute;  
+  bottom: 8px;  
+  left: 50%;  
+  transform: translateX(-50%);  
+  display: flex;  
+  gap: 6px;  
+  padding: 6px 8px;  
+  border-radius: 999px;  
+  background: rgba(0,0,0,.25);  
+  backdrop-filter: blur(6px);  
+}  
+.pc-dot{  
+  width: 6px; height: 6px;  
+  border-radius: 50%;  
+  background: rgba(255,255,255,.6);  
+  opacity: .6;  
+}  
+.pc-dot.active{ opacity: 1; background: #fff; }  
+  
+/* === LIGHTBOX === */  
+.pc-lightbox[hidden]{ display:none !important; }  
+.pc-lightbox{  
+  position: fixed; inset: 0; z-index: 100000;  
+  background: rgba(0,0,0,.88);  
+  display: grid; place-items: center;  
+}  
+.pc-lightbox-inner{  
+  position: relative; width: min(96vw, 980px); height: min(86vh, 720px);  
+  display: grid; place-items: center;  
+}  
+.pc-lightbox-img{  
+  max-width: 100%; max-height: 100%;  
+  object-fit: contain;  
+}  
+.pc-lightbox-close,  
+.pc-lightbox-prev,  
+.pc-lightbox-next{  
+  position: absolute; top: 12px;  
+  background: rgba(255,255,255,.14);  
+  border: 1px solid rgba(255,255,255,.25);  
+  color: #fff; border-radius: 12px;  
+  padding: 8px 10px; cursor: pointer;  
+  font-weight: 800;  
+}  
+.pc-lightbox-close{ right: 12px; }  
+.pc-lightbox-prev{ left: 12px; top: 50%; transform: translateY(-50%); }  
+.pc-lightbox-next{ right: 12px; top: 50%; transform: translateY(-50%); }  
+  
+.pc-lightbox-cta{  
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);  
+  width: 100%; display: grid; place-items: center; pointer-events: none;  
+}  
+.pc-more{  
+  pointer-events: auto;  
+  display: inline-block;  
+  padding: 10px 14px;  
+  border-radius: 12px;  
+  background: var(--cta, #1f7a6b);  
+  color: #fff; font-weight: 800; text-decoration: none;  
+  box-shadow: 0 6px 20px rgba(0,0,0,.35);  
+}  
+.pc-more:active{ transform: translateY(1px); }  
+      
+  </style>  
+</head>  
+  
+<body>  
+  <!-- GLOBALNI POZADINSKI VIDEO + OVERLAY (DODANO) -->  
+  <video class="page-bg-video" id="pageBgVideo" autoplay muted playsinline loop preload="auto"  
+         poster="images/shop-hero-cabin.jpg">  
+    <source src="videos/mountain-web-shop-christmas-theme.mp4" type="video/mp4" />  
+    <!-- <source src="videos/mountain-web-shop-christmas-theme.mp4" type="video/webm" /> -->  
+  </video>  
+  <div class="page-overlay" aria-hidden="true"></div>  
+  
+  <div id="season-placeholder"></div>  
+  
+  <!-- === NAVIGACIJA === -->  
+  <div class="navbar">  
+    <div class="navbar-left">  
+      <img src="images/flag-uk.svg" alt="promjena jezika na engleski" id="language-toggle" data-tooltip="Promijeni jezik">  
+    </div>  
+    <div class="navbar-center">  
+      <div class="search-container">  
+        <div class="search-wrapper">  
+          <img src="images/planine-za-trazilicu.png" alt="planinski-vrhovi" class="search-top-decoration" />  
+          <input type="text" class="mountain-search" id="search" placeholder="Pretraži...">  
+          <img src="images/search.svg" alt="ikona za tražilicu">  
+        </div>  
+      </div>  
+    </div>  
+    <div class="navbar-right" id="menu-toggle" aria-label="Otvori meni">  
+      <div class="burger-line"></div>  
+      <div class="burger-line"></div>  
+      <div class="burger-line"></div>  
+    </div>  
+  </div>  
+  
+  <!-- === HAMBURGER MENI === -->  
+  <div class="menu-overlay" id="menu">  
+    <a href="index.html" data-hr="Naslovna" data-en="Home">Naslovna</a>  
+    <a href="staze.html" data-hr="Staze" data-en="Trails">Staze</a>  
+    <a href="avantura.html" data-hr="Avantura" data-en="Adventure">Avantura</a>  
+    <a href="webshop.html" data-hr="Web shop" data-en="Web Shop">Web shop</a>  
+    <a href="planinarskevijesti.html" data-hr="Blog" data-en="Blog">Blog</a>  
+    <a href="digitalniruksak.html" data-hr="Digitalni ruksak" data-en="Digital backpack">Digitalni ruksak</a>  
+    <a href="kontakt.html" data-hr="Kontakt" data-en="Contact">Kontakt</a>  
+  </div>  
+  
+  <!-- =============================== -->  
+  <!-- === KOLIBA WEBSHOP — SADRŽAJ === -->  
+  <!-- =============================== -->  
+  
+  <!-- HERO (koliba) -->  
+  <section class="hero">  
+    <div class="hero-inner">  
+      <span class="hero-kicker" data-hr="Planinarska trgovina" data-en="Hiker's Store">Planinarska trgovina</span>  
+      <h1 class="hero-title" data-hr="Božićni ugođaj kolibe. Najljepši pokloni i suveniri po vašem izboru." data-en="Christmas cabin vibes. Perfect gifts & Souvenirs at your choice.">Božićni ugođaj kolibe. Najljepši pokloni i suveniri po vašem izboru.</h1>  
+      <p class="hero-sub" data-hr="Ubaci u ruksak i kreni na uspon – bez kompliciranja." data-en="Add to your pack and head out — no fuss.">Ubaci u ruksak i kreni na uspon – bez kompliciranja.</p>  
+    </div>  
+  </section>  
+  
+  <!-- PUTOKAZI (kategorije) -->  
+  <div class="signs" id="categorySigns">  
+    <button class="sign active" data-cat="all" data-hr="Sve" data-en="All">Sve</button>  
+    <button class="sign" data-cat="Souvenirs" data-hr="Suveniri" data-en="Souvenirs">Suveniri</button>  
+    <button class="sign" data-cat="Games&Cards" data-hr="Društvene igre i karte" data-en="Games&Cards">Društvene igre i karte</button>  
+    <button class="sign" data-cat="Clothes" data-hr="Odjeća" data-en="Clothes">Odjeća</button>  
+    <button class="sign" data-cat="Perfect Gifts" data-hr="Najljepši pokloni" data-en="Perfect Gifts">Najljepši pokloni</button>  
+    <button class="sign" data-cat="Stickers" data-hr="Naljepnice" data-en="Stickers">Naljepnice</button>  
+    <button class="sign" data-cat="Limited Edition" data-hr="Limitirana Izdanja" data-en="Limited Edition">Limitirana izdanja</button>  
+  </div>  
+  
+  
+<!-- GRID PROIZVODA -->  
+<main class="shop-wrap">  
+  <section class="section-pad">  
+    <div class="product-grid" id="productGrid">  
+  
+      <!-- Primjeri (zamijeni svojim sadržajem/slikama) -->  
+  
+      <article class="card" data-cat="Souvenirs"  
+        data-detail-url="proizvodi/snjezna-kugla.html">  
+         <div class="pc-media">  
+  <div class="pc-track">  
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">  
+  </div>  
+  <div class="pc-dots"></div>  
+</div>  
+        <div class="card-body">  
+          <span class="badge">Suveniri</span>  
+          <div class="title" data-hr="Snježna kugla Hajdučka Vrata" data-en="Snow Globe Hajducka Vrata">Snježna kugla Hajdučka Vrata</div>  
+          <div class="desc" data-hr="Snježna kugla s figurom Hajdučkih Vrata." data-en="Snow globe with Hajducka Vrata figure.">Snježna kugla s figurom Hajdučkih Vrata.</div>  
+          <div class="price-row">  
+            <div class="price">9.90 €</div>  
+            <button class="btn add-to-bag" data-id="souvenir-snow-globe" data-name="Snježna kugla Hajdučka Vrata" data-price="9.90" data-img="images/prod-gpx-velebit.jpg" data-type="pod">  
+              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>  
+            </button>  
+          </div>  
+        </div>  
+      </article>  
+  
+        
+      <article class="card" data-cat="Games&Cards"   
+        data-detail-url="proizvodi/snjezna-kugla.html">  
+           <div class="pc-media">  
+  <div class="pc-track">  
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">  
+  </div>  
+  <div class="pc-dots"></div>  
+</div>  
+        <div class="card-body">  
+          <span class="badge">Društvene igre i karte</span>  
+          <div class="title" data-hr="Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)" data-en="Ludo (Hiking Edition)">Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)</div>  
+          <div class="desc" data-hr="Planinska verzija klasične društvene igre „Čovječe ne ljuti se”." data-en="A mountain-themed version of the classic “Don’t Get Angry” board game.">Planinska verzija klasične društvene igre „Čovječe ne ljuti se”.</div>  
+          <div class="price-row">  
+            <div class="price">9.90 €</div>  
+            <button class="btn add-to-bag" data-id="game-ludo" data-name="Društvena igra Čovječe ne ljuti se (Planinarsko izdanje)" data-price="9.90" data-img="images/prod-gpx-velebit.jpg" data-type="pod">  
+              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>  
+            </button>  
+          </div>  
+        </div>  
+      </article>  
+  
+        
+      <article class="card" data-cat="Clothes"  
+        data-detail-url="proizvodi/snjezna-kugla.html">  
+           <div class="pc-media">  
+  <div class="pc-track">  
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">  
+  </div>  
+  <div class="pc-dots"></div>  
+</div>  
+        <div class="card-body">  
+          <span class="badge">Odjeća</span>  
+          <div class="title" data-hr="Majica s ugraviranim vrhovima planina" data-en="T-shirt with engraved mountain peaks">Majica s ugraviranim vrhovima planina</div>  
+          <div class="desc" data-hr="Pamučna majica s precizno ugraviranim obrisima planinskih vrhova." data-en="Cotton T-shirt with precisely engraved outlines of mountain peaks.">Pamučna majica s precizno ugraviranim obrisima planinskih vrhova.</div>  
+          <div class="price-row">  
+            <div class="price">24.90 €</div>  
+            <button class="btn add-to-bag" data-id="shirt-mountains" data-name="Majica s ugraviranim vrhovima planina" data-price="24.90" data-img="images/prod-shirt-mountains.jpg" data-type="pod">  
+              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>  
+            </button>  
+          </div>  
+        </div>  
+      </article>  
+  
+        
+      <article class="card" data-cat="Perfect Gifts"  
+        data-detail-url="proizvodi/snjezna-kugla.html">  
+           <div class="pc-media">  
+  <div class="pc-track">  
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">  
+  </div>  
+  <div class="pc-dots"></div>  
+</div>  
+        <div class="card-body">  
+          <span class="badge">Najljepši pokloni</span>  
+          <div class="title" data-hr="Planinarski survival set" data-en="Hiker’s Survival Kit">Planinarski survival set</div>  
+          <div class="desc" data-hr="Iznenadi avanturista praktičnim setom: mini kompas, svjetiljka i višenamjenski alat." data-en="Surprise an adventurer with a practical set: mini compass, flashlight and multitool.">Iznenadi avanturista praktičnim setom: mini kompas, svjetiljka i višenamjenski alat.</div>  
+          <div class="price-row">  
+            <div class="price">19.90 €</div>  
+            <button class="btn add-to-bag" data-id="survival-kit" data-name="Planinarski survival set" data-price="19.90" data-img="images/prod-survival-kit.jpg" data-type="pod">  
+              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>  
+            </button>  
+          </div>  
+        </div>  
+      </article>  
+  
+        
+      <article class="card" data-cat="Stickers"  
+        data-detail-url="proizvodi/snjezna-kugla.html">  
+           <div class="pc-media">  
+  <div class="pc-track">  
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">  
+  </div>  
+  <div class="pc-dots"></div>  
+</div>  
+        <div class="card-body">  
+          <span class="badge">Suveniri</span>  
+          <div class="title" data-hr="Magnet u obliku planine" data-en="Mountain-shaped magnet">Magnet u obliku planine</div>  
+          <div class="desc" data-hr="Personalizirani magnet s likom ili slikom po vašoj želji." data-en="Personalized magnet with a custom mountain image or design.">Personalizirani magnet s likom ili slikom po vašoj želji.</div>  
+          <div class="price-row">  
+            <div class="price">4.99 €</div>  
+            <button class="btn add-to-bag" data-id="magnet-mountain" data-name="Magnet u obliku planine" data-price="4.99" data-img="images/prod-magnet-mountain.jpg" data-type="pod">  
+              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>  
+            </button>  
+          </div>  
+        </div>  
+      </article>  
+  
+        
+      <article class="card" data-cat="Limited Edition"  
+        data-detail-url="proizvodi/snjezna-kugla.html">  
+           <div class="pc-media">  
+  <div class="pc-track">  
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">  
+  </div>  
+  <div class="pc-dots"></div>  
+</div>  
+        <div class="card-body">  
+          <span class="badge">Limitirana izdanja</span>  
+          <div class="title" data-hr="Maskica za mobitel (izgled po želji)" data-en="Custom mountain phone case">Maskica za mobitel (izgled po želji)</div>  
+          <div class="desc" data-hr="Unikatne maskice s motivima planina — odaberi izgled po vlastitoj želji." data-en="Unique phone cases with mountain motifs — customize the look to your liking.">Unikatne maskice s motivima planina — odaberi izgled po vlastitoj želji.</div>  
+          <div class="price-row">  
+            <div class="price">14.90 €</div>  
+            <button class="btn add-to-bag" data-id="phonecase-mountain" data-name="Maskica za mobitel" data-price="14.90" data-img="images/prod-phonecase-mountain.jpg" data-type="pod">  
+              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>  
+            </button>  
+          </div>  
+        </div>  
+      </article>  
+  
+        
+      <article class="card" data-cat="Souvenirs"  
+        data-detail-url="proizvodi/snjezna-kugla.html">  
+          <div class="pc-media">  
+  <div class="pc-track">  
+    <img class="pc-slide" src="images/prod-gpx-velebit.jpg" alt="GPX Velebit – slika 1" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-2.jpg" alt="GPX Velebit – slika 2" loading="lazy">  
+    <img class="pc-slide" src="images/prod-gpx-velebit-3.jpg" alt="GPX Velebit – slika 3" loading="lazy">  
+  </div>  
+  <div class="pc-dots"></div>  
+</div>  
+        <div class="card-body">  
+          <span class="badge">Posebni suveniri</span>  
+          <div class="title" data-hr="Izrada 3D modela po vašoj želji" data-en="Custom 3D model creation">Izrada 3D modela po vašoj želji</div>  
+          <div class="desc" data-hr="Snježna kugla, privjesak ili minijatura — prema vašoj ideji i mjeri." data-en="Snow globe, keychain or miniature — made from your idea and design.">Snježna kugla, privjesak ili minijatura — prema vašoj ideji i mjeri.</div>  
+          <div class="price-row">  
+            <div class="price">29.90 €</div>  
+            <button class="btn add-to-bag" data-id="custom-3d-model" data-name="3D model po želji" data-price="29.90" data-img="images/prod-3dmodel-snowglobe.jpg" data-type="custom">  
+              <span data-hr="Ubaci u ruksak" data-en="Add to pack">Ubaci u ruksak</span>  
+            </button>  
+          </div>  
+        </div>  
+      </article>  
+  
+    </div>  
+  </section>  
+</main>  
+  
+  
+  <!-- RUKSAK (mini-cart) -->  
+  <button class="bag-toggle" id="bagToggle" data-hr="Ruksak" data-en="Pack">Ruksak (0)</button>  
+  <aside class="bag-panel" id="bagPanel" aria-label="Ruksak">  
+    <div class="bag-head">  
+      <strong data-hr="Tvoj ruksak" data-en="Your pack">Tvoj ruksak</strong>  
+      <button class="btn-ghost" id="bagClose" aria-label="Zatvori">✕</button>  
+    </div>  
+    <div class="bag-list" id="bagList"></div>  
+    <div class="bag-foot">  
+      <div class="bag-total">  
+        <span data-hr="Ukupno" data-en="Total">Ukupno</span>  
+        <span id="bagTotal">0.00 €</span>  
+      </div>  
+      <button class="btn" id="btnCheckout">  
+        <span data-hr="Kreni na uspon" data-en="Head out">Kreni na uspon</span>  
+      </button>  
+      <button class="btn-ghost" id="btnClear">  
+        <span data-hr="Isprazni ruksak" data-en="Empty pack">Isprazni ruksak</span>  
+      </button>  
+    </div>  
+  </aside>  
+  
+  <div class="pc-lightbox" hidden aria-modal="true" role="dialog">  
+  <div class="pc-lightbox-inner">  
+    <button class="pc-lightbox-prev" aria-label="Prethodna">‹</button>  
+    <img class="pc-lightbox-img" alt="">  
+    <button class="pc-lightbox-next" aria-label="Sljedeća">›</button>  
+    <button class="pc-lightbox-close" aria-label="Zatvori">✕</button>  
+  </div>  
+  <div class="pc-lightbox-cta">  
+    <a class="pc-more" href="#" target="_self" rel="noopener">Pročitaj više o proizvodu</a>  
+  </div>  
+</div>  
+  
+  <!-- === BACK TO TOP === -->  
+  <button id="backToTop" title="Na vrh" aria-label="Gumb na vrh">  
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  
+      <polyline points="18 15 12 9 6 15"></polyline>  
+    </svg>  
+  </button>  
+  
+  <!-- === FOOTER === -->  
+  <footer id="footer">  
+    <div class="footer-icons">  
+      <a href="https://instagram.com/mountainadventures__" target="_blank" aria-label="Link za Instagram">  
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">  
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>  
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>  
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>  
+        </svg>  
+      </a>  
+      <a href="mailto:mountainadventures1717@gmail.com" aria-label="Link za Email">  
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">  
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>  
+          <polyline points="22,6 12,13 2,6"></polyline>  
+        </svg>  
+      </a>  
+    </div>  
+    © Mountain Adventures. All rights reserved.  
+  </footer>  
+  
+  <!-- Sezone JS -->  
+  <script src="season.js"></script>  
+  
+  <script>  
+    // === 1. DEFINICIJE ELEMENTA ===  
+    const langToggle = document.getElementById('language-toggle');  
+    const searchInput = document.getElementById('search');  
+    const menuToggle = document.getElementById('menu-toggle');  
+    const menu = document.getElementById('menu');  
+    const backToTopBtn = document.getElementById('backToTop');  
+    const footer = document.getElementById('footer');  
+  
+    // === 2. JEZIK ===  
+    function getInitialLang() {  
+      const urlLang = new URLSearchParams(location.search).get('lang');  
+      if (urlLang === 'hr' || urlLang === 'en') return urlLang;  
+      try {  
+        const s = localStorage.getItem('preferredLang');  
+        if (s === 'hr' || s === 'en') return s;  
+      } catch (e) {}  
+      return 'hr';  
+    }  
+  
+    function setBagToggleLabel(count) {  
+      const bagToggle = document.getElementById('bagToggle');  
+      if (!bagToggle) return;  
+      const base = (currentLang === 'hr') ? 'Ruksak' : 'Pack';  
+      bagToggle.textContent = `${base} (${count})`;  
+    }  
+  
+    function applyLanguage(lang) {  
+      try { localStorage.setItem('preferredLang', lang); } catch (e) {}  
+      const u = new URL(location.href);  
+      u.searchParams.set('lang', lang);  
+      history.replaceState({}, '', u.toString());  
+      document.documentElement.lang = lang;  
+  
+      if (langToggle) {  
+        langToggle.src = (lang === 'hr') ? 'images/flag-uk.svg' : 'images/flag-hr.svg';  
+        langToggle.alt = (lang === 'hr') ? 'Promijeni na engleski' : 'Switch to Croatian';  
+        langToggle.setAttribute('data-tooltip', (lang === 'hr') ? 'Promijeni jezik' : 'Change language');  
+      }  
+      if (searchInput) {  
+        searchInput.placeholder = (lang === 'hr') ? 'Pretraži...' : 'Search...';  
+      }  
+      document.querySelectorAll('[data-hr]').forEach(el => {  
+        const txt = el.getAttribute(`data-${lang}`);  
+        if (txt == null) return;  
+        if (txt.includes('<')) el.innerHTML = txt;  
+        else el.textContent = txt;  
+      });  
+      // ažuriraj labelu ruksaka  
+      setBagToggleLabel(window.__bag?.items.length || 0);  
+    }  
+  
+    let currentLang = getInitialLang();  
+    applyLanguage(currentLang);  
+  
+    if (langToggle) {  
+      langToggle.addEventListener('click', () => {  
+        currentLang = (currentLang === 'hr') ? 'en' : 'hr';  
+        applyLanguage(currentLang);  
+      });  
+    }  
+  
+    // === 3. HAMBURGER MENI ===  
+    if (menuToggle && menu) {  
+      menuToggle.addEventListener('click', () => menu.classList.toggle('open'));  
+      window.addEventListener('click', e => {  
+        if (!menu.contains(e.target) && !menuToggle.contains(e.target) && e.target.id !== 'language-toggle') {  
+          menu.classList.remove('open');  
+        }  
+      });  
+      document.querySelectorAll('.menu-overlay a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));  
+    }  
+  
+    // === 4. PUTOKAZI (filter kategorija) ===  
+    (function mountCategoryFilter() {  
+      const signs = document.querySelectorAll('.sign');  
+      const cards = [...document.querySelectorAll('.card')];  
+      if (!signs.length || !cards.length) return;  
+      signs.forEach(s => s.addEventListener('click', () => {  
+        signs.forEach(x => x.classList.remove('active'));  
+        s.classList.add('active');  
+        const cat = s.dataset.cat || 'all';  
+        cards.forEach(c => {  
+          const show = (cat === 'all') || (c.getAttribute('data-cat') === cat);  
+          c.style.display = show ? 'block' : 'none';  
+        });  
+      }));  
+    })();  
+  
+// === 5. BACK TO TOP + RUKSAK — FIXED (isto ponašanje, bez rušenja) ===  
+(() => {  
+  const backToTopBtn = document.getElementById('backToTop');  
+  const bagToggleBtn = document.getElementById('bagToggle');  
+  const footer = document.getElementById('footer');  
+  
+  function onScrollOrResize() {  
+    const scrollY = window.scrollY;  
+    const windowHeight = window.innerHeight;  
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;  
+    const viewportBottom = scrollY + windowHeight;  
+  
+    // pokaži / sakrij BTT  
+    backToTopBtn.style.display = scrollY > 300 ? 'flex' : 'none';  
+  
+    // TVOJA ORIGINALNA LOGIKA: pomak prema overlapu s footerom  
+    if (viewportBottom > footerTop) {  
+      const overlap = viewportBottom - footerTop;  
+  
+      // BackToTop  
+      backToTopBtn.style.bottom = `${overlap + 45}px`;  
+  
+      // Ruksak  
+      if (bagToggleBtn) {  
+        const baseBottom = 18;     // tvoja baza  
+        bagToggleBtn.style.bottom = `${baseBottom + overlap + 16}px`;  
+      }  
+    } else {  
+      // default položaji kad footer nije u viewportu  
+      backToTopBtn.style.bottom = '22px';  
+      if (bagToggleBtn) bagToggleBtn.style.bottom = '18px';  
+    }  
+  }  
+  
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });  
+  window.addEventListener('resize', onScrollOrResize);  
+  onScrollOrResize(); // init  
+  
+  backToTopBtn.addEventListener('click', () => {  
+    window.scrollTo({ top: 0, behavior: 'smooth' });  
+  });  
+})();  
+      
+    // === 6. RUKSAK (mini-cart, localStorage) ===  
+    const bagToggle = document.getElementById('bagToggle');  
+    const bagPanel = document.getElementById('bagPanel');  
+    const bagList = document.getElementById('bagList');  
+    const bagTotal = document.getElementById('bagTotal');  
+    const bagClose = document.getElementById('bagClose');  
+    const btnCheckout = document.getElementById('btnCheckout');  
+    const btnClear = document.getElementById('btnClear');  
+  
+    function loadBag() {  
+      try { return JSON.parse(localStorage.getItem('__ma_bag__') || '{"items":[]}'); }  
+      catch (e) { return { items: [] }; }  
+    }  
+    function saveBag() {  
+      localStorage.setItem('__ma_bag__', JSON.stringify(window.__bag));  
+    }  
+    function eur(n) { return (Number(n) || 0).toFixed(2) + ' €'; }  
+  
+    function renderBag() {  
+      bagList.innerHTML = '';  
+      let sum = 0;  
+      window.__bag.items.forEach((it, idx) => {  
+        sum += Number(it.price) * Number(it.qty);  
+        const row = document.createElement('div');  
+        row.className = 'bag-item';  
+        row.innerHTML = `  
+          <img src="${it.img}" alt="">  
+          <div>  
+            <div style="font-weight:800">${it.name}</div>  
+            <div style="opacity:.8; font-size:13px">${it.type === 'digital' ? 'Digital' : 'Fizičko'} • ${eur(it.price)} × ${it.qty}</div>  
+          </div>  
+          <div style="display:grid; gap:6px">  
+            <button class="btn-ghost" data-act="minus" data-idx="${idx}">−</button>  
+            <button class="btn-ghost" data-act="plus" data-idx="${idx}">+</button>  
+            <button class="btn-ghost" data-act="rm" data-idx="${idx}">✕</button>  
+          </div>`;  
+        bagList.appendChild(row);  
+      });  
+      bagTotal.textContent = eur(sum);  
+      setBagToggleLabel(window.__bag.items.length);  
+      saveBag();  
+    }  
+    function openBag() { bagPanel.classList.add('open'); }  
+    function closeBag() { bagPanel.classList.remove('open'); }  
+  
+    window.__bag = loadBag();  
+    renderBag();  
+  
+    if (bagToggle) bagToggle.addEventListener('click', openBag);  
+    if (bagClose) bagClose.addEventListener('click', closeBag);  
+  
+    if (bagList) {  
+      bagList.addEventListener('click', e => {  
+        const btn = e.target.closest('button');  
+        if (!btn) return;  
+        const idx = +btn.dataset.idx;  
+        const act = btn.dataset.act;  
+        const it = window.__bag.items[idx];  
+        if (!it) return;  
+        if (act === 'plus') it.qty++;  
+        if (act === 'minus') it.qty = Math.max(1, it.qty - 1);  
+        if (act === 'rm') window.__bag.items.splice(idx, 1);  
+        renderBag();  
+      });  
+    }  
+    if (btnClear) btnClear.addEventListener('click', () => { window.__bag.items = []; renderBag(); });  
+    if (btnCheckout) btnCheckout.addEventListener('click', () => {  
+      alert((currentLang === 'hr') ? 'Hvala! Plaćanje uskoro (Stripe/Shopify).' : 'Thanks! Payment soon (Stripe/Shopify).');  
+    });  
+  
+    document.querySelectorAll('.add-to-bag').forEach(btn => {  
+      btn.addEventListener('click', () => {  
+        const item = {  
+          id: btn.dataset.id,  
+          name: btn.dataset.name,  
+          price: btn.dataset.price,  
+          img: btn.dataset.img,  
+          type: btn.dataset.type || 'digital',  
+          qty: 1  
+        };  
+        const found = window.__bag.items.find(x => x.id === item.id);  
+        if (found) found.qty++;  
+        else window.__bag.items.push(item);  
+        renderBag();  
+        openBag();  
+      });  
+    });  
+  
+    // === 7A. HERO OVERLAY UPRAVLJANJE (DODANO) ===  
+    (function mountHeroObserver(){  
+      const hero = document.querySelector('.hero');  
+      if (!hero) return;  
+      const body = document.body;  
+      const io = new IntersectionObserver((entries) => {  
+        const e = entries[0];  
+        if (e && e.isIntersecting) body.classList.add('hero-in-view');  
+        else body.classList.remove('hero-in-view');  
+      }, { threshold: 0.2 });  
+      io.observe(hero);  
+    })();  
+  
+// === PRODUCT CARD CAROUSEL + LIGHTBOX ===  
+(function(){  
+  // 1) CAROUSEL u karticama  
+  const carousels = [];  
+  document.querySelectorAll('.card .pc-media').forEach(media => {  
+    const track = media.querySelector('.pc-track');  
+    const slides = [...media.querySelectorAll('.pc-slide')];  
+    const dotsWrap = media.querySelector('.pc-dots');  
+  
+    if (!track || slides.length === 0) return;  
+  
+    // točkice (samo ako >1 slika)  
+    let dots = [];  
+    if (slides.length > 1) {  
+      dots = slides.map((_,i) => {  
+        const d = document.createElement('span');  
+        d.className = 'pc-dot' + (i===0?' active':'');  
+        d.addEventListener('click', (e) => { e.stopPropagation(); go(i); });  
+        dotsWrap.appendChild(d);  
+        return d;  
+      });  
+    } else {  
+      dotsWrap.style.display = 'none';  
+    }  
+  
+    let index = 0;  
+    function render(){  
+      track.style.transform = `translateX(${-index*100}%)`;  
+      dots.forEach((d,i)=>d.classList.toggle('active', i===index));  
+    }  
+    function go(i){  
+      index = Math.max(0, Math.min(slides.length-1, i));  
+      render();  
+    }  
+  
+    // swipe (touch)  
+    let sx=0, dx=0, moving=false;  
+    media.addEventListener('touchstart', e => {  
+      if (slides.length<2) return;  
+      sx = e.touches[0].clientX; moving=true; dx=0;  
+    }, {passive:true});  
+    media.addEventListener('touchmove', e => {  
+      if (!moving) return;  
+      dx = e.touches[0].clientX - sx;  
+    }, {passive:true});  
+    media.addEventListener('touchend', () => {  
+      if (!moving) return;  
+      moving=false;  
+      if (Math.abs(dx)>40){  
+        if (dx<0 && index<slides.length-1) go(index+1);  
+        if (dx>0 && index>0) go(index-1);  
+      }  
+    });  
+  
+    // klik na sliku -> lightbox  
+    media.addEventListener('click', (e) => {  
+      const startIdx = Math.round(Math.abs(track.style.transform?.match(/-?(\d+(\.\d+)?)%/)?.[1]||0)/100) || 0;  
+      openLightboxFromMedia(media, startIdx);  
+    });  
+  
+    render();  
+    carousels.push({media, go});  
+  });  
+  
+  // 2) LIGHTBOX  
+  const lb = document.querySelector('.pc-lightbox');  
+  const lbImg = lb?.querySelector('.pc-lightbox-img');  
+  const btnPrev = lb?.querySelector('.pc-lightbox-prev');  
+  const btnNext = lb?.querySelector('.pc-lightbox-next');  
+  const btnClose = lb?.querySelector('.pc-lightbox-close');  
+  const lbMore = lb?.querySelector('.pc-more');  
+  
+  let lbList = [], lbIdx = 0, lbDetailURL = '#';  
+  
+  function setLbImage(){  
+    if (!lbImg || !lbList.length) return;  
+    lbImg.src = lbList[lbIdx];  
+  }  
+  
+  function findDetailURL(fromEl){  
+    // 1) <a.pc-title-link>  
+    const link = fromEl.closest('.card')?.querySelector('.pc-title-link');  
+    if (link?.getAttribute('href')) return link.getAttribute('href');  
+  
+    // 2) data-detail-url na <article>  
+    const card = fromEl.closest('.card');  
+    if (card?.dataset.detailUrl) return card.dataset.detailUrl;  
+  
+    // 3) <div class="title"> prvi <a>  
+    const a = card?.querySelector('.title a[href]');  
+    if (a) return a.getAttribute('href');  
+  
+    return '#';  
+  }  
+  
+  window.openLightboxFromMedia = function(media, startIndex=0){  
+    const slides = [...media.querySelectorAll('.pc-slide')];  
+    lbList = slides.map(s => s.currentSrc || s.src);  
+    lbIdx = Math.max(0, Math.min(startIndex, lbList.length-1));  
+    lbDetailURL = findDetailURL(media);  
+    setLbImage();  
+  
+    if (lbMore){  
+      lbMore.href = lbDetailURL || '#';  
+      lbMore.textContent = (window.currentLang === 'en')  
+        ? 'Read more about the product'  
+        : 'Pročitaj više o proizvodu';  
+      lbMore.style.display = lbDetailURL ? 'inline-block' : 'none';  
+    }  
+  
+    lb.hidden = false;  
+    lb.setAttribute('aria-hidden','false');  
+    document.body.style.overflow = 'hidden';  
+  };  
+  
+  function closeLb(){  
+    lb.hidden = true;  
+    lb.setAttribute('aria-hidden','true');  
+    document.body.style.overflow = '';  
+  }  
+  
+  btnClose?.addEventListener('click', closeLb);  
+  btnPrev?.addEventListener('click', ()=>{ if(lbList.length){ lbIdx = (lbIdx-1+lbList.length)%lbList.length; setLbImage(); } });  
+  btnNext?.addEventListener('click', ()=>{ if(lbList.length){ lbIdx = (lbIdx+1)%lbList.length; setLbImage(); } });  
+  lb?.addEventListener('click', e => { if (e.target === lb) closeLb(); });  
+  window.addEventListener('keydown', e => {  
+    if (lb.hasAttribute('hidden')) return;  
+    if (e.key==='Escape') closeLb();  
+    if (e.key==='ArrowLeft') btnPrev?.click();  
+    if (e.key==='ArrowRight') btnNext?.click();  
+  });  
+  
+  // 3) Klik na NASLOV -> isti URL kao detail  
+  document.querySelectorAll('.card .title').forEach(t => {  
+    // Ako već ima <a>, pusti ga  
+    if (t.querySelector('a')) return;  
+  
+    const card = t.closest('.card');  
+    const url = card?.dataset.detailUrl;  
+    if (url){  
+      t.style.cursor = 'pointer';  
+      t.addEventListener('click', ()=> location.href = url);  
+    }  
+  });  
+})();  
+      
+    // === 7B. SEASON HTML I EFEKTI (OSTAVLJENO) ===  
+    document.addEventListener('DOMContentLoaded', () => {  
+      const savedSeason = localStorage.getItem('activeSeason');  
+      if (savedSeason) {  
+        setTimeout(() => {  
+          if (savedSeason === 'winter') startWinterEffect(true);  
+          else if (savedSeason === 'summer') startSummerEffect(true);  
+          else if (savedSeason === 'spring') startSpringEffect(true);  
+          else if (savedSeason === 'autumn') startAutumnEffect(true);  
+        }, 10000);  
+      }  
+      fetch('season.html')  
+        .then(res => res.text())  
+        .then(html => {  
+          const ph = document.getElementById('season-placeholder');  
+          if (ph) ph.innerHTML = html;  
+          if (typeof initializeSeasonToggle === 'function') initializeSeasonToggle();  
+        })  
+        .catch(() => {  
+          // Ako radiš lokalno file://, fetch neće proći — ali to ne smije srušiti stranicu  
+        });  
+    });  
+  
+    
+  </script>  
+</body>  
 </html>
